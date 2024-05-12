@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextoCopier", "TextoCopier\TextoCopier.csproj", "{2757BC6F-0649-4FFD-8959-C21883B568A7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextoCopier.Desktop", "TextoCopier.Desktop\TextoCopier.Desktop.csproj", "{3BD1014C-71FD-468A-8C5B-A76EF28160EC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2757BC6F-0649-4FFD-8959-C21883B568A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2757BC6F-0649-4FFD-8959-C21883B568A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2757BC6F-0649-4FFD-8959-C21883B568A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2757BC6F-0649-4FFD-8959-C21883B568A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BD1014C-71FD-468A-8C5B-A76EF28160EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BD1014C-71FD-468A-8C5B-A76EF28160EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BD1014C-71FD-468A-8C5B-A76EF28160EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BD1014C-71FD-468A-8C5B-A76EF28160EC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F35EAB48-64F7-41A9-80EB-B6C81D7948DC}
+	EndGlobalSection
+EndGlobal
