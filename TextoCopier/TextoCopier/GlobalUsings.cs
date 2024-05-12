@@ -36,4 +36,4 @@ global using Lyt.Avalonia.Mvvm.Utilities;
 global using Lyt.Avalonia.Persistence;
 
 global using Lyt.TextoCopier.Shell;
-
+global using Lyt.TextoCopier.Models;

@@ -4,6 +4,7 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <RootNamespace>Lyt.TextoCopier</RootNamespace>
   </PropertyGroup>
 
   
@@ -27,6 +28,5 @@
 
   <ItemGroup>
     <Folder Include="Controls\" />
-    <Folder Include="Models\" />
   </ItemGroup>
 </Project>

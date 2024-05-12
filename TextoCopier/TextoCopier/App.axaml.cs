@@ -15,6 +15,7 @@ public partial class App : ApplicationBase
         [
             // Models 
             typeof(FileManagerModel),
+            typeof(TemplatesModel),
         ],
         [
            // Singletons

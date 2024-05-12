@@ -2,23 +2,49 @@
 
 public sealed class FileManagerModel : ModelBase, IModel
 {
-    private static readonly string[] LogFilesFilters = ["*.log", "*.csv", "*.txt"];
+    public enum Area
+    {
+        Logs,
+        Settings,
+        Configuration,
+        User,
+    }
+
+    public enum Kind
+    {
+        Json,
+        Text,
+        Binary,
+    }
+
+    private const string JsonExtension = ".json";
+    private const string TextExtension = ".txt";
+    private const string BinaryExtension = ".data";
 
     private const string LogsFolder = "Logs";
+    private const string SettingsFolder = "Settings";
+    private const string ConfigurationFolder = "Configuration";
+    private const string UserFolder = "User";
 
-    // LATER 
-    // private const string ConfigFolder = "Config";
+    private static readonly string[] LogFilesFilters = ["*.log", "*.csv", "*.txt"];
+    private static readonly string[] ApplicationFolders = [LogsFolder, SettingsFolder, ConfigurationFolder, UserFolder];
 
     private FileManagerConfiguration configuration;
+    private JsonSerializerOptions jsonSerializerOptions;
 
-    public FileManagerModel() : base() 
-        => this.configuration = new FileManagerConfiguration(string.Empty, string.Empty, string.Empty);
-
+    public FileManagerModel() : base()
+    {
+        this.configuration = new FileManagerConfiguration(string.Empty, string.Empty, string.Empty);
+        this.jsonSerializerOptions = new JsonSerializerOptions { AllowTrailingCommas = true } ;
+        this.jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    }
     public string ApplicationFolderPath { get; private set; } = string.Empty;
 
     public string ApplicationUserFolderPath { get; private set; } = string.Empty;
 
     public string ApplicationLogsFolderPath { get; private set; } = string.Empty;
+
+    public string ApplicationConfigurationFolderPath { get; private set; } = string.Empty;
 
     public override Task Initialize() => Task.CompletedTask;
 
@@ -72,6 +98,11 @@ public sealed class FileManagerModel : ModelBase, IModel
         this.CreateFolderIfNeeded(subDirectory);
         this.ApplicationFolderPath = subDirectory;
 
+        string configurationFolder = Path.Combine(subDirectory, FileManagerModel.ConfigurationFolder);
+        this.CreateFolderIfNeeded(configurationFolder);
+        this.ApplicationConfigurationFolderPath = configurationFolder;
+        this.UpdateConfiguration();
+
         string logsFolder = Path.Combine(subDirectory, FileManagerModel.LogsFolder);
         this.CreateFolderIfNeeded(logsFolder);
         this.ApplicationLogsFolderPath = logsFolder;
@@ -79,7 +110,7 @@ public sealed class FileManagerModel : ModelBase, IModel
 
         string userDirectory =
             Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                Environment.GetFolderPath(Environment.SpecialFolder.Personal),
                 this.configuration.Organization);
         this.CreateFolderIfNeeded(userDirectory);
 
@@ -160,12 +191,14 @@ public sealed class FileManagerModel : ModelBase, IModel
         {
             // Wait: Don't bog down startup 
             await Task.Delay(420);
-            foreach(string filter in FileManagerModel.LogFilesFilters)
+            foreach (string filter in FileManagerModel.LogFilesFilters)
             {
                 await this.CleanupOldFiles(timeSpan, this.ApplicationLogsFolderPath, filter);
             }
         });
     }
+
+    private void UpdateConfiguration() { /* LATER */ }
 
     public async Task CleanupOldFiles(TimeSpan since, string path, string filter)
     {
@@ -211,4 +244,100 @@ public sealed class FileManagerModel : ModelBase, IModel
             }
         }
     }
+
+    public string Serialize<T>(T deserialized)
+    {
+        try
+        {
+            string serialized = JsonSerializer.Serialize(deserialized, typeof(T), this.jsonSerializerOptions);
+            if (string.IsNullOrWhiteSpace(serialized))
+            {
+                return serialized;
+            }
+
+            throw new Exception();
+        }
+        catch (Exception ex)
+        {
+            string msg = "Failed to serialize " + typeof(T).FullName + "\n" + ex.ToString();
+            this.Logger.Error(msg);
+            throw new Exception(msg, ex);
+        }
+    }
+
+    public T? Deserialize<T>(string serialized)
+    {
+        try
+        {
+            object? deserialized = JsonSerializer.Deserialize(serialized, typeof(T), this.jsonSerializerOptions);
+            if (deserialized is T deserializedOfT)
+            {
+                return deserializedOfT;
+            }
+
+            throw new Exception();
+        }
+        catch (Exception ex)
+        {
+            string msg = "Failed to deserialize " + typeof(T).FullName + "\n" + ex.ToString();
+            this.Logger.Error(msg);
+            throw new Exception(msg, ex);
+        }
+    }
+
+    private string PathFromArea(Area area)
+    {
+        return area switch
+        {
+            Area.Logs => this.ApplicationLogsFolderPath,
+            Area.Settings => this.ApplicationUserFolderPath,
+            Area.User => this.ApplicationUserFolderPath,
+            Area.Configuration => this.ApplicationConfigurationFolderPath,
+            _ => throw new ArgumentException(nameof(area)),
+        };
+    }
+
+    private string ExtensionFromKind(Kind kind)
+    {
+        return kind switch
+        {
+            Kind.Json => JsonExtension,
+            Kind.Text => TextExtension,
+            Kind.Binary => BinaryExtension,
+            _ => throw new ArgumentException(nameof(kind)),
+        };
+    }
+
+    public string MakePath(Area area, Kind kind, string name)
+    {
+        try
+        {
+            return Path.Combine(this.PathFromArea(area), string.Concat(name, this.ExtensionFromKind(kind)));
+        }
+        catch (Exception ex)
+        {
+            string msg = "Failed to build path for " + area.ToString() + " - " + name + kind.ToString();
+            this.Logger.Error(msg);
+            throw new Exception(msg, ex);
+        }
+    }
+
+    public bool Exists(Area area, Kind kind, string name)
+    {
+        string path = this.MakePath(area, kind, name); 
+        return Path.Exists(path);
+    }
+
+    public bool Load (Area area, Kind kind, string name)
+    {
+        // TODO 
+        return true;
+    }
+
+    public bool Save(Area area, Kind kind, string name)
+    {
+        // TODO 
+        return true;
+    }
 }
+

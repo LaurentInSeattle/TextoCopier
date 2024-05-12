@@ -2,8 +2,9 @@
 
 public class ApplicationModelBase(ILogger logger, ApplicationBase application) : IApplicationModel
 {
-    private readonly ILogger logger = logger;
-    private readonly ApplicationBase application = application;
+    protected readonly ILogger logger = logger;
+
+    protected readonly ApplicationBase application = application;
 
     public async Task Initialize()
     {
