@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextoCopier", "TextoCopier\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextoCopier.Desktop", "TextoCopier.Desktop\TextoCopier.Desktop.csproj", "{3BD1014C-71FD-468A-8C5B-A76EF28160EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Avalonia.Mvvm", "Lyt.Avalonia.Mvvm\Lyt.Avalonia.Mvvm.csproj", "{9E8E1928-3346-4EE0-970E-2744BB678BCC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Avalonia.Interfaces", "Lyt.Avalonia.Interfaces\Lyt.Avalonia.Interfaces.csproj", "{3E7A646C-A311-44A8-8BAA-A00BBDE304AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{3BD1014C-71FD-468A-8C5B-A76EF28160EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BD1014C-71FD-468A-8C5B-A76EF28160EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BD1014C-71FD-468A-8C5B-A76EF28160EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E8E1928-3346-4EE0-970E-2744BB678BCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E8E1928-3346-4EE0-970E-2744BB678BCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E8E1928-3346-4EE0-970E-2744BB678BCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E8E1928-3346-4EE0-970E-2744BB678BCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E7A646C-A311-44A8-8BAA-A00BBDE304AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E7A646C-A311-44A8-8BAA-A00BBDE304AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E7A646C-A311-44A8-8BAA-A00BBDE304AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E7A646C-A311-44A8-8BAA-A00BBDE304AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
