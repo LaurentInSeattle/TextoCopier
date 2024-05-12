@@ -55,7 +55,7 @@
             HorizontalAlignment="Right"
             HorizontalContentAlignment="Center"
 			Foreground="AntiqueWhite"
-			Background="DarkOrange"
+			Background="DarkBlue"
             />
 	</Grid>
 </Window>

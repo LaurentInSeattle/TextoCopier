@@ -1,36 +1,46 @@
-﻿using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Markup.Xaml;
+﻿namespace Lyt.TextoCopier;
 
-using TextoCopier.ViewModels;
-using TextoCopier.Views;
-
-namespace TextoCopier;
-
-public partial class App : Application
+public partial class App : ApplicationBase
 {
-    public override void Initialize()
+    public const string Organization = "Lyt";
+    public const string Application = "TextoCopier";
+    public const string RootNamespace = "Lyt.TextoCopier";
+
+    public App() : base(
+        App.Organization,
+        App.Application,
+        App.RootNamespace,
+        typeof(MainWindow),
+        typeof(ApplicationModelBase), // Top level model 
+        [
+            // Models 
+            typeof(FileManagerModel),
+        ],
+        [
+           // Singletons
+           typeof(Profiler),
+           typeof(ShellViewModel),
+        ],
+        [
+            // Services 
+#if DEBUG
+            new Tuple<Type, Type>(typeof(ILogger), typeof(LogViewerWindow)),
+#else
+            new Tuple<Type, Type>(typeof(ILogger), typeof(Logger)),
+#endif
+            new Tuple<Type, Type>(typeof(IMessenger), typeof(Messenger)),
+        ],
+        singleInstanceRequested: true)
     {
-        AvaloniaXamlLoader.Load(this);
+        // This should be empty, use the OnStartup override
     }
 
-    public override void OnFrameworkInitializationCompleted()
+    protected override async Task OnStartup()
     {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = new MainViewModel()
-            };
-        }
-        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
-        {
-            singleViewPlatform.MainView = new MainView
-            {
-                DataContext = new MainViewModel()
-            };
-        }
-
-        base.OnFrameworkInitializationCompleted();
+        var fileManager = App.GetRequiredService<FileManagerModel>();
+        await fileManager.Configure(new FileManagerConfiguration(App.Organization, App.Application, App.RootNamespace));
     }
+
+    // Why does it needs to be there ??? 
+    public override void Initialize() => AvaloniaXamlLoader.Load(this);
 }

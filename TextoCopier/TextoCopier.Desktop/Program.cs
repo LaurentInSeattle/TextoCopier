@@ -1,7 +1,7 @@
 ﻿using System;
 using Avalonia;
 
-namespace TextoCopier.Desktop;
+namespace Lyt.TextoCopier.Desktop;
 
 class Program
 {

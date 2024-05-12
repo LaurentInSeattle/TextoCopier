@@ -22,5 +22,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Lyt.Avalonia.Interfaces\Lyt.Avalonia.Interfaces.csproj" />
     <ProjectReference Include="..\Lyt.Avalonia.Mvvm\Lyt.Avalonia.Mvvm.csproj" />
+    <ProjectReference Include="..\Lyt.Avalonia.Persistence\Lyt.Avalonia.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controls\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 </Project>
