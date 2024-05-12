@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/TextoCopier/v17/.wsuo
+/.vs/TextoCopier/v17/DocumentLayout.json
+/.vs/VSWorkspaceState.json
