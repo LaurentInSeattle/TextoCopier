@@ -29,11 +29,11 @@ public abstract class ModelBase : IModel
 
     public IMessenger Messenger { get; private set; }
 
-    public bool IsDirty { get; private set; }
+    public bool IsDirty { get; protected set; }
 
     /// <summary> Allows to disable logging when properties are changing so that we do not flood the logs. </summary>
     /// <remarks> Use for quickly changing properties, mouse, sliders, etc.</remarks>
-    public bool DisablePropertyChangedLogging { get; set; }
+    public bool DisablePropertyChangedLogging { get; protected set; }
 
     /// <summary> The model properties.</summary>
     protected readonly Dictionary<string, object?> properties;

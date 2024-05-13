@@ -1,13 +1,9 @@
 ﻿namespace Lyt.TextoCopier.Models;
 
-public sealed class TemplatesModel : ModelBase
+using static FileManagerModel;
+
+public sealed partial class TemplatesModel : ModelBase
 {
-    public override Task Initialize() { return Task.CompletedTask; }
-
-    public override Task Shutdown() { return Task.CompletedTask; }
-
-    public List<Group> Groups { get; set; } = [];
-
     public static TemplatesModel DefaultTemplate =
         new()
         {
@@ -42,13 +38,69 @@ public sealed class TemplatesModel : ModelBase
             ]
         };
 
+    private const string TemplatesModelFilename = "Templates";
+
+    private FileManagerModel fileManager;
+
+    public TemplatesModel() : base() 
+    {
+        // Do not inject the FileManagerModel instance: a parameter-less ctor is required for Deserialization 
+        FileManagerModel fileManager = App.GetRequiredService<FileManagerModel>();
+        this.fileManager = fileManager;
+    }
+
+    public override async Task Initialize()
+    {
+        await this.Load(); 
+    }
+
+    public override Task Shutdown() { return Task.CompletedTask; }
+
+    public List<Group> Groups { get; set; } = [];
+
+    public Task Load()
+    {
+        if (!this.fileManager.Exists(Area.User, Kind.Json, TemplatesModel.TemplatesModelFilename))
+        {
+            this.fileManager.Save(Area.User, Kind.Json, TemplatesModel.TemplatesModelFilename, TemplatesModel.DefaultTemplate);
+        }
+
+        TemplatesModel model =
+            this.fileManager.Load<TemplatesModel>(Area.User, Kind.Json, TemplatesModel.TemplatesModelFilename);
+        this.Groups = model.Groups;
+        return Task.CompletedTask;
+    }
+
+    public override Task Save()
+    {
+        this.fileManager.Save(Area.User, Kind.Json, TemplatesModel.TemplatesModelFilename, this);
+        base.Save();
+        return Task.CompletedTask;
+    }
+
+    private delegate bool ModelOperationDelegate (string groupName, string parameter1, string? parameter2, out string message);
+
+    private bool ModelOperation (ModelOperationDelegate modelOperation, string groupName , string parameter1 , string? parameter2, out string message )
+    {
+        message = string.Empty;
+        bool status = true; 
+
+        status = modelOperation (groupName, parameter1, parameter2, out message);
+        if (status)
+        {
+            this.IsDirty = true;
+            this.NotifyUpdate();
+        }
+
+        return status;
+    }
+
     [Conditional("DEBUG")]
     private void TestJSonSaveLoad()
     {
         FileManagerModel fileManager = App.GetRequiredService<FileManagerModel>();
-        fileManager.Save(
-            FileManagerModel.Area.User, FileManagerModel.Kind.Json, "DefaultTemplate", TemplatesModel.DefaultTemplate);
-        var model = fileManager.Load<TemplatesModel>(FileManagerModel.Area.User, FileManagerModel.Kind.Json, "DefaultTemplate");
+        fileManager.Save(Area.User, Kind.Json, nameof(DefaultTemplate), TemplatesModel.DefaultTemplate);
+        var model = fileManager.Load<TemplatesModel>(Area.User, Kind.Json, nameof(DefaultTemplate));
         if (model is TemplatesModel templates)
         {
             foreach (var group in templates.Groups)
