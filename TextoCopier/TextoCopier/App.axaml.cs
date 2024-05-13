@@ -36,8 +36,9 @@ public partial class App : ApplicationBase
         // This should be empty, use the OnStartup override
     }
 
-    protected override async Task OnStartup()
+    protected override async Task OnStartupBegin()
     {
+        // This needs to complete before all models are initialized.
         var fileManager = App.GetRequiredService<FileManagerModel>();
         await fileManager.Configure(new FileManagerConfiguration(App.Organization, App.Application, App.RootNamespace));
     }

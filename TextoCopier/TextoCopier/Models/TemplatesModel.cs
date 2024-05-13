@@ -42,4 +42,23 @@ public sealed class TemplatesModel : ModelBase
             ]
         };
 
+    [Conditional("DEBUG")]
+    private void TestJSonSaveLoad()
+    {
+        FileManagerModel fileManager = App.GetRequiredService<FileManagerModel>();
+        fileManager.Save(
+            FileManagerModel.Area.User, FileManagerModel.Kind.Json, "DefaultTemplate", TemplatesModel.DefaultTemplate);
+        var model = fileManager.Load<TemplatesModel>(FileManagerModel.Area.User, FileManagerModel.Kind.Json, "DefaultTemplate");
+        if (model is TemplatesModel templates)
+        {
+            foreach (var group in templates.Groups)
+            {
+                Debug.WriteLine(group.Name);
+                foreach (var template in group.Templates)
+                {
+                    Debug.WriteLine("      " + template.Name + "  " + template.Value);
+                }
+            }
+        }
+    }
 }

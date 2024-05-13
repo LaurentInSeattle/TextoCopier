@@ -245,12 +245,12 @@ public sealed class FileManagerModel : ModelBase, IModel
         }
     }
 
-    public string Serialize<T>(T deserialized)
+    public string Serialize<T>(T deserialized) where T: class
     {
         try
         {
             string serialized = JsonSerializer.Serialize(deserialized, typeof(T), this.jsonSerializerOptions);
-            if (string.IsNullOrWhiteSpace(serialized))
+            if (!string.IsNullOrWhiteSpace(serialized))
             {
                 return serialized;
             }
@@ -265,7 +265,7 @@ public sealed class FileManagerModel : ModelBase, IModel
         }
     }
 
-    public T? Deserialize<T>(string serialized)
+    public T Deserialize<T>(string serialized) where T : class
     {
         try
         {
@@ -328,16 +328,75 @@ public sealed class FileManagerModel : ModelBase, IModel
         return Path.Exists(path);
     }
 
-    public bool Load (Area area, Kind kind, string name)
+    public T Load<T> (Area area, Kind kind, string name) where T : class 
     {
-        // TODO 
-        return true;
+        try
+        {
+            string path = Path.Combine(this.PathFromArea(area), string.Concat(name, this.ExtensionFromKind(kind)));
+            switch (kind)
+            {
+                default:
+                case Kind.Text:
+                    if (typeof(T) == typeof(string))
+                    {
+                        string content = File.ReadAllText(path);
+                        return (content as T)!;
+                    }
+
+                    throw new NotSupportedException("string type mismatch");
+
+                case Kind.Json:
+                    string serialized = File.ReadAllText(path);
+                    T deserialized = this.Deserialize<T>(serialized);
+                    return deserialized;
+
+                case Kind.Binary:
+                    throw new NotSupportedException("No binaries for now");
+            }
+        }
+        catch (Exception ex)
+        {
+            string msg = "Failed to load " + area.ToString() + " - " + name + kind.ToString();
+            this.Logger.Error(msg);
+            throw new Exception(msg, ex);
+        }
     }
 
-    public bool Save(Area area, Kind kind, string name)
+    public void Save<T> (Area area, Kind kind, string name, T content) where T : class
     {
-        // TODO 
-        return true;
+        try
+        {
+            string path = Path.Combine(this.PathFromArea(area), string.Concat(name, this.ExtensionFromKind(kind)));
+            switch (kind)
+            {
+                default:
+                case Kind.Text:
+                    if ( content is string contentString )
+                    {
+                        File.WriteAllText(path, contentString);
+                    }
+                    else
+                    {
+                        throw new NotSupportedException("string type mismatch");
+                    }
+
+                    break;
+
+                case Kind.Json:
+                    string serialized = this.Serialize<T>(content);
+                    File.WriteAllText(path, serialized);
+                    break;
+
+                case Kind.Binary:
+                    throw new NotSupportedException("No binaries for now");
+            }
+        }
+        catch (Exception ex)
+        {
+            string msg = "Failed to save for " + area.ToString() + " - " + name + kind.ToString();
+            this.Logger.Error(msg);
+            throw new Exception(msg, ex);
+        }
     }
 }
 

@@ -193,13 +193,16 @@ public class ApplicationBase(
         return models;
     }
 
-    protected virtual Task OnStartup() => Task.CompletedTask;
+    protected virtual Task OnStartupBegin() => Task.CompletedTask;
+
+    protected virtual Task OnStartupComplete() => Task.CompletedTask;
 
     protected virtual Task OnShutdown() => Task.CompletedTask;
 
     private async Task Startup()
     {
         await ApplicationBase.AppHost.StartAsync();
+        await this.OnStartupBegin();
 
         var logger = ApplicationBase.GetRequiredService<ILogger>();
         this.Logger = logger;
@@ -220,7 +223,7 @@ public class ApplicationBase(
         this.WarmupModels();
         IApplicationModel applicationModel = ApplicationBase.GetRequiredService<IApplicationModel>();
         await applicationModel.Initialize();
-        await this.OnStartup();
+        await this.OnStartupComplete();
     }
 
     private void WarmupModels()
