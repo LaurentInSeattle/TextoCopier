@@ -12,7 +12,10 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         // Select default language 
         var localizer = App.GetRequiredService<LocalizerModel>();
-        localizer.SelectLanguage("fr-FR"); 
+        localizer.SelectLanguage("fr-FR");
+        string hello = localizer.Lookup("My.Strings.HelloWorld"); 
+        this.Logger.Info(hello);
+        string yoko = localizer.Lookup("Whatever");
     }
 
     #region WORKFLOW ~ Maybe later 

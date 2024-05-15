@@ -9,9 +9,10 @@ public sealed class LocalizerModel : ModelBase
     public const string LanguagesFolder = "Languages";
     public const string AssetsFolder = "//TextoCopier/Assets";
 
-    public override Task Initialize() { return Task.CompletedTask; }
+    public override Task Initialize() => Task.CompletedTask; 
 
-    private ResourceInclude? currentLanguage; 
+    private string? currentLanguage;  
+    private ResourceInclude? currentLanguageResource; 
 
     public bool SelectLanguage(string targetLanguage)
     {
@@ -35,8 +36,6 @@ public sealed class LocalizerModel : ModelBase
             return false;
         }
 
-        var resourceIncludes = mergedDictionaries.OfType<ResourceDictionary>().ToList();
-
         var translations =
             mergedDictionaries.OfType<ResourceInclude>()
             .FirstOrDefault(x => x.Source?.OriginalString?.Contains(LanguagesFolder) ?? false);
@@ -56,8 +55,8 @@ public sealed class LocalizerModel : ModelBase
             var uri = new Uri(uriString);
             var newLanguage = new ResourceInclude(uri) { Source = uri };
             app.Resources.MergedDictionaries.Add(newLanguage);
-                // mergedDictionaries.Add(newLanguage);
-            this.currentLanguage = newLanguage;
+            this.currentLanguageResource = newLanguage;
+            this.currentLanguage = targetLanguage; 
             this.Logger.Info("Added new language: " + targetLanguage);
             return true;
         }
@@ -66,5 +65,32 @@ public sealed class LocalizerModel : ModelBase
             this.Logger.Error("Exception thrown trying to switch language\n" + ex.ToString());
             return false;
         }
+    }
+
+    public string Lookup(string localizationKey)
+    {
+        var app = App.Current;
+        if (app is null)
+        {
+            this.Logger.Warning("No application object");
+            return string.Empty;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.currentLanguage) || this.currentLanguageResource is null)
+        {
+            this.Logger.Warning("No language loaded");
+            return string.Empty;
+        }
+
+        if ( this.currentLanguageResource.TryGetResource(localizationKey, app.ActualThemeVariant, out object? resource))
+        {
+            if ( resource is string localized)
+            {
+                return localized;
+            }
+        }
+
+        this.Logger.Warning("Failed to translate: " + localizationKey + " for language: " + this.currentLanguage);
+        return string.Empty;
     }
 }

@@ -37,50 +37,39 @@ public partial class LogViewerWindow : Window, ILogger, INotifyPropertyChanged
         }
     }
 
-    public void Debug(string message) 
-    {
-        System.Diagnostics.Debug.WriteLine(message);
-        this.Log(LogLevel.Debug, message);
-    }
+    public void Debug(string message) => this.Log(LogLevel.Debug, message);
+    
+    public void Info(string message)  => this.Log(LogLevel.Info, message);
 
-    public void Info(string message)
-    {
-        Trace.TraceInformation(message);
-        this.Log(LogLevel.Info, message);
-    }
+    public void Warning(string message) => this.Log(LogLevel.Warning, message);
 
-
-    public void Warning(string message)
-    {
-        Trace.TraceWarning(message);
-        this.Log(LogLevel.Warning, message);
-    }
-
-
-    public void Error(string message)
-    {
-        Trace.TraceError(message);
-        this.Log(LogLevel.Error, message);
-    }
+    public void Error(string message) => this.Log(LogLevel.Error, message);
 
     private void Log(LogLevel logLevel, string message)
     {
+        string time = DateTime.Now.ToLongTimeString();
+        message = string.Concat(time, " - ", message);
         SolidColorBrush brush = this.redBrush;
         if (logLevel == LogLevel.Debug)
         {
             brush = this.greenBrushDebug;
+            System.Diagnostics.Debug.WriteLine(message);
         }
         else if (logLevel == LogLevel.Info)
         {
             brush = this.greenBrushInfo;
+            Trace.TraceInformation(message);
         }
         else if (logLevel == LogLevel.Warning) 
         {
             brush = this.orangeBrush;
+            Trace.TraceWarning(message);
+        }
+        else
+        {
+            Trace.TraceError(message);
         }
 
-        string time = DateTime.Now.ToLongTimeString();
-        message = string.Concat(time, " - ", message);
         this.Update(new LogEntry { LogLevel = logLevel, Brush = brush, Message = message });
     }
 
