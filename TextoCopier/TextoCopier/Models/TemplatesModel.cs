@@ -4,7 +4,7 @@ using static FileManagerModel;
 
 public sealed partial class TemplatesModel : ModelBase
 {
-    public static TemplatesModel DefaultTemplate =
+    private static readonly TemplatesModel DefaultTemplate =
         new()
         {
             Groups =
@@ -16,10 +16,12 @@ public sealed partial class TemplatesModel : ModelBase
                     Icon = "Person",
                     Templates =
                     [
-                        new Template { Name = "Email" , Value = "Someone@domain.com" },
+                        new Template { Name = "Email" , Value = "JaneDoe@domain.com" },
                         new Template { Name = "First" , Value = "Jane" },
                         new Template { Name = "Last" , Value = "Doe" },
-                        new Template { Name = "Full Name" , Value = "{First} {Last}" },
+                        new Template { Name = "Full Name" , Value = "Jane Doe" },
+                        // LATER 
+                        // new Template { Name = "Full Name" , Value = "{First} {Last}" },
                     ]
                 },
                 new Group
@@ -40,7 +42,7 @@ public sealed partial class TemplatesModel : ModelBase
 
     private const string TemplatesModelFilename = "Templates";
 
-    private FileManagerModel fileManager;
+    private readonly FileManagerModel fileManager;
 
     public TemplatesModel() : base() 
     {
@@ -49,12 +51,9 @@ public sealed partial class TemplatesModel : ModelBase
         this.fileManager = fileManager;
     }
 
-    public override async Task Initialize()
-    {
-        await this.Load(); 
-    }
+    public override async Task Initialize() => await this.Load();
 
-    public override Task Shutdown() { return Task.CompletedTask; }
+    public override Task Shutdown() => Task.CompletedTask;
 
     public List<Group> Groups { get; set; } = [];
 
@@ -78,25 +77,27 @@ public sealed partial class TemplatesModel : ModelBase
         return Task.CompletedTask;
     }
 
-    private delegate bool ModelOperationDelegate (string groupName, string parameter1, string? parameter2, out string message);
+    private delegate bool ModelOperationDelegate (Group group, string parameter1, string parameter2, out string message);
 
-    private bool ModelOperation (ModelOperationDelegate modelOperation, string groupName , string parameter1 , string? parameter2, out string message )
+    private bool ModelOperation (ModelOperationDelegate modelOperation, string groupName , string parameter1 , string parameter2, out string message )
     {
-        message = string.Empty;
-        bool status = true; 
-
-        status = modelOperation (groupName, parameter1, parameter2, out message);
+        bool status = this.CheckGroup(groupName, out message);
         if (status)
         {
-            this.IsDirty = true;
-            this.NotifyUpdate();
-        }
+            Group group = this.GetGroup(groupName);
+            status = modelOperation(group, parameter1, parameter2, out message);
+            if (status)
+            {
+                this.IsDirty = true;
+                this.NotifyUpdate();
+            }
+        } 
 
         return status;
     }
 
     [Conditional("DEBUG")]
-    private void TestJSonSaveLoad()
+    private static void TestJSonSaveLoad()
     {
         FileManagerModel fileManager = App.GetRequiredService<FileManagerModel>();
         fileManager.Save(Area.User, Kind.Json, nameof(DefaultTemplate), TemplatesModel.DefaultTemplate);

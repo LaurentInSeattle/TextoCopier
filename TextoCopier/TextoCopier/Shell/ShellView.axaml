@@ -41,5 +41,11 @@
         x:Name="InnerGrid"
         Background="Transparent"
         >
+		<TextBlock 
+			Text="{DynamicResource My.Strings.Greetings}" 
+			HorizontalAlignment="Center" VerticalAlignment="Center"
+			FontSize="22" 
+			Foreground="Black"
+			/>
     </Grid>
 </UserControl>

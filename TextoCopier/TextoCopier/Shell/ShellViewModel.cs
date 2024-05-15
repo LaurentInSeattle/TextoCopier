@@ -6,6 +6,15 @@ public sealed class ShellViewModel : Bindable<ShellView>
     {
     }
 
+    protected override void OnViewLoaded()
+    {
+        base.OnViewLoaded();
+
+        // Select default language 
+        var localizer = App.GetRequiredService<LocalizerModel>();
+        localizer.SelectLanguage("fr-FR"); 
+    }
+
     #region WORKFLOW ~ Maybe later 
 
     //protected override async void OnViewLoaded()

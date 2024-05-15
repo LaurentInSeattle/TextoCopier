@@ -14,6 +14,7 @@ public partial class App : ApplicationBase
         typeof(ApplicationModelBase), // Top level model 
         [
             // Models 
+            typeof(LocalizerModel),
             typeof(FileManagerModel),
             typeof(TemplatesModel),
         ],
