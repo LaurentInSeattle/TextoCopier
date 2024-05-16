@@ -13,7 +13,7 @@
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<!-- 
+				<!--
 				<ResourceInclude Source="/Assets/Languages/en-US.axaml" />
 				<ResourceInclude Source="/Assets/Languages/fr-FR.axaml" />
 				<ResourceInclude Source="/Assets/Languages/it-IT.axaml" />

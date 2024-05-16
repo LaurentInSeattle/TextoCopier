@@ -1,24 +1,28 @@
-﻿using Avalonia.Platform;
-
+﻿
 namespace Lyt.TextoCopier.Models;
 
 public sealed class LocalizerModel : ModelBase
 {
-    // TO DO : Autopopulate this 
-    public HashSet<string> Languages = ["en-US" , "fr-FR", "it-IT"];
+    // TODO : Autopopulate this 
+    // LATER : Failing to read existing files 
+    // CONSIDER : Make that parametrizable 
+    public HashSet<string> Languages = ["en-US", "fr-FR", "it-IT"];
 
     // TODO: Make that parametrizable 
-    public const string LanguagesFolder = "Languages";
-    public const string AssetsFolder = "//TextoCopier/Assets";
+    public const string AssemblyName = "TextoCopier";
+    public const string AssetsFolder = "Assets";
+    public const string LanguagesSubFolder = "Languages";
+    public const string LanguagesFilePrefix = "Lang_";
+    public const string LanguagesFileExtension = ".axaml";
 
-    public override Task Initialize() 
+    public override Task Initialize()
     {
         this.DetectAvailableLanguages();
         return Task.CompletedTask;
-    } 
+    }
 
-    private string? currentLanguage;  
-    private ResourceInclude? currentLanguageResource; 
+    private string? currentLanguage;
+    private ResourceInclude? currentLanguageResource;
 
     public bool DetectAvailableLanguages()
     {
@@ -29,9 +33,10 @@ public sealed class LocalizerModel : ModelBase
             return false;
         }
 
-        string uriString = string.Format("avares:{0}/{1}", AssetsFolder, LanguagesFolder);
-        var translations = AssetLoader.GetAssets(new Uri(uriString), null).ToList();
-        return true; 
+        // Returns nothing :(   Possible bug ? 
+        string uriString = string.Format("avares://{0}/{1}/{2}", AssemblyName, AssetsFolder, LanguagesSubFolder);
+        _ = AssetLoader.GetAssets(new Uri(uriString), null).ToList();
+        return false;
     }
 
     public bool SelectLanguage(string targetLanguage)
@@ -45,7 +50,7 @@ public sealed class LocalizerModel : ModelBase
 
         if (!this.Languages.Contains(targetLanguage))
         {
-            this.Logger.Error(targetLanguage + "is not a supported language." );
+            this.Logger.Error(targetLanguage + "is not a supported language.");
             return false;
         }
 
@@ -58,7 +63,7 @@ public sealed class LocalizerModel : ModelBase
 
         var translations =
             mergedDictionaries.OfType<ResourceInclude>()
-            .FirstOrDefault(x => x.Source?.OriginalString?.Contains(LanguagesFolder) ?? false);
+            .FirstOrDefault(x => x.Source?.OriginalString?.Contains(LanguagesSubFolder) ?? false);
         if (translations is not null)
         {
             this.Logger.Info("Removed current language");
@@ -71,12 +76,15 @@ public sealed class LocalizerModel : ModelBase
 
         try
         {
-            string uriString = string.Format("avares:{0}/{1}/{2}.axaml", AssetsFolder, LanguagesFolder, targetLanguage);
+            string uriString = 
+                string.Format(
+                    "avares://{0}/{1}/{2}/{3}{4}{5}", 
+                    AssemblyName, AssetsFolder, LanguagesSubFolder, LanguagesFilePrefix, targetLanguage, LanguagesFileExtension);
             var uri = new Uri(uriString);
             var newLanguage = new ResourceInclude(uri) { Source = uri };
             app.Resources.MergedDictionaries.Add(newLanguage);
             this.currentLanguageResource = newLanguage;
-            this.currentLanguage = targetLanguage; 
+            this.currentLanguage = targetLanguage;
             this.Logger.Info("Added new language: " + targetLanguage);
             return true;
         }
@@ -102,9 +110,9 @@ public sealed class LocalizerModel : ModelBase
             return string.Empty;
         }
 
-        if ( this.currentLanguageResource.TryGetResource(localizationKey, app.ActualThemeVariant, out object? resource))
+        if (this.currentLanguageResource.TryGetResource(localizationKey, app.ActualThemeVariant, out object? resource))
         {
-            if ( resource is string localized)
+            if (resource is string localized)
             {
                 return localized;
             }

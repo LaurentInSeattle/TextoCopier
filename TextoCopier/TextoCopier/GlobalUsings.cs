@@ -23,6 +23,7 @@ global using Avalonia.Markup.Xaml;
 global using Avalonia.Markup.Xaml.Styling;
 global using Avalonia.Media;
 global using Avalonia.Media.Immutable;
+global using Avalonia.Platform;
 global using Avalonia.Threading;
 
 global using Lyt.Avalonia.Interfaces;

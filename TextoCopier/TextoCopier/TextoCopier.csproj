@@ -4,12 +4,13 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-    <RootNamespace>Lyt.TextoCopier</RootNamespace>
+    <RootNamespace>TextoCopier</RootNamespace>
   </PropertyGroup>
 
   
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
+    <AvaloniaResource Include="Assets\Languages\**" />
   </ItemGroup>
 
   <ItemGroup>
