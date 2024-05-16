@@ -1,22 +1,24 @@
-<Application 
+<Application
 	xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="Lyt.TextoCopier.App"
     RequestedThemeVariant="Default"
 	>
-    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+	<!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
-    <Application.Styles>
-        <FluentTheme />
-    </Application.Styles>
+	<Application.Styles>
+		<FluentTheme />
+	</Application.Styles>
 
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<!--
+				<!-- 
 				<ResourceInclude Source="/Assets/Languages/en-US.axaml" />
+				<ResourceInclude Source="/Assets/Languages/fr-FR.axaml" />
+				<ResourceInclude Source="/Assets/Languages/it-IT.axaml" />
 				-->
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
-		</Application.Resources>
+	</Application.Resources>
 </Application>

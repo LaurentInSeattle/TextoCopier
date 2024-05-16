@@ -1,4 +1,6 @@
-﻿namespace Lyt.TextoCopier.Models;
+﻿using Avalonia.Platform;
+
+namespace Lyt.TextoCopier.Models;
 
 public sealed class LocalizerModel : ModelBase
 {
@@ -9,10 +11,28 @@ public sealed class LocalizerModel : ModelBase
     public const string LanguagesFolder = "Languages";
     public const string AssetsFolder = "//TextoCopier/Assets";
 
-    public override Task Initialize() => Task.CompletedTask; 
+    public override Task Initialize() 
+    {
+        this.DetectAvailableLanguages();
+        return Task.CompletedTask;
+    } 
 
     private string? currentLanguage;  
     private ResourceInclude? currentLanguageResource; 
+
+    public bool DetectAvailableLanguages()
+    {
+        var app = App.Current;
+        if (app is null)
+        {
+            this.Logger.Warning("No application object");
+            return false;
+        }
+
+        string uriString = string.Format("avares:{0}/{1}", AssetsFolder, LanguagesFolder);
+        var translations = AssetLoader.GetAssets(new Uri(uriString), null).ToList();
+        return true; 
+    }
 
     public bool SelectLanguage(string targetLanguage)
     {
