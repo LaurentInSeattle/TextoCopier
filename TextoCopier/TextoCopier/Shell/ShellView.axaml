@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Lyt.TextoCopier.Shell"
+	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
     x:DataType="vm:ShellViewModel" 
     Background="Transparent"
@@ -39,13 +40,64 @@
 	</UserControl.Styles>	
     <Grid
         x:Name="InnerGrid"
-        Background="Transparent"
+        Background="DarkSeaGreen"
         >
+		<Image
+            Stretch="UniformToFill"
+            Source="\Assets\Images\dark.jpg"
+            Grid.ColumnSpan="999" Grid.RowSpan="999"
+            />
+		<Rectangle
+			Fill="#58000020"
+            Grid.ColumnSpan="999" Grid.RowSpan="999"
+			/>
 		<TextBlock 
 			Text="{DynamicResource My.Strings.Greetings}" 
 			HorizontalAlignment="Center" VerticalAlignment="Center"
-			FontSize="22" 
-			Foreground="Black"
+			Margin="0 -120 0 0"
+			FontSize="24" 
+			Foreground="DarkOrange"
 			/>
+		<Button
+			HorizontalAlignment="Center" VerticalAlignment="Center"
+			Width="64" Height="64"
+			Padding="0"
+            >
+			<StackPanel
+				Orientation="Vertical"
+				Margin="0" 				
+					Background="#00000000"
+				>
+				<Border
+					Width="64" Height="48"
+					Background="#00000000"
+					>
+					<glyphs:SvgIcon
+						Margin="0"
+						Padding="0"
+						Width="32" Height="32"
+						Foreground="DodgerBlue"
+						Source="home"
+						StrokeThickness="0.1"
+						/>
+				</Border>
+				<Border
+					Width="64" Height="16"
+					Padding="0"
+					Background="#00000000"
+					>
+					<TextBlock
+						Width="64"
+						FontSize="12"
+						Text="Home"
+						Foreground="Aquamarine"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						TextAlignment="Center"
+					/>
+				</Border>
+			</StackPanel>
+						
+		</Button>
     </Grid>
 </UserControl>
