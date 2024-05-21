@@ -37,8 +37,17 @@
             <Setter Property="BorderBrush" Value="#80AAAAFF" />
             <Setter Property="FontSize" Value="21" />
         </Style>
-	</UserControl.Styles>	
-    <Grid
+	</UserControl.Styles>
+
+	<UserControl.Resources>
+		<ControlTheme x:Key="GlyphButtonTypography" TargetType="TextBlock">
+			<Setter Property="TextBlock.Background" Value="Transparent"/>
+			<Setter Property="TextBlock.Foreground" Value="Red"/>
+			<Setter Property="TextBlock.FontSize" Value="12"/>
+			<Setter Property="TextBlock.FontStyle" Value="Italic"/>
+		</ControlTheme>
+	</UserControl.Resources>	
+	<Grid
         x:Name="InnerGrid"
         Background="DarkSeaGreen"
         >
@@ -58,6 +67,17 @@
 			FontSize="24" 
 			Foreground="DarkOrange"
 			/>
+		<glyphs:GlyphButton
+			HorizontalAlignment="Left" VerticalAlignment="Center"
+			Width="64" Height="64"
+			Margin="40"
+			GlyphSource="person"
+			GlyphStrokeThickness="0.1"
+			Text="Me"
+			Layout="IconTextBelow"
+			Typography="{StaticResource GlyphButtonTypography}"
+			>			
+		</glyphs:GlyphButton>
 		<Button
 			HorizontalAlignment="Center" VerticalAlignment="Center"
 			Width="64" Height="64"
@@ -77,7 +97,7 @@
 						Padding="0"
 						Width="32" Height="32"
 						Foreground="DodgerBlue"
-						Source="home"
+						Source="mail"
 						StrokeThickness="0.1"
 						/>
 				</Border>

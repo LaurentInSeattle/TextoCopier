@@ -13,16 +13,6 @@
     <AvaloniaResource Include="Assets\Languages\**" />
   </ItemGroup>
 
-  
-  <ItemGroup>
-    <AvaloniaXaml Remove="Assets\Icons\FluentSvgResourceDictionary.axaml" />
-  </ItemGroup>
-
-  
-  <ItemGroup>
-    <None Remove="Assets\Images\dark.jpg" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.10" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10" />
@@ -40,17 +30,5 @@
 
   <ItemGroup>
     <Folder Include="Controls\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AvaloniaResource Update="Assets\Icons\FluentSvgResourceDictionary.axaml">
-      <SubType>Designer</SubType>
-    </AvaloniaResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <AvaloniaXaml Update="Assets\Icons\Icons.axaml">
-      <SubType>Designer</SubType>
-    </AvaloniaXaml>
   </ItemGroup>
 </Project>

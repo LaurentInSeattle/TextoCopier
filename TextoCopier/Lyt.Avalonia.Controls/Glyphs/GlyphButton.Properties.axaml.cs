@@ -221,49 +221,46 @@ public partial class GlyphButton
 
             #endregion Dependency Property TextForeground
 
-            #region Dependency Property Typography
-
-            /// <summary> Typography Dependency Property </summary>
-            public static readonly DependencyProperty TypographyProperty =
-                DependencyProperty.Register("Typography", typeof(Style), typeof(GlyphButton),
-                    new FrameworkPropertyMetadata((Style)new(),
-                        FrameworkPropertyMetadataOptions.None,
-                        new PropertyChangedCallback(OnTypographyChanged),
-                        new CoerceValueCallback(CoerceTypography)));
-
-            /// <summary> Gets or sets the Typography property.</summary>
-            public Style Typography
-            {
-                get => (Style)this.GetValue(TypographyProperty);
-                set => this.SetValue(TypographyProperty, value);
-            }
-
-            /// <summary> Handles changes to the Typography property. </summary>
-            private static void OnTypographyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            {
-                var target = (GlyphButton)d;
-                var oldTypography = (Style)e.OldValue;
-                var newTypography = target.Typography;
-                target.OnTypographyChanged(oldTypography, newTypography);
-            }
-
-            /// <summary> Provides derived classes an opportunity to handle changes to the Typography property. </summary>
-            protected virtual void OnTypographyChanged(Style oldTypography, Style newTypography)
-            {
-                this.textBlock.Style = newTypography;
-            }
-
-            /// <summary> Coerces the Typography value. </summary>
-            private static object CoerceTypography(DependencyObject d, object value)
-            {
-                var target = (GlyphButton)d;
-                var desiredTypography = (Style)value;
-                // TODO
-                return desiredTypography;
-            }
-
-            #endregion Dependency Property Typography
     */
+    #region Dependency Property Typography
+
+    /// <summary> Typography Styled Property </summary>
+    public static readonly StyledProperty<ControlTheme> TypographyProperty =
+        AvaloniaProperty.Register<GlyphButton, ControlTheme>(
+            nameof(Typography),
+            defaultValue: new ControlTheme(),
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: null,
+            enableDataValidation: false);
+
+    /// <summary> Gets or sets the Typography property.</summary>
+    public ControlTheme Typography
+    {
+        get => this.GetValue(TypographyProperty);
+        set
+        {
+            this.SetValue(TypographyProperty, value);
+            this.textBlock.Theme = value;
+            var resources = this.textBlock.Resources; 
+            this.textBlock.Resources = new ResourceDictionary() ;
+            this.textBlock.Resources = resources;
+
+            bool applied = this.textBlock.ApplyStyling();  // Does nothing
+            this.textBlock.InvalidateVisual();             // Does not help 
+
+            var mi = typeof(StyledElement).GetMethod(
+                "ApplyControlTheme", BindingFlags.Instance | BindingFlags.NonPublic, new Type[] { } ) ;
+            if ( mi != null )
+            {
+                mi.Invoke( this.textBlock, new object[] { }); // Does nothing
+                this.textBlock.InvalidateVisual();            // Does not help 
+            }
+        }
+    }
+
+    #endregion Dependency Property Typography
     /*
         #region Dependency Property Keys
 

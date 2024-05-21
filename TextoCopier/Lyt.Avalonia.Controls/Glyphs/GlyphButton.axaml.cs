@@ -49,12 +49,24 @@ public partial class GlyphButton : UserControl
         //this.ChangeLayout(this.Layout);
         //this.ChangeBehaviour(this.Behaviour);
         //this.OnTypographyChanged(new Style(), this.Typography);
+
+        bool applied = this.textBlock.ApplyStyling();  // Does nothing
+        this.textBlock.InvalidateVisual();             // Does not help 
+
+        var mi = typeof(StyledElement).GetMethod(
+            "ApplyControlTheme", BindingFlags.Instance | BindingFlags.NonPublic, new Type[] { });
+        if (mi != null)
+        {
+            mi.Invoke(this.textBlock, new object[] { }); // Does nothing
+            this.textBlock.InvalidateVisual();            // Does not help 
+        }
+
         //this.DismissPopupKeyboard();
         //this.icon.UpdateImage();
         //this.UpdateVisualState();
     }
 
-    public GlyphButton? ParentGlyphButton { get; set; }
+    // public GlyphButton? ParentGlyphButton { get; set; }
 
     /*
      
@@ -81,7 +93,7 @@ public partial class GlyphButton : UserControl
     */
 
     #region Visual States 
-     
+
     private void UpdateVisualState()
     {
         //if (this.isPressed && !this.IsDisabled)
