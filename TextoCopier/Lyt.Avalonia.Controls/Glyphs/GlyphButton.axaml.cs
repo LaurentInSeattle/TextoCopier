@@ -1,6 +1,3 @@
-using Avalonia.Controls.Shapes;
-using Avalonia.Input;
-using Avalonia.Remote.Protocol.Input;
 using NoahMedical.Trident.Controls.Glyphs;
 
 namespace Lyt.Avalonia.Controls.Glyphs; 
@@ -369,4 +366,60 @@ public partial class GlyphButton : UserControl
     }
 
     #endregion Pointer Handling
+
+    private void ChangeBehaviour(ButtonBehaviour behaviour) 
+        => this.gridPopup.IsVisible = behaviour == ButtonBehaviour.Keyboard ;
+    
+    private void ChangeLayout(ButtonLayout layout)
+    {
+        switch (layout)
+        {
+            default:
+            case ButtonLayout.IconOnly:
+                this.Text = string.Empty;
+                this.textBlock.IsVisible = false; // Visibility.Hidden;
+                this.icon.IsVisible = true; // Visibility.Visible;
+                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
+                this.mainGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Pixel);
+                break;
+
+            case ButtonLayout.IconTextBelow:
+                this.icon.IsVisible = true; //Visibility.Visible;
+                this.textBlock.IsVisible = true; //Visibility.Visible;
+                this.textBlock.SetValue(Grid.RowProperty, 1);
+                this.textBlock.SetValue(Grid.ColumnProperty, 0);
+                this.textBlock.SetValue(Grid.ColumnSpanProperty, 1);
+                this.textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center);
+                this.textBlock.SetValue(MarginProperty, new Thickness(0, 2, 0, 0));
+                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
+                this.mainGrid.ColumnDefinitions[2].Width = new GridLength(0, GridUnitType.Pixel);
+                this.mainGrid.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Auto);
+                break;
+
+            case ButtonLayout.IconTextRightSide:
+                this.icon.IsVisible = true; //Visibility.Visible;
+                this.textBlock.IsVisible = true; //Visibility.Visible;
+                this.textBlock.SetValue(Grid.RowProperty, 0);
+                this.textBlock.SetValue(Grid.ColumnProperty, 1);
+                this.textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Left);
+                this.textBlock.SetValue(HorizontalContentAlignmentProperty, HorizontalAlignment.Left);
+                this.textBlock.SetValue(MarginProperty, new Thickness(4, 0, 0, 0));
+                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Auto);
+                this.mainGrid.ColumnDefinitions[2].Width = new GridLength(1, GridUnitType.Star);
+                this.mainGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Pixel);
+                break;
+
+            case ButtonLayout.TextOnly:
+                this.textBlock.IsVisible = true; //Visibility.Visible;
+                this.icon.IsVisible = false; //Visibility.Hidden;
+                this.textBlock.SetValue(Grid.RowProperty, 0);
+                this.textBlock.SetValue(Grid.ColumnProperty, 0);
+                this.textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center);
+                this.textBlock.SetValue(HorizontalContentAlignmentProperty, HorizontalAlignment.Center);
+                this.textBlock.SetValue(MarginProperty, new Thickness(4));
+                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
+                this.mainGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Pixel);
+                break;
+        }
+    }
 }

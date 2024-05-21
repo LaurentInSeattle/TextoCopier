@@ -1,9 +1,9 @@
-﻿namespace Lyt.Avalonia.Controls.Glyphs;
+﻿using NoahMedical.Trident.Controls.Glyphs;
+
+namespace Lyt.Avalonia.Controls.Glyphs;
 
 public partial class GlyphButton
 {
-#pragma warning disable IDE0059
-
     #region Dependency Property Countdown
 
     /// <summary> Countdown Styled Property </summary>
@@ -26,56 +26,245 @@ public partial class GlyphButton
     }
 
     /// <summary> Coerces the Countdown value. </summary>
-    private static double CoerceCountdown(AvaloniaObject sender, double newCountdown)
-    {
-        return newCountdown;
-    }
+    private static double CoerceCountdown(AvaloniaObject sender, double newCountdown) => newCountdown;
 
     #endregion Dependency Property Countdown
 
+    #region Dependency Property Behaviour
+
+    /// <summary> Behaviour Styled Property </summary>
+    public static readonly StyledProperty<ButtonBehaviour> BehaviourProperty =
+        AvaloniaProperty.Register<GlyphButton, ButtonBehaviour>(
+            nameof(Behaviour),
+            defaultValue: ButtonBehaviour.Tap,
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: CoerceBehaviour,
+            enableDataValidation: false);
+
+
+    /// <summary> Gets or sets the Behaviour property.</summary>
+    public ButtonBehaviour Behaviour
+    {
+        get => this.GetValue(BehaviourProperty);
+        set
+        {
+            this.SetValue(BehaviourProperty, value);
+            this.ChangeBehaviour(value);
+        }
+    }
+
+    /// <summary> Coerces the Behaviour value. </summary>
+    private static ButtonBehaviour CoerceBehaviour(AvaloniaObject sender, ButtonBehaviour newBehaviour) => newBehaviour;
+
+    #endregion Dependency Property Behaviour
+
+    #region Dependency Property Layout
+
+    /// <summary> Layout Styled Property </summary>
+    public static readonly StyledProperty<ButtonLayout> LayoutProperty =
+        AvaloniaProperty.Register<GlyphButton, ButtonLayout>(
+            nameof(Layout),
+            defaultValue: ButtonLayout.IconOnly,
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: CoerceLayout,
+            enableDataValidation: false);
+
+
+    /// <summary> Gets or sets the Layout property.</summary>
+    public ButtonLayout Layout
+    {
+        get => this.GetValue(LayoutProperty);
+        set
+        {
+            this.SetValue(LayoutProperty, value);
+            this.ChangeLayout(value);
+        }
+    }
+
+    /// <summary> Coerces the Behaviour value. </summary>
+    private static ButtonLayout CoerceLayout(AvaloniaObject sender, ButtonLayout newLayout) => newLayout;
+
+    #endregion Dependency Property Layout
+
+    #region Dependency Property IsShown
+
+    /// <summary> IsShown Styled Property </summary>
+    public static readonly StyledProperty<bool> IsShownProperty =
+        AvaloniaProperty.Register<GlyphButton, bool>(
+            nameof(IsShown),
+            defaultValue: true,
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: CoerceIsShown,
+            enableDataValidation: false);
+
+    /// <summary> Gets or sets the IsShown property.</summary>
+    public bool IsShown
+    {
+        get => this.GetValue(IsShownProperty);
+        set
+        {
+            this.SetValue(IsShownProperty, value);
+            this.mainGrid.IsVisible = value;
+        }
+    }
+
+    /// <summary> Coerces the IsShown value. </summary>
+    private static bool CoerceIsShown(AvaloniaObject sender, bool newIsShown) => newIsShown;
+
+    #endregion Dependency Property IsShown
+
+    #region Dependency Property IsDisabled
+
+    /// <summary> IsDisabled Styled Property </summary>
+    public static readonly StyledProperty<bool> IsDisabledProperty =
+        AvaloniaProperty.Register<GlyphButton, bool>(
+            nameof(IsDisabled),
+            defaultValue: true,
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: CoerceIsDisabled,
+            enableDataValidation: false);
+
+    /// <summary> Gets or sets the IsDisabled property.</summary>
+    public bool IsDisabled
+    {
+        get => this.GetValue(IsDisabledProperty);
+        set
+        {
+            this.SetValue(IsDisabledProperty, value);
+            this.UpdateVisualState();
+        }
+    }
+
+    /// <summary> Coerces the IsDisabled value. </summary>
+    private static bool CoerceIsDisabled(AvaloniaObject sender, bool newIsDisabled) => newIsDisabled;
+
+    #endregion Dependency Property IsDisabled
+
+    #region Dependency Property Text
+
+    /// <summary> Text Styled Property </summary>
+    public static readonly StyledProperty<string> TextProperty =
+        AvaloniaProperty.Register<GlyphButton, string>(
+            nameof(Text),
+            defaultValue: string.Empty,
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: CoerceText,
+            enableDataValidation: false);
+
+    /// <summary> Gets or sets the Text property.</summary>
+    public string Text
+    {
+        get => this.GetValue(TextProperty);
+        set
+        {
+            this.SetValue(TextProperty, value);
+            this.textBlock.Text = value;
+        }
+    }
+
+    /// <summary> Coerces the Text value. </summary>
+    private static string CoerceText(AvaloniaObject sender, string newText) => newText;
+
+    #endregion Dependency Property Text
+
     /*
+            #region Dependency Property TextForeground
 
-        #region Dependency Property Behaviour
+            /// <summary> TextForeground Dependency Property </summary>
+            public static readonly DependencyProperty TextForegroundProperty =
+                DependencyProperty.Register("TextForeground", typeof(SolidColorBrush), typeof(GlyphButton),
+                    new FrameworkPropertyMetadata(Brushes.AntiqueWhite,
+                        FrameworkPropertyMetadataOptions.None,
+                        new PropertyChangedCallback(OnTextForegroundChanged),
+                        new CoerceValueCallback(CoerceTextForeground)));
 
-        /// <summary> Behaviour Dependency Property </summary>
-        public static readonly DependencyProperty BehaviourProperty =
-            DependencyProperty.Register("Behaviour", typeof(ButtonBehaviour), typeof(GlyphButton),
-                new FrameworkPropertyMetadata((ButtonBehaviour)ButtonBehaviour.Tap,
-                    FrameworkPropertyMetadataOptions.None,
-                    new PropertyChangedCallback(OnBehaviourChanged),
-                    new CoerceValueCallback(CoerceBehaviour)));
+            /// <summary> Gets or sets the TextForeground property.</summary>
+            public SolidColorBrush TextForeground
+            {
+                get => (SolidColorBrush)this.GetValue(TextForegroundProperty);
+                set => this.SetValue(TextForegroundProperty, value);
+            }
 
-        /// <summary> Gets or sets the Behaviour property.</summary>
-        public ButtonBehaviour Behaviour
-        {
-            get => (ButtonBehaviour)this.GetValue(BehaviourProperty);
-            set => this.SetValue(BehaviourProperty, value);
-        }
+            /// <summary> Handles changes to the TextForeground property. </summary>
+            private static void OnTextForegroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            {
+                var target = (GlyphButton)d;
+                var oldForeground = (SolidColorBrush)e.OldValue;
+                var newForeground = target.TextForeground;
+                target.OnTextForegroundChanged(oldForeground, newForeground);
+            }
 
-        /// <summary> Handles changes to the Behaviour property. </summary>
-        private static void OnBehaviourChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var target = (GlyphButton)d;
-            var oldBehaviour = (ButtonBehaviour)e.OldValue;
-            var newBehaviour = target.Behaviour;
-            target.OnBehaviourChanged(oldBehaviour, newBehaviour);
-        }
+            /// <summary> Provides derived classes an opportunity to handle changes to the TextForeground property. </summary>
+            protected virtual void OnTextForegroundChanged(SolidColorBrush oldForeground, SolidColorBrush newForeground)
+            {
+                this.textBlock.Foreground = newForeground;
+            }
 
-        /// <summary> Provides derived classes an opportunity to handle changes to the Behaviour property. </summary>
-        protected virtual void OnBehaviourChanged(ButtonBehaviour oldBehaviour, ButtonBehaviour newBehaviour)
-            => this.ChangeBehaviour(newBehaviour);
+            /// <summary> Coerces the TextForeground value. </summary>
+            private static object CoerceTextForeground(DependencyObject d, object value)
+            {
+                var target = (GlyphButton)d;
+                var desiredForeground = (SolidColorBrush)value;
+                // TODO
+                return desiredForeground;
+            }
 
-        /// <summary> Coerces the Behaviour value. </summary>
-        private static object CoerceBehaviour(DependencyObject d, object value)
-        {
-            var target = (GlyphButton)d;
-            var desiredBehaviour = (ButtonBehaviour)value;
-            // TODO
-            return desiredBehaviour;
-        }
+            #endregion Dependency Property TextForeground
 
-        #endregion Dependency Property Behaviour
+            #region Dependency Property Typography
 
+            /// <summary> Typography Dependency Property </summary>
+            public static readonly DependencyProperty TypographyProperty =
+                DependencyProperty.Register("Typography", typeof(Style), typeof(GlyphButton),
+                    new FrameworkPropertyMetadata((Style)new(),
+                        FrameworkPropertyMetadataOptions.None,
+                        new PropertyChangedCallback(OnTypographyChanged),
+                        new CoerceValueCallback(CoerceTypography)));
+
+            /// <summary> Gets or sets the Typography property.</summary>
+            public Style Typography
+            {
+                get => (Style)this.GetValue(TypographyProperty);
+                set => this.SetValue(TypographyProperty, value);
+            }
+
+            /// <summary> Handles changes to the Typography property. </summary>
+            private static void OnTypographyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+            {
+                var target = (GlyphButton)d;
+                var oldTypography = (Style)e.OldValue;
+                var newTypography = target.Typography;
+                target.OnTypographyChanged(oldTypography, newTypography);
+            }
+
+            /// <summary> Provides derived classes an opportunity to handle changes to the Typography property. </summary>
+            protected virtual void OnTypographyChanged(Style oldTypography, Style newTypography)
+            {
+                this.textBlock.Style = newTypography;
+            }
+
+            /// <summary> Coerces the Typography value. </summary>
+            private static object CoerceTypography(DependencyObject d, object value)
+            {
+                var target = (GlyphButton)d;
+                var desiredTypography = (Style)value;
+                // TODO
+                return desiredTypography;
+            }
+
+            #endregion Dependency Property Typography
+    */
+    /*
         #region Dependency Property Keys
 
         /// <summary> Keys Dependency Property </summary>
@@ -175,48 +364,9 @@ public partial class GlyphButton
         }
 
         #endregion Dependency Property IsShifted
+*/
 
-        #region Dependency Property Layout
-
-        /// <summary> Layout Dependency Property </summary>
-        public static readonly DependencyProperty LayoutProperty =
-            DependencyProperty.Register("Layout", typeof(ButtonLayout), typeof(GlyphButton),
-                new FrameworkPropertyMetadata((ButtonLayout)ButtonLayout.IconOnly,
-                    FrameworkPropertyMetadataOptions.None,
-                    new PropertyChangedCallback(OnLayoutChanged),
-                    new CoerceValueCallback(CoerceLayout)));
-
-        /// <summary> Gets or sets the Layout property.</summary>
-        public ButtonLayout Layout
-        {
-            get => (ButtonLayout)this.GetValue(LayoutProperty);
-            set => this.SetValue(LayoutProperty, value);
-        }
-
-        /// <summary> Handles changes to the Layout property. </summary>
-        private static void OnLayoutChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var target = (GlyphButton)d;
-            var oldLayout = (ButtonLayout)e.OldValue;
-            var newLayout = target.Layout;
-            target.OnLayoutChanged(oldLayout, newLayout);
-        }
-
-        /// <summary> Provides derived classes an opportunity to handle changes to the Layout property. </summary>
-        protected virtual void OnLayoutChanged(ButtonLayout oldLayout, ButtonLayout newLayout)
-            => this.ChangeLayout(newLayout);
-
-        /// <summary> Coerces the Layout value. </summary>
-        private static object CoerceLayout(DependencyObject d, object value)
-        {
-            var target = (GlyphButton)d;
-            var desiredLayout = (ButtonLayout)value;
-            // TODO
-            return desiredLayout;
-        }
-
-        #endregion Dependency Property Layout
-
+    /*
         #region Dependency Property ButtonBackground
 
         /// <summary> ButtonBackground Dependency Property </summary>
@@ -321,9 +471,7 @@ public partial class GlyphButton
 
     /// <summary> Coerces the BackgroundCornerRadius value. </summary>
     private static double CoerceBackgroundCornerRadius(AvaloniaObject sender, double newBackgroundCornerRadius)
-    {
-        return newBackgroundCornerRadius;
-    }
+        => newBackgroundCornerRadius;
 
     #endregion Dependency Property BackgroundCornerRadius
 
@@ -359,131 +507,35 @@ public partial class GlyphButton
     }
 
     #endregion Dependency Property BackgroundBorderThickness
-    /*
-        #region Dependency Property IsShown
 
-        /// <summary> IsShown Dependency Property </summary>
-        public static readonly DependencyProperty IsShownProperty =
-            DependencyProperty.Register("IsShown", typeof(bool), typeof(GlyphButton),
-                new FrameworkPropertyMetadata(true,
-                    FrameworkPropertyMetadataOptions.AffectsArrange,
-                    new PropertyChangedCallback(OnIsShownChanged),
-                    new CoerceValueCallback(CoerceIsShown)));
+    #region Dependency Property GlyphSource
 
-        /// <summary> Gets or sets the IsShown property.</summary>
-        public bool IsShown
+    /// <summary> GlyphSource Styled Property </summary>
+    public static readonly StyledProperty<string> GlyphSourceProperty =
+        AvaloniaProperty.Register<GlyphButton, string>(
+            nameof(GlyphSource),
+            defaultValue: string.Empty,
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: CoerceGlyphSource,
+            enableDataValidation: false);
+
+    /// <summary> Gets or sets the GlyphSource property.</summary>
+    public string GlyphSource
+    {
+        get => this.GetValue(GlyphSourceProperty);
+        set
         {
-            get => (bool)this.GetValue(IsShownProperty);
-            set => this.SetValue(IsShownProperty, value);
+            this.SetValue(GlyphSourceProperty, value);
+            this.icon.Source = value;
         }
+    }
 
-        /// <summary> Handles changes to the IsShown property. </summary>
-        private static void OnIsShownChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var target = (GlyphButton)d;
-            bool oldIsShown = (bool)e.OldValue;
-            bool newIsShown = target.IsShown;
-            target.OnIsShownChanged(oldIsShown, newIsShown);
-        }
+    /// <summary> Coerces the GlyphSource value. </summary>
+    private static string CoerceGlyphSource(AvaloniaObject sender, string newText) => newText;
 
-        /// <summary> Provides derived classes an opportunity to handle changes to the IsShown property. </summary>
-        protected virtual void OnIsShownChanged(bool oldIsShown, bool newIsShown)
-            => this.mainGrid.Visibility = newIsShown ? Visibility.Visible : Visibility.Collapsed;
-
-        /// <summary> Coerces the IsShown value. </summary>
-        private static object CoerceIsShown(DependencyObject d, object value)
-        {
-            var target = (GlyphButton)d;
-            bool desiredIsShown = (bool)value;
-            // TODO
-            return desiredIsShown;
-        }
-
-        #endregion Dependency Property IsShown
-
-        #region Dependency Property IsDisabled
-
-        /// <summary> IsDisabled Dependency Property </summary>
-        public static readonly DependencyProperty IsDisabledProperty =
-            DependencyProperty.Register("IsDisabled", typeof(bool), typeof(GlyphButton),
-                new FrameworkPropertyMetadata(false,
-                    FrameworkPropertyMetadataOptions.AffectsRender,
-                    new PropertyChangedCallback(OnIsDisabledChanged),
-                    new CoerceValueCallback(CoerceIsDisabled)));
-
-        /// <summary> Gets or sets the IsDisabled property.</summary>
-        public bool IsDisabled
-        {
-            get => (bool)this.GetValue(IsDisabledProperty);
-            set => this.SetValue(IsDisabledProperty, value);
-        }
-
-        /// <summary> Handles changes to the IsDisabled property. </summary>
-        private static void OnIsDisabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var target = (GlyphButton)d;
-            bool oldIsDisabled = (bool)e.OldValue;
-            bool newIsDisabled = target.IsDisabled;
-            target.OnIsDisabledChanged(oldIsDisabled, newIsDisabled);
-        }
-
-        /// <summary> Provides derived classes an opportunity to handle changes to the IsDisabled property. </summary>
-        protected virtual void OnIsDisabledChanged(bool oldIsDisabled, bool newIsDisabled) => this.UpdateVisualState();
-
-        /// <summary> Coerces the IsDisabled value. </summary>
-        private static object CoerceIsDisabled(DependencyObject d, object value)
-        {
-            var target = (GlyphButton)d;
-            bool desiredIsDisabled = (bool)value;
-            // TODO
-            return desiredIsDisabled;
-        }
-
-        #endregion Dependency Property IsDisabled
-
-        #region Dependency Property GlyphSource
-
-        /// <summary> GlyphSource Dependency Property </summary>
-        public static readonly DependencyProperty GlyphSourceProperty =
-            DependencyProperty.Register("GlyphSource", typeof(string), typeof(GlyphButton),
-                new FrameworkPropertyMetadata(string.Empty,
-                    FrameworkPropertyMetadataOptions.None,
-                    new PropertyChangedCallback(OnGlyphSourceChanged),
-                    new CoerceValueCallback(CoerceGlyphSource)));
-
-        /// <summary> Gets or sets the GlyphSource property.</summary>
-        public string GlyphSource
-        {
-            get => (string)this.GetValue(GlyphSourceProperty);
-            set => this.SetValue(GlyphSourceProperty, value);
-        }
-
-        /// <summary> Handles changes to the GlyphSource property. </summary>
-        private static void OnGlyphSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var target = (GlyphButton)d;
-            var oldGlyphSource = (string)e.OldValue;
-            var newGlyphSource = target.GlyphSource;
-            target.OnGlyphSourceChanged(oldGlyphSource, newGlyphSource);
-        }
-
-        /// <summary> Provides derived classes an opportunity to handle changes to the GlyphSource property. </summary>
-        protected virtual void OnGlyphSourceChanged(string oldGlyphSource, string newGlyphSource)
-        {
-            this.icon.Source = newGlyphSource;
-        }
-
-        /// <summary> Coerces the GlyphSource value. </summary>
-        private static object CoerceGlyphSource(DependencyObject d, object value)
-        {
-            var target = (GlyphButton)d;
-            var desiredGlyphSource = (string)value;
-            // TODO
-            return desiredGlyphSource;
-        }
-
-        #endregion Dependency Property GlyphSource
-*/
+    #endregion Dependency Property GlyphSource
 
     #region Dependency Property GlyphAngle
 
@@ -719,134 +771,6 @@ public partial class GlyphButton
 
         #endregion Dependency Property DisabledColor
 
-        #region Dependency Property Text
-
-        /// <summary> Text Dependency Property </summary>
-        public static readonly DependencyProperty TextProperty =
-            DependencyProperty.Register("Text", typeof(string), typeof(GlyphButton),
-                new FrameworkPropertyMetadata((string)string.Empty,
-                    FrameworkPropertyMetadataOptions.None,
-                    new PropertyChangedCallback(OnTextChanged),
-                    new CoerceValueCallback(CoerceText)));
-
-        /// <summary> Gets or sets the Text property.</summary>
-        public string Text
-        {
-            get => (string)this.GetValue(TextProperty);
-            set => this.SetValue(TextProperty, value);
-        }
-
-        /// <summary> Handles changes to the Text property. </summary>
-        private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var target = (GlyphButton)d;
-            var oldText = (string)e.OldValue;
-            var newText = target.Text;
-            target.OnTextChanged(oldText, newText);
-        }
-
-        /// <summary> Provides derived classes an opportunity to handle changes to the Text property. </summary>
-        protected virtual void OnTextChanged(string oldText, string newText)
-        {
-            this.textBlock.Text = newText;
-        }
-
-        /// <summary> Coerces the Text value. </summary>
-        private static object CoerceText(DependencyObject d, object value)
-        {
-            var target = (GlyphButton)d;
-            var desiredText = (string)value;
-            // TODO
-            return desiredText;
-        }
-
-        #endregion Dependency Property Text
-
-        #region Dependency Property TextForeground
-
-        /// <summary> TextForeground Dependency Property </summary>
-        public static readonly DependencyProperty TextForegroundProperty =
-            DependencyProperty.Register("TextForeground", typeof(SolidColorBrush), typeof(GlyphButton),
-                new FrameworkPropertyMetadata(Brushes.AntiqueWhite,
-                    FrameworkPropertyMetadataOptions.None,
-                    new PropertyChangedCallback(OnTextForegroundChanged),
-                    new CoerceValueCallback(CoerceTextForeground)));
-
-        /// <summary> Gets or sets the TextForeground property.</summary>
-        public SolidColorBrush TextForeground
-        {
-            get => (SolidColorBrush)this.GetValue(TextForegroundProperty);
-            set => this.SetValue(TextForegroundProperty, value);
-        }
-
-        /// <summary> Handles changes to the TextForeground property. </summary>
-        private static void OnTextForegroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var target = (GlyphButton)d;
-            var oldForeground = (SolidColorBrush)e.OldValue;
-            var newForeground = target.TextForeground;
-            target.OnTextForegroundChanged(oldForeground, newForeground);
-        }
-
-        /// <summary> Provides derived classes an opportunity to handle changes to the TextForeground property. </summary>
-        protected virtual void OnTextForegroundChanged(SolidColorBrush oldForeground, SolidColorBrush newForeground)
-        {
-            this.textBlock.Foreground = newForeground;
-        }
-
-        /// <summary> Coerces the TextForeground value. </summary>
-        private static object CoerceTextForeground(DependencyObject d, object value)
-        {
-            var target = (GlyphButton)d;
-            var desiredForeground = (SolidColorBrush)value;
-            // TODO
-            return desiredForeground;
-        }
-
-        #endregion Dependency Property TextForeground
-
-        #region Dependency Property Typography
-
-        /// <summary> Typography Dependency Property </summary>
-        public static readonly DependencyProperty TypographyProperty =
-            DependencyProperty.Register("Typography", typeof(Style), typeof(GlyphButton),
-                new FrameworkPropertyMetadata((Style)new(),
-                    FrameworkPropertyMetadataOptions.None,
-                    new PropertyChangedCallback(OnTypographyChanged),
-                    new CoerceValueCallback(CoerceTypography)));
-
-        /// <summary> Gets or sets the Typography property.</summary>
-        public Style Typography
-        {
-            get => (Style)this.GetValue(TypographyProperty);
-            set => this.SetValue(TypographyProperty, value);
-        }
-
-        /// <summary> Handles changes to the Typography property. </summary>
-        private static void OnTypographyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var target = (GlyphButton)d;
-            var oldTypography = (Style)e.OldValue;
-            var newTypography = target.Typography;
-            target.OnTypographyChanged(oldTypography, newTypography);
-        }
-
-        /// <summary> Provides derived classes an opportunity to handle changes to the Typography property. </summary>
-        protected virtual void OnTypographyChanged(Style oldTypography, Style newTypography)
-        {
-            this.textBlock.Style = newTypography;
-        }
-
-        /// <summary> Coerces the Typography value. </summary>
-        private static object CoerceTypography(DependencyObject d, object value)
-        {
-            var target = (GlyphButton)d;
-            var desiredTypography = (Style)value;
-            // TODO
-            return desiredTypography;
-        }
-
-        #endregion Dependency Property Typography
 
         #region Dependency Property Click
 
@@ -1280,5 +1204,4 @@ public partial class GlyphButton
 
         #endregion Dependency Property BackgroundBorderDisabledColor
     */
-#pragma warning restore IDE0059
 }
