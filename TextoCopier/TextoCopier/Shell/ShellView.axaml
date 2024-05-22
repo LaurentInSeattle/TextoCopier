@@ -47,6 +47,13 @@
 			<Setter Property="FontWeight" Value="SemiBold"/>
 			<Setter Property="FontStyle" Value="Italic"/>
 		</ControlTheme>
+		<glyphs:VisualState x:Key="GeneralVisualState" 
+			Normal="AliceBlue"
+			Disabled="Beige"
+			Selected="AntiqueWhite"
+			Pressed="DarkOrange"
+			Hot="Firebrick"
+			/>
 	</UserControl.Resources>	
 	<Grid
         x:Name="InnerGrid"
@@ -79,6 +86,7 @@
 			Text="Me"
 			Layout="IconTextBelow"
 			Typography="{StaticResource GlyphButtonTypography}"
+			GeneralVisualState="{StaticResource GeneralVisualState}"
 			>			
 		</glyphs:GlyphButton>
 		<Button
