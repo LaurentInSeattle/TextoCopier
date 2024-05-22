@@ -59,7 +59,7 @@
 		<Viewbox
             x:Name="viewBox"
             Grid.Column="0"
-            Margin="8"
+            Margin="4"
             IsHitTestVisible="False"
             HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
             >
@@ -69,6 +69,7 @@
                 IsHitTestVisible="False"
                 Background="Transparent"
                 Foreground="DodgerBlue"
+				Wadding="0"
                 />
 		</Viewbox>
 		<!-- TextBlock will programmatically moved to the side if spec'ed "Right Side" -->

@@ -7,7 +7,7 @@ public static class Utilities
         resource = default;
         try
         {
-            if (Application.Current is null )
+            if (Application.Current is null)
             {
                 return false;
             }
@@ -17,7 +17,7 @@ public static class Utilities
             {
                 resource = resourceTypeT;
                 return true;
-            } 
+            }
         }
         catch (Exception ex)
         {
@@ -26,5 +26,22 @@ public static class Utilities
         }
 
         return false;
+    }
+
+    public static void ApplyControlTheme(this Control control, ControlTheme theme)
+    {
+        if (theme.Setters is null)
+        {
+            return;
+        }
+
+        foreach (var item in theme.Setters)
+        {
+            var setter = item as Setter;
+            if ((setter is not null) && (setter.Property is not null))
+            {
+                control.SetCurrentValue(setter.Property, setter.Value);
+            }
+        }
     }
 }

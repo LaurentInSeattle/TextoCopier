@@ -41,10 +41,11 @@
 
 	<UserControl.Resources>
 		<ControlTheme x:Key="GlyphButtonTypography" TargetType="TextBlock">
-			<Setter Property="TextBlock.Background" Value="Transparent"/>
-			<Setter Property="TextBlock.Foreground" Value="Red"/>
-			<Setter Property="TextBlock.FontSize" Value="12"/>
-			<Setter Property="TextBlock.FontStyle" Value="Italic"/>
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="Foreground" Value="DarkOrange"/>
+			<Setter Property="FontSize" Value="12"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="FontStyle" Value="Italic"/>
 		</ControlTheme>
 	</UserControl.Resources>	
 	<Grid
@@ -65,14 +66,16 @@
 			HorizontalAlignment="Center" VerticalAlignment="Center"
 			Margin="0 -120 0 0"
 			FontSize="24" 
+			FontStyle="Italic"
 			Foreground="DarkOrange"
 			/>
 		<glyphs:GlyphButton
 			HorizontalAlignment="Left" VerticalAlignment="Center"
-			Width="64" Height="64"
+			Width="56" Height="56"
 			Margin="40"
 			GlyphSource="person"
 			GlyphStrokeThickness="0.1"
+			GlyphAngle="0"
 			Text="Me"
 			Layout="IconTextBelow"
 			Typography="{StaticResource GlyphButtonTypography}"

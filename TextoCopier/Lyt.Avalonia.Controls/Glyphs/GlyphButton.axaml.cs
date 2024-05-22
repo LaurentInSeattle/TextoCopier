@@ -1,6 +1,8 @@
 using NoahMedical.Trident.Controls.Glyphs;
 
-namespace Lyt.Avalonia.Controls.Glyphs; 
+namespace Lyt.Avalonia.Controls.Glyphs;
+
+public delegate void RoutedEventDelegate(object sender, RoutedEventArgs rea);
 
 public partial class GlyphButton : UserControl
 {

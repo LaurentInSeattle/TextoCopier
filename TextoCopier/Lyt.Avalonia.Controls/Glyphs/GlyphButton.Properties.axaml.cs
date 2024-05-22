@@ -4,45 +4,11 @@ namespace Lyt.Avalonia.Controls.Glyphs;
 
 public partial class GlyphButton
 {
-    #region Dependency Property Countdown
-
-    /// <summary> Countdown Styled Property </summary>
-    public static readonly StyledProperty<double> CountdownProperty =
-        AvaloniaProperty.Register<GlyphButton, double>(
-            nameof(Countdown),
-            defaultValue: 8.0,
-            inherits: false,
-            defaultBindingMode: BindingMode.OneWay,
-            validate: null,
-            coerce: CoerceCountdown,
-            enableDataValidation: false);
-
-
-    /// <summary> Gets or sets the Countdown property.</summary>
-    public double Countdown
-    {
-        get => this.GetValue(CountdownProperty);
-        set => this.SetValue(CountdownProperty, value);
-    }
-
-    /// <summary> Coerces the Countdown value. </summary>
-    private static double CoerceCountdown(AvaloniaObject sender, double newCountdown) => newCountdown;
-
-    #endregion Dependency Property Countdown
-
-    #region Dependency Property Behaviour
+    #region State and Layout Styled Properties 
 
     /// <summary> Behaviour Styled Property </summary>
     public static readonly StyledProperty<ButtonBehaviour> BehaviourProperty =
-        AvaloniaProperty.Register<GlyphButton, ButtonBehaviour>(
-            nameof(Behaviour),
-            defaultValue: ButtonBehaviour.Tap,
-            inherits: false,
-            defaultBindingMode: BindingMode.OneWay,
-            validate: null,
-            coerce: CoerceBehaviour,
-            enableDataValidation: false);
-
+        AvaloniaProperty.Register<GlyphButton, ButtonBehaviour>(nameof(Behaviour), defaultValue: ButtonBehaviour.Tap);
 
     /// <summary> Gets or sets the Behaviour property.</summary>
     public ButtonBehaviour Behaviour
@@ -55,24 +21,9 @@ public partial class GlyphButton
         }
     }
 
-    /// <summary> Coerces the Behaviour value. </summary>
-    private static ButtonBehaviour CoerceBehaviour(AvaloniaObject sender, ButtonBehaviour newBehaviour) => newBehaviour;
-
-    #endregion Dependency Property Behaviour
-
-    #region Dependency Property Layout
-
     /// <summary> Layout Styled Property </summary>
     public static readonly StyledProperty<ButtonLayout> LayoutProperty =
-        AvaloniaProperty.Register<GlyphButton, ButtonLayout>(
-            nameof(Layout),
-            defaultValue: ButtonLayout.IconOnly,
-            inherits: false,
-            defaultBindingMode: BindingMode.OneWay,
-            validate: null,
-            coerce: CoerceLayout,
-            enableDataValidation: false);
-
+        AvaloniaProperty.Register<GlyphButton, ButtonLayout>(nameof(Layout), defaultValue: ButtonLayout.IconOnly);
 
     /// <summary> Gets or sets the Layout property.</summary>
     public ButtonLayout Layout
@@ -85,23 +36,9 @@ public partial class GlyphButton
         }
     }
 
-    /// <summary> Coerces the Behaviour value. </summary>
-    private static ButtonLayout CoerceLayout(AvaloniaObject sender, ButtonLayout newLayout) => newLayout;
-
-    #endregion Dependency Property Layout
-
-    #region Dependency Property IsShown
-
     /// <summary> IsShown Styled Property </summary>
     public static readonly StyledProperty<bool> IsShownProperty =
-        AvaloniaProperty.Register<GlyphButton, bool>(
-            nameof(IsShown),
-            defaultValue: true,
-            inherits: false,
-            defaultBindingMode: BindingMode.OneWay,
-            validate: null,
-            coerce: CoerceIsShown,
-            enableDataValidation: false);
+        AvaloniaProperty.Register<GlyphButton, bool>(nameof(IsShown), defaultValue: true);
 
     /// <summary> Gets or sets the IsShown property.</summary>
     public bool IsShown
@@ -114,23 +51,9 @@ public partial class GlyphButton
         }
     }
 
-    /// <summary> Coerces the IsShown value. </summary>
-    private static bool CoerceIsShown(AvaloniaObject sender, bool newIsShown) => newIsShown;
-
-    #endregion Dependency Property IsShown
-
-    #region Dependency Property IsDisabled
-
     /// <summary> IsDisabled Styled Property </summary>
     public static readonly StyledProperty<bool> IsDisabledProperty =
-        AvaloniaProperty.Register<GlyphButton, bool>(
-            nameof(IsDisabled),
-            defaultValue: true,
-            inherits: false,
-            defaultBindingMode: BindingMode.OneWay,
-            validate: null,
-            coerce: CoerceIsDisabled,
-            enableDataValidation: false);
+        AvaloniaProperty.Register<GlyphButton, bool>(nameof(IsDisabled), defaultValue: true);
 
     /// <summary> Gets or sets the IsDisabled property.</summary>
     public bool IsDisabled
@@ -143,10 +66,133 @@ public partial class GlyphButton
         }
     }
 
-    /// <summary> Coerces the IsDisabled value. </summary>
-    private static bool CoerceIsDisabled(AvaloniaObject sender, bool newIsDisabled) => newIsDisabled;
+    #endregion State and Layout Styled Properties 
 
-    #endregion Dependency Property IsDisabled
+    #region Commanding Styled Properties 
+
+    /// <summary> Click Styled Property </summary>
+    public static readonly StyledProperty<RoutedEventDelegate> ClickProperty =
+        AvaloniaProperty.Register<GlyphButton, RoutedEventDelegate>(nameof(Click));
+
+    /// <summary> Gets or sets the Click property.</summary>
+    public RoutedEventDelegate Click
+    {
+        get => this.GetValue(ClickProperty);
+        set => this.SetValue(ClickProperty, value);
+    }
+
+    /// <summary> Command Styled Property </summary>
+    public static readonly StyledProperty<ICommand> CommandProperty =
+        AvaloniaProperty.Register<GlyphButton, ICommand>(nameof(Command));
+
+    /// <summary> Gets or sets the Command property.</summary>
+    public ICommand Command
+    {
+        get => this.GetValue(CommandProperty);
+        set => this.SetValue(CommandProperty, value);
+    }
+
+    /// <summary> CommandParameter Styled Property </summary>
+    public static readonly StyledProperty<object?> CommandParameterProperty =
+        AvaloniaProperty.Register<GlyphButton, object?>(nameof(CommandParameter));
+
+    /// <summary> Gets or sets the CommandParameter property.</summary>
+    public object? CommandParameter
+    {
+        get => this.GetValue(CommandParameterProperty);
+        set => this.SetValue(CommandParameterProperty, value);
+    }
+
+    #endregion Commanding Styled Properties 
+
+    #region Glyph Related Styled Properties 
+
+    /// <summary> GlyphSource Styled Property </summary>
+    public static readonly StyledProperty<string> GlyphSourceProperty =
+        AvaloniaProperty.Register<GlyphButton, string>(
+            nameof(GlyphSource),
+            defaultValue: string.Empty,
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: CoerceGlyphSource,
+            enableDataValidation: false);
+
+    /// <summary> Gets or sets the GlyphSource property.</summary>
+    public string GlyphSource
+    {
+        get => this.GetValue(GlyphSourceProperty);
+        set
+        {
+            this.SetValue(GlyphSourceProperty, value);
+            this.icon.Source = value;
+        }
+    }
+
+    /// <summary> Coerces the GlyphSource value. </summary>
+    private static string CoerceGlyphSource(AvaloniaObject sender, string newText) => newText;
+
+    /// <summary> GlyphAngle Styled Property </summary>
+    public static readonly StyledProperty<double> GlyphAngleProperty =
+        AvaloniaProperty.Register<GlyphButton, double>(
+            nameof(GlyphAngle),
+            defaultValue: 0.0,
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: CoerceGlyphAngle,
+            enableDataValidation: false);
+
+
+    /// <summary> Gets or sets the GlyphAngle property.</summary>
+    public double GlyphAngle
+    {
+        get => this.GetValue(GlyphAngleProperty);
+        set
+        {
+            this.SetValue(GlyphAngleProperty, value);
+            // See: https://stackoverflow.com/questions/70116300/layouttransform-scaletransform-in-avalonia
+            // TODO: Verify the rotation 
+            this.icon.RenderTransform = new RotateTransform(value);
+        }
+    }
+
+    /// <summary> Coerces the GlyphAngle value. </summary>
+    private static double CoerceGlyphAngle(AvaloniaObject sender, double newGlyphAngle)
+    {
+        return newGlyphAngle;
+    }
+    /// <summary> GlyphStrokeThickness Styled Property </summary>
+    public static readonly StyledProperty<double> GlyphStrokeThicknessProperty =
+        AvaloniaProperty.Register<GlyphButton, double>(
+            nameof(GlyphStrokeThickness),
+            defaultValue: 1.0,
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: CoerceGlyphStrokeThickness,
+            enableDataValidation: false);
+
+
+    /// <summary> Gets or sets the GlyphStrokeThickness property.</summary>
+    public double GlyphStrokeThickness
+    {
+        get => this.GetValue(GlyphStrokeThicknessProperty);
+        set
+        {
+            this.SetValue(GlyphStrokeThicknessProperty, value);
+            this.icon.StrokeThickness = value;
+            this.icon.UpdateImage();
+        }
+    }
+
+    /// <summary> Coerces the GlyphStrokeThickness value. </summary>
+    private static double CoerceGlyphStrokeThickness(AvaloniaObject sender, double newGlyphStrokeThickness)
+    {
+        return newGlyphStrokeThickness;
+    }
+
+    #endregion Glyph Related Styled Properties 
 
     #region Dependency Property Text
 
@@ -242,21 +288,10 @@ public partial class GlyphButton
         set
         {
             this.SetValue(TypographyProperty, value);
-            this.textBlock.Theme = value;
-            var resources = this.textBlock.Resources; 
-            this.textBlock.Resources = new ResourceDictionary() ;
-            this.textBlock.Resources = resources;
 
-            bool applied = this.textBlock.ApplyStyling();  // Does nothing
-            this.textBlock.InvalidateVisual();             // Does not help 
-
-            var mi = typeof(StyledElement).GetMethod(
-                "ApplyControlTheme", BindingFlags.Instance | BindingFlags.NonPublic, new Type[] { } ) ;
-            if ( mi != null )
-            {
-                mi.Invoke( this.textBlock, new object[] { }); // Does nothing
-                this.textBlock.InvalidateVisual();            // Does not help 
-            }
+            // Does not work :( 
+            // this.textBlock.Theme = value;
+            this.textBlock.ApplyControlTheme(value);
         }
     }
 
@@ -505,104 +540,6 @@ public partial class GlyphButton
 
     #endregion Dependency Property BackgroundBorderThickness
 
-    #region Dependency Property GlyphSource
-
-    /// <summary> GlyphSource Styled Property </summary>
-    public static readonly StyledProperty<string> GlyphSourceProperty =
-        AvaloniaProperty.Register<GlyphButton, string>(
-            nameof(GlyphSource),
-            defaultValue: string.Empty,
-            inherits: false,
-            defaultBindingMode: BindingMode.OneWay,
-            validate: null,
-            coerce: CoerceGlyphSource,
-            enableDataValidation: false);
-
-    /// <summary> Gets or sets the GlyphSource property.</summary>
-    public string GlyphSource
-    {
-        get => this.GetValue(GlyphSourceProperty);
-        set
-        {
-            this.SetValue(GlyphSourceProperty, value);
-            this.icon.Source = value;
-        }
-    }
-
-    /// <summary> Coerces the GlyphSource value. </summary>
-    private static string CoerceGlyphSource(AvaloniaObject sender, string newText) => newText;
-
-    #endregion Dependency Property GlyphSource
-
-    #region Dependency Property GlyphAngle
-
-    /// <summary> GlyphAngle Styled Property </summary>
-    public static readonly StyledProperty<double> GlyphAngleProperty =
-        AvaloniaProperty.Register<GlyphButton, double>(
-            nameof(GlyphAngle),
-            defaultValue: 0.0,
-            inherits: false,
-            defaultBindingMode: BindingMode.OneWay,
-            validate: null,
-            coerce: CoerceGlyphAngle,
-            enableDataValidation: false);
-
-
-    /// <summary> Gets or sets the GlyphAngle property.</summary>
-    public double GlyphAngle
-    {
-        get => this.GetValue(GlyphAngleProperty);
-        set
-        {
-            this.SetValue(GlyphAngleProperty, value);
-            // See: https://stackoverflow.com/questions/70116300/layouttransform-scaletransform-in-avalonia
-            // TODO: Verify the rotation 
-            this.icon.RenderTransform = new RotateTransform(value);
-        }
-    }
-
-    /// <summary> Coerces the GlyphAngle value. </summary>
-    private static double CoerceGlyphAngle(AvaloniaObject sender, double newGlyphAngle)
-    {
-        return newGlyphAngle;
-    }
-
-    #endregion Dependency Property GlyphAngle
-
-    #region Dependency Property GlyphStrokeThickness
-
-    /// <summary> GlyphStrokeThickness Styled Property </summary>
-    public static readonly StyledProperty<double> GlyphStrokeThicknessProperty =
-        AvaloniaProperty.Register<GlyphButton, double>(
-            nameof(GlyphStrokeThickness),
-            defaultValue: 1.0,
-            inherits: false,
-            defaultBindingMode: BindingMode.OneWay,
-            validate: null,
-            coerce: CoerceGlyphStrokeThickness,
-            enableDataValidation: false);
-
-
-    /// <summary> Gets or sets the GlyphStrokeThickness property.</summary>
-    public double GlyphStrokeThickness
-    {
-        get => this.GetValue(GlyphStrokeThicknessProperty);
-        set
-        {
-            this.SetValue(GlyphStrokeThicknessProperty, value);
-            this.icon.StrokeThickness = value;
-            this.icon.UpdateImage();
-        }
-    }
-
-    /// <summary> Coerces the GlyphStrokeThickness value. </summary>
-    private static double CoerceGlyphStrokeThickness(AvaloniaObject sender, double newGlyphStrokeThickness)
-    {
-        return newGlyphStrokeThickness;
-    }
-
-    #endregion Dependency Property GlyphStrokeThickness
-
     /*
         #region Dependency Property PressedColor
 
@@ -768,107 +705,6 @@ public partial class GlyphButton
 
         #endregion Dependency Property DisabledColor
 
-
-        #region Dependency Property Click
-
-        /// <summary> Click Dependency Property </summary>
-        public static readonly DependencyProperty ClickProperty =
-            DependencyProperty.Register("Click", typeof(RoutedEventDelegate), typeof(GlyphButton),
-                new FrameworkPropertyMetadata(null,
-                    FrameworkPropertyMetadataOptions.None,
-                    new PropertyChangedCallback(OnClickChanged),
-                    new CoerceValueCallback(CoerceClick)));
-
-        /// <summary> Gets or sets the Click property.</summary>
-        public RoutedEventDelegate Click
-        {
-            get => (RoutedEventDelegate)this.GetValue(ClickProperty);
-            set => this.SetValue(ClickProperty, value);
-        }
-
-        /// <summary> Handles changes to the Click property. </summary>
-        private static void OnClickChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var target = (GlyphButton)d;
-            var oldClick = (RoutedEventDelegate)e.OldValue;
-            var newClick = target.Click;
-            target.OnClickChanged(oldClick, newClick);
-        }
-
-        /// <summary> Provides derived classes an opportunity to handle changes to the Click property. </summary>
-        protected virtual void OnClickChanged(RoutedEventDelegate oldClick, RoutedEventDelegate newClick)
-        {
-        }
-
-        /// <summary> Coerces the Click value. </summary>
-        private static object CoerceClick(DependencyObject d, object value)
-        {
-            var target = (GlyphButton)d;
-            var desiredClick = (RoutedEventDelegate)value;
-            // TODO
-            return desiredClick;
-        }
-
-        #endregion Dependency Property Click
-
-        #region Dependency Property Command
-
-        /// <summary> Command Dependency Property </summary>
-        public static readonly DependencyProperty CommandProperty =
-            DependencyProperty.Register("Command", typeof(ICommand), typeof(GlyphButton),
-                new FrameworkPropertyMetadata(null,
-                    FrameworkPropertyMetadataOptions.None, null, null));
-
-        /// <summary> Gets or sets the Command property.</summary>
-        public ICommand Command
-        {
-            get => (ICommand)this.GetValue(CommandProperty);
-            set => this.SetValue(CommandProperty, value);
-        }
-
-        #endregion Dependency Property Command
-
-        #region Dependency Property CommandParameter
-
-        /// <summary> CommandParameter Dependency Property </summary>
-        public static readonly DependencyProperty CommandParameterProperty =
-            DependencyProperty.Register("CommandParameter", typeof(object), typeof(GlyphButton),
-                new FrameworkPropertyMetadata(null,
-                    FrameworkPropertyMetadataOptions.None,
-                    new PropertyChangedCallback(OnCommandParameterChanged),
-                    new CoerceValueCallback(CoerceCommandParameter)));
-
-        /// <summary> Gets or sets the CommandParameter property.</summary>
-        public object CommandParameter
-        {
-            get => this.GetValue(CommandParameterProperty);
-            set => this.SetValue(CommandParameterProperty, value);
-        }
-
-        /// <summary> Handles changes to the CommandParameter property. </summary>
-        private static void OnCommandParameterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var target = (GlyphButton)d;
-            object oldCommandParameter = e.OldValue;
-            object newCommandParameter = target.CommandParameter;
-            target.OnCommandParameterChanged(oldCommandParameter, newCommandParameter);
-        }
-
-        /// <summary> Provides derived classes an opportunity to handle changes to the CommandParameter property. </summary>
-        protected virtual void OnCommandParameterChanged(object oldCommandParameter, object newCommandParameter)
-        {
-        }
-
-        /// <summary> Coerces the CommandParameter value. </summary>
-        private static object CoerceCommandParameter(DependencyObject d, object value)
-        {
-            var target = (GlyphButton)d;
-            object desiredCommandParameter = value;
-            // TODO
-            return desiredCommandParameter;
-        }
-
-        #endregion Dependency Property CommandParameter
 
         #region Dependency Property BackgroundPressedColor
 
@@ -1201,4 +1037,31 @@ public partial class GlyphButton
 
         #endregion Dependency Property BackgroundBorderDisabledColor
     */
+
+    #region Dependency Property Countdown
+
+    /// <summary> Countdown Styled Property </summary>
+    public static readonly StyledProperty<double> CountdownProperty =
+        AvaloniaProperty.Register<GlyphButton, double>(
+            nameof(Countdown),
+            defaultValue: 8.0,
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: CoerceCountdown,
+            enableDataValidation: false);
+
+
+    /// <summary> Gets or sets the Countdown property.</summary>
+    public double Countdown
+    {
+        get => this.GetValue(CountdownProperty);
+        set => this.SetValue(CountdownProperty, value);
+    }
+
+    /// <summary> Coerces the Countdown value. </summary>
+    private static double CoerceCountdown(AvaloniaObject sender, double newCountdown) => newCountdown;
+
+    #endregion Dependency Property Countdown
+
 }
