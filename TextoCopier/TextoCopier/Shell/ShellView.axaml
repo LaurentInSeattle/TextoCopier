@@ -87,12 +87,14 @@
 			Layout="IconTextBelow"
 			Typography="{StaticResource GlyphButtonTypography}"
 			GeneralVisualState="{StaticResource GeneralVisualState}"
+			Click="OnGlyphButtonClick"
 			>			
 		</glyphs:GlyphButton>
 		<Button
 			HorizontalAlignment="Center" VerticalAlignment="Center"
 			Width="64" Height="64"
 			Padding="0"
+			Click="OnButtonClick"
             >
 			<StackPanel
 				Orientation="Vertical"

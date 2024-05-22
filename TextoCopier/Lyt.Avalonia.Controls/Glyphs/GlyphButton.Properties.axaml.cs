@@ -1,6 +1,4 @@
-﻿using NoahMedical.Trident.Controls.Glyphs;
-
-namespace Lyt.Avalonia.Controls.Glyphs;
+﻿namespace Lyt.Avalonia.Controls.Glyphs;
 
 public partial class GlyphButton
 {
@@ -51,9 +49,24 @@ public partial class GlyphButton
         }
     }
 
+    /// <summary> IsSelected Styled Property </summary>
+    public static readonly StyledProperty<bool> IsSelectedProperty =
+        AvaloniaProperty.Register<GlyphButton, bool>(nameof(IsSelected), defaultValue: false);
+
+    /// <summary> Gets or sets the IsSelected property.</summary>
+    public bool IsSelected
+    {
+        get => this.GetValue(IsSelectedProperty);
+        set
+        {
+            this.SetValue(IsSelectedProperty, value);
+            this.UpdateVisualState();
+        }
+    }
+
     /// <summary> IsDisabled Styled Property </summary>
     public static readonly StyledProperty<bool> IsDisabledProperty =
-        AvaloniaProperty.Register<GlyphButton, bool>(nameof(IsDisabled), defaultValue: true);
+        AvaloniaProperty.Register<GlyphButton, bool>(nameof(IsDisabled), defaultValue: false);
 
     /// <summary> Gets or sets the IsDisabled property.</summary>
     public bool IsDisabled
