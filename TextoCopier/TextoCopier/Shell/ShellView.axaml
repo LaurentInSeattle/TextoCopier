@@ -94,7 +94,15 @@
 			>			
 		</glyphs:GlyphButton>
 		<Button
+			Content="Click Me!"
 			HorizontalAlignment="Center" VerticalAlignment="Center"
+			Width="64" Height="64"
+			Padding="0"
+			Click="OnButtonClick"
+            />
+
+		<Button
+			HorizontalAlignment="Center" VerticalAlignment="Top"
 			Width="64" Height="64"
 			Padding="0"
 			Click="OnButtonClick"

@@ -1,4 +1,3 @@
-using System;
 
 namespace Lyt.Avalonia.Controls.Glyphs;
 
@@ -16,8 +15,6 @@ public partial class GlyphButton : UserControl
 
     private readonly Brush darkColor;
 
-    // private PopupKeyboard? popupKeyboard;
-
     private DispatcherTimer? timer;
     private bool isOver;
     private DateTime pressedAt;
@@ -31,7 +28,7 @@ public partial class GlyphButton : UserControl
         this.eventingRectangle.PointerPressed += this.OnPointerPressed;
         this.eventingRectangle.PointerReleased += this.OnPointerReleased;
         this.eventingRectangle.PointerEntered += this.OnPointerEnter;
-        this.eventingRectangle.PointerExited += this.OnPointerLeave; 
+        this.eventingRectangle.PointerExited += this.OnPointerLeave;
 
         this.darkColor = new SolidColorBrush(Color.FromArgb(a: 0x80, r: 20, g: 20, b: 20));
         this.Loaded += this.OnLoaded;
@@ -47,19 +44,18 @@ public partial class GlyphButton : UserControl
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
-        //this.OnButtonBackgroundChanged(ButtonBackground.None, this.ButtonBackground);
-        this.ChangeLayout(this.Layout);
-        this.ChangeBehaviour(this.Behaviour);
-        
-        //this.OnTypographyChanged(new Style(), this.Typography);
         //this.DismissPopupKeyboard();
 
+        this.ChangeButtonBackground(this.ButtonBackground);
+        this.ChangeLayout(this.Layout);
+        this.ChangeBehaviour(this.Behaviour);
+        this.ChangeTypography(this.Typography);
         this.icon.UpdateImage();
         this.UpdateVisualState();
     }
 
-    // public GlyphButton? ParentGlyphButton { get; set; }
-     
+    #region Layout Updates 
+
     private bool HasIcon
         => (this.icon is not null) &&
             (this.Layout == ButtonLayout.IconOnly ||
@@ -72,16 +68,114 @@ public partial class GlyphButton : UserControl
             this.Layout == ButtonLayout.IconTextBelow ||
             this.Layout == ButtonLayout.TextOnly);
 
-/*
-   private bool HasBackgroundRectangle
-        => this.ButtonBackground == ButtonBackground.Rectangle ||
-            this.ButtonBackground == ButtonBackground.BorderlessRectangle;
+    private bool HasBackgroundRectangle
+         => this.ButtonBackground == ButtonBackground.Rectangle ||
+             this.ButtonBackground == ButtonBackground.BorderlessRectangle;
 
     private bool HasBackgroundBorder
         => this.ButtonBackground == ButtonBackground.Rectangle ||
             this.ButtonBackground == ButtonBackground.BorderOnly;
 
-*/
+    private void ChangeTypography(ControlTheme typography)
+    {
+        // According to Forum discussion: Does not work, because TextBlock is not a TemplatedControl ??? 
+        // this.textBlock.Theme = value;
+        this.textBlock.ApplyControlTheme(typography);
+    }
+
+    private void ChangeBehaviour(ButtonBehaviour behaviour)
+        => this.gridPopup.IsVisible = behaviour == ButtonBehaviour.Keyboard;
+
+    private void ChangeLayout(ButtonLayout layout)
+    {
+        switch (layout)
+        {
+            default:
+            case ButtonLayout.IconOnly:
+                this.Text = string.Empty;
+                this.textBlock.IsVisible = false; // Visibility.Hidden;
+                this.icon.IsVisible = true; // Visibility.Visible;
+                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
+                this.mainGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Pixel);
+                break;
+
+            case ButtonLayout.IconTextBelow:
+                this.icon.IsVisible = true; //Visibility.Visible;
+                this.textBlock.IsVisible = true; //Visibility.Visible;
+                this.textBlock.SetValue(Grid.RowProperty, 1);
+                this.textBlock.SetValue(Grid.ColumnProperty, 0);
+                this.textBlock.SetValue(Grid.ColumnSpanProperty, 1);
+                this.textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center);
+                this.textBlock.SetValue(MarginProperty, new Thickness(0, 2, 0, 0));
+                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
+                this.mainGrid.ColumnDefinitions[2].Width = new GridLength(0, GridUnitType.Pixel);
+                this.mainGrid.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Auto);
+                break;
+
+            case ButtonLayout.IconTextRightSide:
+                this.icon.IsVisible = true; //Visibility.Visible;
+                this.textBlock.IsVisible = true; //Visibility.Visible;
+                this.textBlock.SetValue(Grid.RowProperty, 0);
+                this.textBlock.SetValue(Grid.ColumnProperty, 1);
+                this.textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Left);
+                this.textBlock.SetValue(HorizontalContentAlignmentProperty, HorizontalAlignment.Left);
+                this.textBlock.SetValue(MarginProperty, new Thickness(4, 0, 0, 0));
+                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Auto);
+                this.mainGrid.ColumnDefinitions[2].Width = new GridLength(1, GridUnitType.Star);
+                this.mainGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Pixel);
+                break;
+
+            case ButtonLayout.TextOnly:
+                this.textBlock.IsVisible = true; //Visibility.Visible;
+                this.icon.IsVisible = false; //Visibility.Hidden;
+                this.textBlock.SetValue(Grid.RowProperty, 0);
+                this.textBlock.SetValue(Grid.ColumnProperty, 0);
+                this.textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center);
+                this.textBlock.SetValue(HorizontalContentAlignmentProperty, HorizontalAlignment.Center);
+                this.textBlock.SetValue(MarginProperty, new Thickness(4));
+                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
+                this.mainGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Pixel);
+                break;
+        }
+    }
+
+    private void ChangeButtonBackground(ButtonBackground newButtonBackground)
+    {
+        switch (newButtonBackground)
+        {
+            default:
+            case ButtonBackground.None:
+                this.viewboxMargin = GlyphButton.ViewboxDefaultMargin;
+                this.viewBox.Margin = new Thickness(GlyphButton.ViewboxDefaultMargin);
+                this.rectangleBackground.IsVisible = false; //  Visibility.Hidden;
+                break;
+
+            case ButtonBackground.BorderOnly:
+                this.viewboxMargin = GlyphButton.ViewboxDefaultMargin + 2.0 + this.BackgroundBorderThickness;
+                this.viewBox.Margin = new Thickness(this.viewboxMargin);
+                this.rectangleBackground.IsVisible = true; // Visibility.Visible;
+                this.rectangleBackground.Fill = Brushes.Transparent;
+                break;
+
+            case ButtonBackground.Rectangle:
+                this.viewboxMargin = GlyphButton.ViewboxDefaultMargin + 2.0 + this.BackgroundBorderThickness;
+                this.viewBox.Margin = new Thickness(this.viewboxMargin);
+                this.rectangleBackground.IsVisible = true; // Visibility.Visible;
+                this.rectangleBackground.Fill = Brushes.Transparent;// todo
+                break;
+
+            case ButtonBackground.BorderlessRectangle:
+                this.viewboxMargin = GlyphButton.ViewboxDefaultMargin;
+                this.viewBox.Margin = new Thickness(GlyphButton.ViewboxDefaultMargin);
+                this.rectangleBackground.StrokeThickness = 0.0;
+                this.rectangleBackground.IsVisible = true; // Visibility.Visible;
+                this.rectangleBackground.Fill = Brushes.Transparent; // todo
+                break;
+        }
+    }
+
+    #endregion Layout Updates 
+
     #region Visual States 
 
     private void UpdateVisualState()
@@ -100,7 +194,7 @@ public partial class GlyphButton : UserControl
             {
                 this.SetDisabledVisualState();
             }
-            else if ( this.IsSelected)
+            else if (this.IsSelected)
             {
                 this.SetSelectedVisualState();
             }
@@ -240,90 +334,136 @@ public partial class GlyphButton : UserControl
 
     #region Pointer Handling
 
-    private void OnPointerEnter(object? sender, PointerEventArgs args) => this.Enter();
+    private bool IsPointerInside(PointerEventArgs args)
+    {
+        PointerPoint pp = args.GetCurrentPoint(this.eventingRectangle);
+        return this.eventingRectangle.Bounds.Contains(pp.Position);
+    }
 
-    private void OnPointerLeave(object? sender, PointerEventArgs args) => this.Leave();
+    private void OnPointerEnter(object? sender, PointerEventArgs args)
+    {
+        if (this.eventingRectangle.IsPointerOver)
+        {
+            this.Enter();
+        }
+    }
 
-    private void OnPointerPressed(object? sender, PointerPressedEventArgs args) => this.Down();
+    private void OnPointerLeave(object? sender, PointerEventArgs args)
+    {
+        if (!this.eventingRectangle.IsPointerOver)
+        {
+            this.Leave();
+        }
+    }
 
-    private void OnPointerReleased(object? sender, PointerReleasedEventArgs args) => this.Up(args);
+    private void OnPointerPressed(object? sender, PointerPressedEventArgs args)
+    {
+        if (this.IsPointerInside(args))
+        {
+            this.Down();
+        }
+    }
+
+    private void OnPointerReleased(object? sender, PointerReleasedEventArgs args)
+    {
+        if (this.IsPointerInside(args))
+        {
+            this.Up(args);
+        }
+        else
+        {
+            this.Leave();
+        }
+    }
 
     private void Enter()
     {
+        // Debug.WriteLine("Enter");
         this.isOver = true;
         this.UpdateVisualState();
     }
 
     private void Leave()
     {
+        bool needToLeave = this.isOver || this.isPressed;
+        if (!needToLeave)
+        {
+            return;
+        }
+
+        // Debug.WriteLine("Leave");
         this.isOver = false;
         this.isPressed = false;
-        //if ((this.Behaviour != ButtonBehaviour.Tap) || (this.Behaviour != ButtonBehaviour.PopupKeyboard))
-        //{
-        //    this.StopTimer();
-        //}
+        if ((this.Behaviour != ButtonBehaviour.Tap) || (this.Behaviour != ButtonBehaviour.PopupKeyboard))
+        {
+            this.StopTimer();
+        }
 
-        //if (this.isLongPressActivated)
-        //{
-        //    this.isLongPressActivated = false;
-        //    this.IsDisabled = false;
-        //}
+        if (this.isLongPressActivated)
+        {
+            this.isLongPressActivated = false;
+            this.IsDisabled = false;
+        }
 
-        //if (this.Behaviour == ButtonBehaviour.Countdown)
-        //{
-        //    this.ActivateCommand(new(), ButtonTag.CountdownCancel);
-        //}
+        if (this.Behaviour == ButtonBehaviour.Countdown)
+        {
+            this.ActivateCommand(new(), ButtonTag.CountdownCancel);
+        }
 
-        //if (this.Behaviour == ButtonBehaviour.Continuous)
-        //{
-        //    this.ActivateCommand(new(), ButtonTag.CountinuousEnd);
-        //}
+        if (this.Behaviour == ButtonBehaviour.Continuous)
+        {
+            this.ActivateCommand(new(), ButtonTag.CountinuousEnd);
+        }
 
         this.UpdateVisualState();
     }
 
     private void Down()
     {
+        // Debug.WriteLine("Down");
+
         this.isPressed = true;
         if (this.isLongPressActivated)
         {
             this.isLongPressActivated = false;
-            // this.IsDisabled = false;
+            this.IsDisabled = false;
         }
 
         this.UpdateVisualState();
-        //if ((this.Behaviour != ButtonBehaviour.Tap) || (this.Behaviour != ButtonBehaviour.PopupKeyboard))
-        //{
-        //    this.pressedAt = DateTime.Now;
-        //    if (this.Behaviour == ButtonBehaviour.LongPress)
-        //    {
-        //        this.StartTimer(GlyphButton.LongPressTimerIntervalMilliseconds);
-        //    }
-        //    else if (this.Behaviour == ButtonBehaviour.Keyboard)
-        //    {
-        //        this.StartTimer(GlyphButton.KeyboardTimerIntervalMilliseconds);
-        //    }
-        //    else if (this.Behaviour == ButtonBehaviour.Countdown)
-        //    {
-        //        this.ActivateCommand(new(), ButtonTag.CountdownBegin);
-        //        this.StartTimer(GlyphButton.CountdownTimerIntervalMilliseconds);
-        //    }
-        //    else if (this.Behaviour == ButtonBehaviour.Continuous)
-        //    {
-        //        this.ActivateCommand(new(), ButtonTag.CountinuousBegin);
-        //        this.StartTimer(GlyphButton.ContinuousTimerIntervalMilliseconds);
-        //    }
-        //}
+        if ((this.Behaviour != ButtonBehaviour.Tap) || (this.Behaviour != ButtonBehaviour.PopupKeyboard))
+        {
+            this.pressedAt = DateTime.Now;
+            if (this.Behaviour == ButtonBehaviour.LongPress)
+            {
+                this.StartTimer(GlyphButton.LongPressTimerIntervalMilliseconds);
+            }
+            else if (this.Behaviour == ButtonBehaviour.Keyboard)
+            {
+                this.StartTimer(GlyphButton.KeyboardTimerIntervalMilliseconds);
+            }
+            else if (this.Behaviour == ButtonBehaviour.Countdown)
+            {
+                this.ActivateCommand(new(), ButtonTag.CountdownBegin);
+                this.StartTimer(GlyphButton.CountdownTimerIntervalMilliseconds);
+            }
+            else if (this.Behaviour == ButtonBehaviour.Continuous)
+            {
+                this.ActivateCommand(new(), ButtonTag.CountinuousBegin);
+                this.StartTimer(GlyphButton.ContinuousTimerIntervalMilliseconds);
+            }
+        }
     }
 
     private void Up(PointerReleasedEventArgs args)
     {
+        // Debug.WriteLine("Up");
+
         this.isPressed = false;
-        //if (this.isLongPressActivated)
-        //{
-        //    this.isLongPressActivated = false;
-        //    this.IsDisabled = false;
-        //}
+        if (this.isLongPressActivated)
+        {
+            this.isLongPressActivated = false;
+            this.IsDisabled = false;
+        }
 
         this.UpdateVisualState();
 
@@ -395,6 +535,76 @@ public partial class GlyphButton : UserControl
 
     #endregion Pointer Handling
 
+    #region Timer
+
+    private void StartTimer(int interval)
+    {
+        this.StopTimer();
+        this.timer = new DispatcherTimer()
+        {
+            Interval = TimeSpan.FromMilliseconds(interval),
+            IsEnabled = true,
+        };
+        this.timer.Tick += this.OnTimerTick;
+    }
+
+    private void StopTimer()
+    {
+        if (this.timer is not null)
+        {
+            this.timer.IsEnabled = false;
+            this.timer.Stop();
+            this.timer.Tick -= this.OnTimerTick;
+            this.timer = null;
+        }
+    }
+
+    private void OnTimerTick(object? sender, EventArgs e)
+    {
+        double elapsed = (DateTime.Now - this.pressedAt).TotalMilliseconds;
+        if ((this.Behaviour == ButtonBehaviour.LongPress) || (this.Behaviour == ButtonBehaviour.Countdown))
+        {
+            bool triggered =
+                this.Behaviour == ButtonBehaviour.LongPress ?
+                    (elapsed > GlyphButton.LongPressMilliseconds) :
+                    (elapsed > this.Countdown);
+            if (triggered)
+            {
+                this.StopTimer();
+                object? tag = this.Behaviour == ButtonBehaviour.LongPress ? null : ButtonTag.CountdownComplete;
+                this.ActivateCommand(new(), tag);
+                this.IsDisabled = true;
+                this.isLongPressActivated = true;
+                this.UpdateVisualState();
+            }
+        }
+        else if (this.Behaviour == ButtonBehaviour.Keyboard)
+        {
+            //if (elapsed > GlyphButton.KeyboardPressMilliseconds)
+            //{
+            //    this.StopTimer();
+            //    if (string.IsNullOrWhiteSpace(this.Keys))
+            //    {
+            //        this.ActivateCommand(new());
+            //    }
+            //    else
+            //    {
+            //        this.LaunchPopupKeyboard();
+            //    }
+
+            //    this.UpdateVisualState();
+            //}
+        }
+        else if (this.Behaviour == ButtonBehaviour.Continuous)
+        {
+            this.ActivateCommand(new(), ButtonTag.CountinuousContinue);
+        }
+    }
+
+    #endregion Timer
+
+    #region Commanding 
+
     private void PreventMultipleClicks()
     {
         if (this.Behaviour != ButtonBehaviour.Tap)
@@ -408,7 +618,7 @@ public partial class GlyphButton : UserControl
         Task.Run(async () =>
             {
                 await Task.Delay(250);
-                Dispatcher.UIThread.Post((Action)delegate { this.IsEnabled = true ; });
+                Dispatcher.UIThread.Post((Action)delegate { this.IsEnabled = true; });
             });
     }
 
@@ -437,7 +647,7 @@ public partial class GlyphButton : UserControl
             if (tag is null)
             {
                 tag = this.CommandParameter;
-            } 
+            }
 
             if (this.Command.CanExecute(tag))
             {
@@ -451,59 +661,40 @@ public partial class GlyphButton : UserControl
         }
     }
 
-    private void ChangeBehaviour(ButtonBehaviour behaviour) 
-        => this.gridPopup.IsVisible = behaviour == ButtonBehaviour.Keyboard ;
-    
-    private void ChangeLayout(ButtonLayout layout)
+    #endregion Commanding 
+
+    #region Popup Keyboards 
+
+    // private PopupKeyboard? popupKeyboard;
+
+    // public GlyphButton? ParentGlyphButton { get; set; }
+
+
+    private void LaunchPopupKeyboard()
     {
-        switch (layout)
-        {
-            default:
-            case ButtonLayout.IconOnly:
-                this.Text = string.Empty;
-                this.textBlock.IsVisible = false; // Visibility.Hidden;
-                this.icon.IsVisible = true; // Visibility.Visible;
-                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
-                this.mainGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Pixel);
-                break;
-
-            case ButtonLayout.IconTextBelow:
-                this.icon.IsVisible = true; //Visibility.Visible;
-                this.textBlock.IsVisible = true; //Visibility.Visible;
-                this.textBlock.SetValue(Grid.RowProperty, 1);
-                this.textBlock.SetValue(Grid.ColumnProperty, 0);
-                this.textBlock.SetValue(Grid.ColumnSpanProperty, 1);
-                this.textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center);
-                this.textBlock.SetValue(MarginProperty, new Thickness(0, 2, 0, 0));
-                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
-                this.mainGrid.ColumnDefinitions[2].Width = new GridLength(0, GridUnitType.Pixel);
-                this.mainGrid.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Auto);
-                break;
-
-            case ButtonLayout.IconTextRightSide:
-                this.icon.IsVisible = true; //Visibility.Visible;
-                this.textBlock.IsVisible = true; //Visibility.Visible;
-                this.textBlock.SetValue(Grid.RowProperty, 0);
-                this.textBlock.SetValue(Grid.ColumnProperty, 1);
-                this.textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Left);
-                this.textBlock.SetValue(HorizontalContentAlignmentProperty, HorizontalAlignment.Left);
-                this.textBlock.SetValue(MarginProperty, new Thickness(4, 0, 0, 0));
-                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Auto);
-                this.mainGrid.ColumnDefinitions[2].Width = new GridLength(1, GridUnitType.Star);
-                this.mainGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Pixel);
-                break;
-
-            case ButtonLayout.TextOnly:
-                this.textBlock.IsVisible = true; //Visibility.Visible;
-                this.icon.IsVisible = false; //Visibility.Hidden;
-                this.textBlock.SetValue(Grid.RowProperty, 0);
-                this.textBlock.SetValue(Grid.ColumnProperty, 0);
-                this.textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center);
-                this.textBlock.SetValue(HorizontalContentAlignmentProperty, HorizontalAlignment.Center);
-                this.textBlock.SetValue(MarginProperty, new Thickness(4));
-                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
-                this.mainGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Pixel);
-                break;
-        }
+        //this.popupKeyboard = new();
+        //this.popupKeyboard.Create(this);
+        //this.gridPopup.Children.Add(this.popupKeyboard);
+        //this.gridPopup.Visibility = Visibility.Visible;
+        //this.gridPopup.Width = this.popupKeyboard.Width;
+        //this.gridPopup.Height = this.popupKeyboard.Height;
+        //this.gridPopup.Margin =
+        //    new Thickness(
+        //        this.Width / 2.0 - this.popupKeyboard.Width / 2.0, -this.popupKeyboard.Height - 6.0,
+        //        this.Width / 2.0 - this.popupKeyboard.Width / 2.0, -this.popupKeyboard.Height - 6.0);
     }
+
+    private void DismissPopupKeyboard()
+    {
+        //this.gridPopup.Visibility = Visibility.Collapsed;
+        //this.gridPopup.Width = 0.0;
+        //this.gridPopup.Height = 0.0;
+        //if (this.popupKeyboard != null)
+        //{
+        //    this.gridPopup.Children.Remove(this.popupKeyboard);
+        //    this.popupKeyboard = null;
+        //}
+    }
+
+    #endregion Popup Keyboards 
 }

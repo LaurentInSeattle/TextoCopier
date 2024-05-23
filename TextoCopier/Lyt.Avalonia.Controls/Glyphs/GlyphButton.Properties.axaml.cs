@@ -34,6 +34,22 @@ public partial class GlyphButton
         }
     }
 
+    /// <summary> ButtonBackground Styled Property </summary>
+    public static readonly StyledProperty<ButtonBackground> ButtonBackgroundProperty =
+        AvaloniaProperty.Register<GlyphButton, ButtonBackground>(
+            nameof(ButtonBackground), defaultValue: ButtonBackground.Rectangle);
+
+    /// <summary> Gets or sets the ButtonBackground property.</summary>
+    public ButtonBackground ButtonBackground
+    {
+        get => this.GetValue(ButtonBackgroundProperty);
+        set
+        {
+            this.SetValue(ButtonBackgroundProperty, value);
+            this.ChangeButtonBackground(value);
+        }
+    }
+
     /// <summary> IsShown Styled Property </summary>
     public static readonly StyledProperty<bool> IsShownProperty =
         AvaloniaProperty.Register<GlyphButton, bool>(nameof(IsShown), defaultValue: true);
@@ -207,7 +223,7 @@ public partial class GlyphButton
 
     #endregion Glyph Related Styled Properties 
 
-    #region Dependency Property Text
+    #region Text Related Styled Properties
 
     /// <summary> Text Styled Property </summary>
     public static readonly StyledProperty<string> TextProperty =
@@ -234,7 +250,27 @@ public partial class GlyphButton
     /// <summary> Coerces the Text value. </summary>
     private static string CoerceText(AvaloniaObject sender, string newText) => newText;
 
-    #endregion Dependency Property Text
+    /// <summary> Typography Styled Property </summary>
+    public static readonly StyledProperty<ControlTheme> TypographyProperty =
+        AvaloniaProperty.Register<GlyphButton, ControlTheme>(
+            nameof(Typography),
+            defaultValue: new ControlTheme(),
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: null,
+            enableDataValidation: false);
+
+    /// <summary> Gets or sets the Typography property.</summary>
+    public ControlTheme Typography
+    {
+        get => this.GetValue(TypographyProperty);
+        set
+        {
+            this.SetValue(TypographyProperty, value);
+            this.ChangeTypography(value);
+        }
+    }
 
     /*
             #region Dependency Property TextForeground
@@ -281,34 +317,153 @@ public partial class GlyphButton
             #endregion Dependency Property TextForeground
 
     */
-    #region Dependency Property Typography
 
-    /// <summary> Typography Styled Property </summary>
-    public static readonly StyledProperty<ControlTheme> TypographyProperty =
-        AvaloniaProperty.Register<GlyphButton, ControlTheme>(
-            nameof(Typography),
-            defaultValue: new ControlTheme(),
+    #endregion Text Related Styled Properties
+
+    #region Dependency Property BackgroundCornerRadius
+
+    /// <summary> BackgroundCornerRadius Styled Property </summary>
+    public static readonly StyledProperty<double> BackgroundCornerRadiusProperty =
+        AvaloniaProperty.Register<GlyphButton, double>(
+            nameof(BackgroundCornerRadius),
+            defaultValue: 1.0,
             inherits: false,
             defaultBindingMode: BindingMode.OneWay,
             validate: null,
-            coerce: null,
+            coerce: CoerceBackgroundCornerRadius,
             enableDataValidation: false);
 
-    /// <summary> Gets or sets the Typography property.</summary>
-    public ControlTheme Typography
+
+    /// <summary> Gets or sets the BackgroundCornerRadius property.</summary>
+    public double BackgroundCornerRadius
     {
-        get => this.GetValue(TypographyProperty);
+        get => this.GetValue(BackgroundCornerRadiusProperty);
         set
         {
-            this.SetValue(TypographyProperty, value);
-
-            // Does not work, because TextBlock is not a TemplatedControl 
-            // this.textBlock.Theme = value;
-            this.textBlock.ApplyControlTheme(value);
+            this.SetValue(BackgroundCornerRadiusProperty, value);
+            this.rectangleBackground.RadiusX = value;
+            this.rectangleBackground.RadiusY = value;
+            this.rectanglePopup.RadiusX = value;
+            this.rectanglePopup.RadiusY = value;
         }
     }
 
-    #endregion Dependency Property Typography
+    /// <summary> Coerces the BackgroundCornerRadius value. </summary>
+    private static double CoerceBackgroundCornerRadius(AvaloniaObject sender, double newBackgroundCornerRadius)
+        => newBackgroundCornerRadius;
+
+    #endregion Dependency Property BackgroundCornerRadius
+
+    #region Dependency Property BackgroundBorderThickness
+
+    /// <summary> BackgroundBorderThickness Styled Property </summary>
+    public static readonly StyledProperty<double> BackgroundBorderThicknessProperty =
+        AvaloniaProperty.Register<GlyphButton, double>(
+            nameof(BackgroundBorderThickness),
+            defaultValue: 1.0,
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: CoerceBackgroundBorderThickness,
+            enableDataValidation: false);
+
+
+    /// <summary> Gets or sets the BackgroundBorderThickness property.</summary>
+    public double BackgroundBorderThickness
+    {
+        get => this.GetValue(BackgroundBorderThicknessProperty);
+        set
+        {
+            this.SetValue(BackgroundBorderThicknessProperty, value);
+            this.rectangleBackground.StrokeThickness = value;
+        }
+    }
+
+    /// <summary> Coerces the BackgroundBorderThickness value. </summary>
+    private static double CoerceBackgroundBorderThickness(AvaloniaObject sender, double newBackgroundBorderThickness)
+    {
+        return newBackgroundBorderThickness;
+    }
+
+    #endregion Dependency Property BackgroundBorderThickness
+
+    #region Visual State Styled Properties
+
+    /// <summary> GeneralVisualState Styled Property </summary>
+    public static readonly StyledProperty<VisualState> GeneralVisualStateProperty =
+        AvaloniaProperty.Register<GlyphButton, VisualState>(nameof(GeneralVisualState));
+
+    /// <summary> Gets or sets the GeneralVisualState property.</summary>
+    public VisualState GeneralVisualState
+    {
+        get => this.GetValue(GeneralVisualStateProperty);
+        set
+        {
+            this.SetValue(GeneralVisualStateProperty, value);
+            this.UpdateVisualState();
+        }
+    }
+
+    /// <summary> BackgroundVisualState Styled Property </summary>
+    public static readonly StyledProperty<VisualState> BackgroundVisualStateProperty =
+        AvaloniaProperty.Register<GlyphButton, VisualState>(nameof(BackgroundVisualState));
+
+    /// <summary> Gets or sets the BackgroundVisualState property.</summary>
+    public VisualState BackgroundVisualState
+    {
+        get => this.GetValue(BackgroundVisualStateProperty);
+        set
+        {
+            this.SetValue(BackgroundVisualStateProperty, value);
+            this.UpdateVisualState();
+        }
+    }
+
+    /// <summary> BackgroundVisualState Styled Property </summary>
+    public static readonly StyledProperty<VisualState> BackgroundBorderVisualStateProperty =
+        AvaloniaProperty.Register<GlyphButton, VisualState>(nameof(BackgroundBorderVisualState));
+
+    /// <summary> Gets or sets the BackgroundBorderVisualState property.</summary>
+    public VisualState BackgroundBorderVisualState
+    {
+        get => this.GetValue(BackgroundBorderVisualStateProperty);
+        set
+        {
+            this.SetValue(BackgroundBorderVisualStateProperty, value);
+            this.UpdateVisualState();
+        }
+    }
+
+    #endregion Visual State Styled Properties
+
+    #region Dependency Property Countdown
+
+    /// <summary> Countdown Styled Property </summary>
+    public static readonly StyledProperty<double> CountdownProperty =
+        AvaloniaProperty.Register<GlyphButton, double>(
+            nameof(Countdown),
+            defaultValue: 8.0,
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: CoerceCountdown,
+            enableDataValidation: false);
+
+
+    /// <summary> Gets or sets the Countdown property.</summary>
+    public double Countdown
+    {
+        get => this.GetValue(CountdownProperty);
+        set => this.SetValue(CountdownProperty, value);
+    }
+
+    /// <summary> Coerces the Countdown value. </summary>
+    private static double CoerceCountdown(AvaloniaObject sender, double newCountdown) => newCountdown;
+
+    #endregion Dependency Property Countdown
+
+    #region LATER : Popup Keyboards Properties 
+
     /*
         #region Dependency Property Keys
 
@@ -410,218 +565,5 @@ public partial class GlyphButton
 
         #endregion Dependency Property IsShifted
 */
-
-    /*
-        #region Dependency Property ButtonBackground
-
-        /// <summary> ButtonBackground Dependency Property </summary>
-        public static readonly DependencyProperty ButtonBackgroundProperty =
-            DependencyProperty.Register("ButtonBackground", typeof(ButtonBackground), typeof(GlyphButton),
-                new FrameworkPropertyMetadata(ButtonBackground.None,
-                    FrameworkPropertyMetadataOptions.None,
-                    new PropertyChangedCallback(OnButtonBackgroundChanged),
-                    new CoerceValueCallback(CoerceButtonBackground)));
-
-        /// <summary> Gets or sets the ButtonBackground property.</summary>
-        public ButtonBackground ButtonBackground
-        {
-            get => (ButtonBackground)this.GetValue(ButtonBackgroundProperty);
-            set => this.SetValue(ButtonBackgroundProperty, value);
-        }
-
-        /// <summary> Handles changes to the ButtonBackground property. </summary>
-        private static void OnButtonBackgroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var target = (GlyphButton)d;
-            var oldButtonBackground = (ButtonBackground)e.OldValue;
-            var newButtonBackground = target.ButtonBackground;
-            target.OnButtonBackgroundChanged(oldButtonBackground, newButtonBackground);
-        }
-
-        /// <summary> Provides derived classes an opportunity to handle changes to the ButtonBackground property. </summary>
-        protected virtual void OnButtonBackgroundChanged(ButtonBackground oldButtonBackground, ButtonBackground newButtonBackground)
-        {
-            switch (newButtonBackground)
-            {
-                default:
-                case ButtonBackground.None:
-                    this.viewboxMargin = GlyphButton.ViewboxDefaultMargin;
-                    this.viewBox.Margin = new Thickness(GlyphButton.ViewboxDefaultMargin);
-                    this.rectangleBackground.Visibility = Visibility.Hidden;
-                    break;
-
-                case ButtonBackground.BorderOnly:
-                    this.viewboxMargin = GlyphButton.ViewboxDefaultMargin + 2.0 + this.BackgroundBorderThickness;
-                    this.viewBox.Margin = new Thickness(this.viewboxMargin);
-                    this.rectangleBackground.Visibility = Visibility.Visible;
-                    this.rectangleBackground.Fill = Brushes.Transparent;
-                    break;
-
-                case ButtonBackground.Rectangle:
-                    this.viewboxMargin = GlyphButton.ViewboxDefaultMargin + 2.0 + this.BackgroundBorderThickness;
-                    this.viewBox.Margin = new Thickness(this.viewboxMargin);
-                    this.rectangleBackground.Visibility = Visibility.Visible;
-                    this.rectangleBackground.Fill = Brushes.Transparent;// todo
-                    break;
-
-                case ButtonBackground.BorderlessRectangle:
-                    this.viewboxMargin = GlyphButton.ViewboxDefaultMargin;
-                    this.viewBox.Margin = new Thickness(GlyphButton.ViewboxDefaultMargin);
-                    this.rectangleBackground.StrokeThickness = 0.0;
-                    this.rectangleBackground.Visibility = Visibility.Visible;
-                    this.rectangleBackground.Fill = Brushes.Transparent; // todo
-                    break;
-            }
-        }
-
-        /// <summary> Coerces the ButtonBackground value. </summary>
-        private static object CoerceButtonBackground(DependencyObject d, object value)
-        {
-            var target = (GlyphButton)d;
-            var desiredButtonBackground = (ButtonBackground)value;
-            // TODO
-            return desiredButtonBackground;
-        }
-
-        #endregion Dependency Property ButtonBackground
-    */
-
-    #region Dependency Property BackgroundCornerRadius
-
-    /// <summary> BackgroundCornerRadius Styled Property </summary>
-    public static readonly StyledProperty<double> BackgroundCornerRadiusProperty =
-        AvaloniaProperty.Register<GlyphButton, double>(
-            nameof(BackgroundCornerRadius),
-            defaultValue: 1.0,
-            inherits: false,
-            defaultBindingMode: BindingMode.OneWay,
-            validate: null,
-            coerce: CoerceBackgroundCornerRadius,
-            enableDataValidation: false);
-
-
-    /// <summary> Gets or sets the BackgroundCornerRadius property.</summary>
-    public double BackgroundCornerRadius
-    {
-        get => this.GetValue(BackgroundCornerRadiusProperty);
-        set
-        {
-            this.SetValue(BackgroundCornerRadiusProperty, value);
-            this.rectangleBackground.RadiusX = value;
-            this.rectangleBackground.RadiusY = value;
-            this.rectanglePopup.RadiusX = value;
-            this.rectanglePopup.RadiusY = value;
-        }
-    }
-
-    /// <summary> Coerces the BackgroundCornerRadius value. </summary>
-    private static double CoerceBackgroundCornerRadius(AvaloniaObject sender, double newBackgroundCornerRadius)
-        => newBackgroundCornerRadius;
-
-    #endregion Dependency Property BackgroundCornerRadius
-
-    #region Dependency Property BackgroundBorderThickness
-
-    /// <summary> BackgroundBorderThickness Styled Property </summary>
-    public static readonly StyledProperty<double> BackgroundBorderThicknessProperty =
-        AvaloniaProperty.Register<GlyphButton, double>(
-            nameof(BackgroundBorderThickness),
-            defaultValue: 1.0,
-            inherits: false,
-            defaultBindingMode: BindingMode.OneWay,
-            validate: null,
-            coerce: CoerceBackgroundBorderThickness,
-            enableDataValidation: false);
-
-
-    /// <summary> Gets or sets the BackgroundBorderThickness property.</summary>
-    public double BackgroundBorderThickness
-    {
-        get => this.GetValue(BackgroundBorderThicknessProperty);
-        set
-        {
-            this.SetValue(BackgroundBorderThicknessProperty, value);
-            this.rectangleBackground.StrokeThickness = value;
-        }
-    }
-
-    /// <summary> Coerces the BackgroundBorderThickness value. </summary>
-    private static double CoerceBackgroundBorderThickness(AvaloniaObject sender, double newBackgroundBorderThickness)
-    {
-        return newBackgroundBorderThickness;
-    }
-
-    #endregion Dependency Property BackgroundBorderThickness
-
-    /// <summary> GeneralVisualState Styled Property </summary>
-    public static readonly StyledProperty<VisualState> GeneralVisualStateProperty =
-        AvaloniaProperty.Register<GlyphButton, VisualState>(nameof(GeneralVisualState));
-
-    /// <summary> Gets or sets the GeneralVisualState property.</summary>
-    public VisualState GeneralVisualState
-    {
-        get => this.GetValue(GeneralVisualStateProperty);
-        set
-        {
-            this.SetValue(GeneralVisualStateProperty, value);
-            this.UpdateVisualState();
-        }
-    }
-
-    /// <summary> BackgroundVisualState Styled Property </summary>
-    public static readonly StyledProperty<VisualState> BackgroundVisualStateProperty =
-        AvaloniaProperty.Register<GlyphButton, VisualState>(nameof(BackgroundVisualState));
-
-    /// <summary> Gets or sets the BackgroundVisualState property.</summary>
-    public VisualState BackgroundVisualState
-    {
-        get => this.GetValue(BackgroundVisualStateProperty);
-        set
-        {
-            this.SetValue(BackgroundVisualStateProperty, value);
-            this.UpdateVisualState();
-        }
-    }
-
-    /// <summary> BackgroundVisualState Styled Property </summary>
-    public static readonly StyledProperty<VisualState> BackgroundBorderVisualStateProperty =
-        AvaloniaProperty.Register<GlyphButton, VisualState>(nameof(BackgroundBorderVisualState));
-
-    /// <summary> Gets or sets the BackgroundBorderVisualState property.</summary>
-    public VisualState BackgroundBorderVisualState
-    {
-        get => this.GetValue(BackgroundBorderVisualStateProperty);
-        set
-        {
-            this.SetValue(BackgroundBorderVisualStateProperty, value);
-            this.UpdateVisualState();
-        }
-    }
-
-    #region Dependency Property Countdown
-
-    /// <summary> Countdown Styled Property </summary>
-    public static readonly StyledProperty<double> CountdownProperty =
-        AvaloniaProperty.Register<GlyphButton, double>(
-            nameof(Countdown),
-            defaultValue: 8.0,
-            inherits: false,
-            defaultBindingMode: BindingMode.OneWay,
-            validate: null,
-            coerce: CoerceCountdown,
-            enableDataValidation: false);
-
-
-    /// <summary> Gets or sets the Countdown property.</summary>
-    public double Countdown
-    {
-        get => this.GetValue(CountdownProperty);
-        set => this.SetValue(CountdownProperty, value);
-    }
-
-    /// <summary> Coerces the Countdown value. </summary>
-    private static double CoerceCountdown(AvaloniaObject sender, double newCountdown) => newCountdown;
-
-    #endregion Dependency Property Countdown
-
+    #endregion Popup Keyboards Properties 
 }
