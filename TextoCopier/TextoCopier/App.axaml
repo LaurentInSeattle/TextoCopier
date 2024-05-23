@@ -13,6 +13,7 @@
 
 	<Application.Resources>
 		<ResourceDictionary>
+			<FontFamily x:Key="InterV">avares://TextoCopier/Assets/Inter-V.ttf</FontFamily>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceInclude Source="/Assets/Icons/FluentSVGResourceDictionary.axaml"/>
 				<!--

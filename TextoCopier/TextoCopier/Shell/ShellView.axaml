@@ -44,6 +44,7 @@
 			<Setter Property="Background" Value="Transparent"/>
 			<Setter Property="Foreground" Value="DarkOrange"/>
 			<Setter Property="FontSize" Value="12"/>
+			<Setter Property="FontFamily" Value="InterV" />
 			<Setter Property="FontWeight" Value="SemiBold"/>
 			<Setter Property="FontStyle" Value="Italic"/>
 		</ControlTheme>
@@ -72,6 +73,7 @@
 			Text="{DynamicResource My.Strings.Greetings}" 
 			HorizontalAlignment="Center" VerticalAlignment="Center"
 			Margin="0 -120 0 0"
+			FontFamily="{StaticResource InterV}"
 			FontSize="24" 
 			FontStyle="Italic"
 			Foreground="DarkOrange"
@@ -87,7 +89,8 @@
 			Layout="IconTextBelow"
 			Typography="{StaticResource GlyphButtonTypography}"
 			GeneralVisualState="{StaticResource GeneralVisualState}"
-			Click="OnGlyphButtonClick"
+			Command="{Binding GlyphCommand}"
+			CommandParameter="42_666"
 			>			
 		</glyphs:GlyphButton>
 		<Button
@@ -121,8 +124,10 @@
 					>
 					<TextBlock
 						Width="64"
-						FontSize="12"
+						FontSize="16"
 						Text="Home"
+						FontFamily="{StaticResource InterV}"
+						FontStyle="Oblique"
 						Foreground="Aquamarine"
 						HorizontalAlignment="Center"
 						VerticalAlignment="Center"

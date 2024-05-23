@@ -302,7 +302,7 @@ public partial class GlyphButton
         {
             this.SetValue(TypographyProperty, value);
 
-            // Does not work :( 
+            // Does not work, because TextBlock is not a TemplatedControl 
             // this.textBlock.Theme = value;
             this.textBlock.ApplyControlTheme(value);
         }

@@ -434,6 +434,11 @@ public partial class GlyphButton : UserControl
         else if (this.Command != null)
         {
             object? tag = tagObject is null ? this.Tag : tagObject;
+            if (tag is null)
+            {
+                tag = this.CommandParameter;
+            } 
+
             if (this.Command.CanExecute(tag))
             {
                 if (this.Behaviour == ButtonBehaviour.Tap)
@@ -445,7 +450,6 @@ public partial class GlyphButton : UserControl
             }
         }
     }
-
 
     private void ChangeBehaviour(ButtonBehaviour behaviour) 
         => this.gridPopup.IsVisible = behaviour == ButtonBehaviour.Keyboard ;

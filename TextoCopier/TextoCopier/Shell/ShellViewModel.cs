@@ -1,9 +1,21 @@
-﻿namespace Lyt.TextoCopier.Shell;
+﻿
+namespace Lyt.TextoCopier.Shell;
 
 public sealed class ShellViewModel : Bindable<ShellView>
 {
     public ShellViewModel()
     {
+        this.GlyphCommand = new Command(this.OnGlyph);
+    }
+
+    private void OnGlyph(object? parameter)
+    {
+        if (parameter is null) 
+        { 
+            parameter = string.Empty; 
+        }
+
+        this.Logger.Info("Clicked on glyph!  " + parameter.ToString());
     }
 
     protected override void OnViewLoaded()
@@ -14,10 +26,12 @@ public sealed class ShellViewModel : Bindable<ShellView>
         var localizer = App.GetRequiredService<LocalizerModel>();
         localizer.DetectAvailableLanguages();
         localizer.SelectLanguage("fr-FR");
-        string hello = localizer.Lookup("My.Strings.HelloWorld"); 
-        this.Logger.Info(hello);
-        string _ = localizer.Lookup("Whatever");
+
+        //string hello = localizer.Lookup("My.Strings.HelloWorld"); 
+        //this.Logger.Info(hello);
+        //string _ = localizer.Lookup("Whatever");
     }
+    public ICommand GlyphCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     #region WORKFLOW ~ Maybe later 
 
