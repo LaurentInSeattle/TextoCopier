@@ -12,12 +12,7 @@
     <AvaloniaResource Include="Assets\**" />
     <AvaloniaResource Include="Assets\Languages\**" />
   </ItemGroup>
-
   
-  <ItemGroup>
-    <None Remove="Assets\Fonts\Inter-V.ttf" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.10" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10" />
@@ -36,4 +31,5 @@
   <ItemGroup>
     <Folder Include="Controls\" />
   </ItemGroup>
+
 </Project>

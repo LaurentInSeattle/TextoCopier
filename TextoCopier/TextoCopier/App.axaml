@@ -8,7 +8,8 @@
 
 	<Application.Styles>
 		<FluentTheme />
-		<StyleInclude Source="avares://TextoCopier/Assets/Icons/Icons.axaml" />	
+		<StyleInclude Source="avares://TextoCopier/Assets/Icons/Icons.axaml" />
+		<StyleInclude Source="avares://TextoCopier/Assets/Palette/DeepBluePalette.axaml" />
 	</Application.Styles>
 
 	<Application.Resources>

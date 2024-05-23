@@ -59,7 +59,7 @@
 		<Viewbox
             x:Name="viewBox"
             Grid.Column="0"
-            Margin="4"
+            Margin="2"
             IsHitTestVisible="False"
             HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
             >

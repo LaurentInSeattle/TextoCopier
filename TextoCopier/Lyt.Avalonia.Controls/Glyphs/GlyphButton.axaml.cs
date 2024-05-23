@@ -1,12 +1,12 @@
-
 namespace Lyt.Avalonia.Controls.Glyphs;
 
 public delegate void RoutedEventDelegate(object sender, RoutedEventArgs rea);
 
 public partial class GlyphButton : UserControl
 {
+    // private const double KeyboardPressMilliseconds = 600.0;
+
     private const double ViewboxDefaultMargin = 8.0;
-    private const double KeyboardPressMilliseconds = 600.0;
     private const double LongPressMilliseconds = 950.0;
     private const int KeyboardTimerIntervalMilliseconds = 75;
     private const int LongPressTimerIntervalMilliseconds = 75;
@@ -76,13 +76,11 @@ public partial class GlyphButton : UserControl
         => this.ButtonBackground == ButtonBackground.Rectangle ||
             this.ButtonBackground == ButtonBackground.BorderOnly;
 
-    private void ChangeTypography(ControlTheme typography)
-    {
-        // According to Forum discussion: Does not work, because TextBlock is not a TemplatedControl ??? 
-        // this.textBlock.Theme = value;
-        this.textBlock.ApplyControlTheme(typography);
-    }
-
+    // According to Forum discussion:
+    // this.textBlock.Theme = value;
+    // Does not work, because TextBlock is not a TemplatedControl ??? 
+    private void ChangeTypography(ControlTheme typography) => this.textBlock.ApplyControlTheme(typography);
+    
     private void ChangeBehaviour(ButtonBehaviour behaviour)
         => this.gridPopup.IsVisible = behaviour == ButtonBehaviour.Keyboard;
 
@@ -207,127 +205,131 @@ public partial class GlyphButton : UserControl
 
     private void SetPressedVisualState()
     {
-        //this.rectangle.Fill = Brushes.Transparent;
-        //if (this.HasIcon)
-        //{
-        //    this.icon.Foreground = this.PressedColor;
-        //}
+        this.eventingRectangle.Fill = Brushes.Transparent;
+        var pressedColor = this.GeneralVisualState.Pressed; 
+        if (this.HasIcon)
+        {
+            this.icon.Foreground = pressedColor;
+        }
 
-        //if (this.HasText)
-        //{
-        //    this.textBlock.Foreground = this.PressedColor;
-        //}
+        if (this.HasText)
+        {
+            this.textBlock.Foreground = pressedColor;
+        }
 
-        //if (this.HasBackgroundRectangle)
-        //{
-        //    this.rectangleBackground.Fill = this.BackgroundPressedColor;
-        //}
+        if (this.HasBackgroundRectangle)
+        {
+            this.rectangleBackground.Fill = this.BackgroundVisualState.Pressed; 
+        }
 
-        //if (this.HasBackgroundBorder)
-        //{
-        //    this.rectangleBackground.Stroke = this.BackgroundBorderPressedColor;
-        //}
+        if (this.HasBackgroundBorder)
+        {
+            this.rectangleBackground.Stroke = this.BackgroundBorderVisualState.Pressed;
+        }
     }
 
     private void SetHotVisualState()
     {
-        //this.rectangle.Fill = Brushes.Transparent;
-        //if (this.HasIcon)
-        //{
-        //    this.icon.Foreground = this.HotColor;
-        //    this.viewBox.Margin = new Thickness(this.viewboxMargin + 2.0);
-        //}
+        this.eventingRectangle.Fill = Brushes.Transparent;
+        var hotColor = this.GeneralVisualState.Hot;
+        if (this.HasIcon)
+        {
+            this.icon.Foreground = hotColor;
+            this.viewBox.Margin = new Thickness(this.viewboxMargin + 2.0);
+        }
 
-        //if (this.HasText)
-        //{
-        //    this.textBlock.Foreground = this.HotColor;
-        //}
+        if (this.HasText)
+        {
+            this.textBlock.Foreground = hotColor;
+        }
 
-        //if (this.HasBackgroundRectangle)
-        //{
-        //    this.rectangleBackground.Fill = this.BackgroundHotColor;
-        //}
+        if (this.HasBackgroundRectangle)
+        {
+            this.rectangleBackground.Fill = this.BackgroundVisualState.Hot;
+        }
 
-        //if (this.HasBackgroundBorder)
-        //{
-        //    this.rectangleBackground.Stroke = this.BackgroundBorderHotColor;
-        //}
+        if (this.HasBackgroundBorder)
+        {
+            this.rectangleBackground.Stroke = this.BackgroundBorderVisualState.Hot; 
+        }
     }
 
     private void SetNormalVisualState()
     {
-        //this.rectangle.Fill = Brushes.Transparent;
-        //if (this.HasIcon)
-        //{
-        //    this.icon.Foreground = this.NormalColor;
-        //    this.viewBox.Margin = new Thickness(this.viewboxMargin);
-        //}
+        this.eventingRectangle.Fill = Brushes.Transparent;
+        
+        if (this.HasIcon)
+        {
+            this.icon.Foreground = this.GeneralVisualState.Normal;
+            this.viewBox.Margin = new Thickness(this.viewboxMargin);
+        }
 
-        //if (this.HasText)
-        //{
-        //    this.textBlock.Foreground = this.TextForeground;
-        //}
+        if (this.HasText)
+        {
+            this.textBlock.Foreground = Brushes.AntiqueWhite; //this.TextForeground;
+        }
 
-        //if (this.HasBackgroundRectangle)
-        //{
-        //    this.rectangleBackground.Fill = this.BackgroundNormalColor;
-        //}
+        if (this.HasBackgroundRectangle)
+        {
+            this.rectangleBackground.Fill = this.BackgroundVisualState.Normal;
+        }
 
-        //if (this.HasBackgroundBorder)
-        //{
-        //    this.rectangleBackground.Stroke = this.BackgroundBorderNormalColor;
-        //}
+        if (this.HasBackgroundBorder)
+        {
+            this.rectangleBackground.Stroke = this.BackgroundBorderVisualState.Normal;
+        }
     }
 
     private void SetSelectedVisualState()
     {
-        //this.rectangle.Fill = Brushes.Transparent;
-        //if (this.HasIcon)
-        //{
-        //    this.icon.Foreground = this.NormalColor;
-        //    this.viewBox.Margin = new Thickness(this.viewboxMargin);
-        //}
+        this.eventingRectangle.Fill = Brushes.Transparent;
+        if (this.HasIcon)
+        {
+            this.icon.Foreground = this.GeneralVisualState.Selected; 
+            this.viewBox.Margin = new Thickness(this.viewboxMargin);
+        }
 
-        //if (this.HasText)
-        //{
-        //    this.textBlock.Foreground = this.TextForeground;
-        //}
+        if (this.HasText)
+        {
+            this.textBlock.Foreground = Brushes.Wheat; // this.TextForeground;
+        }
 
-        //if (this.HasBackgroundRectangle)
-        //{
-        //    this.rectangleBackground.Fill = this.BackgroundNormalColor;
-        //}
+        if (this.HasBackgroundRectangle)
+        {
+            this.rectangleBackground.Fill = this.BackgroundVisualState.Selected;
+        }
 
-        //if (this.HasBackgroundBorder)
-        //{
-        //    this.rectangleBackground.Stroke = this.BackgroundBorderNormalColor;
-        //}
+        if (this.HasBackgroundBorder)
+        {
+            this.rectangleBackground.Stroke = this.BackgroundBorderVisualState.Selected;
+        }
     }
 
     private void SetDisabledVisualState()
     {
-        //if (this.HasIcon)
-        //{
-        //    this.icon.Foreground = this.DisabledColor;
-        //}
+        var disabledColor = this.GeneralVisualState.Disabled;
+        if (this.HasIcon)
+        {
+            this.icon.Foreground = disabledColor;
+        }
 
-        //if (this.HasText)
-        //{
-        //    this.textBlock.Foreground = this.DisabledColor;
-        //}
+        if (this.HasText)
+        {
+            this.textBlock.Foreground = disabledColor;
+        }
 
 
-        //if (this.HasBackgroundRectangle)
-        //{
-        //    this.rectangleBackground.Fill = this.BackgroundDisabledColor;
-        //}
+        if (this.HasBackgroundRectangle)
+        {
+            this.rectangleBackground.Fill = this.BackgroundVisualState.Disabled;
+        }
 
-        //if (this.HasBackgroundBorder)
-        //{
-        //    this.rectangleBackground.Stroke = this.BackgroundBorderDisabledColor;
-        //}
+        if (this.HasBackgroundBorder)
+        {
+            this.rectangleBackground.Stroke = this.BackgroundBorderVisualState.Disabled;
+        }
 
-        //this.rectangle.Fill = this.IsMouseOver ? this.darkColor : Brushes.Transparent;
+        this.eventingRectangle.Fill = this.isOver ? this.darkColor : Brushes.Transparent;
     }
 
     #endregion Visual States 
@@ -469,7 +471,7 @@ public partial class GlyphButton : UserControl
 
         if (this.Behaviour == ButtonBehaviour.Tap)
         {
-            this.ActivateCommand(args);
+            this.ActivateCommand(args, ButtonTag.None);
         }
         //else if (this.Behaviour == ButtonBehaviour.PopupKeyboard)
         //{
@@ -571,7 +573,8 @@ public partial class GlyphButton : UserControl
             if (triggered)
             {
                 this.StopTimer();
-                object? tag = this.Behaviour == ButtonBehaviour.LongPress ? null : ButtonTag.CountdownComplete;
+                ButtonTag tag = 
+                    this.Behaviour == ButtonBehaviour.LongPress ? ButtonTag.None : ButtonTag.CountdownComplete;
                 this.ActivateCommand(new(), tag);
                 this.IsDisabled = true;
                 this.isLongPressActivated = true;
@@ -622,7 +625,7 @@ public partial class GlyphButton : UserControl
             });
     }
 
-    private void ActivateCommand(RoutedEventArgs rea, object? tagObject = null)
+    private void ActivateCommand(RoutedEventArgs rea, ButtonTag buttonTag)
     {
         if (this.IsDisabled)
         {
@@ -643,20 +646,21 @@ public partial class GlyphButton : UserControl
         }
         else if (this.Command != null)
         {
-            object? tag = tagObject is null ? this.Tag : tagObject;
-            if (tag is null)
-            {
-                tag = this.CommandParameter;
-            }
-
-            if (this.Command.CanExecute(tag))
+            // Pass along the button Tag if there is one for continuous and count down behaviours,
+            // then the Button Tag if any, for keyboards and numeric pads 
+            // and finally the command parameter which can be null if left unspecified 
+            object? commandParameter =
+                buttonTag != ButtonTag.None ?
+                    buttonTag :
+                    this.Tag is not null ? this.Tag : this.CommandParameter; 
+            if (this.Command.CanExecute(commandParameter))
             {
                 if (this.Behaviour == ButtonBehaviour.Tap)
                 {
                     this.PreventMultipleClicks();
                 }
 
-                this.Command.Execute(tag);
+                this.Command.Execute(commandParameter);
             }
         }
     }
@@ -670,31 +674,31 @@ public partial class GlyphButton : UserControl
     // public GlyphButton? ParentGlyphButton { get; set; }
 
 
-    private void LaunchPopupKeyboard()
-    {
-        //this.popupKeyboard = new();
-        //this.popupKeyboard.Create(this);
-        //this.gridPopup.Children.Add(this.popupKeyboard);
-        //this.gridPopup.Visibility = Visibility.Visible;
-        //this.gridPopup.Width = this.popupKeyboard.Width;
-        //this.gridPopup.Height = this.popupKeyboard.Height;
-        //this.gridPopup.Margin =
-        //    new Thickness(
-        //        this.Width / 2.0 - this.popupKeyboard.Width / 2.0, -this.popupKeyboard.Height - 6.0,
-        //        this.Width / 2.0 - this.popupKeyboard.Width / 2.0, -this.popupKeyboard.Height - 6.0);
-    }
+    //private void LaunchPopupKeyboard()
+    //{
+    //    //this.popupKeyboard = new();
+    //    //this.popupKeyboard.Create(this);
+    //    //this.gridPopup.Children.Add(this.popupKeyboard);
+    //    //this.gridPopup.Visibility = Visibility.Visible;
+    //    //this.gridPopup.Width = this.popupKeyboard.Width;
+    //    //this.gridPopup.Height = this.popupKeyboard.Height;
+    //    //this.gridPopup.Margin =
+    //    //    new Thickness(
+    //    //        this.Width / 2.0 - this.popupKeyboard.Width / 2.0, -this.popupKeyboard.Height - 6.0,
+    //    //        this.Width / 2.0 - this.popupKeyboard.Width / 2.0, -this.popupKeyboard.Height - 6.0);
+    //}
 
-    private void DismissPopupKeyboard()
-    {
-        //this.gridPopup.Visibility = Visibility.Collapsed;
-        //this.gridPopup.Width = 0.0;
-        //this.gridPopup.Height = 0.0;
-        //if (this.popupKeyboard != null)
-        //{
-        //    this.gridPopup.Children.Remove(this.popupKeyboard);
-        //    this.popupKeyboard = null;
-        //}
-    }
+    //private void DismissPopupKeyboard()
+    //{
+    //    //this.gridPopup.Visibility = Visibility.Collapsed;
+    //    //this.gridPopup.Width = 0.0;
+    //    //this.gridPopup.Height = 0.0;
+    //    //if (this.popupKeyboard != null)
+    //    //{
+    //    //    this.gridPopup.Children.Remove(this.popupKeyboard);
+    //    //    this.popupKeyboard = null;
+    //    //}
+    //}
 
     #endregion Popup Keyboards 
 }

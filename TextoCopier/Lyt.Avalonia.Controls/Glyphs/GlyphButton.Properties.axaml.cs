@@ -37,7 +37,7 @@ public partial class GlyphButton
     /// <summary> ButtonBackground Styled Property </summary>
     public static readonly StyledProperty<ButtonBackground> ButtonBackgroundProperty =
         AvaloniaProperty.Register<GlyphButton, ButtonBackground>(
-            nameof(ButtonBackground), defaultValue: ButtonBackground.Rectangle);
+            nameof(ButtonBackground), defaultValue: ButtonBackground.None);
 
     /// <summary> Gets or sets the ButtonBackground property.</summary>
     public ButtonBackground ButtonBackground

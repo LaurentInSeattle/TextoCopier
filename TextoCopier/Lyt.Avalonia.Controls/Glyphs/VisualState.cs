@@ -1,4 +1,170 @@
-﻿namespace Lyt.Avalonia.Controls.Glyphs; 
+﻿namespace Lyt.Avalonia.Controls.Glyphs;
+
+
+
+/*
+    <local:NumericKeypadBase.Resources>
+        <Style x:Key="KeypadButton" TargetType="glyphs:GlyphButton">
+            <Setter Property="Typography" Value="{StaticResource TextBlockTitleLarge}" />
+            <Setter Property="Layout" Value="TextOnly" />
+            <Setter Property="ButtonBackground" Value="Rectangle" />
+            <Setter Property="BackgroundCornerRadius" Value="6" />
+            <Setter Property="TextForeground" Value="{StaticResource CyprusCerulean_0_100_Brush}" />
+            <Setter Property="NormalColor" Value="{StaticResource CyprusCerulean_0_100_Brush}" />
+            <Setter Property="HotColor" Value="{StaticResource JaffaOrange_0_100_Brush}" />
+            <Setter Property="PressedColor" Value="{StaticResource JaffaOrange_1_100_Brush}" />
+            <Setter Property="DisabledColor" Value="{StaticResource CyprusCerulean_4_040_Brush}" />
+            <Setter Property="BackgroundNormalColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
+            <Setter Property="BackgroundHotColor" Value="{StaticResource CyprusCerulean_2_040_Brush}" />
+            <Setter Property="BackgroundPressedColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
+            <Setter Property="BackgroundDisabledColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
+            <Setter Property="BackgroundBorderNormalColor" Value="{StaticResource CyprusCerulean_2_040_Brush}" />
+            <Setter Property="BackgroundBorderHotColor" Value="{StaticResource CyprusCerulean_0_040_Brush}" />
+            <Setter Property="BackgroundBorderPressedColor" Value="{StaticResource CyprusCerulean_1_040_Brush}" />
+            <Setter Property="BackgroundBorderDisabledColor" Value="{StaticResource CyprusCerulean_3_020_Brush}" />
+            <Setter Property="BackgroundBorderThickness" Value="2" />
+            <Setter Property="IsDisabled" Value="False" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Width" Value="48" />
+            <Setter Property="Height" Value="48" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+        </Style> 
+        <Style x:Key="KeypadFunctionButton" TargetType="glyphs:GlyphButton">
+            <Setter Property="Typography" Value="{StaticResource TextBlockTitleMedium}" />
+            <Setter Property="Layout" Value="IconOnly" />
+            <Setter Property="ButtonBackground" Value="Rectangle" />
+            <Setter Property="BackgroundCornerRadius" Value="8" />
+            <Setter Property="TextForeground" Value="{StaticResource CyprusCerulean_0_100_Brush}" />
+            <Setter Property="NormalColor" Value="{StaticResource CyprusCerulean_0_100_Brush}" />
+            <Setter Property="HotColor" Value="{StaticResource JaffaOrange_0_100_Brush}" />
+            <Setter Property="PressedColor" Value="{StaticResource JaffaOrange_1_100_Brush}" />
+            <Setter Property="DisabledColor" Value="{StaticResource CyprusCerulean_4_040_Brush}" />
+            <Setter Property="BackgroundNormalColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
+            <Setter Property="BackgroundHotColor" Value="{StaticResource CyprusCerulean_2_040_Brush}" />
+            <Setter Property="BackgroundPressedColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
+            <Setter Property="BackgroundDisabledColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
+            <Setter Property="BackgroundBorderNormalColor" Value="{StaticResource CyprusCerulean_2_040_Brush}" />
+            <Setter Property="BackgroundBorderHotColor" Value="{StaticResource CyprusCerulean_0_040_Brush}" />
+            <Setter Property="BackgroundBorderPressedColor" Value="{StaticResource CyprusCerulean_1_040_Brush}" />
+            <Setter Property="BackgroundBorderDisabledColor" Value="{StaticResource CyprusCerulean_3_020_Brush}" />
+            <Setter Property="BackgroundBorderThickness" Value="2" />
+            <Setter Property="IsDisabled" Value="False" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Width" Value="48" />
+            <Setter Property="Height" Value="48" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+        </Style>
+
+        <Style x:Key="PrimaryButton" TargetType="glyphs:GlyphButton">
+            <Setter Property="Typography" Value="{StaticResource TextBlockTestStyle}" />
+            <Setter Property="Layout" Value="TextOnly" />
+            <Setter Property="ButtonBackground" Value="Rectangle" />
+            <Setter Property="TextForeground" Value="{StaticResource CyprusCerulean_0_100_Brush}" />
+            <Setter Property="NormalColor" Value="{StaticResource CyprusCerulean_0_100_Brush}" />
+            <Setter Property="HotColor" Value="{StaticResource JaffaOrange_0_100_Brush}" />
+            <Setter Property="PressedColor" Value="{StaticResource JaffaOrange_1_100_Brush}" />
+            <Setter Property="DisabledColor" Value="{StaticResource CyprusCerulean_4_040_Brush}" />
+            <Setter Property="BackgroundNormalColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
+            <Setter Property="BackgroundHotColor" Value="{StaticResource CyprusCerulean_2_040_Brush}" />
+            <Setter Property="BackgroundPressedColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
+            <Setter Property="BackgroundDisabledColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
+            <Setter Property="BackgroundBorderNormalColor" Value="{StaticResource CyprusCerulean_2_040_Brush}" />
+            <Setter Property="BackgroundBorderHotColor" Value="{StaticResource CyprusCerulean_0_040_Brush}" />
+            <Setter Property="BackgroundBorderPressedColor" Value="{StaticResource CyprusCerulean_1_040_Brush}" />
+            <Setter Property="BackgroundBorderDisabledColor" Value="{StaticResource CyprusCerulean_3_020_Brush}" />
+            <Setter Property="IsDisabled" Value="False" />
+        </Style>
+        <Style x:Key="KeypadButton" TargetType="glyphs:GlyphButton">
+            <Setter Property="Typography" Value="{StaticResource TextBlockTitleLarge}" />
+            <Setter Property="Layout" Value="TextOnly" />
+            <Setter Property="ButtonBackground" Value="Rectangle" />
+            <Setter Property="BackgroundCornerRadius" Value="8" />
+            <Setter Property="TextForeground" Value="{StaticResource CyprusCerulean_0_100_Brush}" />
+            <Setter Property="NormalColor" Value="{StaticResource CyprusCerulean_0_100_Brush}" />
+            <Setter Property="HotColor" Value="{StaticResource JaffaOrange_0_100_Brush}" />
+            <Setter Property="PressedColor" Value="{StaticResource JaffaOrange_1_100_Brush}" />
+            <Setter Property="DisabledColor" Value="{StaticResource CyprusCerulean_4_040_Brush}" />
+            <Setter Property="BackgroundNormalColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
+            <Setter Property="BackgroundHotColor" Value="{StaticResource CyprusCerulean_2_040_Brush}" />
+            <Setter Property="BackgroundPressedColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
+            <Setter Property="BackgroundDisabledColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
+            <Setter Property="BackgroundBorderNormalColor" Value="{StaticResource CyprusCerulean_2_040_Brush}" />
+            <Setter Property="BackgroundBorderHotColor" Value="{StaticResource CyprusCerulean_0_040_Brush}" />
+            <Setter Property="BackgroundBorderPressedColor" Value="{StaticResource CyprusCerulean_1_040_Brush}" />
+            <Setter Property="BackgroundBorderDisabledColor" Value="{StaticResource CyprusCerulean_3_020_Brush}" />
+            <Setter Property="IsDisabled" Value="False" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Width" Value="52" />
+            <Setter Property="Height" Value="52" />
+        </Style>
+        <Style x:Key="KeypadFunctionButton" TargetType="glyphs:GlyphButton">
+            <Setter Property="Typography" Value="{StaticResource TextBlockTitleLarge}" />
+            <Setter Property="Layout" Value="IconOnly" />
+            <Setter Property="ButtonBackground" Value="Rectangle" />
+            <Setter Property="BackgroundCornerRadius" Value="8" />
+            <Setter Property="TextForeground" Value="{StaticResource CyprusCerulean_0_100_Brush}" />
+            <Setter Property="NormalColor" Value="{StaticResource CyprusCerulean_0_100_Brush}" />
+            <Setter Property="HotColor" Value="{StaticResource JaffaOrange_0_100_Brush}" />
+            <Setter Property="PressedColor" Value="{StaticResource JaffaOrange_1_100_Brush}" />
+            <Setter Property="DisabledColor" Value="{StaticResource CyprusCerulean_4_040_Brush}" />
+            <Setter Property="BackgroundNormalColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
+            <Setter Property="BackgroundHotColor" Value="{StaticResource CyprusCerulean_2_040_Brush}" />
+            <Setter Property="BackgroundPressedColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
+            <Setter Property="BackgroundDisabledColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
+            <Setter Property="BackgroundBorderNormalColor" Value="{StaticResource CyprusCerulean_2_040_Brush}" />
+            <Setter Property="BackgroundBorderHotColor" Value="{StaticResource CyprusCerulean_0_040_Brush}" />
+            <Setter Property="BackgroundBorderPressedColor" Value="{StaticResource CyprusCerulean_1_040_Brush}" />
+            <Setter Property="BackgroundBorderDisabledColor" Value="{StaticResource CyprusCerulean_3_020_Brush}" />
+            <Setter Property="IsDisabled" Value="False" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Width" Value="52" />
+            <Setter Property="Height" Value="52" />
+        </Style>
+        <Style x:Key="IconButton" TargetType="glyphs:GlyphButton">
+            <Setter Property="Layout" Value="IconOnly" />
+            <Setter Property="ButtonBackground" Value="BorderOnly" />
+            <Setter Property="NormalColor" Value="{StaticResource KeyLime_1_100_Brush}" />
+            <Setter Property="HotColor" Value="{StaticResource JaffaOrange_0_100_Brush}" />
+            <Setter Property="PressedColor" Value="{StaticResource JaffaOrange_1_100_Brush}" />
+            <Setter Property="DisabledColor" Value="{StaticResource CyprusCerulean_4_040_Brush}" />
+            <Setter Property="BackgroundCornerRadius" Value="8" />
+            <Setter Property="TextForeground" Value="{StaticResource CyprusCerulean_0_100_Brush}" />
+            <Setter Property="BackgroundNormalColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
+            <Setter Property="BackgroundHotColor" Value="{StaticResource CyprusCerulean_2_040_Brush}" />
+            <Setter Property="BackgroundPressedColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
+            <Setter Property="BackgroundDisabledColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
+            <Setter Property="BackgroundBorderNormalColor" Value="{StaticResource CyprusCerulean_2_040_Brush}" />
+            <Setter Property="BackgroundBorderHotColor" Value="{StaticResource CyprusCerulean_0_040_Brush}" />
+            <Setter Property="BackgroundBorderPressedColor" Value="{StaticResource CyprusCerulean_1_040_Brush}" />
+            <Setter Property="BackgroundBorderDisabledColor" Value="{StaticResource CyprusCerulean_3_020_Brush}" />
+            <Setter Property="IsDisabled" Value="False" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Width" Value="80" />
+            <Setter Property="Height" Value="80" />
+        </Style>
+        <Style x:Key="ToolbarButton" TargetType="glyphs:GlyphButton">
+            <Setter Property="Typography" Value="{StaticResource TextBlockBodySuperSmall}" />
+            <Setter Property="Layout" Value="IconTextBelow" />
+            <Setter Property="ButtonBackground" Value="None" />
+            <Setter Property="TextForeground" Value="{StaticResource CyprusCerulean_0_100_Brush}" />
+            <Setter Property="NormalColor" Value="{StaticResource BrazilianCherry_2_080_Brush}" />
+            <Setter Property="HotColor" Value="{StaticResource JaffaOrange_0_100_Brush}" />
+            <Setter Property="PressedColor" Value="{StaticResource JaffaOrange_1_100_Brush}" />
+            <Setter Property="DisabledColor" Value="{StaticResource CyprusCerulean_4_040_Brush}" />
+            <Setter Property="IsDisabled" Value="False" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Width" Value="92" />
+            <Setter Property="Height" Value="92" />
+        </Style>
+
+*/
+
 
 public sealed class VisualState : AvaloniaObject
 {

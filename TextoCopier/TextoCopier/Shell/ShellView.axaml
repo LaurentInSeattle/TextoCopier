@@ -80,7 +80,7 @@
 			/>
 		<glyphs:GlyphButton
 			HorizontalAlignment="Left" VerticalAlignment="Center"
-			Width="56" Height="56"
+			Width="64" Height="64"
 			Margin="40"
 			GlyphSource="person"
 			GlyphStrokeThickness="0.1"
@@ -93,57 +93,5 @@
 			CommandParameter="42_666"
 			>			
 		</glyphs:GlyphButton>
-		<Button
-			Content="Click Me!"
-			HorizontalAlignment="Center" VerticalAlignment="Center"
-			Width="64" Height="64"
-			Padding="0"
-			Click="OnButtonClick"
-            />
-
-		<Button
-			HorizontalAlignment="Center" VerticalAlignment="Top"
-			Width="64" Height="64"
-			Padding="0"
-			Click="OnButtonClick"
-            >
-			<StackPanel
-				Orientation="Vertical"
-				Margin="0" 				
-					Background="#00000000"
-				>
-				<Border
-					Width="64" Height="48"
-					Background="#00000000"
-					>
-					<glyphs:SvgIcon
-						Margin="0"
-						Padding="0"
-						Width="32" Height="32"
-						Foreground="DodgerBlue"
-						Source="mail"
-						StrokeThickness="0.1"
-						/>
-				</Border>
-				<Border
-					Width="64" Height="16"
-					Padding="0"
-					Background="#00000000"
-					>
-					<TextBlock
-						Width="64"
-						FontSize="16"
-						Text="Home"
-						FontFamily="{StaticResource InterV}"
-						FontStyle="Oblique"
-						Foreground="Aquamarine"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Center"
-						TextAlignment="Center"
-					/>
-				</Border>
-			</StackPanel>
-						
-		</Button>
     </Grid>
 </UserControl>

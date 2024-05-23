@@ -37,6 +37,8 @@ public enum ButtonBehaviour
 
 public enum ButtonTag
 {
+    None,
+
     CountdownBegin,
     CountdownCancel,
     CountdownComplete,
