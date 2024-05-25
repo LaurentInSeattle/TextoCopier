@@ -79,16 +79,14 @@
 			Foreground="DarkOrange"
 			/>
 		<glyphs:GlyphButton
+			Style="{StaticResource ToolbarIconButton}"
 			HorizontalAlignment="Left" VerticalAlignment="Center"
-			Width="64" Height="64"
-			Margin="40"
+			Width="80" Height="80"
+			Margin="4"
 			GlyphSource="person"
 			GlyphStrokeThickness="0.1"
 			GlyphAngle="0"
 			Text="Me"
-			Layout="IconTextBelow"
-			Typography="{StaticResource GlyphButtonTypography}"
-			GeneralVisualState="{StaticResource GeneralVisualState}"
 			Command="{Binding GlyphCommand}"
 			CommandParameter="42_666"
 			>			

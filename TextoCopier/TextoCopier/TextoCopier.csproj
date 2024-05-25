@@ -12,7 +12,8 @@
     <AvaloniaResource Include="Assets\**" />
     <AvaloniaResource Include="Assets\Languages\**" />
   </ItemGroup>
-  
+
+   
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.10" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10" />

@@ -26,6 +26,7 @@ public partial class SvgIcon : UserControl
         {
             this.ProcessDrawingGroup(drawingGroup);
             this.image.Source = this.drawingImage;
+            this.image.InvalidateVisual();
         }
     }
 
@@ -85,9 +86,11 @@ public partial class SvgIcon : UserControl
         if (geometryDrawing.Pen is Pen pen)
         {
             // If the pen is null, no stroke, no need to do anything 
-            if ((pen.Brush is ImmutableSolidColorBrush) || (pen.Brush is ImmutableLinearGradientBrush))
+            if ((pen.Brush is SolidColorBrush) ||
+                (pen.Brush is ImmutableSolidColorBrush) || 
+                (pen.Brush is ImmutableLinearGradientBrush))
             {
-                pen.Brush = this.Foreground;
+                geometryDrawing.Pen = new Pen() { Thickness = this.StrokeThickness, Brush = this.Foreground };
             }
             else
             {
@@ -102,8 +105,6 @@ public partial class SvgIcon : UserControl
 
                 if (Debugger.IsAttached) { Debugger.Break(); }
             }
-
-            pen.Thickness = this.StrokeThickness;
         }
         else
         {

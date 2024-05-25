@@ -4,6 +4,21 @@ public partial class GlyphButton
 {
     #region State and Layout Styled Properties 
 
+    /// <summary> Style Styled Property </summary>
+    public static readonly StyledProperty<ControlTheme> StyleProperty =
+        AvaloniaProperty.Register<GlyphButton, ControlTheme>(nameof(Style));
+
+    /// <summary> Gets or sets the Style property.</summary>
+    public ControlTheme Style
+    {
+        get => this.GetValue(StyleProperty);
+        set
+        {
+            this.SetValue(StyleProperty, value);
+            this.ApplyControlTheme(value);
+        }
+    }
+
     /// <summary> Behaviour Styled Property </summary>
     public static readonly StyledProperty<ButtonBehaviour> BehaviourProperty =
         AvaloniaProperty.Register<GlyphButton, ButtonBehaviour>(nameof(Behaviour), defaultValue: ButtonBehaviour.Tap);

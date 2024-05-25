@@ -40,7 +40,14 @@ public static class Utilities
             var setter = item as Setter;
             if ((setter is not null) && (setter.Property is not null))
             {
-                control.SetCurrentValue(setter.Property, setter.Value);
+                if(setter.Value is ControlTheme nestedTheme)
+                {
+                    control.ApplyControlTheme(nestedTheme); 
+                }
+                else
+                {
+                    control.SetCurrentValue(setter.Property, setter.Value);
+                }
             }
         }
     }

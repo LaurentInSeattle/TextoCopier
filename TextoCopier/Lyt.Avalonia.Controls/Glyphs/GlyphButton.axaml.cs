@@ -6,7 +6,7 @@ public partial class GlyphButton : UserControl
 {
     // private const double KeyboardPressMilliseconds = 600.0;
 
-    private const double ViewboxDefaultMargin = 8.0;
+    private const double ViewboxDefaultMargin = 4.0;
     private const double LongPressMilliseconds = 950.0;
     private const int KeyboardTimerIntervalMilliseconds = 75;
     private const int LongPressTimerIntervalMilliseconds = 75;
@@ -45,9 +45,9 @@ public partial class GlyphButton : UserControl
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
         //this.DismissPopupKeyboard();
-
+        
         this.ChangeButtonBackground(this.ButtonBackground);
-        this.ChangeLayout(this.Layout);
+        //this.ChangeLayout(this.Layout);
         this.ChangeBehaviour(this.Behaviour);
         this.ChangeTypography(this.Typography);
         this.icon.UpdateImage();
@@ -105,8 +105,9 @@ public partial class GlyphButton : UserControl
                 this.textBlock.SetValue(Grid.ColumnSpanProperty, 1);
                 this.textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center);
                 this.textBlock.SetValue(MarginProperty, new Thickness(0, 2, 0, 0));
-                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
                 this.mainGrid.ColumnDefinitions[2].Width = new GridLength(0, GridUnitType.Pixel);
+                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
+                this.mainGrid.ColumnDefinitions[0].Width = new GridLength(this.mainGrid.Width, GridUnitType.Pixel);
                 this.mainGrid.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Auto);
                 break;
 
