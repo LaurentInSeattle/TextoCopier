@@ -29,6 +29,7 @@ public partial class GlyphButton : UserControl
         this.eventingRectangle.PointerReleased += this.OnPointerReleased;
         this.eventingRectangle.PointerEntered += this.OnPointerEnter;
         this.eventingRectangle.PointerExited += this.OnPointerLeave;
+        this.eventingRectangle.PointerMoved += this.OnPointerMoved;
 
         this.darkColor = new SolidColorBrush(Color.FromArgb(a: 0x80, r: 20, g: 20, b: 20));
         this.Loaded += this.OnLoaded;
@@ -40,6 +41,7 @@ public partial class GlyphButton : UserControl
         this.eventingRectangle.PointerReleased -= this.OnPointerReleased;
         this.eventingRectangle.PointerEntered -= this.OnPointerEnter;
         this.eventingRectangle.PointerExited -= this.OnPointerLeave;
+        this.eventingRectangle.PointerMoved += this.OnPointerMoved;
     }
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
@@ -150,15 +152,15 @@ public partial class GlyphButton : UserControl
                 break;
 
             case ButtonBackground.BorderOnly:
-                this.viewboxMargin = GlyphButton.ViewboxDefaultMargin + 2.0 + this.BackgroundBorderThickness;
-                this.viewBox.Margin = new Thickness(this.viewboxMargin);
+                this.viewboxMargin = GlyphButton.ViewboxDefaultMargin + this.BackgroundBorderThickness;
+                this.viewBox.Margin = new Thickness(this.viewboxMargin, 2.0 + this.viewboxMargin, this.viewboxMargin, this.viewboxMargin);
                 this.rectangleBackground.IsVisible = true; // Visibility.Visible;
                 this.rectangleBackground.Fill = Brushes.Transparent;
                 break;
 
             case ButtonBackground.Rectangle:
-                this.viewboxMargin = GlyphButton.ViewboxDefaultMargin + 2.0 + this.BackgroundBorderThickness;
-                this.viewBox.Margin = new Thickness(this.viewboxMargin);
+                this.viewboxMargin = GlyphButton.ViewboxDefaultMargin + this.BackgroundBorderThickness;
+                this.viewBox.Margin = new Thickness(this.viewboxMargin, 2.0 + this.viewboxMargin, this.viewboxMargin, this.viewboxMargin);
                 this.rectangleBackground.IsVisible = true; // Visibility.Visible;
                 this.rectangleBackground.Fill = Brushes.Transparent;// todo
                 break;
@@ -267,7 +269,7 @@ public partial class GlyphButton : UserControl
 
         if (this.HasText)
         {
-            this.textBlock.Foreground = Brushes.AntiqueWhite; //this.TextForeground;
+            this.textBlock.Foreground = this.GeneralVisualState.Normal;
         }
 
         if (this.HasBackgroundRectangle)
@@ -292,7 +294,7 @@ public partial class GlyphButton : UserControl
 
         if (this.HasText)
         {
-            this.textBlock.Foreground = Brushes.Wheat; // this.TextForeground;
+            this.textBlock.Foreground = this.GeneralVisualState.Selected;
         }
 
         if (this.HasBackgroundRectangle)
@@ -330,7 +332,7 @@ public partial class GlyphButton : UserControl
             this.rectangleBackground.Stroke = this.BackgroundBorderVisualState.Disabled;
         }
 
-        this.eventingRectangle.Fill = this.isOver ? this.darkColor : Brushes.Transparent;
+        this.eventingRectangle.Fill = Brushes.Transparent; // this.isOver ? this.darkColor : Brushes.Transparent;
     }
 
     #endregion Visual States 
@@ -374,6 +376,19 @@ public partial class GlyphButton : UserControl
             this.Up(args);
         }
         else
+        {
+            this.Leave();
+        }
+    }
+
+    private void OnPointerMoved(object? sender, PointerEventArgs args)
+    {
+        if (!this.isOver)
+        {
+            return; 
+        }
+
+        if (!this.IsPointerInside(args))
         {
             this.Leave();
         }
@@ -574,12 +589,15 @@ public partial class GlyphButton : UserControl
             if (triggered)
             {
                 this.StopTimer();
-                ButtonTag tag = 
-                    this.Behaviour == ButtonBehaviour.LongPress ? ButtonTag.None : ButtonTag.CountdownComplete;
-                this.ActivateCommand(new(), tag);
-                this.IsDisabled = true;
-                this.isLongPressActivated = true;
-                this.UpdateVisualState();
+                if ( ! this.IsDisabled)
+                {
+                    ButtonTag tag =
+                        this.Behaviour == ButtonBehaviour.LongPress ? ButtonTag.None : ButtonTag.CountdownComplete;
+                    this.ActivateCommand(new(), tag);
+                    this.IsDisabled = true;
+                    this.isLongPressActivated = true;
+                    this.UpdateVisualState();
+                }
             }
         }
         else if (this.Behaviour == ButtonBehaviour.Keyboard)

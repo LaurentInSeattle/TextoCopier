@@ -6,5 +6,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="800"
     Icon="/Assets/avalonia-logo.ico"
-    Title="Texto Copier">
+    Title="Texto Copier"
+	Width="520" Height="800"
+	SizeToContent="Manual"
+	>
 </Window>

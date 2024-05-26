@@ -39,26 +39,9 @@
         </Style>
 	</UserControl.Styles>
 
-	<UserControl.Resources>
-		<ControlTheme x:Key="GlyphButtonTypography" TargetType="TextBlock">
-			<Setter Property="Background" Value="Transparent"/>
-			<Setter Property="Foreground" Value="DarkOrange"/>
-			<Setter Property="FontSize" Value="12"/>
-			<Setter Property="FontFamily" Value="InterV" />
-			<Setter Property="FontWeight" Value="SemiBold"/>
-			<Setter Property="FontStyle" Value="Italic"/>
-		</ControlTheme>
-		<glyphs:VisualState x:Key="GeneralVisualState" 
-			Normal="AliceBlue"
-			Disabled="Beige"
-			Selected="AntiqueWhite"
-			Pressed="DarkOrange"
-			Hot="Firebrick"
-			/>
-	</UserControl.Resources>	
 	<Grid
         x:Name="InnerGrid"
-        Background="DarkSeaGreen"
+        Background="Transparent"
         >
 		<Image
             Stretch="UniformToFill"
@@ -80,8 +63,9 @@
 			/>
 		<glyphs:GlyphButton
 			Style="{StaticResource ToolbarIconButton}"
+			Behaviour="LongPress"
 			HorizontalAlignment="Left" VerticalAlignment="Center"
-			Width="80" Height="80"
+			Width="72" Height="68"
 			Margin="4"
 			GlyphSource="person"
 			GlyphStrokeThickness="0.1"
@@ -89,7 +73,33 @@
 			Text="Me"
 			Command="{Binding GlyphCommand}"
 			CommandParameter="42_666"
-			>			
-		</glyphs:GlyphButton>
-    </Grid>
+			IsSelected="True"
+			/>
+		<glyphs:GlyphButton
+			Style="{StaticResource ToolbarIconButton}"
+			Behaviour="LongPress"
+			HorizontalAlignment="Left" VerticalAlignment="Center"
+			Width="72" Height="68"
+			Margin="140 4 4 4"
+			GlyphSource="settings"
+			GlyphStrokeThickness="0.1"
+			GlyphAngle="20"
+			Text="Settings"
+			Command="{Binding GlyphCommand}"
+			CommandParameter="666_42"
+    		/>
+		<glyphs:GlyphButton
+			Style="{StaticResource ToolbarIconButton}"
+			Behaviour="LongPress"
+			HorizontalAlignment="Left" VerticalAlignment="Center"
+			Width="72" Height="68"
+			Margin="260 4 4 4"
+			GlyphSource="add_circle"
+			GlyphStrokeThickness="0.1"
+			GlyphAngle="00"
+			Text="New Group"
+			Command="{Binding GlyphCommand}"
+			CommandParameter="666_42"
+    		/>
+	</Grid>
 </UserControl>

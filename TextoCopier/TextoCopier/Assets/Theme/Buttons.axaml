@@ -16,22 +16,22 @@
 	<ControlTheme x:Key="GlyphButtonTypography" TargetType="TextBlock">
 		<Setter Property="Background" Value="Transparent"/>
 		<Setter Property="Foreground" Value="{StaticResource LightAqua_0_100}"/>
-		<Setter Property="FontSize" Value="10"/>
+		<Setter Property="FontSize" Value="12"/>
 		<Setter Property="FontFamily" Value="InterV" />
 		<Setter Property="FontWeight" Value="Normal"/>
 	</ControlTheme>
 
 	<glyphs:VisualState x:Key="ToolbarIconGeneralVisualState" 
-		Normal="{StaticResource FreshGreen_1_100}"
-		Disabled="{StaticResource LightAqua_4_040}"
-		Selected="{StaticResource FreshGreen_4_100}"
+		Normal="{StaticResource LightAqua_1_100}"
+		Disabled="{StaticResource LightAqua_2_080}"
+		Selected="{StaticResource FreshGreen_1_100}"
 		Pressed="{StaticResource OrangePeel_1_100}"
 		Hot="{StaticResource OrangePeel_0_100}"
 		/>
 	
 	<glyphs:VisualState x:Key="ToolbarIconBackgroundVisualState"
 		Normal="{StaticResource   LightAqua_3_040}"
-		Disabled="{StaticResource LightAqua_3_020}"
+		Disabled="{StaticResource LightAqua_3_040}"
 		Selected="{StaticResource LightAqua_3_040}"
 		Pressed="{StaticResource  LightAqua_3_040}"
 		Hot="{StaticResource      LightAqua_2_040}"
@@ -39,7 +39,7 @@
 
 	<glyphs:VisualState x:Key="ToolbarIconBackgroundBorderVisualState"
 		Normal="{StaticResource   LightAqua_2_040}"
-		Disabled="{StaticResource LightAqua_3_020}"
+		Disabled="{StaticResource LightAqua_3_040}"
 		Selected="{StaticResource LightAqua_2_100}"
 		Pressed="{StaticResource  LightAqua_1_040}"
 		Hot="{StaticResource      LightAqua_0_040}"

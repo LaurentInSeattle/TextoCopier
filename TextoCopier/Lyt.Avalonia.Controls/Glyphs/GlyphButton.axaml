@@ -10,7 +10,6 @@
 	<Grid
         x:Name="mainGrid"
         ClipToBounds="False"
-        ShowGridLines="True"		
         VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
         >
 		<Grid.RowDefinitions>
@@ -71,16 +70,22 @@
 				Wadding="0"
                 />
 		</Viewbox>
+		
 		<!-- TextBlock will programmatically moved to the side if spec'ed "Right Side" -->
-		<TextBlock
-            x:Name="textBlock"
-            Margin="4 6 4 2"
+		<Border
+			Background ="Transparent"
             Grid.Row="1" Grid.ColumnSpan="999"
-            Background="Transparent"
-            Foreground="AntiqueWhite"
-            VerticalAlignment="Center" HorizontalAlignment="Center"
-            TextWrapping="Wrap"
-            />
+            Margin="1 0 1 4"
+			>			
+		    <TextBlock
+                x:Name="textBlock"
+                Background="Transparent"
+                Foreground="AntiqueWhite"
+                VerticalAlignment="Center" HorizontalAlignment="Center"
+				TextAlignment="Center"
+                TextWrapping="Wrap"
+                />
+		</Border>
 		<!-- Rectangle used for eventing MUST be above everything else -->
 		<Rectangle
             x:Name="eventingRectangle"
