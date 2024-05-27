@@ -2,6 +2,9 @@
 	xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:system="clr-namespace:System;assembly=System.Runtime">
-    <system:String x:Key="My.Strings.Greetings">Welcome to TextoCopier!</system:String>
-    <system:String x:Key="My.Strings.HelloWorld">Hello everyone!</system:String>
+    <system:String x:Key="Shell.Greetings">Welcome to TextoCopier!</system:String>
+	<system:String x:Key="Shell.About">About</system:String>
+	<system:String x:Key="Shell.NewGroup">New Group</system:String>
+	<system:String x:Key="Shell.Settings">Settings</system:String>
+	<system:String x:Key="Shell.Exit">Exit</system:String>
 </ResourceDictionary>

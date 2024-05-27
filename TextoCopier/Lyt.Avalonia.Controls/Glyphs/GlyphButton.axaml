@@ -81,7 +81,7 @@
                 x:Name="textBlock"
                 Background="Transparent"
                 Foreground="AntiqueWhite"
-                VerticalAlignment="Center" HorizontalAlignment="Center"
+                VerticalAlignment="Center" HorizontalAlignment="Stretch"
 				TextAlignment="Center"
                 TextWrapping="Wrap"
                 />

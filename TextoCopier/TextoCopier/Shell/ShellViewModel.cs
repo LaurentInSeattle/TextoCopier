@@ -25,7 +25,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         // Select default language 
         var localizer = App.GetRequiredService<LocalizerModel>();
         localizer.DetectAvailableLanguages();
-        localizer.SelectLanguage("fr-FR");
+        localizer.SelectLanguage("it-IT");
 
         //string hello = localizer.Lookup("My.Strings.HelloWorld"); 
         //this.Logger.Info(hello);

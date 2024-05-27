@@ -13,8 +13,6 @@ public partial class GlyphButton : UserControl
     private const int CountdownTimerIntervalMilliseconds = 100;
     private const int ContinuousTimerIntervalMilliseconds = 100;
 
-    private readonly Brush darkColor;
-
     private DispatcherTimer? timer;
     private bool isOver;
     private DateTime pressedAt;
@@ -30,8 +28,6 @@ public partial class GlyphButton : UserControl
         this.eventingRectangle.PointerEntered += this.OnPointerEnter;
         this.eventingRectangle.PointerExited += this.OnPointerLeave;
         this.eventingRectangle.PointerMoved += this.OnPointerMoved;
-
-        this.darkColor = new SolidColorBrush(Color.FromArgb(a: 0x80, r: 20, g: 20, b: 20));
         this.Loaded += this.OnLoaded;
     }
 
@@ -81,8 +77,12 @@ public partial class GlyphButton : UserControl
     // According to Forum discussion:
     // this.textBlock.Theme = value;
     // Does not work, because TextBlock is not a TemplatedControl ??? 
-    private void ChangeTypography(ControlTheme typography) => this.textBlock.ApplyControlTheme(typography);
-    
+    private void ChangeTypography(ControlTheme typography)
+    {
+        this.textBlock.ApplyControlTheme(typography);
+        this.textBlock.Text = this.Text;
+    }
+
     private void ChangeBehaviour(ButtonBehaviour behaviour)
         => this.gridPopup.IsVisible = behaviour == ButtonBehaviour.Keyboard;
 
