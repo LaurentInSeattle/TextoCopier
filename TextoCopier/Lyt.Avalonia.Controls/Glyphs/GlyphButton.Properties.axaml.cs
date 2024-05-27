@@ -110,6 +110,17 @@ public partial class GlyphButton
         }
     }
 
+    /// <summary> Group Styled Property </summary>
+    public static readonly StyledProperty<SelectionGroup> GroupProperty =
+        AvaloniaProperty.Register<GlyphButton, SelectionGroup>(nameof(Group));
+
+    /// <summary> Gets or sets the Group property.</summary>
+    public SelectionGroup Group
+    {
+        get => this.GetValue(GroupProperty);
+        set => this.SetValue(GroupProperty, value);        
+    }
+
     #endregion State and Layout Styled Properties 
 
     #region Commanding Styled Properties 
@@ -202,10 +213,8 @@ public partial class GlyphButton
     }
 
     /// <summary> Coerces the GlyphAngle value. </summary>
-    private static double CoerceGlyphAngle(AvaloniaObject sender, double newGlyphAngle)
-    {
-        return newGlyphAngle;
-    }
+    private static double CoerceGlyphAngle(AvaloniaObject sender, double newGlyphAngle) => newGlyphAngle;
+
     /// <summary> GlyphStrokeThickness Styled Property </summary>
     public static readonly StyledProperty<double> GlyphStrokeThicknessProperty =
         AvaloniaProperty.Register<GlyphButton, double>(
@@ -231,10 +240,7 @@ public partial class GlyphButton
     }
 
     /// <summary> Coerces the GlyphStrokeThickness value. </summary>
-    private static double CoerceGlyphStrokeThickness(AvaloniaObject sender, double newGlyphStrokeThickness)
-    {
-        return newGlyphStrokeThickness;
-    }
+    private static double CoerceGlyphStrokeThickness(AvaloniaObject sender, double newGlyphStrokeThickness) => newGlyphStrokeThickness;
 
     #endregion Glyph Related Styled Properties 
 
@@ -395,10 +401,7 @@ public partial class GlyphButton
     }
 
     /// <summary> Coerces the BackgroundBorderThickness value. </summary>
-    private static double CoerceBackgroundBorderThickness(AvaloniaObject sender, double newBackgroundBorderThickness)
-    {
-        return newBackgroundBorderThickness;
-    }
+    private static double CoerceBackgroundBorderThickness(AvaloniaObject sender, double newBackgroundBorderThickness) => newBackgroundBorderThickness;
 
     #endregion Dependency Property BackgroundBorderThickness
 

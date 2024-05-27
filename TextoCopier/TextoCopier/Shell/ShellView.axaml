@@ -63,7 +63,7 @@
 			/>
 		<Rectangle
 			Fill="#70000020"
-            Grid.ColumnSpan="999" Grid.RowSpan="1"
+            Grid.Column="1" Grid.ColumnSpan="999" Grid.RowSpan="1"
 			/>
 		<Rectangle
 			Fill="#70000020"
@@ -73,9 +73,9 @@
 			Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
 			Text="{DynamicResource Shell.Greetings}" 
 			HorizontalAlignment="Left" VerticalAlignment="Center"
-			Margin="24 0 0 0"
+			Margin="12 0 0 0"
 			FontFamily="{StaticResource InterV}"
-			FontSize="24" 
+			FontSize="20" 
 			FontStyle="Italic"
 			Foreground="DarkOrange"
 			TextWrapping="Wrap"

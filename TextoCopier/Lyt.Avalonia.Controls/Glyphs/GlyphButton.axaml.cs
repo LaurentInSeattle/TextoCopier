@@ -347,6 +347,11 @@ public partial class GlyphButton : UserControl
 
     private void OnPointerEnter(object? sender, PointerEventArgs args)
     {
+        if (this.IsSelected)
+        {
+            return;
+        }
+
         if (this.eventingRectangle.IsPointerOver)
         {
             this.Enter();
@@ -355,6 +360,11 @@ public partial class GlyphButton : UserControl
 
     private void OnPointerLeave(object? sender, PointerEventArgs args)
     {
+        if (this.IsSelected)
+        {
+            return;
+        }
+
         if (!this.eventingRectangle.IsPointerOver)
         {
             this.Leave();
@@ -363,6 +373,11 @@ public partial class GlyphButton : UserControl
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs args)
     {
+        if (this.IsSelected)
+        {
+            return;
+        }
+
         if (this.IsPointerInside(args))
         {
             this.Down();
@@ -371,6 +386,11 @@ public partial class GlyphButton : UserControl
 
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs args)
     {
+        if (this.IsSelected)
+        {
+            return;
+        }
+
         if (this.IsPointerInside(args))
         {
             this.Up(args);
@@ -383,7 +403,7 @@ public partial class GlyphButton : UserControl
 
     private void OnPointerMoved(object? sender, PointerEventArgs args)
     {
-        if (!this.isOver)
+        if (this.IsSelected || !this.isOver)
         {
             return; 
         }

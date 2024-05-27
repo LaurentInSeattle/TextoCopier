@@ -9,5 +9,9 @@
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.10" />
   </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Glyphs\SelectionGroup.axaml" />
+  </ItemGroup>
 	
 </Project>
