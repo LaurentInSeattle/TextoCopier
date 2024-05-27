@@ -80,21 +80,6 @@ public partial class GlyphButton
         }
     }
 
-    /// <summary> IsSelected Styled Property </summary>
-    public static readonly StyledProperty<bool> IsSelectedProperty =
-        AvaloniaProperty.Register<GlyphButton, bool>(nameof(IsSelected), defaultValue: false);
-
-    /// <summary> Gets or sets the IsSelected property.</summary>
-    public bool IsSelected
-    {
-        get => this.GetValue(IsSelectedProperty);
-        set
-        {
-            this.SetValue(IsSelectedProperty, value);
-            this.UpdateVisualState();
-        }
-    }
-
     /// <summary> IsDisabled Styled Property </summary>
     public static readonly StyledProperty<bool> IsDisabledProperty =
         AvaloniaProperty.Register<GlyphButton, bool>(nameof(IsDisabled), defaultValue: false);
@@ -106,6 +91,21 @@ public partial class GlyphButton
         set
         {
             this.SetValue(IsDisabledProperty, value);
+            this.UpdateVisualState();
+        }
+    }
+
+    /// <summary> IsSelected Styled Property </summary>
+    public static readonly StyledProperty<bool> IsSelectedProperty =
+        AvaloniaProperty.Register<GlyphButton, bool>(nameof(IsSelected), defaultValue: false);
+
+    /// <summary> Gets or sets the IsSelected property.</summary>
+    public bool IsSelected
+    {
+        get => this.GetValue(IsSelectedProperty);
+        set
+        {
+            this.SetValue(IsSelectedProperty, value);
             this.UpdateVisualState();
         }
     }

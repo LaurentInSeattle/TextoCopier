@@ -77,7 +77,7 @@
 			FontFamily="{StaticResource InterV}"
 			FontSize="20" 
 			FontStyle="Italic"
-			Foreground="DarkOrange"
+			Foreground="{StaticResource PastelOrchid_1_100}"
 			TextWrapping="Wrap"
 			/>
 		<StackPanel
@@ -122,6 +122,10 @@
 			Margin="0"
 			VerticalAlignment="Top"
 			>
+			<glyphs:SelectionGroup
+				x:Name="SelectionGroup"
+				>				
+			</glyphs:SelectionGroup>
 			<glyphs:GlyphButton
 				Style="{StaticResource ToolbarIconButton}"
 				Behaviour="Tap"
@@ -135,6 +139,22 @@
 				Command="{Binding GlyphCommand}"
 				CommandParameter="42_666"
 				IsSelected="True"
+				Group="{Binding ElementName=SelectionGroup}"
+				/>
+			<glyphs:GlyphButton
+				Style="{StaticResource ToolbarIconButton}"
+				Behaviour="Tap"
+				HorizontalAlignment="Left" VerticalAlignment="Center"
+				Width="72" Height="68"
+				Margin="4"
+				GlyphSource="flag"
+				GlyphStrokeThickness="0.1"
+				GlyphAngle="0"
+				Text="Italian on Zoom"
+				Command="{Binding GlyphCommand}"
+				CommandParameter="42_666"
+				IsSelected="False"
+				Group="{Binding ElementName=SelectionGroup}"
 			/>
 		</StackPanel>
 		<StackPanel

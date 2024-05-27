@@ -1,12 +1,33 @@
-using Avalonia.Controls;
+namespace Lyt.Avalonia.Controls.Glyphs; 
 
-namespace Lyt.Avalonia.Controls.Glyphs
+public interface ICanSelect
 {
-    public partial class SelectionGroup : UserControl
+    bool IsSelected { get; set; }
+}
+
+public partial class SelectionGroup : UserControl
+{
+    public SelectionGroup() => this.InitializeComponent();
+
+    private readonly List<ICanSelect> Members = [];
+
+    public void Register(ICanSelect selectable) => this.Members.Add(selectable);
+
+    public void Select(ICanSelect selectable)
     {
-        public SelectionGroup()
+        if(selectable.IsSelected)
         {
-            InitializeComponent();
+            return; 
         }
-    }
+
+        foreach (var member in this.Members)
+        {
+            if ( member != selectable )
+            { 
+                member.IsSelected = false;
+            }
+        } 
+
+        selectable.IsSelected = true;
+    } 
 }

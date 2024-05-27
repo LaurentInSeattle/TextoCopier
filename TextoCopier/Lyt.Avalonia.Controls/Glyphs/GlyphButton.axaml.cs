@@ -2,7 +2,7 @@ namespace Lyt.Avalonia.Controls.Glyphs;
 
 public delegate void RoutedEventDelegate(object sender, RoutedEventArgs rea);
 
-public partial class GlyphButton : UserControl
+public partial class GlyphButton : UserControl, ICanSelect 
 {
     // private const double KeyboardPressMilliseconds = 600.0;
 
@@ -50,6 +50,11 @@ public partial class GlyphButton : UserControl
         this.ChangeTypography(this.Typography);
         this.icon.UpdateImage();
         this.UpdateVisualState();
+
+        if (this.Group is not null) 
+        {
+            this.Group.Register(this); 
+        } 
     }
 
     #region Layout Updates 
@@ -362,6 +367,7 @@ public partial class GlyphButton : UserControl
     {
         if (this.IsSelected)
         {
+            this.UpdateVisualState();
             return;
         }
 
@@ -673,6 +679,7 @@ public partial class GlyphButton : UserControl
             return;
         }
 
+        bool activated = false; 
         // Give precedence to the Click handler if present 
         if (this.Click != null)
         {
@@ -682,6 +689,7 @@ public partial class GlyphButton : UserControl
             }
 
             this.Click.Invoke(this, rea);
+            activated = true;
         }
         else if (this.Command != null)
         {
@@ -700,7 +708,14 @@ public partial class GlyphButton : UserControl
                 }
 
                 this.Command.Execute(commandParameter);
+                activated = true;
             }
+        }
+
+        if (activated && this.Group is not null)
+        {
+            this.isOver = false;
+            this.Group.Select(this);
         }
     }
 
