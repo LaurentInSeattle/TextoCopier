@@ -30,8 +30,8 @@
 		/>
 	
 	<glyphs:VisualState x:Key="ToolbarIconBackgroundVisualState"
-		Normal="{StaticResource   LightAqua_3_040}"
-		Disabled="{StaticResource LightAqua_3_040}"
+		Normal="{StaticResource   LightAqua_3_020}"
+		Disabled="{StaticResource LightAqua_3_020}"
 		Selected="{StaticResource LightAqua_3_040}"
 		Pressed="{StaticResource  LightAqua_3_040}"
 		Hot="{StaticResource      LightAqua_2_040}"
@@ -54,48 +54,5 @@
 		<Setter Property="BackgroundVisualState" Value="{StaticResource ToolbarIconBackgroundVisualState}"/>
 		<Setter Property="BackgroundBorderVisualState" Value="{StaticResource ToolbarIconBackgroundBorderVisualState}"/>
 		<Setter Property="IsDisabled" Value="False" />
-	</ControlTheme>
-		
-	<!--
-	
-        <Style x:Key="IconButton" TargetType="glyphs:GlyphButton">
-            <Setter Property="Layout" Value="IconOnly" />
-            <Setter Property="ButtonBackground" Value="BorderOnly" />
-            <Setter Property="NormalColor" Value="{StaticResource KeyLime_1_100_Brush}" />
-            <Setter Property="HotColor" Value="{StaticResource JaffaOrange_0_100_Brush}" />
-            <Setter Property="PressedColor" Value="{StaticResource JaffaOrange_1_100_Brush}" />
-            <Setter Property="DisabledColor" Value="{StaticResource CyprusCerulean_4_040_Brush}" />
-            <Setter Property="BackgroundCornerRadius" Value="8" />
-            <Setter Property="TextForeground" Value="{StaticResource CyprusCerulean_0_100_Brush}" />
-			
-            <Setter Property="BackgroundNormalColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
-            <Setter Property="BackgroundHotColor" Value="{StaticResource CyprusCerulean_2_040_Brush}" />
-            <Setter Property="BackgroundPressedColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
-            <Setter Property="BackgroundDisabledColor" Value="{StaticResource CyprusCerulean_3_040_Brush}" />
-            
-            <Setter Property="IsDisabled" Value="False" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="HorizontalAlignment" Value="Center" />
-            <Setter Property="Width" Value="80" />
-            <Setter Property="Height" Value="80" />
-        </Style>
-        <Style x:Key="ToolbarButton" TargetType="glyphs:GlyphButton">
-            <Setter Property="Typography" Value="{StaticResource TextBlockBodySuperSmall}" />
-            <Setter Property="Layout" Value="IconTextBelow" />
-            <Setter Property="ButtonBackground" Value="None" />
-            <Setter Property="TextForeground" Value="{StaticResource CyprusCerulean_0_100_Brush}" />
-            <Setter Property="NormalColor" Value="{StaticResource BrazilianCherry_2_080_Brush}" />
-            <Setter Property="HotColor" Value="{StaticResource JaffaOrange_0_100_Brush}" />
-            <Setter Property="PressedColor" Value="{StaticResource JaffaOrange_1_100_Brush}" />
-            <Setter Property="DisabledColor" Value="{StaticResource CyprusCerulean_4_040_Brush}" />
-            <Setter Property="IsDisabled" Value="False" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="HorizontalAlignment" Value="Right" />
-            <Setter Property="Width" Value="92" />
-            <Setter Property="Height" Value="92" />
-        </Style>
-	
-	
-	-->
-	
+	</ControlTheme>		
 </ResourceDictionary>

@@ -1,7 +1,6 @@
 ﻿namespace Lyt.Avalonia.Controls.Glyphs;
 
-
-
+#region Old Styles 
 /*
     <local:NumericKeypadBase.Resources>
         <Style x:Key="KeypadButton" TargetType="glyphs:GlyphButton">
@@ -164,7 +163,7 @@
         </Style>
 
 */
-
+#endregion Old Styles 
 
 public sealed class VisualState : AvaloniaObject
 {

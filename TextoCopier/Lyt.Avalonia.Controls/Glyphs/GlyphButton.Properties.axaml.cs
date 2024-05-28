@@ -118,7 +118,7 @@ public partial class GlyphButton
     public SelectionGroup Group
     {
         get => this.GetValue(GroupProperty);
-        set => this.SetValue(GroupProperty, value);        
+        set => this.SetValue(GroupProperty, value);
     }
 
     #endregion State and Layout Styled Properties 
@@ -205,6 +205,11 @@ public partial class GlyphButton
         get => this.GetValue(GlyphAngleProperty);
         set
         {
+            if (!this.IsHot)
+            {
+                this.glyphAngle = value;
+            }
+
             this.SetValue(GlyphAngleProperty, value);
             // See: https://stackoverflow.com/questions/70116300/layouttransform-scaletransform-in-avalonia
             // TODO: Verify the rotation 

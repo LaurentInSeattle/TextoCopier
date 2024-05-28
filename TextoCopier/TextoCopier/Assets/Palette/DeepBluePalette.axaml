@@ -126,7 +126,10 @@
 
 
             <!-- Light Aqua -->
-            <Color x:Key="LightAqua_0_100_Color">#FF98e5f0</Color>
+			<Color x:Key="LightAqua_0_120_Color">#FFa8efff</Color>
+			<SolidColorBrush x:Key="LightAqua_0_120" Color="{StaticResource LightAqua_0_120_Color}" />
+
+			<Color x:Key="LightAqua_0_100_Color">#FF98e5f0</Color>
             <SolidColorBrush x:Key="LightAqua_0_100" Color="{StaticResource LightAqua_0_100_Color}" />
 
             <Color x:Key="LightAqua_0_080_Color">#CC98e5f0</Color>

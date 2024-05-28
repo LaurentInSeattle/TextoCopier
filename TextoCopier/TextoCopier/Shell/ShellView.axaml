@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:wf="clr-namespace:Lyt.TextoCopier.Workflow"
     xmlns:vm="clr-namespace:Lyt.TextoCopier.Shell"
 	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -15,29 +16,6 @@
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:ShellViewModel />
     </Design.DataContext>
-    <UserControl.Styles>
-        <Style Selector="Button.btn /template/ ContentPresenter">
-            <Setter Property="CornerRadius" Value="10" />
-        </Style>
-        <Style Selector="Button.btn">
-            <Setter Property="Width" Value="160" />
-            <Setter Property="Height" Value="40" />
-            <Setter Property="FontSize" Value="20" />
-            <Setter Property="Margin" Value="12" />
-            <Setter Property="CornerRadius" Value="8" />
-            <Setter Property="HorizontalContentAlignment" Value="Center" />
-            <Setter Property="Foreground" Value="DarkOrange" />
-            <Setter Property="Background" Value="#20FFFFFF" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="#40AAAAFF" />
-        </Style>
-        <Style Selector="Button:pointerover.btn /template/ ContentPresenter">
-            <Setter Property="Foreground" Value="DarkOrange" />
-            <Setter Property="Background" Value="#20FFFFFF" />
-            <Setter Property="BorderBrush" Value="#80AAAAFF" />
-            <Setter Property="FontSize" Value="21" />
-        </Style>
-	</UserControl.Styles>
 
 	<Grid
         x:Name="InnerGrid"
@@ -46,10 +24,9 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="80" MaxWidth="80" />
 			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="80" MaxWidth="80" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="74" MaxHeight="74" />
+			<RowDefinition Height="56" MaxHeight="56" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 		<Image
@@ -73,11 +50,11 @@
 			Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
 			Text="{DynamicResource Shell.Greetings}" 
 			HorizontalAlignment="Left" VerticalAlignment="Center"
-			Margin="12 0 0 0"
+			Margin="8 0 0 0"
 			FontFamily="{StaticResource InterV}"
-			FontSize="20" 
+			FontSize="22" 
 			FontStyle="Italic"
-			Foreground="{StaticResource PastelOrchid_1_100}"
+			Foreground="{StaticResource PastelOrchid_0_080}"
 			TextWrapping="Wrap"
 			/>
 		<StackPanel
@@ -90,8 +67,8 @@
 				Style="{StaticResource ToolbarIconButton}"
 				Behaviour="Tap"
 				HorizontalAlignment="Left" VerticalAlignment="Center"
-				Width="72" Height="68"
-				Margin="4"
+				Width="64" Height="48"
+				Margin="8 4 8 4"
 				GlyphSource="info"
 				ButtonBackground="BorderlessRectangle"
 				GlyphStrokeThickness="0"
@@ -104,8 +81,8 @@
 				Style="{StaticResource ToolbarIconButton}"
 				Behaviour="Tap"
 				HorizontalAlignment="Center" VerticalAlignment="Center"
-				Width="72" Height="68"
-				Margin="4"
+				Width="64" Height="48"
+				Margin="8 4 8 4"
 				GlyphSource="power"
 				ButtonBackground="BorderlessRectangle"
 				GlyphStrokeThickness="0"
@@ -191,6 +168,27 @@
 				Command="{Binding GlyphCommand}"
 				CommandParameter="666_42"
     		/>
+		</StackPanel>
+		<StackPanel
+			Grid.Column="1" Grid.Row="1"
+			VerticalAlignment="Top" HorizontalAlignment="Stretch"
+			>
+			<wf:TemplateView
+				Margin="12"
+				HorizontalAlignment="Stretch"
+				>
+				<wf:TemplateView.DataContext>
+					<wf:TemplateViewModel/>
+				</wf:TemplateView.DataContext>
+			</wf:TemplateView>
+			<wf:TemplateView
+				Margin="12"
+				HorizontalAlignment="Stretch"
+				>
+				<wf:TemplateView.DataContext>
+					<wf:TemplateViewModel/>
+				</wf:TemplateView.DataContext>
+			</wf:TemplateView>
 		</StackPanel>
 	</Grid>
 </UserControl>

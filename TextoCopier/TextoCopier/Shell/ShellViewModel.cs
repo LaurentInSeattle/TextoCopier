@@ -10,11 +10,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
     private void OnGlyph(object? parameter)
     {
-        if (parameter is null) 
-        { 
-            parameter = string.Empty; 
-        }
-
+        parameter ??= string.Empty;
         this.Logger.Info("Clicked on glyph!  " + parameter.ToString());
     }
 
@@ -31,6 +27,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         //this.Logger.Info(hello);
         //string _ = localizer.Lookup("Whatever");
     }
+
     public ICommand GlyphCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     #region WORKFLOW ~ Maybe later 

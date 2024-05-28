@@ -8,6 +8,7 @@
     Icon="/Assets/avalonia-logo.ico"
     Title="Texto Copier"
 	Width="520" Height="800"
+	MinWidth="340" MinHeight="420"
 	SizeToContent="Manual"
 	>
 </Window>

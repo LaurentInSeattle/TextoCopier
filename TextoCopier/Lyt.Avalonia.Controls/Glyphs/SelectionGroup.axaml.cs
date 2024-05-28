@@ -9,9 +9,17 @@ public partial class SelectionGroup : UserControl
 {
     public SelectionGroup() => this.InitializeComponent();
 
-    private readonly List<ICanSelect> Members = [];
+    public readonly List<ICanSelect> Members = [];
 
-    public void Register(ICanSelect selectable) => this.Members.Add(selectable);
+    public void Register(ICanSelect selectable)
+    {
+        if (this.Members.Contains(selectable))
+        {
+            return; 
+        }
+
+        this.Members.Add(selectable);
+    } 
 
     public void Select(ICanSelect selectable)
     {

@@ -19,6 +19,7 @@ public partial class GlyphButton : UserControl, ICanSelect
     private bool isPressed;
     private bool isLongPressActivated;
     private double viewboxMargin;
+    private double glyphAngle;
 
     public GlyphButton()
     {
@@ -51,10 +52,7 @@ public partial class GlyphButton : UserControl, ICanSelect
         this.icon.UpdateImage();
         this.UpdateVisualState();
 
-        if (this.Group is not null) 
-        {
-            this.Group.Register(this); 
-        } 
+        this.Group?.Register(this); 
     }
 
     #region Layout Updates 
@@ -100,8 +98,9 @@ public partial class GlyphButton : UserControl, ICanSelect
                 this.Text = string.Empty;
                 this.textBlock.IsVisible = false; // Visibility.Hidden;
                 this.icon.IsVisible = true; // Visibility.Visible;
-                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
+                //this.mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
                 this.mainGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Pixel);
+                this.rectangleBackground.SetValue(Grid.RowSpanProperty, 1);
                 break;
 
             case ButtonLayout.IconTextBelow:
@@ -184,13 +183,15 @@ public partial class GlyphButton : UserControl, ICanSelect
 
     #region Visual States 
 
+    private bool IsHot => !this.isPressed && this.isOver && !this.IsDisabled; 
+
     private void UpdateVisualState()
     {
         if (this.isPressed && !this.IsDisabled)
         {
             this.SetPressedVisualState();
         }
-        else if (!this.isPressed && this.isOver && !this.IsDisabled)
+        else if (this.IsHot)
         {
             this.SetHotVisualState();
         }
@@ -218,6 +219,7 @@ public partial class GlyphButton : UserControl, ICanSelect
         if (this.HasIcon)
         {
             this.icon.Foreground = pressedColor;
+            this.GlyphAngle = this.glyphAngle;
         }
 
         if (this.HasText)
@@ -243,6 +245,7 @@ public partial class GlyphButton : UserControl, ICanSelect
         if (this.HasIcon)
         {
             this.icon.Foreground = hotColor;
+            this.GlyphAngle = this.glyphAngle + 3.0; 
             this.viewBox.Margin = new Thickness(this.viewboxMargin + 2.0);
         }
 
@@ -269,6 +272,7 @@ public partial class GlyphButton : UserControl, ICanSelect
         if (this.HasIcon)
         {
             this.icon.Foreground = this.GeneralVisualState.Normal;
+            this.GlyphAngle = this.glyphAngle;
             this.viewBox.Margin = new Thickness(this.viewboxMargin);
         }
 
@@ -295,6 +299,7 @@ public partial class GlyphButton : UserControl, ICanSelect
         {
             this.icon.Foreground = this.GeneralVisualState.Selected; 
             this.viewBox.Margin = new Thickness(this.viewboxMargin);
+            this.GlyphAngle = this.glyphAngle;
         }
 
         if (this.HasText)
@@ -319,6 +324,7 @@ public partial class GlyphButton : UserControl, ICanSelect
         if (this.HasIcon)
         {
             this.icon.Foreground = disabledColor;
+            this.GlyphAngle = this.glyphAngle;
         }
 
         if (this.HasText)
