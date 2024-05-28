@@ -1,4 +1,5 @@
-﻿namespace Lyt.TextoCopier.Workflow;
+﻿
+namespace Lyt.TextoCopier.Workflow;
 
 public sealed class TemplateViewModel : Bindable<TemplateView>
 {
