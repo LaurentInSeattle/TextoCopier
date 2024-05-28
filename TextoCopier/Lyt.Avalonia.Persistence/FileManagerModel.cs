@@ -161,8 +161,10 @@ public sealed class FileManagerModel : ModelBase, IModel
             validFileName = validFileName.Replace(c, '_');
         }
 
-        // Spaces are valid in Windows path names but often cause problems, so avoid...
-        validFileName = validFileName.Replace(' ', '_');
+        // This is causing more troubles than solutions
+        // // Spaces are valid in Windows path names but often cause problems, so avoid...
+        // // validFileName = validFileName.Replace(' ', '_');
+        
         changed = validFileName != fileName;
         return validFileName;
     }
