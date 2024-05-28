@@ -28,6 +28,12 @@ public static class Utilities
         return false;
     }
 
+    public static bool IsPointerInside(this Control control, PointerEventArgs args)
+    {
+        PointerPoint pp = args.GetCurrentPoint(control);
+        return control.Bounds.Contains(pp.Position);
+    }
+
     public static void ApplyControlTheme(this Control control, ControlTheme theme)
     {
         if (theme.Setters is null)

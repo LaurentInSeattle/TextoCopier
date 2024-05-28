@@ -51,7 +51,6 @@
 			Text="{DynamicResource Shell.Greetings}" 
 			HorizontalAlignment="Left" VerticalAlignment="Center"
 			Margin="8 0 0 0"
-			FontFamily="{StaticResource InterV}"
 			FontSize="22" 
 			FontStyle="Italic"
 			Foreground="{StaticResource PastelOrchid_0_080}"
@@ -112,7 +111,7 @@
 				GlyphSource="person"
 				GlyphStrokeThickness="0.1"
 				GlyphAngle="0"
-				Text="Me"
+				Text="Personal Data"
 				Command="{Binding GlyphCommand}"
 				CommandParameter="42_666"
 				IsSelected="True"
@@ -132,7 +131,22 @@
 				CommandParameter="42_666"
 				IsSelected="False"
 				Group="{Binding ElementName=SelectionGroup}"
-			/>
+				/>
+			<glyphs:GlyphButton
+				Style="{StaticResource ToolbarIconButton}"
+				Behaviour="Tap"
+				HorizontalAlignment="Left" VerticalAlignment="Center"
+				Width="72" Height="68"
+				Margin="4"
+				GlyphSource="code_block"
+				GlyphStrokeThickness="0.1"
+				GlyphAngle="0"
+				Text="C# Code Snippets"
+				Command="{Binding GlyphCommand}"
+				CommandParameter="42_666"
+				IsSelected="False"
+				Group="{Binding ElementName=SelectionGroup}"
+				/>
 		</StackPanel>
 		<StackPanel
 			Orientation="Vertical"

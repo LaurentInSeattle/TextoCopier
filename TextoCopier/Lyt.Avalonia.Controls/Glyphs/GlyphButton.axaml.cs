@@ -111,9 +111,9 @@ public partial class GlyphButton : UserControl, ICanSelect
                 this.textBlock.SetValue(Grid.ColumnSpanProperty, 1);
                 this.textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center);
                 this.textBlock.SetValue(MarginProperty, new Thickness(0, 2, 0, 0));
-                this.mainGrid.ColumnDefinitions[2].Width = new GridLength(0, GridUnitType.Pixel);
-                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
-                this.mainGrid.ColumnDefinitions[0].Width = new GridLength(this.mainGrid.Width, GridUnitType.Pixel);
+                // this.mainGrid.ColumnDefinitions[2].Width = new GridLength(0, GridUnitType.Pixel);
+                // this.mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
+                // this.mainGrid.ColumnDefinitions[0].Width = new GridLength(this.mainGrid.Width, GridUnitType.Pixel);
                 this.mainGrid.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Auto);
                 break;
 
@@ -125,8 +125,8 @@ public partial class GlyphButton : UserControl, ICanSelect
                 this.textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Left);
                 this.textBlock.SetValue(HorizontalContentAlignmentProperty, HorizontalAlignment.Left);
                 this.textBlock.SetValue(MarginProperty, new Thickness(4, 0, 0, 0));
-                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Auto);
-                this.mainGrid.ColumnDefinitions[2].Width = new GridLength(1, GridUnitType.Star);
+                //this.mainGrid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Auto);
+                //this.mainGrid.ColumnDefinitions[2].Width = new GridLength(1, GridUnitType.Star);
                 this.mainGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Pixel);
                 break;
 
@@ -350,12 +350,6 @@ public partial class GlyphButton : UserControl, ICanSelect
 
     #region Pointer Handling
 
-    private bool IsPointerInside(PointerEventArgs args)
-    {
-        PointerPoint pp = args.GetCurrentPoint(this.eventingRectangle);
-        return this.eventingRectangle.Bounds.Contains(pp.Position);
-    }
-
     private void OnPointerEnter(object? sender, PointerEventArgs args)
     {
         if (this.IsSelected)
@@ -390,7 +384,7 @@ public partial class GlyphButton : UserControl, ICanSelect
             return;
         }
 
-        if (this.IsPointerInside(args))
+        if (this.eventingRectangle.IsPointerInside(args))
         {
             this.Down();
         }
@@ -403,7 +397,7 @@ public partial class GlyphButton : UserControl, ICanSelect
             return;
         }
 
-        if (this.IsPointerInside(args))
+        if (this.eventingRectangle.IsPointerInside(args))
         {
             this.Up(args);
         }
@@ -420,7 +414,7 @@ public partial class GlyphButton : UserControl, ICanSelect
             return; 
         }
 
-        if (!this.IsPointerInside(args))
+        if (!this.eventingRectangle.IsPointerInside(args))
         {
             this.Leave();
         }

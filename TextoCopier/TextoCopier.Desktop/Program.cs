@@ -1,21 +1,30 @@
 ﻿using System;
 using Avalonia;
+using Avalonia.Media.Fonts;
 
 namespace Lyt.TextoCopier.Desktop;
 
 class Program
 {
-    // Initialization code. Don't use any Avalonia, third-party APIs or any
-    // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
-    // yet and stuff might break.
     [STAThread]
-    public static void Main(string[] args) => BuildAvaloniaApp()
-        .StartWithClassicDesktopLifetime(args);
+    public static void Main(string[] args) => BuildAvaloniaApp() .StartWithClassicDesktopLifetime(args);
 
-    // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
-            .UsePlatformDetect()
-            .WithInterFont()
-            .LogToTrace();
+        => AppBuilder.Configure<App>().UsePlatformDetect().WithInterVariableFont().LogToTrace();
+}
+
+public static class AppBuilderExtension
+{
+    public static AppBuilder WithInterVariableFont(this AppBuilder appBuilder)
+        => appBuilder.ConfigureFonts(fontManager =>
+        {
+            fontManager.AddFontCollection(new InterVariableFontCollection());
+        });    
+}
+
+public sealed class InterVariableFontCollection : EmbeddedFontCollection
+{
+    public InterVariableFontCollection() : base(
+        new Uri("fonts:Inter-V", UriKind.Absolute),
+        new Uri("avares://TextoCopier/Assets/Fonts/Inter-V.ttf", UriKind.Absolute)) {  }
 }
