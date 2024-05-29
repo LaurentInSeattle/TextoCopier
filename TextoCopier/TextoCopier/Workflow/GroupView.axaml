@@ -14,4 +14,20 @@
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:GroupViewModel />
     </Design.DataContext>
+	<ScrollViewer	
+		Background="Transparent"
+		VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+		>
+		<ItemsControl
+			ItemsSource="{Binding Templates}"
+			>
+			<ItemsControl.ItemTemplate>
+				<DataTemplate> 
+					<vm:TemplateView
+						Margin="8 4 4 0"
+						/> 
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+	</ScrollViewer>
 </UserControl>

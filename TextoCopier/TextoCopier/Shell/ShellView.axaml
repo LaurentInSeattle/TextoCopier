@@ -183,26 +183,11 @@
 				CommandParameter="666_42"
     		/>
 		</StackPanel>
-		<StackPanel
+		<wf:GroupView
 			Grid.Column="1" Grid.Row="1"
-			VerticalAlignment="Top" HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 			>
-			<wf:TemplateView
-				Margin="8 8 8 0"
-				HorizontalAlignment="Stretch"
-				>
-				<wf:TemplateView.DataContext>
-					<wf:TemplateViewModel/>
-				</wf:TemplateView.DataContext>
-			</wf:TemplateView>
-			<wf:TemplateView
-				Margin="8 8 8 0"
-				HorizontalAlignment="Stretch"
-				>
-				<wf:TemplateView.DataContext>
-					<wf:TemplateViewModel/>
-				</wf:TemplateView.DataContext>
-			</wf:TemplateView>
-		</StackPanel>
+			<wf:GroupView.DataContext> <wf:GroupViewModel /> </wf:GroupView.DataContext>
+		</wf:GroupView>
 	</Grid>
 </UserControl>

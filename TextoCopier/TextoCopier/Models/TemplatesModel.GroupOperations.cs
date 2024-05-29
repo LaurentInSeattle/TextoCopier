@@ -5,7 +5,7 @@ public sealed partial class TemplatesModel
     public const string GroupAlreadyExists = "TemplatesModel.GroupAlreadyExists";
     public const string NoSuchGroup = "TemplatesModel.NoSuchGroup"; 
 
-    private bool CheckGroup(string groupName, out string message)
+    public bool CheckGroup(string groupName, out string message)
     {
         message = string.Empty;
         var group = (from grp in this.Groups where grp.Name == groupName select grp).FirstOrDefault();
@@ -18,7 +18,7 @@ public sealed partial class TemplatesModel
         return ! fail;
     }
 
-    private Group GetGroup(string groupName)
+    public Group GetGroup(string groupName)
     {
         var group = (from grp in this.Groups where grp.Name == groupName select grp).FirstOrDefault();
         return group is null ? throw new InvalidOperationException(NoSuchGroup) : group;
