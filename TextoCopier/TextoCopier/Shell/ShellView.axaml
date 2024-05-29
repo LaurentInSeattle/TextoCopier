@@ -188,7 +188,7 @@
 			VerticalAlignment="Top" HorizontalAlignment="Stretch"
 			>
 			<wf:TemplateView
-				Margin="12"
+				Margin="8 8 8 0"
 				HorizontalAlignment="Stretch"
 				>
 				<wf:TemplateView.DataContext>
@@ -196,7 +196,7 @@
 				</wf:TemplateView.DataContext>
 			</wf:TemplateView>
 			<wf:TemplateView
-				Margin="12"
+				Margin="8 8 8 0"
 				HorizontalAlignment="Stretch"
 				>
 				<wf:TemplateView.DataContext>

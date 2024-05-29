@@ -34,6 +34,7 @@ public partial class TemplateView : UserControl
 
     private void SetVisibility(bool visible)
     {
+        this.outerBorder.BorderThickness = new Thickness(visible ? 1.0 : 0.0); 
         this.copyButton.IsVisible = visible;
         this.editButton.IsVisible = visible;
         this.deleteButton.IsVisible = visible;

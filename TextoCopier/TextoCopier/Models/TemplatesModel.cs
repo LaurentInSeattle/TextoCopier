@@ -11,7 +11,7 @@ public sealed partial class TemplatesModel : ModelBase
             [
                 new Group
                 {
-                    Name = "Me",
+                    Name = "Personal Items",
                     Description = "Personal Items",
                     Icon = "person_regular",
                     Templates =
