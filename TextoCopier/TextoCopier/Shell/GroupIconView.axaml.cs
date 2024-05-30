@@ -1,12 +1,18 @@
-using Avalonia.Controls;
+namespace Lyt.TextoCopier.Shell;
 
-namespace Lyt.TextoCopier.Shell
+public partial class GroupIconView : UserControl
 {
-    public partial class GroupIconView : UserControl
+    public GroupIconView()
     {
-        public GroupIconView()
+        this.InitializeComponent();
+        this.DataContextChanged += (s,e) =>
         {
-            InitializeComponent();
-        }
+            if (this.DataContext is GroupIconViewModel groupIconViewModel)
+            {
+                // There should be no reason 
+                this.Icon.GlyphSource = groupIconViewModel.IconGlyphSource;
+            }
+        };
     }
 }
+

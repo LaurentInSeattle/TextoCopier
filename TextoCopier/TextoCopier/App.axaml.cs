@@ -45,6 +45,6 @@ public partial class App : ApplicationBase
         await fileManager.Configure(new FileManagerConfiguration(App.Organization, App.Application, App.RootNamespace));
     }
 
-    // Why does it needs to be there ??? 
+    // Why does it need to be there ??? 
     public override void Initialize() => AvaloniaXamlLoader.Load(this);
 }

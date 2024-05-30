@@ -32,7 +32,9 @@ public sealed class ShellViewModel : Bindable<ShellView>
         //this.Logger.Info(hello);
         //string _ = localizer.Lookup("Whatever");
 
-        this.View!.GroupView.DataContext = ApplicationBase.GetRequiredService<GroupViewModel>();
+        var vm = App.GetRequiredService<GroupViewModel>();
+        vm.CreateViewAndBind();
+        this.View!.ShellViewContent.Content = vm.View; 
         this.Bind();
     }
 
@@ -51,6 +53,15 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         this.Groups = list;
         this.Logger.Info("Groups: " + this.templatesModel.Groups.Count);
+
+        foreach (var group in this.View!.GroupsItemsControl.Items)
+        {
+            if (group is GroupIconView view)
+            {
+                var icon = view.Icon;
+                var dc = view.DataContext;
+            }
+        }
     }
 
     public List<GroupIconViewModel> Groups { get => this.Get<List<GroupIconViewModel>>()!; set => this.Set(value); }

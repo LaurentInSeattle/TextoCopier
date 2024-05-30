@@ -119,6 +119,7 @@
 				Padding="0"
 				>
 				<ItemsControl
+					x:Name="GroupsItemsControl"
 					ItemsSource="{Binding Groups}"
 					Margin="0"
 					Padding="0"
@@ -166,8 +167,8 @@
 				Command="{Binding GlyphCommand}"
     		/>
 		</StackPanel>
-		<wf:GroupView
-			x:Name="GroupView"
+		<ContentControl
+			x:Name="ShellViewContent"
 			Grid.Column="1" Grid.Row="1"
 			VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 			/>

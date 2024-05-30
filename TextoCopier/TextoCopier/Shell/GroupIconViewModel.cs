@@ -7,7 +7,7 @@ public class GroupIconViewModel : Bindable<GroupIconView>
     public GroupIconViewModel(Group group, SelectionGroup selectionGroup, bool selected)
     {
         this.groupName = group.Name;
-        // this.IconGlyphSource = group.Icon;
+        this.IconGlyphSource = group.Icon;
         this.IconText = group.Name;
         this.SelectionGroup = selectionGroup;
         this.IsSelected = selected;
@@ -17,7 +17,6 @@ public class GroupIconViewModel : Bindable<GroupIconView>
 
     protected void OnLoaded()
     {
-        Debugger.Break(); 
         var model = ApplicationBase.GetRequiredService<TemplatesModel>();
         var group = model.GetGroup(this.groupName);
         this.IconGlyphSource = group.Icon;

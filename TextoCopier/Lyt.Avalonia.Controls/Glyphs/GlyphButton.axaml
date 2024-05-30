@@ -79,6 +79,8 @@
 			>			
 		    <TextBlock
                 x:Name="textBlock"
+                Margin="0"
+                IsHitTestVisible="False"
                 Background="Transparent"
                 Foreground="AntiqueWhite"
                 VerticalAlignment="Center" HorizontalAlignment="Stretch"

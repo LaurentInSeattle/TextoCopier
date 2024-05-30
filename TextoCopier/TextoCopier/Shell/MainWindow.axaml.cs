@@ -11,15 +11,16 @@ public partial class MainWindow : Window
         this.InitializeComponent();
 
         this.Closing += this.OnMainWindowClosing;
-        this.Loaded +=
-            (s, e) =>
-            {
-                var vm = App.GetRequiredService<ShellViewModel>();
-                vm.CreateViewAndBind();
-                this.Content = vm.View;
-            }; 
+        this.Loaded += (s, e) => { Dispatch.OnUiThread(this.OnLoadedOnUi); }; 
     }
 
+    private void OnLoadedOnUi()
+    {
+        var vm = App.GetRequiredService<ShellViewModel>();
+        vm.CreateViewAndBind();
+        this.Content = vm.View;
+    }
+    
     private void OnMainWindowClosing(object? sender, CancelEventArgs e)
     {
         if (!this.isShutdownComplete)

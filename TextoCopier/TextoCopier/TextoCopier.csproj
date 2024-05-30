@@ -31,8 +31,4 @@
     <Folder Include="Controls\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Shell\GroupIconView.axaml" />
-  </ItemGroup>
-
 </Project>

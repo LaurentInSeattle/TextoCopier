@@ -38,7 +38,7 @@ public partial class GlyphButton : UserControl, ICanSelect
         this.eventingRectangle.PointerReleased -= this.OnPointerReleased;
         this.eventingRectangle.PointerEntered -= this.OnPointerEnter;
         this.eventingRectangle.PointerExited -= this.OnPointerLeave;
-        this.eventingRectangle.PointerMoved += this.OnPointerMoved;
+        this.eventingRectangle.PointerMoved -= this.OnPointerMoved;
     }
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
