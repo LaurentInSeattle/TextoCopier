@@ -46,11 +46,12 @@ public partial class GlyphButton : UserControl, ICanSelect
         //this.DismissPopupKeyboard();
         
         this.ChangeButtonBackground(this.ButtonBackground);
-        //this.ChangeLayout(this.Layout);
+        this.ChangeLayout(this.Layout);
         this.ChangeBehaviour(this.Behaviour);
         this.ChangeTypography(this.Typography);
         this.icon.UpdateImage();
         this.UpdateVisualState();
+        this.InvalidateVisual();
 
         this.Group?.Register(this); 
     }
