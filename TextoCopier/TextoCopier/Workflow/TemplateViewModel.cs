@@ -2,10 +2,6 @@
 
 public sealed class TemplateViewModel : Bindable<TemplateView>
 {
-    // DEBUG ONLY 
-    public TemplateViewModel() : 
-        this("Personal Items", new Template() { Name = "Email", Value = "ly.testud@outlook.com" }) { }
-
     private readonly string groupName;
     private readonly Template template;
     private readonly TemplatesModel templatesModel;
