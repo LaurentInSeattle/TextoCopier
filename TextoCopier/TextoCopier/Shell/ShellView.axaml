@@ -98,55 +98,26 @@
 			Margin="0"
 			VerticalAlignment="Top"
 			>
-			<glyphs:SelectionGroup
-				x:Name="SelectionGroup"
-				>				
-			</glyphs:SelectionGroup>
-			<glyphs:GlyphButton
-				Style="{StaticResource ToolbarIconButton}"
-				Behaviour="Tap"
-				HorizontalAlignment="Left" VerticalAlignment="Center"
-				Width="72" Height="68"
-				Margin="4"
-				GlyphSource="person"
-				GlyphStrokeThickness="0.1"
-				GlyphAngle="0"
-				Text="Personal Data"
-				Command="{Binding GlyphCommand}"
-				CommandParameter="42_666"
-				IsSelected="True"
-				Group="{Binding ElementName=SelectionGroup}"
-				/>
-			<glyphs:GlyphButton
-				Style="{StaticResource ToolbarIconButton}"
-				Behaviour="Tap"
-				HorizontalAlignment="Left" VerticalAlignment="Center"
-				Width="72" Height="68"
-				Margin="4"
-				GlyphSource="flag"
-				GlyphStrokeThickness="0.1"
-				GlyphAngle="0"
-				Text="Italian on Zoom"
-				Command="{Binding GlyphCommand}"
-				CommandParameter="42_666"
-				IsSelected="False"
-				Group="{Binding ElementName=SelectionGroup}"
-				/>
-			<glyphs:GlyphButton
-				Style="{StaticResource ToolbarIconButton}"
-				Behaviour="Tap"
-				HorizontalAlignment="Left" VerticalAlignment="Center"
-				Width="72" Height="68"
-				Margin="4"
-				GlyphSource="code_block"
-				GlyphStrokeThickness="0.1"
-				GlyphAngle="0"
-				Text="C# Code Snippets"
-				Command="{Binding GlyphCommand}"
-				CommandParameter="42_666"
-				IsSelected="False"
-				Group="{Binding ElementName=SelectionGroup}"
-				/>
+			<glyphs:SelectionGroup x:Name="SelectionGroup" />
+			<ScrollViewer
+				Background="Transparent"
+				VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+				Padding="0"
+				>
+				<ItemsControl
+					ItemsSource="{Binding Groups}"
+					Margin="0"
+					Padding="0"
+					>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<vm:GroupIconView
+								Margin="4"
+								/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</ScrollViewer>
 		</StackPanel>
 		<StackPanel
 			Orientation="Vertical"
@@ -166,7 +137,19 @@
 				GlyphAngle="00"
 				Text="{DynamicResource Shell.NewGroup}"
 				Command="{Binding GlyphCommand}"
-				CommandParameter="666_42"
+    		/>
+			<glyphs:GlyphButton
+				Style="{StaticResource ToolbarIconButton}"
+				Behaviour="Tap"
+				HorizontalAlignment="Left" VerticalAlignment="Center"
+				Width="72" Height="68"
+				Margin="4"
+				GlyphSource="delete"
+				ButtonBackground="BorderlessRectangle"
+				GlyphStrokeThickness="0"
+				GlyphAngle="00"
+				Text="{DynamicResource Shell.DeleteGroup}"
+				Command="{Binding GlyphCommand}"
     		/>
 			<glyphs:GlyphButton
 				Style="{StaticResource ToolbarIconButton}"
@@ -184,10 +167,9 @@
     		/>
 		</StackPanel>
 		<wf:GroupView
+			x:Name="GroupView"
 			Grid.Column="1" Grid.Row="1"
 			VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-			>
-			<wf:GroupView.DataContext> <wf:GroupViewModel /> </wf:GroupView.DataContext>
-		</wf:GroupView>
+			/>
 	</Grid>
 </UserControl>

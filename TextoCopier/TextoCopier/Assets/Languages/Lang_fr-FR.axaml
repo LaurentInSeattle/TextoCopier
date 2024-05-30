@@ -4,6 +4,7 @@
     xmlns:system="clr-namespace:System;assembly=System.Runtime">
 	<system:String x:Key="Shell.Greetings">Bienvenue dans Texto Copieur !</system:String>
 	<system:String x:Key="Shell.About">A propos...</system:String>
+	<system:String x:Key="Shell.DeleteGroup">Supprimer Groupe</system:String>
 	<system:String x:Key="Shell.NewGroup">Nouv. Groupe</system:String>
 	<system:String x:Key="Shell.Settings">Réglages</system:String>
 	<system:String x:Key="Shell.Exit">Quitter</system:String>

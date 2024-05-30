@@ -1,0 +1,33 @@
+<UserControl 
+	x:Class="Lyt.TextoCopier.Shell.GroupIconView"
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
+    xmlns:vm="clr-namespace:Lyt.TextoCopier.Shell"
+    x:DataType="vm:GroupIconViewModel" 
+    Background="Transparent"
+    >
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:GroupIconViewModel />
+    </Design.DataContext>
+
+	<glyphs:GlyphButton
+		x:Name="Icon"
+		Style="{StaticResource ToolbarIconButton}"
+		Behaviour="Tap"
+		HorizontalAlignment="Left" VerticalAlignment="Center"
+		Width="72" Height="68"
+		GlyphSource="{Binding IconGlyphSource}"
+		GlyphStrokeThickness="0.1"
+		GlyphAngle="0"
+		Text="{Binding IconText}"
+		Command="{Binding GroupCommand}"
+		IsSelected="{Binding IsSelected}"
+		Group="{Binding SelectionGroup}"
+		/>
+</UserControl>

@@ -27,6 +27,7 @@ public partial class SvgIcon : UserControl
             this.ProcessDrawingGroup(drawingGroup);
             this.image.Source = this.drawingImage;
             this.image.InvalidateVisual();
+            this.viewBox.InvalidateVisual();
         }
     }
 

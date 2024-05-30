@@ -5,6 +5,7 @@
     <system:String x:Key="Shell.Greetings">Welcome to TextoCopier!</system:String>
 	<system:String x:Key="Shell.About">About</system:String>
 	<system:String x:Key="Shell.NewGroup">New Group</system:String>
+	<system:String x:Key="Shell.DeleteGroup">Delete Group</system:String>
 	<system:String x:Key="Shell.Settings">Settings</system:String>
 	<system:String x:Key="Shell.Exit">Exit</system:String>
 </ResourceDictionary>

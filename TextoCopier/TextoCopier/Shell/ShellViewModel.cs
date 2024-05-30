@@ -1,11 +1,16 @@
-﻿
-namespace Lyt.TextoCopier.Shell;
+﻿namespace Lyt.TextoCopier.Shell;
 
 public sealed class ShellViewModel : Bindable<ShellView>
 {
-    public ShellViewModel()
+    public ShellViewModel() : this(ApplicationBase.GetRequiredService<TemplatesModel>()) { }
+
+    private readonly TemplatesModel templatesModel;
+
+    public ShellViewModel(TemplatesModel templatesModel)
     {
+        this.Groups = [];
         this.GlyphCommand = new Command(this.OnGlyph);
+        this.templatesModel = templatesModel;
     }
 
     private void OnGlyph(object? parameter)
@@ -26,7 +31,29 @@ public sealed class ShellViewModel : Bindable<ShellView>
         //string hello = localizer.Lookup("My.Strings.HelloWorld"); 
         //this.Logger.Info(hello);
         //string _ = localizer.Lookup("Whatever");
+
+        this.View!.GroupView.DataContext = ApplicationBase.GetRequiredService<GroupViewModel>();
+        this.Bind();
     }
+
+    private void Bind()
+    {
+        this.Logger.Info("Binding groups");
+
+        SelectionGroup selectionGroup = this.View!.SelectionGroup;
+        bool selected = true;
+        var list = new List<GroupIconViewModel>(this.templatesModel.Groups.Count);
+        foreach (var group in this.templatesModel.Groups)
+        {
+            list.Add(new GroupIconViewModel(group, selectionGroup, selected));
+            selected = false;
+        }
+
+        this.Groups = list;
+        this.Logger.Info("Groups: " + this.templatesModel.Groups.Count);
+    }
+
+    public List<GroupIconViewModel> Groups { get => this.Get<List<GroupIconViewModel>>()!; set => this.Set(value); }
 
     public ICommand GlyphCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 

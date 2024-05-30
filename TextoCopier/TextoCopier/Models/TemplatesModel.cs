@@ -13,13 +13,15 @@ public sealed partial class TemplatesModel : ModelBase
                 {
                     Name = "Personal Items",
                     Description = "Personal Items",
-                    Icon = "person_regular",
+                    Icon = "person",
                     Templates =
                     [
-                        new Template { Name = "Email" , Value = "JaneDoe@domain.com" },
-                        new Template { Name = "First" , Value = "Jane" },
-                        new Template { Name = "Last" , Value = "Doe" },
-                        new Template { Name = "Full Name" , Value = "Jane Doe" },
+                        new Template { Name = "Email" , Value = "ly.testud@outlook.com" },
+                        new Template { Name = "First" , Value = "Laurent" },
+                        new Template { Name = "Middle" , Value = "Yves" },
+                        new Template { Name = "Last" , Value = "Testud" },
+                        new Template { Name = "Full Name" , Value = "Laurent Y. Testud" },
+                        new Template { Name = "Phone" , Value = "+1 (206) 619-7238" },
                         // LATER 
                         // new Template { Name = "Full Name" , Value = "{First} {Last}" },
                     ]
@@ -27,14 +29,39 @@ public sealed partial class TemplatesModel : ModelBase
                 new Group
                 {
                     Name = "Italian on Zoom",
-                    Description = "Codes and Ids for Zoom",
-                    Icon = "video_person_regular",
+                    Description = "Codes/Ids for Zoom",
+                    Icon = "flag",
                     Templates =
                     [
                         new Template { Name = "Meeting Id" , Value = "842 4041 3222" },
                         new Template { Name = "Meeting Code" , Value = "717140" },
                         new Template { Name = "Screen Name" , Value = "Enzo ~ Laurent" },
-                        new Template { Name = "Kahoot" , Value = "https://kahoot.it/" },
+                        new Template { Name = "Kahoot" , Value = "https://kahoot.it/", IsLink = true},
+                        new Template { Name = "Intro" , Value = "Ciao! Mi chiamo Lorenzo e vivo in Pleasanton"},
+                    ]
+                },
+                new Group
+                {
+                    Name = "C# Code Snippets",
+                    Description = "Code blocks for C#",
+                    Icon = "code_block",
+                    Templates =
+                    [
+                        new Template { Name = "if" , Value = 
+@"
+            if (status)
+            {
+            }
+" },
+                        new Template { Name = "if-else" , Value =
+@"
+            if (status)
+            {
+            }
+            else
+            { 
+            } 
+" },
                     ]
                 }
             ]

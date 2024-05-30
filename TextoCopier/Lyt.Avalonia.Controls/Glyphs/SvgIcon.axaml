@@ -13,6 +13,7 @@
         <Viewbox
             x:Name="viewBox"
             Margin="0"
+			HorizontalAlignment ="Stretch" VerticalAlignment ="Stretch"
             >
             <Image
                 x:Name="image"

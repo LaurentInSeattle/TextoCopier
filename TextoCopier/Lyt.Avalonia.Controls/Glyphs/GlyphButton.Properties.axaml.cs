@@ -181,6 +181,7 @@ public partial class GlyphButton
         {
             this.SetValue(GlyphSourceProperty, value);
             this.icon.Source = value;
+            this.icon.UpdateImage();
         }
     }
 

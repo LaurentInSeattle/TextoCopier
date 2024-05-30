@@ -9,4 +9,6 @@ public sealed class Group
     public string Description { get; set; } = string.Empty; 
 
     public List<Template> Templates { get; set; } = [] ;
+
+    public bool IsDefault { get; set; } 
 }
