@@ -22,15 +22,16 @@ public sealed class FileManagerModel : ModelBase, IModel
     private const string BinaryExtension = ".data";
 
     private const string LogsFolder = "Logs";
-    private const string SettingsFolder = "Settings";
     private const string ConfigurationFolder = "Configuration";
-    private const string UserFolder = "User";
 
     private static readonly string[] LogFilesFilters = ["*.log", "*.csv", "*.txt"];
-    private static readonly string[] ApplicationFolders = [LogsFolder, SettingsFolder, ConfigurationFolder, UserFolder];
+
+    // LATER
+    // private const string SettingsFolder = "Settings";
+    // private static readonly string[] ApplicationFolders = [LogsFolder, SettingsFolder, ConfigurationFolder, UserFolder];
 
     private FileManagerConfiguration configuration;
-    private JsonSerializerOptions jsonSerializerOptions;
+    private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public FileManagerModel() : base()
     {
@@ -299,7 +300,7 @@ public sealed class FileManagerModel : ModelBase, IModel
         };
     }
 
-    private string ExtensionFromKind(Kind kind)
+    private static string ExtensionFromKind(Kind kind)
     {
         return kind switch
         {
@@ -314,7 +315,7 @@ public sealed class FileManagerModel : ModelBase, IModel
     {
         try
         {
-            return Path.Combine(this.PathFromArea(area), string.Concat(name, this.ExtensionFromKind(kind)));
+            return Path.Combine(this.PathFromArea(area), string.Concat(name, FileManagerModel.ExtensionFromKind(kind)));
         }
         catch (Exception ex)
         {
@@ -334,7 +335,8 @@ public sealed class FileManagerModel : ModelBase, IModel
     {
         try
         {
-            string path = Path.Combine(this.PathFromArea(area), string.Concat(name, this.ExtensionFromKind(kind)));
+            string path = 
+                Path.Combine(this.PathFromArea(area), string.Concat(name, FileManagerModel.ExtensionFromKind(kind)));
             switch (kind)
             {
                 default:
@@ -368,7 +370,8 @@ public sealed class FileManagerModel : ModelBase, IModel
     {
         try
         {
-            string path = Path.Combine(this.PathFromArea(area), string.Concat(name, this.ExtensionFromKind(kind)));
+            string path = 
+                Path.Combine(this.PathFromArea(area), string.Concat(name, FileManagerModel.ExtensionFromKind(kind)));
             switch (kind)
             {
                 default:

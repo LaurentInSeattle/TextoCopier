@@ -12,6 +12,8 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
         this.template = template;
         this.templatesModel = ApplicationBase.GetRequiredService<TemplatesModel>();
 
+        base.DisablePropertyChangedLogging = true;
+
         this.Name = template.Name;
         this.Value = template.Value;
         this.CopyCommand = new Command(this.OnCopy);

@@ -11,15 +11,13 @@ public sealed class GroupViewModel : Bindable<GroupView>
         this.templatesModel = templatesModel;
         this.templatesModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
         this.Templates = [];
-        this.Bind("Italian on Zoom"); 
     }
 
     private void Bind(string groupName)
     {
-        this.Logger.Info("Binding");
         if ( this.templatesModel.CheckGroup (groupName, out string message))
         {
-            this.Logger.Info("Binding to " + groupName);
+            this.GroupName = groupName;
             Group group = this.templatesModel.GetGroup(groupName);
             var list = new List<TemplateViewModel>(group.Templates.Count);
             foreach (var template in group.Templates)
@@ -28,7 +26,6 @@ public sealed class GroupViewModel : Bindable<GroupView>
             }
 
             this.Templates = list;
-            this.Logger.Info("Templates: " + group.Templates.Count);
         }
 
         this.Logger.Info(message);
@@ -36,7 +33,18 @@ public sealed class GroupViewModel : Bindable<GroupView>
 
     private void OnModelUpdated(ModelUpdateMessage message)
     {
+        var group = this.templatesModel.SelectedGroup; 
+        if ( group is not null)
+        {
+            this.Bind(group.Name);
+        }
+        else
+        {
+            this.GroupName = "No group selected..."; 
+        }
     }
 
     public List<TemplateViewModel> Templates { get => this.Get<List<TemplateViewModel>>()!; set => this.Set(value); }
+
+    public string GroupName { get => this.Get<string>()!; set => this.Set(value); }
 }

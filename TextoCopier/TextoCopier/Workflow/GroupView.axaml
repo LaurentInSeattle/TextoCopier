@@ -14,20 +14,45 @@
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:GroupViewModel />
     </Design.DataContext>
-	<ScrollViewer	
-		Background="Transparent"
-		VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+	<Grid		
 		>
-		<ItemsControl
-			ItemsSource="{Binding Templates}"
+		<Grid.RowDefinitions>
+			<RowDefinition Height="40" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Rectangle
+			Fill="#70000020"
+            Grid.Row="0"
+			/>
+		<TextBlock
+			Grid.Row="0" 
+			Text="{Binding GroupName}"
+			HorizontalAlignment="Center" VerticalAlignment="Center"
+			Margin="0"
+			FontSize="18"
+			FontStyle="Italic"
+			Foreground="{StaticResource PastelOrchid_0_080}"
+			TextWrapping="Wrap"
+			/>
+		<ScrollViewer	
+			Grid.Row="1"
+			Background="Transparent"
+			VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+			ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+			ScrollViewer.VerticalScrollBarVisibility="Auto"
 			>
-			<ItemsControl.ItemTemplate>
-				<DataTemplate> 
-					<vm:TemplateView
-						Margin="8 4 4 0"
-						/> 
-				</DataTemplate>
-			</ItemsControl.ItemTemplate>
-		</ItemsControl>
-	</ScrollViewer>
+			<ItemsControl
+				ItemsSource="{Binding Templates}"
+				Margin="0 0 24 0"
+				>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate> 
+						<vm:TemplateView
+							Margin="8 4 4 0"
+							/> 
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</ScrollViewer>
+	</Grid>
 </UserControl>

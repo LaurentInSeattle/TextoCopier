@@ -73,8 +73,7 @@
 				GlyphStrokeThickness="0"
 				GlyphAngle="20"
 				Text="{DynamicResource Shell.Settings}"
-				Command="{Binding GlyphCommand}"
-				CommandParameter="666_42"
+				Command="{Binding SettingsCommand}"
 	    		/>
 			<glyphs:GlyphButton
 				Style="{StaticResource ToolbarIconButton}"
@@ -87,8 +86,7 @@
 				GlyphStrokeThickness="0"
 				GlyphAngle="5"
 				Text="{DynamicResource Shell.About}"
-				Command="{Binding GlyphCommand}"
-				CommandParameter="666_42"
+				Command="{Binding AboutCommand}"
     		/>
 			<glyphs:GlyphButton
 				Style="{StaticResource ToolbarIconButton}"
@@ -101,8 +99,7 @@
 				GlyphStrokeThickness="0"
 				GlyphAngle="0"
 				Text="{DynamicResource Shell.Exit}"
-				Command="{Binding GlyphCommand}"
-				CommandParameter="666_42"
+				Command="{Binding ExitCommand}"
 	    		/>
 		</StackPanel>
 			
@@ -151,7 +148,7 @@
 				GlyphStrokeThickness="0"
 				GlyphAngle="00"
 				Text="{DynamicResource Shell.NewGroup}"
-				Command="{Binding GlyphCommand}"
+				Command="{Binding NewGroupCommand}"
     		/>
 			<glyphs:GlyphButton
 				Style="{StaticResource ToolbarIconButton}"
@@ -164,7 +161,7 @@
 				GlyphStrokeThickness="0"
 				GlyphAngle="00"
 				Text="{DynamicResource Shell.DeleteGroup}"
-				Command="{Binding GlyphCommand}"
+				Command="{Binding DeleteGroupCommand}"
     		/>
 		</StackPanel>
 		<ContentControl

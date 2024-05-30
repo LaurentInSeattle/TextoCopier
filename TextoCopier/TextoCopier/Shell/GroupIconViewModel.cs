@@ -7,25 +7,24 @@ public class GroupIconViewModel : Bindable<GroupIconView>
     public GroupIconViewModel(Group group, SelectionGroup selectionGroup, bool selected)
     {
         this.groupName = group.Name;
+
+        base.DisablePropertyChangedLogging = true;
+
         this.IconGlyphSource = group.Icon;
         this.IconText = group.Name;
         this.SelectionGroup = selectionGroup;
         this.IsSelected = selected;
         this.GroupCommand = new Command(this.OnGroup);
-        Schedule.OnUiThread(200, this.OnLoaded, DispatcherPriority.Normal);
-    }
 
-    protected void OnLoaded()
-    {
-        var model = ApplicationBase.GetRequiredService<TemplatesModel>();
-        var group = model.GetGroup(this.groupName);
-        this.IconGlyphSource = group.Icon;
-        //this.View!.Icon.GlyphSource = group.Icon;
     }
 
     private void OnGroup(object? _)
     {
         var model = ApplicationBase.GetRequiredService<TemplatesModel>();
+        if (! model.SelectGroup(this.groupName, out string message))
+        {
+            this.Logger.Warning("Failed to select group: " + message);
+        }
     }
 
     public string IconGlyphSource { get => this.Get<string>()!; set => this.Set(value); }

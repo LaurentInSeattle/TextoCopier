@@ -62,6 +62,7 @@
 				FontSize="16"
 				Margin="20 0 0 0"
 				IsHitTestVisible="False"
+				TextWrapping="Wrap"
 				/>
 			<glyphs:GlyphButton
 				x:Name="copyButton"

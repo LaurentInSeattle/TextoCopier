@@ -4,6 +4,8 @@ using static FileManagerModel;
 
 public sealed partial class TemplatesModel : ModelBase
 {
+    #region Default Template
+
     private static readonly TemplatesModel DefaultTemplate =
         new()
         {
@@ -47,7 +49,7 @@ public sealed partial class TemplatesModel : ModelBase
                     Icon = "code_block",
                     Templates =
                     [
-                        new Template { Name = "if" , Value = 
+                        new Template { Name = "if" , Value =
 @"
             if (status)
             {
@@ -101,13 +103,13 @@ emoji_surprise_regular
 
 
     * */
-
+    #endregion Default Template
 
     private const string TemplatesModelFilename = "Templates";
 
     private readonly FileManagerModel fileManager;
 
-    public TemplatesModel() : base() 
+    public TemplatesModel() : base()
     {
         // Do not inject the FileManagerModel instance: a parameter-less ctor is required for Deserialization 
         FileManagerModel fileManager = App.GetRequiredService<FileManagerModel>();
@@ -119,6 +121,8 @@ emoji_surprise_regular
     public override Task Shutdown() => Task.CompletedTask;
 
     public List<Group> Groups { get; set; } = [];
+
+    public Group? SelectedGroup { get => this.Get<Group?>(); set => this.Set(value); }
 
     public Task Load()
     {
@@ -140,9 +144,25 @@ emoji_surprise_regular
         return Task.CompletedTask;
     }
 
-    private delegate bool ModelOperationDelegate (Group group, string parameter1, string parameter2, out string message);
+    public bool SelectGroup(string groupName, out string message)
+    {
+        bool status = this.CheckGroup(groupName, out message);
+        if (status)
+        {
+            Group group = this.GetGroup(groupName);
+            if (status)
+            {
+                this.SelectedGroup = group;
+                this.NotifyUpdate();
+            }
+        }
 
-    private bool ModelOperation (ModelOperationDelegate modelOperation, string groupName , string parameter1 , string parameter2, out string message )
+        return status;
+    }
+
+    private delegate bool ModelOperationDelegate(Group group, string parameter1, string parameter2, out string message);
+
+    private bool ModelOperation(ModelOperationDelegate modelOperation, string groupName, string parameter1, string parameter2, out string message)
     {
         bool status = this.CheckGroup(groupName, out message);
         if (status)
@@ -154,7 +174,7 @@ emoji_surprise_regular
                 this.IsDirty = true;
                 this.NotifyUpdate();
             }
-        } 
+        }
 
         return status;
     }

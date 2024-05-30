@@ -1,4 +1,5 @@
-﻿namespace Lyt.TextoCopier.Shell;
+﻿
+namespace Lyt.TextoCopier.Shell;
 
 public sealed class ShellViewModel : Bindable<ShellView>
 {
@@ -8,16 +9,24 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
     public ShellViewModel(TemplatesModel templatesModel)
     {
-        this.Groups = [];
-        this.GlyphCommand = new Command(this.OnGlyph);
         this.templatesModel = templatesModel;
+        this.Groups = [];
+        this.SettingsCommand = new Command(this.OnSettings);
+        this.AboutCommand = new Command(this.OnAbout);
+        this.ExitCommand = new Command(this.OnExit);
+        this.NewGroupCommand = new Command(this.OnNewGroup);
+        this.DeleteGroupCommand = new Command(this.OnDeleteGroup);
     }
 
-    private void OnGlyph(object? parameter)
-    {
-        parameter ??= string.Empty;
-        this.Logger.Info("Clicked on glyph!  " + parameter.ToString());
-    }
+    private void OnSettings(object? _) { }
+
+    private void OnAbout(object? _) {}
+
+    private void OnExit(object? _) { }
+
+    private void OnNewGroup(object? _) { }
+
+    private void OnDeleteGroup(object? _) { }
 
     protected override void OnViewLoaded()
     {
@@ -27,10 +36,6 @@ public sealed class ShellViewModel : Bindable<ShellView>
         var localizer = App.GetRequiredService<LocalizerModel>();
         localizer.DetectAvailableLanguages();
         localizer.SelectLanguage("it-IT");
-
-        //string hello = localizer.Lookup("My.Strings.HelloWorld"); 
-        //this.Logger.Info(hello);
-        //string _ = localizer.Lookup("Whatever");
 
         var vm = App.GetRequiredService<GroupViewModel>();
         vm.CreateViewAndBind();
@@ -43,30 +48,38 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.Logger.Info("Binding groups");
 
         SelectionGroup selectionGroup = this.View!.SelectionGroup;
-        bool selected = true;
-        var list = new List<GroupIconViewModel>(this.templatesModel.Groups.Count);
-        foreach (var group in this.templatesModel.Groups)
+        int groupCount = this.templatesModel.Groups.Count;
+        if (groupCount > 0)
         {
-            list.Add(new GroupIconViewModel(group, selectionGroup, selected));
-            selected = false;
-        }
-
-        this.Groups = list;
-        this.Logger.Info("Groups: " + this.templatesModel.Groups.Count);
-
-        foreach (var group in this.View!.GroupsItemsControl.Items)
-        {
-            if (group is GroupIconView view)
+            bool selected = true;
+            var list = new List<GroupIconViewModel>();
+            foreach (var group in this.templatesModel.Groups)
             {
-                var icon = view.Icon;
-                var dc = view.DataContext;
+                list.Add(new GroupIconViewModel(group, selectionGroup, selected));
+                selected = false;
             }
+
+            this.Groups = list;
+            this.templatesModel.SelectGroup(this.templatesModel.Groups[0].Name, out string _); 
+            this.Logger.Info("Groups: " + this.templatesModel.Groups.Count);
+        }
+        else
+        {
+            // TODO: Notify 
         }
     }
 
     public List<GroupIconViewModel> Groups { get => this.Get<List<GroupIconViewModel>>()!; set => this.Set(value); }
 
-    public ICommand GlyphCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+    public ICommand SettingsCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+
+    public ICommand AboutCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+    
+    public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+    
+    public ICommand NewGroupCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+    
+    public ICommand DeleteGroupCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     #region WORKFLOW ~ Maybe later 
 
