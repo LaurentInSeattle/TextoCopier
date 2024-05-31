@@ -13,5 +13,9 @@
   <ItemGroup>
     <UpToDateCheckInput Remove="Glyphs\SelectionGroup.axaml" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Lyt.Avalonia.Interfaces\Lyt.Avalonia.Interfaces.csproj" />
+  </ItemGroup>
 	
 </Project>

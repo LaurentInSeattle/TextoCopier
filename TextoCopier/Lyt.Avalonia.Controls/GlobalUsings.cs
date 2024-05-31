@@ -31,4 +31,7 @@ global using Avalonia.Remote.Protocol.Input;
 global using Avalonia.Styling;
 global using Avalonia.Threading;
 
+global using Lyt.Avalonia.Interfaces.Logger;
+global using Lyt.Avalonia.Interfaces.Messenger;
+global using Lyt.Avalonia.Interfaces.UserInterface;
 

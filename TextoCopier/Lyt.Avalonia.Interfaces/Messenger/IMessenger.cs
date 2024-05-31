@@ -1,4 +1,4 @@
-﻿namespace Lyt.Avalonia.Interfaces;
+﻿namespace Lyt.Avalonia.Interfaces.Messenger;
 
 /// <summary> See implementation for documentation </summary>
 public interface IMessenger

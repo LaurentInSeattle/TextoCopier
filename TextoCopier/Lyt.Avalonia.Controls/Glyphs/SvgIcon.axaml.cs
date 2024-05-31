@@ -121,7 +121,7 @@ public partial class SvgIcon : UserControl
     public static readonly StyledProperty<string> SourceProperty =
         AvaloniaProperty.Register<SvgIcon, string>(
             nameof(Source),
-            defaultValue: string.Empty,
+            defaultValue: "info",
             inherits: false,
             defaultBindingMode: BindingMode.OneWay,
             validate: null,

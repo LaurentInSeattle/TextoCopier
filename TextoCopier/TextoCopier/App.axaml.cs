@@ -32,6 +32,7 @@ public partial class App : ApplicationBase
             new Tuple<Type, Type>(typeof(ILogger), typeof(Logger)),
 #endif
             new Tuple<Type, Type>(typeof(IMessenger), typeof(Messenger)),
+            new Tuple<Type, Type>(typeof(IToaster), typeof(Toaster)),
         ],
         singleInstanceRequested: true)
     {

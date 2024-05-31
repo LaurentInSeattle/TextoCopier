@@ -14,6 +14,8 @@
             x:Name="viewBox"
             Margin="0"
 			HorizontalAlignment ="Stretch" VerticalAlignment ="Stretch"
+			Width="{Binding Width, ElementName=grid}"
+			Height="{Binding Height, ElementName=grid}"
             >
             <Image
                 x:Name="image"

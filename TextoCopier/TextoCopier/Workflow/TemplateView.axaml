@@ -74,7 +74,7 @@
 				Width="56" Height="56"
 				Margin="0"
 				GlyphSource="copy"
-				Text="Copy"
+				Text="{DynamicResource Template.Copy}"
 				ButtonBackground="BorderlessRectangle"
 				GlyphStrokeThickness="0"
 				GlyphAngle="0"

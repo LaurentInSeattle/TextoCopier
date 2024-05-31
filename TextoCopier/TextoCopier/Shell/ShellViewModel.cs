@@ -6,10 +6,13 @@ public sealed class ShellViewModel : Bindable<ShellView>
     public ShellViewModel() : this(ApplicationBase.GetRequiredService<TemplatesModel>()) { }
 
     private readonly TemplatesModel templatesModel;
+    private readonly IToaster toaster;
+
 
     public ShellViewModel(TemplatesModel templatesModel)
     {
         this.templatesModel = templatesModel;
+        this.toaster = ApplicationBase.GetRequiredService<IToaster>(); 
         this.Groups = [];
         this.SettingsCommand = new Command(this.OnSettings);
         this.AboutCommand = new Command(this.OnAbout);
@@ -31,6 +34,10 @@ public sealed class ShellViewModel : Bindable<ShellView>
     protected override void OnViewLoaded()
     {
         base.OnViewLoaded();
+        if( this.View is null)
+        {
+            throw new Exception("Failed to startup..."); 
+        }
 
         // Select default language 
         var localizer = App.GetRequiredService<LocalizerModel>();
@@ -39,8 +46,12 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         var vm = App.GetRequiredService<GroupViewModel>();
         vm.CreateViewAndBind();
-        this.View!.ShellViewContent.Content = vm.View; 
+        this.View.ShellViewContent.Content = vm.View; 
         this.Bind();
+
+        this.toaster.Host = this.View.ToasterHost;
+        this.toaster.Show(
+            localizer.Lookup("Shell.Ready") , localizer.Lookup("Shell.Greetings"), 5_000, ToastLevel.Info); 
     }
 
     private void Bind()

@@ -48,7 +48,7 @@
 			/>
 		<TextBlock 
 			Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-			Text="{DynamicResource Shell.Greetings}" 
+			Text="{DynamicResource Shell.AppName}" 
 			HorizontalAlignment="Left" VerticalAlignment="Center"
 			Margin="8 0 0 0"
 			FontSize="22" 
@@ -164,10 +164,16 @@
 				Command="{Binding DeleteGroupCommand}"
     		/>
 		</StackPanel>
-		<ContentControl
-			x:Name="ShellViewContent"
+		<!-- Do not add rows and columns to the toaster host-->
+		<Grid
+			x:Name="ToasterHost"
 			Grid.Column="1" Grid.Row="1"
 			VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-			/>
+			> 			
+			<ContentControl
+				x:Name="ShellViewContent"
+				VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+				/>
+		</Grid>
 	</Grid>
 </UserControl>

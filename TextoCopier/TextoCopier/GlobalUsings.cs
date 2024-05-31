@@ -29,11 +29,16 @@ global using Avalonia.Media.Immutable;
 global using Avalonia.Platform;
 global using Avalonia.Threading;
 
-global using Lyt.Avalonia.Interfaces;
+global using Lyt.Avalonia.Interfaces.Logger;
+global using Lyt.Avalonia.Interfaces.Messenger;
 global using Lyt.Avalonia.Interfaces.Model;
+global using Lyt.Avalonia.Interfaces.UserInterface;
+
 global using Lyt.Avalonia.Controls;
 global using Lyt.Avalonia.Controls.Glyphs;
 global using Lyt.Avalonia.Controls.Logging;
+global using Lyt.Avalonia.Controls.Toasting;
+
 global using Lyt.Avalonia.Mvvm;
 global using Lyt.Avalonia.Mvvm.Core;
 global using Lyt.Avalonia.Mvvm.Messenger;
