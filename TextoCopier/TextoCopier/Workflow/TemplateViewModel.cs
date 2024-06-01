@@ -1,4 +1,6 @@
-﻿namespace Lyt.TextoCopier.Workflow;
+﻿using Lyt.TextoCopier.Utilities;
+
+namespace Lyt.TextoCopier.Workflow;
 
 public sealed class TemplateViewModel : Bindable<TemplateView>
 {
@@ -19,7 +21,13 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
         this.CopyCommand = new Command(this.OnCopy);
         this.EditCommand = new Command(this.OnEdit);
         this.DeleteCommand = new Command(this.OnDelete);
+        this.LinkCommand = new Command(this.OnLink);
+        this.ViewCommand = new Command(this.OnView);
     }
+
+    public bool ShowLink => this.template.IsLink;
+
+    public bool ShowView => this.template.ShouldHide || this.template.Value.Length > 28;
 
     private async void OnCopy(object? _)
     {
@@ -48,6 +56,22 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
         }
     }
 
+    private void OnLink(object? _)
+    {
+        this.Logger.Info("Clicked on Link!");
+        string webUrl = this.Value;
+        if (!string.IsNullOrWhiteSpace(webUrl))
+        {
+            WebUtilities.OpenWebUrl(webUrl);
+        }
+    }
+
+    private void OnView(object? _)
+    {
+        this.Logger.Info("Clicked on View!");
+        //this.templatesModel.EditTemplateValue(Name, this.Value);
+    }
+
     public string Name { get => this.Get<string>()!; set => this.Set(value); }
 
     public string Value { get => this.Get<string>()!; set => this.Set(value); }
@@ -57,4 +81,8 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
     public ICommand EditCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     public ICommand DeleteCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+
+    public ICommand LinkCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+
+    public ICommand ViewCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 }

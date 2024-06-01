@@ -34,9 +34,20 @@ public partial class TemplateView : UserControl
 
     private void SetVisibility(bool visible)
     {
-        this.outerBorder.BorderThickness = new Thickness(visible ? 1.0 : 0.0); 
+        this.outerBorder.BorderThickness = new Thickness(visible ? 1.0 : 0.0);
         this.copyButton.IsVisible = visible;
         this.editButton.IsVisible = visible;
         this.deleteButton.IsVisible = visible;
+
+        bool showLink = false;
+        bool showView = false;
+        if (this.DataContext is TemplateViewModel templateViewModel)
+        {
+            showLink = templateViewModel.ShowLink;
+            showView = templateViewModel.ShowView;
+        }
+
+        this.linkButton.IsVisible = visible && showLink;
+        this.viewButton.IsVisible = visible && showView;
     }
 }

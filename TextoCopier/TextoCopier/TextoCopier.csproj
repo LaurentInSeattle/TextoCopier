@@ -11,6 +11,10 @@
     <AvaloniaResource Include="Assets\**" />
     <AvaloniaResource Include="Assets\Languages\**" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="Assets\Images\textocopier.png" />
+  </ItemGroup>
    
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.10" />

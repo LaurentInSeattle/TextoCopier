@@ -5,9 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="800"
-    Icon="/Assets/avalonia-logo.ico"
+    Icon="/Assets/Images/textocopier.ico"
     Title="Texto Copier"
-	Width="560" Height="800"
+	Width="440" Height="860"
 	MinWidth="360" MinHeight="420"
 	SizeToContent="Manual"
 	>
