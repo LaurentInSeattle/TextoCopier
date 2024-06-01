@@ -51,7 +51,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         this.toaster.Host = this.View.ToasterHost;
         this.toaster.Show(
-            localizer.Lookup("Shell.Ready") , localizer.Lookup("Shell.Greetings"), 5_000, ToastLevel.Info); 
+            localizer.Lookup("Shell.Ready") , localizer.Lookup("Shell.Greetings"), 4_000, ToastLevel.Info); 
     }
 
     private void Bind()

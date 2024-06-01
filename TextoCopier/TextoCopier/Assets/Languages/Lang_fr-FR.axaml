@@ -13,5 +13,6 @@
 	<system:String x:Key="Shell.Greetings">Bienvenue dans Texto Copieur !</system:String>
 	<system:String x:Key="Template.Copy">Copier</system:String>
 	<system:String x:Key="Toast.Dismiss">Fermer</system:String>
+	<system:String x:Key="Group.NewTemplate">Nouveau...</system:String>
 
 </ResourceDictionary>

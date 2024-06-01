@@ -1,4 +1,5 @@
-﻿namespace Lyt.TextoCopier.Workflow;
+﻿
+namespace Lyt.TextoCopier.Workflow;
 
 public sealed class GroupViewModel : Bindable<GroupView>
 {
@@ -11,6 +12,12 @@ public sealed class GroupViewModel : Bindable<GroupView>
         this.templatesModel = templatesModel;
         this.templatesModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
         this.Templates = [];
+        this.NewTemplateCommand = new Command(this.OnNewTemplate);
+    }
+
+    private void OnNewTemplate(object? _)
+    {
+
     }
 
     private void Bind(string groupName)
@@ -47,4 +54,7 @@ public sealed class GroupViewModel : Bindable<GroupView>
     public List<TemplateViewModel> Templates { get => this.Get<List<TemplateViewModel>>()!; set => this.Set(value); }
 
     public string GroupName { get => this.Get<string>()!; set => this.Set(value); }
+
+    public ICommand NewTemplateCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+
 }

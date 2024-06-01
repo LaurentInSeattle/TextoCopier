@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
     xmlns:vm="clr-namespace:Lyt.TextoCopier.Workflow"
+	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
     x:DataType="vm:GroupViewModel" 
     Background="Transparent"
     >
@@ -17,7 +18,7 @@
 	<Grid		
 		>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="40" />
+			<RowDefinition Height="64" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 		<Rectangle
@@ -27,13 +28,26 @@
 		<TextBlock
 			Grid.Row="0" 
 			Text="{Binding GroupName}"
-			HorizontalAlignment="Center" VerticalAlignment="Center"
-			Margin="0"
+			HorizontalAlignment="Left" VerticalAlignment="Center"
+			Margin="12 0 0 0"
 			FontSize="18"
 			FontStyle="Italic"
 			Foreground="{StaticResource PastelOrchid_0_080}"
 			TextWrapping="Wrap"
 			/>
+		<glyphs:GlyphButton
+			Style="{StaticResource ToolbarIconButton}"
+			Behaviour="Tap"
+			HorizontalAlignment="Right" VerticalAlignment="Center"
+			Width="72" Height="48"
+			Margin="4 4 12 4"
+			GlyphSource="add"
+			ButtonBackground="BorderlessRectangle"
+			GlyphStrokeThickness="0"
+			GlyphAngle="0"
+			Text="{DynamicResource Group.NewTemplate}"
+			Command="{Binding NewTemplateCommand}"
+	    	/>
 		<ScrollViewer	
 			Grid.Row="1"
 			Background="Transparent"

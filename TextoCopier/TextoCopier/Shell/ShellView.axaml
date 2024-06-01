@@ -93,7 +93,7 @@
 				Behaviour="Tap"
 				HorizontalAlignment="Center" VerticalAlignment="Center"
 				Width="72" Height="48"
-				Margin="4"
+				Margin="4 4 12 4"
 				GlyphSource="power"
 				ButtonBackground="BorderlessRectangle"
 				GlyphStrokeThickness="0"

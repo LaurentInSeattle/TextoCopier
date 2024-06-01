@@ -109,6 +109,7 @@ public partial class LogViewerWindow : Window, ILogger, INotifyPropertyChanged
                 }
 
                 this.itemsControl.ItemsSource = this.ObservableLogEntries;
+                this.itemsControl.ScrollIntoView(this.ObservableLogEntries.Count-1);
             },
             DispatcherPriority.Background);
 }

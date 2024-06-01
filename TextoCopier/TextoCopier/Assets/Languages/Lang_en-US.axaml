@@ -12,4 +12,5 @@
 	<system:String x:Key="Shell.Greetings">Welcome to TextoCopier!</system:String>
 	<system:String x:Key="Template.Copy">Copy</system:String>
 	<system:String x:Key="Toast.Dismiss">Dismiss</system:String>
+	<system:String x:Key="Group.NewTemplate">New...</system:String>
 </ResourceDictionary>

@@ -65,7 +65,7 @@ public sealed class ToastViewModel(IToaster toaster) : Bindable<ToastView>
                 Interval = TimeSpan.FromMilliseconds(dismissDelay),
                 IsEnabled = true,
             };
-            //this.dismissTimer.Tick += this.DismissTimerTick;
+            this.dismissTimer.Tick += this.DismissTimerTick;
         }
     }
 

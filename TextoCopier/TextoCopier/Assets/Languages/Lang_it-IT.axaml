@@ -12,4 +12,5 @@
 	<system:String x:Key="Shell.Greetings">Benvenuto in Testo Copiatrice!</system:String>
 	<system:String x:Key="Template.Copy">Copia</system:String>
 	<system:String x:Key="Toast.Dismiss">Chiusa</system:String>
+	<system:String x:Key="Group.NewTemplate">Nuovo...</system:String>
 </ResourceDictionary>

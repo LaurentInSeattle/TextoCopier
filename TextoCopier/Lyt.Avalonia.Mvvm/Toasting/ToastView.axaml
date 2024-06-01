@@ -32,38 +32,48 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+		<Border
+			x:Name="outerBorder"
+			Grid.ColumnSpan="999" Grid.RowSpan="999"
+			Height="56" MaxHeight="56"
+			Background="Transparent"
+			BorderBrush="{StaticResource LightAqua_1_040}"
+			BorderThickness="1"
+			CornerRadius="4"
+			/>
 		<Rectangle
 			Fill="#58000020"
-            Grid.ColumnSpan="999" Grid.RowSpan="999"
+			Grid.ColumnSpan="999" Grid.RowSpan="999"
+			RadiusX="4" RadiusY="4"
 			/>
 		<glyphs:SvgIcon
 			x:Name="Icon"
-            Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
+			Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
 			Source="{Binding IconName}"
 			Foreground="{Binding ColorLevel}"
 			StrokeThickness="1"
 			Width="40" Height="40"
 			Margin="0"
-			> 			
+			>
 		</glyphs:SvgIcon>
 		<TextBlock
 			Grid.Column="2"
 			Foreground ="{Binding ColorLevel}"
-            Margin="0"
-            FontWeight="Bold"
+			Margin="0"
+			FontWeight="Bold"
 			FontSize ="16"
-            Text="{Binding Title, FallbackValue=Toast Title}" 
+			Text="{Binding Title, FallbackValue=Toast Title}"
 			/>
-        <TextBlock
-            Grid.Column="2" Grid.Row="1"
+		<TextBlock
+			Grid.Column="2" Grid.Row="1"
 			Foreground ="{Binding ColorLevel}"
-            Text="{Binding Message, FallbackValue=Toast message}" 
+			Text="{Binding Message, FallbackValue=Toast message}"
 			FontSize ="14"
-            Margin="8 0 0 0"
+			Margin="8 0 0 0"
 			/>
 		<glyphs:GlyphButton
 			x:Name="dismissButton"
-            Grid.Column="3" Grid.Row="0" Grid.RowSpan="2"
+			Grid.Column="3" Grid.Row="0" Grid.RowSpan="2"
 			Style="{StaticResource ToolbarIconButton}"
 			Layout="IconTextBelow"
 			Behaviour="Tap"
