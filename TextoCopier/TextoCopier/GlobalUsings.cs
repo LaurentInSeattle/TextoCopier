@@ -41,9 +41,11 @@ global using Lyt.Avalonia.Controls.Toasting;
 
 global using Lyt.Avalonia.Mvvm;
 global using Lyt.Avalonia.Mvvm.Core;
+global using Lyt.Avalonia.Mvvm.Dialogs;
 global using Lyt.Avalonia.Mvvm.Messenger;
 global using Lyt.Avalonia.Mvvm.Models;
 global using Lyt.Avalonia.Mvvm.Utilities;
+
 global using Lyt.Avalonia.Persistence;
 
 global using Lyt.TextoCopier.Shell;

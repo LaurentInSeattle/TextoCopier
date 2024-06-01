@@ -31,6 +31,7 @@ public partial class App : ApplicationBase
 #else
             new Tuple<Type, Type>(typeof(ILogger), typeof(Logger)),
 #endif
+            new Tuple<Type, Type>(typeof(IDialogService), typeof(DialogService)),
             new Tuple<Type, Type>(typeof(IMessenger), typeof(Messenger)),
             new Tuple<Type, Type>(typeof(IToaster), typeof(Toaster)),
         ],
