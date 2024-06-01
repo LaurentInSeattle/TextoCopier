@@ -52,18 +52,20 @@
 			Grid.Row="1"
 			Background="Transparent"
 			VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-			ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+			ScrollViewer.HorizontalScrollBarVisibility="Disabled"
 			ScrollViewer.VerticalScrollBarVisibility="Auto"
 			>
 			<ItemsControl
+				x:Name="TemplatesItemControl"
 				ItemsSource="{Binding Templates}"
 				Margin="0 0 24 0"
 				>
 				<ItemsControl.ItemTemplate>
-					<DataTemplate> 
+					<DataTemplate>
 						<vm:TemplateView
-							Margin="8 4 4 0"
-							/> 
+							Width="{Binding Width, ElementName=TemplatesItemControl}"
+							>							
+						</vm:TemplateView>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
