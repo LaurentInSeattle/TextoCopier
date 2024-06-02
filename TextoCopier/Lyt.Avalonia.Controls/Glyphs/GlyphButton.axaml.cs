@@ -576,7 +576,11 @@ public partial class GlyphButton : UserControl, ICanSelect
         //}
         else if (this.Behaviour == ButtonBehaviour.Continuous)
         {
-            this.ActivateCommand(new(), ButtonTag.CountinuousEnd);
+            if (!this.isContinuousEnded) 
+            {
+                this.ActivateCommand(new(), ButtonTag.CountinuousEnd);
+            }
+
             this.StopTimer();
         }
         else
