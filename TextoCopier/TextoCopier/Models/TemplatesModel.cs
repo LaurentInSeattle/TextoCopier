@@ -19,6 +19,7 @@ public sealed partial class TemplatesModel : ModelBase
                     Templates =
                     [
                         new Template { Name = "Email" , Value = "ly.testud@outlook.com" },
+                        new Template { Name = "Password" , Value = "Meh: Not my password!", ShouldHide = true },
                         new Template { Name = "First" , Value = "Laurent" },
                         new Template { Name = "Middle" , Value = "Yves" },
                         new Template { Name = "Last" , Value = "Testud" },

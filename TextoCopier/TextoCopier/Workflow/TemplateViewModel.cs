@@ -1,6 +1,4 @@
-﻿using Lyt.TextoCopier.Utilities;
-
-namespace Lyt.TextoCopier.Workflow;
+﻿namespace Lyt.TextoCopier.Workflow;
 
 public sealed class TemplateViewModel : Bindable<TemplateView>
 {
@@ -22,6 +20,7 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
 
         this.Name = template.Name;
         this.Value = template.Value;
+        this.MaskedValue = template.ShouldHide ? "••••••••••" : this.Value;
         this.CopyCommand = new Command(this.OnCopy);
         this.EditCommand = new Command(this.OnEdit);
         this.DeleteCommand = new Command(this.OnDelete);
@@ -92,7 +91,7 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
                 this.ShowExtendedTemplate();
                 break;
             case ButtonTag.CountinuousEnd:
-                this.DismissExtendedTemplate(); 
+                this.DismissExtendedTemplate();
                 break;
         }
     }
@@ -109,13 +108,21 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
         var view = new ExtendedTemplateView();
         var vm = new ExtendedTemplateViewModel();
         view.DataContext = vm;
-        vm.DuplicateFrom(this); 
+        vm.DuplicateFrom(this);
 
-        this.dialogService.Show< ExtendedTemplateView> (this.parentPanel, view); 
+        this.dialogService.Show<ExtendedTemplateView>(this.parentPanel, view);
     }
 
-    private void DismissExtendedTemplate() => this.dialogService.Dismiss();
-    
+    private void DismissExtendedTemplate()
+    {
+        if (this.dialogService.IsModal)
+        {
+            this.dialogService.Dismiss();
+        }
+    }
+
+    public string MaskedValue { get => this.Get<string>()!; set => this.Set(value); }
+
     public string Name { get => this.Get<string>()!; set => this.Set(value); }
 
     public string Value { get => this.Get<string>()!; set => this.Set(value); }

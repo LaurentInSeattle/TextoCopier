@@ -2,6 +2,8 @@
 
 public interface IDialogService
 {
+    bool IsModal { get; }
+
     void Show<TDialog>(object panel, TDialog dialog);
 
     void Dismiss(); 

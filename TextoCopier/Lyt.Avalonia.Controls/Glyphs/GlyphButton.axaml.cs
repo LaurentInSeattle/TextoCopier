@@ -18,6 +18,7 @@ public partial class GlyphButton : UserControl, ICanSelect
     private DateTime pressedAt;
     private bool isPressed;
     private bool isLongPressActivated;
+    private bool isContinuousEnded;
     private double viewboxMargin;
     private double glyphAngle;
 
@@ -457,7 +458,10 @@ public partial class GlyphButton : UserControl, ICanSelect
 
         if (this.Behaviour == ButtonBehaviour.Continuous)
         {
-            this.ActivateCommand(new(), ButtonTag.CountinuousEnd);
+            if (!this.isContinuousEnded)
+            {
+                this.ActivateCommand(new(), ButtonTag.CountinuousEnd);
+            }
         }
 
         this.UpdateVisualState();
@@ -516,6 +520,8 @@ public partial class GlyphButton : UserControl, ICanSelect
         {
             this.ActivateCommand(args, ButtonTag.None);
         }
+        #region Keyboards 
+
         //else if (this.Behaviour == ButtonBehaviour.PopupKeyboard)
         //{
         //    if (this.Tag is string tag)
@@ -562,20 +568,21 @@ public partial class GlyphButton : UserControl, ICanSelect
         //    // If the timer is running this is just in case... If not we have to do that 
         //    this.DismissPopupKeyboard();
         //}
+        #endregion Keyboards 
         //else if ((this.Behaviour == ButtonBehaviour.Countdown) && (this.timer is not null))
         //{
         //    this.ActivateCommand(new(), ButtonTag.CountdownCancel);
         //    this.StopTimer();
         //}
-        //else if (this.Behaviour == ButtonBehaviour.Continuous)
-        //{
-        //    this.ActivateCommand(new(), ButtonTag.CountinuousEnd);
-        //    this.StopTimer();
-        //}
-        //else
-        //{
-        //    this.StopTimer();
-        //}
+        else if (this.Behaviour == ButtonBehaviour.Continuous)
+        {
+            this.ActivateCommand(new(), ButtonTag.CountinuousEnd);
+            this.StopTimer();
+        }
+        else
+        {
+            this.StopTimer();
+        }
     }
 
     #endregion Pointer Handling
@@ -708,8 +715,18 @@ public partial class GlyphButton : UserControl, ICanSelect
                     this.PreventMultipleClicks();
                 }
 
+                if ((this.Behaviour == ButtonBehaviour.Continuous) && (buttonTag == ButtonTag.CountinuousBegin))
+                {
+                    this.isContinuousEnded = false;
+                }
+
                 this.Command.Execute(commandParameter);
                 activated = true;
+
+                if ( (this.Behaviour == ButtonBehaviour.Continuous)&& ( buttonTag== ButtonTag.CountinuousEnd ) ) 
+                {
+                    this.isContinuousEnded = true;
+                }
             }
         }
 

@@ -72,7 +72,7 @@
                 Width="{Binding Width, ElementName=SizingRectangle}"
                 TextAlignment="Left"
                 Foreground="{StaticResource LightAqua_0_120}"
-                Text="{Binding Value}"
+                Text="{Binding MaskedValue}"
                 FontSize="16"
                 Margin="12 0 0 0"
                 IsHitTestVisible="False"

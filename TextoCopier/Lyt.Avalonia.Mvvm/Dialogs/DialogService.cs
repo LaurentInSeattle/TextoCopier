@@ -1,8 +1,4 @@
-﻿using Avalonia.Controls;
-using Lyt.Avalonia.Interfaces.UserInterface;
-using Microsoft.Extensions.Hosting;
-
-namespace Lyt.Avalonia.Mvvm.Dialogs;
+﻿namespace Lyt.Avalonia.Mvvm.Dialogs;
 
 public sealed class DialogService(ILogger logger) : IDialogService
 {
@@ -12,61 +8,14 @@ public sealed class DialogService(ILogger logger) : IDialogService
     private ModalHostControl? modalHostControl;
     private UserControl? modalUserControl;
 
-    #region LATER: Run a Modal Window 
+    public bool IsModal
+        => this.modalHostPanel is not null || this.modalUserControl is not null || this.modalHostControl is not null;
 
-    //public static bool Run<TDialog, TDialogParameters>(Window window, TDialogParameters? dialogParameters = null)
-    //    where TDialog : UserControl, IDialog<TDialogParameters>, new()
-    //    where TDialogParameters : class
-    //{
-    //    var host = new ModalHostWindow()
-    //    {
-    //        Owner = window,
-    //        Width = window.ActualWidth,
-    //        Height = window.ActualHeight,
-    //    };
-
-    //    TDialog modal = new TDialog { Host = host };
-    //    if (dialogParameters is not null)
-    //    {
-    //        modal.Initialize(dialogParameters);
-    //        PropertyInfo? imageSourceProperty = dialogParameters.GetType().GetProperty("ImageSource");
-    //        if (imageSourceProperty is not null)
-    //        {
-    //            object? imageSourcePropertyValue = imageSourceProperty.GetValue(dialogParameters, null);
-    //            if (imageSourcePropertyValue is string imageSourceUri)
-    //            {
-    //                if (!string.IsNullOrEmpty(imageSourceUri))
-    //                {
-    //                    try
-    //                    {
-    //                        BitmapImage source = new BitmapImage();
-    //                        source.BeginInit();
-    //                        source.UriSource = new Uri("pack://application:,,," + imageSourceUri);
-    //                        source.EndInit();
-    //                        host.BackgroundImage.Source = source;
-    //                    }
-    //                    catch (Exception ex)
-    //                    {
-    //                        // Silently swallow the exception if the image fails to load
-    //                        Debug.WriteLine(ex);
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-
-    //    host.ContentGrid.Children.Add(modal);
-    //    bool? _ = host.ShowDialog();
-    //    return modal.DialogResult;
-    //}
-
-    #endregion Run a Window 
-
-    public void Show<TDialog>(object maybePanel, TDialog dialog) 
+    public void Show<TDialog>(object maybePanel, TDialog dialog)
     {
         try
         {
-            if (this.modalHostPanel is not null || this.modalUserControl is not null || this.modalHostControl is not null)
+            if (this.IsModal)
             {
                 this.logger.Error("Already showing a modal");
                 throw new InvalidOperationException("Already showing a modal");
@@ -101,7 +50,7 @@ public sealed class DialogService(ILogger logger) : IDialogService
         }
     }
 
-    private void ShowInternal<TDialog>(Panel panel, UserControl dialog) 
+    private void ShowInternal<TDialog>(Panel panel, UserControl dialog)
     {
         var host = new ModalHostControl(panel, (bool _) => { });
         panel.Children.Add(host);
@@ -112,18 +61,31 @@ public sealed class DialogService(ILogger logger) : IDialogService
         this.modalUserControl = dialog;
     }
 
-    public void Dismiss ( )
+    public void Dismiss()
     {
+        if (this.modalHostPanel is null && this.modalUserControl is null && this.modalHostControl is null)
+        {
+            this.logger.Warning("DialogService: Nothing to dismiss.");
+            return; 
+        }
+
         if (this.modalHostPanel is null || this.modalUserControl is null || this.modalHostControl is null)
         {
-            this.logger.Warning("Nothing to dismiss.");
-            return;
+            this.logger.Warning("DialogService: Inconsistent state, trying to recover and dismiss.");
         }
 
         try
         {
-            this.modalHostControl.ContentGrid.Children.Remove(this.modalUserControl);
-            this.modalHostPanel.Children.Remove(this.modalHostControl);
+            if (this.modalUserControl is not null && this.modalHostControl is not null)
+            {
+                this.modalHostControl.ContentGrid.Children.Remove(this.modalUserControl);
+            }
+
+            if (this.modalHostPanel is not null && this.modalHostControl is not null)
+            {
+                this.modalHostPanel.Children.Remove(this.modalHostControl);
+            }
+
             this.modalHostControl = null;
             this.modalHostPanel = null;
             this.modalUserControl = null;
@@ -184,4 +146,54 @@ public sealed class DialogService(ILogger logger) : IDialogService
         panel.Children.Add(host);
         host.ContentGrid.Children.Add(userControl);
     }
+
+    #region LATER: Run a Modal Window 
+
+    //public static bool Run<TDialog, TDialogParameters>(Window window, TDialogParameters? dialogParameters = null)
+    //    where TDialog : UserControl, IDialog<TDialogParameters>, new()
+    //    where TDialogParameters : class
+    //{
+    //    var host = new ModalHostWindow()
+    //    {
+    //        Owner = window,
+    //        Width = window.ActualWidth,
+    //        Height = window.ActualHeight,
+    //    };
+
+    //    TDialog modal = new TDialog { Host = host };
+    //    if (dialogParameters is not null)
+    //    {
+    //        modal.Initialize(dialogParameters);
+    //        PropertyInfo? imageSourceProperty = dialogParameters.GetType().GetProperty("ImageSource");
+    //        if (imageSourceProperty is not null)
+    //        {
+    //            object? imageSourcePropertyValue = imageSourceProperty.GetValue(dialogParameters, null);
+    //            if (imageSourcePropertyValue is string imageSourceUri)
+    //            {
+    //                if (!string.IsNullOrEmpty(imageSourceUri))
+    //                {
+    //                    try
+    //                    {
+    //                        BitmapImage source = new BitmapImage();
+    //                        source.BeginInit();
+    //                        source.UriSource = new Uri("pack://application:,,," + imageSourceUri);
+    //                        source.EndInit();
+    //                        host.BackgroundImage.Source = source;
+    //                    }
+    //                    catch (Exception ex)
+    //                    {
+    //                        // Silently swallow the exception if the image fails to load
+    //                        Debug.WriteLine(ex);
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    host.ContentGrid.Children.Add(modal);
+    //    bool? _ = host.ShowDialog();
+    //    return modal.DialogResult;
+    //}
+
+    #endregion Run a Window 
 }

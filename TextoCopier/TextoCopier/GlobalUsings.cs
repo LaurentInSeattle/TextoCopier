@@ -50,4 +50,6 @@ global using Lyt.Avalonia.Persistence;
 
 global using Lyt.TextoCopier.Shell;
 global using Lyt.TextoCopier.Models;
+global using Lyt.TextoCopier.Utilities;
 global using Lyt.TextoCopier.Workflow;
+
