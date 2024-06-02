@@ -2,10 +2,13 @@
 
 public interface IDialogService
 {
+    void Show<TDialog>(object panel, TDialog dialog);
+
+    void Dismiss(); 
+
     void Run<TDialog, TDialogParameters>(object panel, Action<bool> onClose, TDialogParameters dialogParameters)
         where TDialog : IDialog<TDialogParameters>, new()
         where TDialogParameters : class; 
-
 }
 
 public interface IDialog<TDialogParameters, TData> : IDialog<TDialogParameters>

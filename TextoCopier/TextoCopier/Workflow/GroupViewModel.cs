@@ -17,7 +17,6 @@ public sealed class GroupViewModel : Bindable<GroupView>
 
     private void OnNewTemplate(object? _)
     {
-
     }
 
     private void Bind(string groupName)
@@ -27,9 +26,10 @@ public sealed class GroupViewModel : Bindable<GroupView>
             this.GroupName = groupName;
             Group group = this.templatesModel.GetGroup(groupName);
             var list = new List<TemplateViewModel>(group.Templates.Count);
+            var view = this.View!.InnerGrid; 
             foreach (var template in group.Templates)
             {
-                list.Add(new TemplateViewModel(groupName, template));
+                list.Add(new TemplateViewModel(groupName, template, view));
             }
 
             this.Templates = list;

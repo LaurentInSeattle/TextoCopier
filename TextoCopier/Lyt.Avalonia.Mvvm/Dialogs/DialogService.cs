@@ -1,8 +1,16 @@
-﻿namespace Lyt.Avalonia.Mvvm.Dialogs;
+﻿using Avalonia.Controls;
+using Lyt.Avalonia.Interfaces.UserInterface;
+using Microsoft.Extensions.Hosting;
+
+namespace Lyt.Avalonia.Mvvm.Dialogs;
 
 public sealed class DialogService(ILogger logger) : IDialogService
 {
     private readonly ILogger logger = logger;
+
+    private Panel? modalHostPanel;
+    private ModalHostControl? modalHostControl;
+    private UserControl? modalUserControl;
 
     #region LATER: Run a Modal Window 
 
@@ -53,6 +61,79 @@ public sealed class DialogService(ILogger logger) : IDialogService
     //}
 
     #endregion Run a Window 
+
+    public void Show<TDialog>(object maybePanel, TDialog dialog) 
+    {
+        try
+        {
+            if (this.modalHostPanel is not null || this.modalUserControl is not null || this.modalHostControl is not null)
+            {
+                this.logger.Error("Already showing a modal");
+                throw new InvalidOperationException("Already showing a modal");
+            }
+
+            if (maybePanel is not Panel panel)
+            {
+                this.logger.Error("Must provide a host panel");
+                throw new InvalidOperationException("Must provide a host panel");
+            }
+
+            if (!typeof(TDialog).IsSubclassOf(typeof(UserControl)))
+            {
+                this.logger.Error("TDialog Must provide a type deriving from UserControl");
+                throw new InvalidOperationException("TDialog Must provide a type deriving from UserControl");
+            }
+
+            if (dialog is UserControl userControl)
+            {
+                this.ShowInternal<TDialog>(panel, userControl);
+            }
+            else
+            {
+                this.logger.Error("TDialog Must provide a type deriving from UserControl");
+                throw new InvalidOperationException("TDialog Must provide a type deriving from UserControl");
+            }
+        }
+        catch (Exception ex)
+        {
+            this.logger.Error("Failed to launch dialog, exception thrown: \n" + ex.ToString());
+            throw;
+        }
+    }
+
+    private void ShowInternal<TDialog>(Panel panel, UserControl dialog) 
+    {
+        var host = new ModalHostControl(panel, (bool _) => { });
+        panel.Children.Add(host);
+        host.ContentGrid.Children.Add(dialog);
+
+        this.modalHostPanel = panel;
+        this.modalHostControl = host;
+        this.modalUserControl = dialog;
+    }
+
+    public void Dismiss ( )
+    {
+        if (this.modalHostPanel is null || this.modalUserControl is null || this.modalHostControl is null)
+        {
+            this.logger.Warning("Nothing to dismiss.");
+            return;
+        }
+
+        try
+        {
+            this.modalHostControl.ContentGrid.Children.Remove(this.modalUserControl);
+            this.modalHostPanel.Children.Remove(this.modalHostControl);
+            this.modalHostControl = null;
+            this.modalHostPanel = null;
+            this.modalUserControl = null;
+        }
+        catch (Exception ex)
+        {
+            this.logger.Error("Failed to dismiss dialog, exception thrown: \n" + ex.ToString());
+            throw;
+        }
+    }
 
     public void Run<TDialog, TDialogParameters>(
         object maybePanel, Action<bool> onClose, TDialogParameters dialogParameters)

@@ -16,6 +16,7 @@
         <vm:GroupViewModel />
     </Design.DataContext>
 	<Grid		
+		x:Name="MainGrid"
 		>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="64" />
@@ -48,27 +49,31 @@
 			Text="{DynamicResource Group.NewTemplate}"
 			Command="{Binding NewTemplateCommand}"
 	    	/>
-		<ScrollViewer	
+		<Grid
+			x:Name="InnerGrid"
 			Grid.Row="1"
-			Background="Transparent"
-			VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-			ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-			ScrollViewer.VerticalScrollBarVisibility="Auto"
 			>
-			<ItemsControl
-				x:Name="TemplatesItemControl"
-				ItemsSource="{Binding Templates}"
-				Margin="0 0 24 0"
+			<ScrollViewer	
+				Background="Transparent"
+				VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+				ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+				ScrollViewer.VerticalScrollBarVisibility="Auto"
 				>
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<vm:TemplateView
-							Width="{Binding Width, ElementName=TemplatesItemControl}"
-							>							
-						</vm:TemplateView>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
-		</ScrollViewer>
+				<ItemsControl
+					x:Name="TemplatesItemControl"
+					ItemsSource="{Binding Templates}"
+					Margin="0 0 24 0"
+					>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<vm:TemplateView
+								Width="{Binding Width, ElementName=TemplatesItemControl}"
+								>							
+							</vm:TemplateView>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</ScrollViewer>
+		</Grid>
 	</Grid>
 </UserControl>

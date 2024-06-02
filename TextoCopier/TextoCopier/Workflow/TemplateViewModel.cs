@@ -7,12 +7,16 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
     private readonly string groupName;
     private readonly Template template;
     private readonly TemplatesModel templatesModel;
+    private readonly Panel? parentPanel;
+    private readonly IDialogService dialogService;
 
-    public TemplateViewModel(string groupName, Template template)
+    public TemplateViewModel(string groupName, Template template, Panel? parentPanel)
     {
         this.groupName = groupName;
         this.template = template;
+        this.parentPanel = parentPanel;
         this.templatesModel = ApplicationBase.GetRequiredService<TemplatesModel>();
+        this.dialogService = ApplicationBase.GetRequiredService<IDialogService>();
 
         base.DisablePropertyChangedLogging = true;
 
@@ -27,7 +31,8 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
 
     public bool ShowLink => this.template.IsLink;
 
-    public bool ShowView => this.template.ShouldHide || this.template.Value.Length > 28;
+    public bool ShowView
+        => (this.parentPanel is not null) && (this.template.ShouldHide || this.template.Value.Length > 28);
 
     private async void OnCopy(object? _)
     {
@@ -50,7 +55,7 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
     {
         this.Logger.Info("Clicked on Delete!");
         this.templatesModel.DeleteTemplate(this.groupName, this.template.Name, out string message);
-        if ( !string.IsNullOrWhiteSpace(message))
+        if (!string.IsNullOrWhiteSpace(message))
         {
             this.Logger.Warning(message);
         }
@@ -66,12 +71,51 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
         }
     }
 
-    private void OnView(object? _)
+    private void OnView(object? parameter)
     {
-        this.Logger.Info("Clicked on View!");
-        //this.templatesModel.EditTemplateValue(Name, this.Value);
+        if (parameter is not ButtonTag buttonTag)
+        {
+            return;
+        }
+
+        switch (buttonTag)
+        {
+            default:
+            case ButtonTag.None:
+            case ButtonTag.CountdownBegin:
+            case ButtonTag.CountdownCancel:
+            case ButtonTag.CountdownComplete:
+            case ButtonTag.CountinuousContinue:
+                return;
+
+            case ButtonTag.CountinuousBegin:
+                this.ShowExtendedTemplate();
+                break;
+            case ButtonTag.CountinuousEnd:
+                this.DismissExtendedTemplate(); 
+                break;
+        }
     }
 
+    private void ShowExtendedTemplate()
+    {
+        if (this.parentPanel is null)
+        {
+            return;
+        }
+
+        this.Logger.Info("Clicked on View Begin!");
+
+        var view = new ExtendedTemplateView();
+        var vm = new ExtendedTemplateViewModel();
+        view.DataContext = vm;
+        vm.DuplicateFrom(this); 
+
+        this.dialogService.Show< ExtendedTemplateView> (this.parentPanel, view); 
+    }
+
+    private void DismissExtendedTemplate() => this.dialogService.Dismiss();
+    
     public string Name { get => this.Get<string>()!; set => this.Set(value); }
 
     public string Value { get => this.Get<string>()!; set => this.Set(value); }

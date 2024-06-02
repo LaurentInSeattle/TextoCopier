@@ -8,9 +8,10 @@
     >
 	<Grid
 		x:Name="OuterGrid"
-		Background="#B0202030"
+		Background="#C0282830"
 		Panel.ZIndex="99999"
 		VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+		Grid.RowSpan="999" Grid.ColumnSpan="999"
 		>
 		<Grid
 			x:Name="ContentGrid"

@@ -39,7 +39,11 @@ public sealed partial class TemplatesModel : ModelBase
                         new Template { Name = "Meeting Code" , Value = "717140" },
                         new Template { Name = "Screen Name" , Value = "Enzo ~ Laurent" },
                         new Template { Name = "Kahoot" , Value = "https://kahoot.it/", IsLink = true},
-                        new Template { Name = "Intro" , Value = "Ciao! Mi chiamo Lorenzo e vivo in Pleasanton"},
+                        new Template 
+                        { 
+                            Name = "Intro" , 
+                            Value = "Ciao! Mi chiamo Lorenzo e vivo in Pleasanton, una piccola citta nella periferia di San Francisco, California."
+                        },
                     ]
                 },
                 new Group

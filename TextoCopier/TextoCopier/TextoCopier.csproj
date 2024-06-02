@@ -35,4 +35,8 @@
     <Folder Include="Controls\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Workflow\ExtendedTemplateView.axaml" />
+  </ItemGroup>
+
 </Project>

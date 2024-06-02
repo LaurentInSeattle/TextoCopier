@@ -11,7 +11,7 @@ public partial class GlyphButton : UserControl, ICanSelect
     private const int KeyboardTimerIntervalMilliseconds = 75;
     private const int LongPressTimerIntervalMilliseconds = 75;
     private const int CountdownTimerIntervalMilliseconds = 100;
-    private const int ContinuousTimerIntervalMilliseconds = 100;
+    private const int ContinuousTimerIntervalMilliseconds = 250;
 
     private DispatcherTimer? timer;
     private bool isOver;
