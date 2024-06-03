@@ -2,10 +2,12 @@
 
 public class GroupIconViewModel : Bindable<GroupIconView>
 {
+    private readonly IMessenger messenger;
     private readonly string groupName;
 
     public GroupIconViewModel(Group group, SelectionGroup selectionGroup, bool selected)
     {
+        this.messenger = ApplicationBase.GetRequiredService<IMessenger>();
         this.groupName = group.Name;
 
         base.DisablePropertyChangedLogging = true;
@@ -15,7 +17,6 @@ public class GroupIconViewModel : Bindable<GroupIconView>
         this.SelectionGroup = selectionGroup;
         this.IsSelected = selected;
         this.GroupCommand = new Command(this.OnGroup);
-
     }
 
     private void OnGroup(object? _)
@@ -25,6 +26,8 @@ public class GroupIconViewModel : Bindable<GroupIconView>
         {
             this.Logger.Warning("Failed to select group: " + message);
         }
+
+        this.messenger.Publish(new ViewActivationMessage(ViewActivationMessage.StaticView.Group)); 
     }
 
     public string IconGlyphSource { get => this.Get<string>()!; set => this.Set(value); }

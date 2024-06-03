@@ -1,14 +1,15 @@
-﻿
-namespace Lyt.TextoCopier.Workflow;
+﻿namespace Lyt.TextoCopier.Workflow;
 
 public sealed class GroupViewModel : Bindable<GroupView>
 {
     public GroupViewModel() : this(ApplicationBase.GetRequiredService<TemplatesModel>()) { }
 
     private readonly TemplatesModel templatesModel;
+    private readonly IMessenger messenger;
 
     public GroupViewModel(TemplatesModel templatesModel)
     {
+        this.messenger = ApplicationBase.GetRequiredService<IMessenger>();
         this.templatesModel = templatesModel;
         this.templatesModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
         this.Templates = [];
@@ -17,6 +18,7 @@ public sealed class GroupViewModel : Bindable<GroupView>
 
     private void OnNewTemplate(object? _)
     {
+        this.messenger.Publish(new ViewActivationMessage(ViewActivationMessage.StaticView.Group));
     }
 
     private void Bind(string groupName)

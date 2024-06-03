@@ -149,9 +149,10 @@
 				GlyphAngle="00"
 				Text="{DynamicResource Shell.NewGroup}"
 				Command="{Binding NewGroupCommand}"
-    		/>
+    			/>
 			<glyphs:GlyphButton
 				Style="{StaticResource ToolbarIconButton}"
+				IsVisible="{Binding DeleteGroupIsVisible}"
 				Behaviour="Tap"
 				HorizontalAlignment="Left" VerticalAlignment="Center"
 				Width="72" Height="68"
@@ -162,9 +163,9 @@
 				GlyphAngle="00"
 				Text="{DynamicResource Shell.DeleteGroup}"
 				Command="{Binding DeleteGroupCommand}"
-    		/>
+    			/>
 		</StackPanel>
-		<!-- Do not add rows and columns to the toaster host-->
+		<!-- Do not add rows and/or columns to the toaster host-->
 		<Grid
 			x:Name="ToasterHost"
 			Grid.Column="1" Grid.Row="1"

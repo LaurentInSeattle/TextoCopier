@@ -9,6 +9,8 @@
 	<system:String x:Key="Shell.NewGroup">Nouv. Groupe</system:String>
 	<system:String x:Key="Shell.Settings">Réglages</system:String>
 	<system:String x:Key="Shell.Exit">Quitter</system:String>
+	<system:String x:Key="Shell.Close">Fermer</system:String>
+	<system:String x:Key="Shell.Save">Sauvegarder</system:String>
 	<system:String x:Key="Shell.Ready">Pret.</system:String>
 	<system:String x:Key="Shell.Greetings">Bienvenue dans Texto Copieur !</system:String>
 	<system:String x:Key="Template.Copy">Copier</system:String>

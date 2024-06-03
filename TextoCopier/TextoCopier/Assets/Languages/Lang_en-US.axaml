@@ -8,6 +8,8 @@
 	<system:String x:Key="Shell.DeleteGroup">Delete Group</system:String>
 	<system:String x:Key="Shell.Settings">Settings</system:String>
 	<system:String x:Key="Shell.Exit">Exit</system:String>
+	<system:String x:Key="Shell.Close">Close</system:String>
+	<system:String x:Key="Shell.Save">Save</system:String>
 	<system:String x:Key="Shell.Ready">Ready</system:String>
 	<system:String x:Key="Shell.Greetings">Welcome to TextoCopier!</system:String>
 	<system:String x:Key="Template.Copy">Copy</system:String>

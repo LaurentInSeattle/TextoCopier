@@ -1,5 +1,7 @@
 ﻿namespace Lyt.TextoCopier.Shell;
 
+using static ViewActivationMessage;
+
 public sealed class ShellViewModel : Bindable<ShellView>
 {
     public ShellViewModel() : this(ApplicationBase.GetRequiredService<TemplatesModel>()) { }
@@ -7,30 +9,23 @@ public sealed class ShellViewModel : Bindable<ShellView>
     private readonly TemplatesModel templatesModel;
     private readonly IDialogService dialogService;
     private readonly IToaster toaster;
-
+    private readonly IMessenger messenger;
 
     public ShellViewModel(TemplatesModel templatesModel)
     {
         this.templatesModel = templatesModel;
         this.dialogService = ApplicationBase.GetRequiredService<IDialogService>();
         this.toaster = ApplicationBase.GetRequiredService<IToaster>();
+        this.messenger = ApplicationBase.GetRequiredService<IMessenger>();
+
         this.Groups = [];
         this.SettingsCommand = new Command(this.OnSettings);
         this.AboutCommand = new Command(this.OnAbout);
         this.ExitCommand = new Command(this.OnExit);
         this.NewGroupCommand = new Command(this.OnNewGroup);
         this.DeleteGroupCommand = new Command(this.OnDeleteGroup);
+        this.messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
     }
-
-    private void OnExit(object? _) { }
-
-    private void OnSettings(object? _) => this.Activate<SettingsViewModel, SettingsView>();
-
-    private void OnAbout(object? _) => this.Activate<HelpViewModel, HelpView>();
-
-    private void OnNewGroup(object? _) => this.Activate<NewGroupViewModel, NewGroupView>();
-
-    private void OnDeleteGroup(object? _) { }
 
     protected override void OnViewLoaded()
     {
@@ -46,9 +41,9 @@ public sealed class ShellViewModel : Bindable<ShellView>
         localizer.SelectLanguage("it-IT");
 
         // Create all statics views and bind them 
-        this.SetupWorkflow();
+        ShellViewModel.SetupWorkflow();
         this.BindGroupIcons();
-        this.Activate<GroupViewModel, GroupView>();
+        this.OnViewActivation(StaticView.Group);
 
         // Ready 
         this.toaster.Host = this.View.ToasterHost;
@@ -58,7 +53,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
             this.toaster.Show(
                 localizer.Lookup("Shell.Ready"), localizer.Lookup("Shell.Greetings"), 4_000, ToastLevel.Info);
         }
-        else 
+        else
         {
             this.toaster.Show(
                 "No groups defined", // localizer.Lookup("Shell.Ready"), 
@@ -66,6 +61,53 @@ public sealed class ShellViewModel : Bindable<ShellView>
                 10_000, ToastLevel.Warning);
         }
     }
+
+    private void OnViewActivation(ViewActivationMessage message)
+        => this.OnViewActivation(message.View);
+
+    private void OnViewActivation(StaticView staticView)
+    {
+        if (staticView == StaticView.GoBack)
+        {
+            staticView = StaticView.Group;
+        }
+
+        this.DeleteGroupIsVisible = staticView == StaticView.Group;
+
+        switch (staticView)
+        {
+            default:
+            case StaticView.Group:
+                this.Activate<GroupViewModel, GroupView>();
+                break;
+
+            case StaticView.NewGroup:
+                this.Activate<NewGroupViewModel, NewGroupView>();
+                break;
+
+            case StaticView.Help:
+                this.Activate<HelpViewModel, HelpView>();
+                break;
+
+            case StaticView.Settings:
+                this.Activate<SettingsViewModel, SettingsView>();
+                break;
+
+            case StaticView.NewTemplate:
+                this.Activate<NewTemplateViewModel, NewTemplateView>();
+                break;
+        }
+    }
+
+    private void OnSettings(object? _) => this.OnViewActivation(StaticView.Settings);
+
+    private void OnAbout(object? _) => this.OnViewActivation(StaticView.Help);
+
+    private void OnNewGroup(object? _) => this.OnViewActivation(StaticView.NewGroup);
+
+    private void OnExit(object? _) { }
+
+    private void OnDeleteGroup(object? _) { }
 
     private void Activate<TViewModel, TControl>()
         where TViewModel : Bindable<TControl>
@@ -76,7 +118,11 @@ public sealed class ShellViewModel : Bindable<ShellView>
             throw new Exception("No view: Failed to startup...");
         }
 
-        this.dialogService.Dismiss();
+        if (this.dialogService.IsModal)
+        {
+            this.dialogService.Dismiss();
+        } 
+
         var currentView = this.View.ShellViewContent.Content;
         if (currentView is Control control && control.DataContext is Bindable currentViewModel)
         {
@@ -114,7 +160,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         }
     }
 
-    private void SetupWorkflow()
+    private static void SetupWorkflow()
     {
         void CreateAndBind<TViewModel, TControl>()
             where TViewModel : Bindable<TControl>
@@ -130,6 +176,8 @@ public sealed class ShellViewModel : Bindable<ShellView>
         CreateAndBind<SettingsViewModel, SettingsView>();
         CreateAndBind<NewTemplateViewModel, NewTemplateView>();
     }
+
+    public bool DeleteGroupIsVisible { get => this.Get<bool>(); set => this.Set(value); }
 
     public List<GroupIconViewModel> Groups { get => this.Get<List<GroupIconViewModel>>()!; set => this.Set(value); }
 

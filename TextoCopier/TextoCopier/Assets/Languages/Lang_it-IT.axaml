@@ -8,6 +8,8 @@
 	<system:String x:Key="Shell.DeleteGroup">Elimina Gruppo</system:String>
 	<system:String x:Key="Shell.Settings">Impostazioni</system:String>
 	<system:String x:Key="Shell.Exit">Fine</system:String>
+	<system:String x:Key="Shell.Close">Chiudi</system:String>
+	<system:String x:Key="Shell.Save">Salva</system:String>
 	<system:String x:Key="Shell.Ready">Pronto.</system:String>
 	<system:String x:Key="Shell.Greetings">Benvenuto in Testo Copiatrice!</system:String>
 	<system:String x:Key="Template.Copy">Copia</system:String>
