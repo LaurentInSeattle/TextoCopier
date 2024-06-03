@@ -39,4 +39,8 @@
     <UpToDateCheckInput Remove="Workflow\ExtendedTemplateView.axaml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Workflow\SettingsView.axaml" />
+  </ItemGroup>
+
 </Project>

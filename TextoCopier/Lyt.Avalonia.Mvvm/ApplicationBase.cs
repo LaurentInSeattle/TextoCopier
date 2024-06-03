@@ -161,6 +161,9 @@ public class ApplicationBase(
     public static T GetRequiredService<T>() where T : notnull
         => ApplicationBase.AppHost!.Services.GetRequiredService<T>();
 
+    public static object GetRequiredService(Type type) 
+        => ApplicationBase.AppHost!.Services.GetRequiredService(type);
+
     public static TModel GetModel<TModel>() where TModel : notnull
     {
         TModel? model = ApplicationBase.GetRequiredService<TModel>() ??

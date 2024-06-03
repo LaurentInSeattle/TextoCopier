@@ -82,8 +82,14 @@ public class Bindable : NotifyPropertyChanged
     /// <summary> Invoked when this bindable is bound </summary>
     protected virtual void OnDataBinding() { }
 
-    /// <summary> Invoked when this bindable Framework element is loaded. </summary>
-    protected virtual void OnViewLoaded() { } 
+    /// <summary> Invoked when this bindable control is loaded. </summary>
+    protected virtual void OnViewLoaded() { }
+
+    /// <summary> Usually invoked when this bindable is about to be shown, but could be used for other purposes. </summary>
+    public virtual void Activate () { }
+
+    /// <summary> Usually invoked when this bindable is about to be hidden, and same as above. </summary>
+    public virtual void Deactivate () { }
 
     /// <summary> Gets the value of a property </summary>
     protected T? Get<T>([CallerMemberName] string? name = null)
