@@ -28,7 +28,7 @@ public sealed class Toaster : IToaster
         }
     }
 
-    public void Show(string title, string message, int dismissDelay = 10, ToastLevel toastLevel = ToastLevel.Info)
+    public void Show(string title, string message, int dismissDelay = 10, InformationLevel toastLevel = InformationLevel.Info)
         => this.messenger.Publish(
             new ToastMessage.Show { Title = title, Message = message, Delay = dismissDelay, Level = toastLevel });
 

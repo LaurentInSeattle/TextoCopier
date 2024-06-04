@@ -58,7 +58,7 @@
                 Grid.Column="0" Grid.Row="0"
                 VerticalAlignment="Center" HorizontalAlignment="Stretch"
                 TextAlignment="Left"
-                Foreground="{StaticResource LightAqua_0_120}"
+                Foreground="{StaticResource LightAqua_0_080}"
                 Text="{Binding Name}"
                 FontStyle="Italic"
                 FontSize="14"

@@ -3,41 +3,19 @@
 public sealed class ToastViewModel(IToaster toaster) : Bindable<ToastView>
 {
     private const int NoDelay = 0;
-    private const int MinDelay = 1000;
+    private const int MinDelay = 1_000;
     private const int MaxDelay = 60_000;
 
     private readonly IToaster toaster = toaster;
 
     private DispatcherTimer? dismissTimer;
 
-    public void Show(string title, string message, int dismissDelay, ToastLevel toastLevel)
+    public void Show(string title, string message, int dismissDelay, InformationLevel toastLevel)
     {
         this.Title = title;
         this.Message = message;
-        SolidColorBrush? brush;
-        switch (toastLevel)
-        {
-            default:
-            case ToastLevel.Info:
-                this.IconName = "info";
-                Utilities.TryFindResource<SolidColorBrush>("LightAqua_0_120", out brush);
-                break;
-
-            case ToastLevel.Warning:
-                this.IconName = "warning";
-                Utilities.TryFindResource<SolidColorBrush>("OrangePeel_0_100", out brush);
-                break;
-
-            case ToastLevel.Error:
-                this.IconName = "error_circle";
-                Utilities.TryFindResource<SolidColorBrush>("PastelOrchid_1_100", out brush);
-                break;
-        }
-
-        if (brush is not null)
-        {
-            this.ColorLevel = brush;
-        }
+        this.IconName = toastLevel.ToIconName();
+        this.ColorLevel = toastLevel.ToBrush();
 
         // We should not need to do that !!!
         this.View!.Icon.Source = this.IconName;

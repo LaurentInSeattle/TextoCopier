@@ -1,6 +1,6 @@
 ﻿namespace Lyt.Avalonia.Interfaces.UserInterface;
 
-public enum ToastLevel
+public enum InformationLevel
 {
     Info,
     Warning,

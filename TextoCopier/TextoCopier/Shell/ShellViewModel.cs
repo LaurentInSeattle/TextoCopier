@@ -51,14 +51,14 @@ public sealed class ShellViewModel : Bindable<ShellView>
         if (groupCount > 0)
         {
             this.toaster.Show(
-                localizer.Lookup("Shell.Ready"), localizer.Lookup("Shell.Greetings"), 4_000, ToastLevel.Info);
+                localizer.Lookup("Shell.Ready"), localizer.Lookup("Shell.Greetings"), 4_000, InformationLevel.Info);
         }
         else
         {
             this.toaster.Show(
                 "No groups defined", // localizer.Lookup("Shell.Ready"), 
                 "Create a new group to get started...", // localizer.Lookup("Shell.Greetings"), 
-                10_000, ToastLevel.Warning);
+                10_000, InformationLevel.Warning);
         }
     }
 
