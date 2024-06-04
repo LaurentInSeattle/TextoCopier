@@ -12,7 +12,7 @@
     <Border
         x:Name="outerBorder"
 		Margin="8"
-        Height="420" MaxHeight="420"
+        Height="380" MaxHeight="380"
 		MinWidth="260"
         HorizontalAlignment="Stretch"
 		Background="Transparent"
@@ -63,7 +63,7 @@
                 Foreground="{StaticResource LightAqua_0_120}"
                 Text="{Binding Value}"
                 FontSize="16"
-                Margin="12 0 0 0"
+                Margin="12 0 12 0"
                 IsHitTestVisible="False"
                 TextWrapping="WrapWithOverflow"
                 />

@@ -15,4 +15,5 @@
 	<system:String x:Key="Template.Copy">Copy</system:String>
 	<system:String x:Key="Toast.Dismiss">Dismiss</system:String>
 	<system:String x:Key="Group.NewTemplate">New...</system:String>
+	<system:String x:Key="Group.NewTemplateLong">New Template</system:String>
 </ResourceDictionary>

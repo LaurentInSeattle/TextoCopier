@@ -19,7 +19,7 @@ public sealed partial class TemplatesModel : ModelBase
                     Templates =
                     [
                         new Template { Name = "Email" , Value = "ly.testud@outlook.com" },
-                        new Template { Name = "Password" , Value = "Meh: Not my password!", ShouldHide = true },
+                        new Template { Name = "Git Password" , Value = "laurent.4.git", ShouldHide = true },
                         new Template { Name = "First" , Value = "Laurent" },
                         new Template { Name = "Middle" , Value = "Yves" },
                         new Template { Name = "Last" , Value = "Testud" },
@@ -44,6 +44,10 @@ public sealed partial class TemplatesModel : ModelBase
                         { 
                             Name = "Intro" , 
                             Value = "Ciao! Mi chiamo Lorenzo e vivo in Pleasanton, una piccola citta nella periferia di San Francisco, California."
+                        },
+                        new Template
+                        {
+                            Name = "Promemoria" , Value = "Non dimenticare di presentarti e dirci dove vivi o qualunque cosa vorresti..."
                         },
                     ]
                 },

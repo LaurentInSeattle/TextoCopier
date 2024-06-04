@@ -18,7 +18,7 @@ public sealed class GroupViewModel : Bindable<GroupView>
 
     private void OnNewTemplate(object? _)
     {
-        this.messenger.Publish(new ViewActivationMessage(ViewActivationMessage.StaticView.Group));
+        this.messenger.Publish(new ViewActivationMessage(ViewActivationMessage.StaticView.NewTemplate));
     }
 
     private void Bind(string groupName)
