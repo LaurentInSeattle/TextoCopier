@@ -25,7 +25,6 @@ public sealed class GroupViewModel : Bindable<GroupView>
     {
         if ( this.templatesModel.CheckGroup (groupName, out string message))
         {
-            this.GroupName = groupName;
             Group group = this.templatesModel.GetGroup(groupName);
             var list = new List<TemplateViewModel>(group.Templates.Count);
             var view = this.View!.InnerGrid; 
@@ -35,6 +34,8 @@ public sealed class GroupViewModel : Bindable<GroupView>
             }
 
             this.Templates = list;
+            this.GroupName = groupName;
+            this.GroupDescription = group.Description; 
         }
 
         this.Logger.Info(message);
@@ -49,13 +50,16 @@ public sealed class GroupViewModel : Bindable<GroupView>
         }
         else
         {
-            this.GroupName = "No group selected..."; 
+            this.GroupName = "No group selected...";
+            this.GroupDescription = string.Empty;
         }
     }
 
     public List<TemplateViewModel> Templates { get => this.Get<List<TemplateViewModel>>()!; set => this.Set(value); }
 
     public string GroupName { get => this.Get<string>()!; set => this.Set(value); }
+
+    public string GroupDescription { get => this.Get<string>()!; set => this.Set(value); }
 
     public ICommand NewTemplateCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 

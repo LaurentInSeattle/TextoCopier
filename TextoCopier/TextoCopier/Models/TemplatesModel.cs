@@ -14,7 +14,7 @@ public sealed partial class TemplatesModel : ModelBase
                 new Group
                 {
                     Name = "Personal Items",
-                    Description = "Personal Items",
+                    Description = "Personal General Information",
                     Icon = "person",
                     Templates =
                     [
@@ -25,24 +25,49 @@ public sealed partial class TemplatesModel : ModelBase
                         new Template { Name = "Last" , Value = "Testud" },
                         new Template { Name = "Full Name" , Value = "Laurent Y. Testud" },
                         new Template { Name = "Phone" , Value = "+1 (206) 619-7238" },
+                        new Template { Name = "Phone - Numbers only" , Value = "2066197238" },
                         // LATER 
                         // new Template { Name = "Full Name" , Value = "{First} {Last}" },
                     ]
                 },
                 new Group
                 {
-                    Name = "Italian on Zoom",
-                    Description = "Codes/Ids for Zoom",
+                    Name = "Jobs on LinkedIn",
+                    Description = "Messaging on Linked In",
+                    Icon = "link",
+                    Templates =
+                    [
+                        new Template { Name = "Email" , Value = "ly.testud@outlook.com" },
+                        new Template { Name = "Password" , Value = "Faster.Dude", ShouldHide = true },
+                        new Template 
+                        { 
+                            Name = "Thanks + Yes" , 
+                            Value = "Hi <name>, thank you for reaching out. Yes, this sounds like a very good opportunity and I would like to learn more about it."
+                        },
+                        new Template
+                        {
+                            Name = "Attachments" , Value = "I have attached my most recent resume and a visual presentation to this message."
+                        },
+                        new Template
+                        {
+                            Name = "Sig - Regards" , Value = "Best regards,    \nLaurent"
+                        },
+                    ]
+                },
+                new Group
+                {
+                    Name = "Italiano su Zoom",
+                    Description = "Frasi, Codici e ID per Zoom",
                     Icon = "flag",
                     Templates =
                     [
-                        new Template { Name = "Meeting Id" , Value = "842 4041 3222" },
-                        new Template { Name = "Meeting Code" , Value = "717140" },
-                        new Template { Name = "Screen Name" , Value = "Enzo ~ Laurent" },
+                        new Template { Name = "Incontro ID" , Value = "842 4041 3222" },
+                        new Template { Name = "Incontro Codice" , Value = "717140" },
+                        new Template { Name = "Nome di Schermo" , Value = "Enzo ~ Laurent" },
                         new Template { Name = "Kahoot" , Value = "https://kahoot.it/", IsLink = true},
-                        new Template 
-                        { 
-                            Name = "Intro" , 
+                        new Template
+                        {
+                            Name = "Introduzione" ,
                             Value = "Ciao! Mi chiamo Lorenzo e vivo in Pleasanton, una piccola citta nella periferia di San Francisco, California."
                         },
                         new Template
@@ -74,7 +99,18 @@ public sealed partial class TemplatesModel : ModelBase
             } 
 " },
                     ]
-                }
+                },
+                new Group
+                {
+                    Name = "Test",
+                    Description = "Testing Deletion",
+                    Icon = "dismiss",
+                    Templates =
+                    [
+                        new Template { Name = "Email" , Value = "ly.testud@outlook.com" },
+                        new Template { Name = "Password" , Value = "Faster.Dude", ShouldHide = true },
+                    ]
+                },
             ]
         };
 

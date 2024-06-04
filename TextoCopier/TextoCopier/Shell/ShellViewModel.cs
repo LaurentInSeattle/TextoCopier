@@ -17,6 +17,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.dialogService = ApplicationBase.GetRequiredService<IDialogService>();
         this.toaster = ApplicationBase.GetRequiredService<IToaster>();
         this.messenger = ApplicationBase.GetRequiredService<IMessenger>();
+        this.templatesModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
 
         this.Groups = [];
         this.SettingsCommand = new Command(this.OnSettings);
@@ -60,6 +61,10 @@ public sealed class ShellViewModel : Bindable<ShellView>
                 "Create a new group to get started...", // localizer.Lookup("Shell.Greetings"), 
                 10_000, InformationLevel.Warning);
         }
+    }
+
+    private void OnModelUpdated(ModelUpdateMessage message)
+    {
     }
 
     private void OnViewActivation(ViewActivationMessage message)
@@ -107,7 +112,36 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
     private void OnExit(object? _) { }
 
-    private void OnDeleteGroup(object? _) { }
+    private void OnDeleteGroup(object? _) 
+    {
+        var group = this.templatesModel.SelectedGroup; 
+        if ( group is null)
+        {
+            return;
+        }
+
+        if (this.templatesModel.CheckGroup(group.Name, out string message))
+        {
+            this.templatesModel.DeleteGroup(group.Name, out message);
+        }
+
+        if (string.IsNullOrEmpty(message))
+        {
+            this.toaster.Show(
+                "Deleted", // localizer.Lookup("Shell.Ready"), 
+                "Group has been deleted", // localizer.Lookup("Shell.Greetings"), 
+                5_000, InformationLevel.Info);
+        }
+        else
+        {
+            this.toaster.Show(
+                "Error", // localizer.Lookup("Shell.Ready"), 
+                "Failed to delete group", // localizer.Lookup("Shell.Greetings"), 
+                12_000, InformationLevel.Error);
+        }
+
+        this.BindGroupIcons(); 
+    }
 
     private void Activate<TViewModel, TControl>()
         where TViewModel : Bindable<TControl>
