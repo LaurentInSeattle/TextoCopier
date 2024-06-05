@@ -61,7 +61,7 @@ public sealed partial class TemplatesModel : ModelBase
                     Icon = "flag",
                     Templates =
                     [
-                        new Template { Name = "Incontro ID" , Value = "842 4041 3222" },
+                        new Template { Name = "Incontro ID" , Value = "84240413222" },
                         new Template { Name = "Incontro Codice" , Value = "717140" },
                         new Template { Name = "Nome di Schermo" , Value = "Enzo ~ Laurent" },
                         new Template { Name = "Kahoot" , Value = "https://kahoot.it/", IsLink = true},
