@@ -126,6 +126,7 @@
 			>
 			<glyphs:GlyphButton
 				Style="{StaticResource ToolbarIconButton}"
+				IsVisible="{Binding NewGroupIsVisible}"
 				Behaviour="Tap"
 				HorizontalAlignment="Left" VerticalAlignment="Center"
 				Width="72" Height="68"

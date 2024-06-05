@@ -24,7 +24,6 @@ public sealed partial class TemplatesModel
         return group is null ? throw new InvalidOperationException(NoSuchGroup) : group;
     }
 
-
     public bool AddGroup(string groupName, string groupDescription, string iconName, out string message)
     {
         bool fail = this.CheckGroup(groupName, out _);

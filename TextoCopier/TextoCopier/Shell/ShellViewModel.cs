@@ -78,6 +78,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         }
 
         this.DeleteGroupIsVisible = staticView == StaticView.Group;
+        this.NewGroupIsVisible = staticView != StaticView.NewGroup;
 
         switch (staticView)
         {
@@ -236,6 +237,8 @@ public sealed class ShellViewModel : Bindable<ShellView>
     }
 
     public bool DeleteGroupIsVisible { get => this.Get<bool>(); set => this.Set(value); }
+
+    public bool NewGroupIsVisible { get => this.Get<bool>(); set => this.Set(value); }
 
     public List<GroupIconViewModel> Groups { get => this.Get<List<GroupIconViewModel>>()!; set => this.Set(value); }
 
