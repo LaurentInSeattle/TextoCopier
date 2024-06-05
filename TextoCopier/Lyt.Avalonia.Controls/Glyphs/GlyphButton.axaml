@@ -73,6 +73,7 @@
 		
 		<!-- TextBlock will programmatically moved to the side if spec'ed "Right Side" -->
 		<Border
+            x:Name="border"
 			Background ="Transparent"
             Grid.Row="1" Grid.ColumnSpan="999"
             Margin="1 0 1 4"

@@ -48,6 +48,20 @@
 			x:Name="InnerGrid"
 			Grid.Row="1"
 			>
+			<glyphs:GlyphButton
+				Style="{StaticResource ToolbarIconButton}"
+				Layout="TextOnly"
+				Behaviour="Tap"
+				HorizontalAlignment="Center" VerticalAlignment="Center"
+				Width="140" Height="48"
+				Margin="4 4 12 4"
+				ButtonBackground="BorderOnly"
+				GlyphStrokeThickness="0.1"
+				GlyphAngle="0"
+				Text="Text Only Layout"
+				FontSize="16"
+				Command="{Binding CloseCommand}"
+	    	/>
 		</Grid>
 	</Grid>
 </UserControl>

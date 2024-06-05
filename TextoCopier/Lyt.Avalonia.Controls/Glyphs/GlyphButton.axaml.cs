@@ -134,13 +134,14 @@ public partial class GlyphButton : UserControl, ICanSelect
 
             case ButtonLayout.TextOnly:
                 this.textBlock.IsVisible = true; //Visibility.Visible;
+                this.viewBox.IsVisible = false; //Visibility.Hidden;
                 this.icon.IsVisible = false; //Visibility.Hidden;
-                this.textBlock.SetValue(Grid.RowProperty, 0);
-                this.textBlock.SetValue(Grid.ColumnProperty, 0);
+                this.border.SetValue(Grid.RowProperty, 0);
+                this.border.SetValue(Grid.ColumnProperty, 0);
                 this.textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center);
                 this.textBlock.SetValue(HorizontalContentAlignmentProperty, HorizontalAlignment.Center);
                 this.textBlock.SetValue(MarginProperty, new Thickness(4));
-                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
+                //this.mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
                 this.mainGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Pixel);
                 break;
         }

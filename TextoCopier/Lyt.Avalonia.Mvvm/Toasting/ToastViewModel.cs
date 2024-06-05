@@ -18,7 +18,7 @@ public sealed class ToastViewModel(IToaster toaster) : Bindable<ToastView>
         this.ColorLevel = toastLevel.ToBrush();
 
         // We should not need to do that !!!
-        this.View!.Icon.Source = this.IconName;
+        this.View.Icon.Source = this.IconName;
 
         this.DismissCommand = new Command(this.Dismiss);
 

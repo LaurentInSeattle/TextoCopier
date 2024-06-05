@@ -1,4 +1,6 @@
-﻿namespace Lyt.Avalonia.Mvvm.Dialogs;
+﻿using Lyt.Avalonia.Interfaces.UserInterface;
+
+namespace Lyt.Avalonia.Mvvm.Dialogs;
 
 public sealed class DialogService(ILogger logger) : IDialogService
 {
@@ -10,6 +12,33 @@ public sealed class DialogService(ILogger logger) : IDialogService
 
     public bool IsModal
         => this.modalHostPanel is not null || this.modalUserControl is not null || this.modalHostControl is not null;
+
+    public void Confirm(object maybePanel, ConfirmActionParameters parameters )
+    {
+        try
+        {
+            if (this.IsModal)
+            {
+                this.logger.Error("Already showing a modal");
+                throw new InvalidOperationException("Already showing a modal");
+            }
+
+            if (maybePanel is not Panel panel)
+            {
+                this.logger.Error("Must provide a host panel");
+                throw new InvalidOperationException("Must provide a host panel");
+            }
+
+            var viewModel = new ConfirmActionViewModel(parameters);
+            viewModel.CreateViewAndBind();
+            this.ShowInternal(panel, viewModel.View); 
+        }
+        catch (Exception ex)
+        {
+            this.logger.Error("Failed to launch dialog, exception thrown: \n" + ex.ToString());
+            throw;
+        }
+    }
 
     public void Show<TDialog>(object maybePanel, TDialog dialog)
     {
@@ -35,7 +64,7 @@ public sealed class DialogService(ILogger logger) : IDialogService
 
             if (dialog is UserControl userControl)
             {
-                this.ShowInternal<TDialog>(panel, userControl);
+                this.ShowInternal(panel, userControl);
             }
             else
             {
@@ -50,7 +79,7 @@ public sealed class DialogService(ILogger logger) : IDialogService
         }
     }
 
-    private void ShowInternal<TDialog>(Panel panel, UserControl dialog)
+    private void ShowInternal(Panel panel, UserControl dialog)
     {
         var host = new ModalHostControl(panel, (bool _) => { });
         panel.Children.Add(host);

@@ -14,5 +14,6 @@ public class Bindable<TControl> : Bindable where TControl : Control, new()
         this.Bind(view);
     }
 
-    public TControl? View => this.Control as TControl;
+    public TControl View
+        => this.Control as TControl ?? throw new InvalidOperationException("View is null");
 }

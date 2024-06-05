@@ -27,10 +27,10 @@ public sealed class GroupViewModel : Bindable<GroupView>
         {
             Group group = this.templatesModel.GetGroup(groupName);
             var list = new List<TemplateViewModel>(group.Templates.Count);
-            var view = this.View!.InnerGrid; 
+            var grid = this.View.InnerGrid; 
             foreach (var template in group.Templates)
             {
-                list.Add(new TemplateViewModel(groupName, template, view));
+                list.Add(new TemplateViewModel(groupName, template, grid));
             }
 
             this.Templates = list;

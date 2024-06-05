@@ -51,7 +51,7 @@
 			Text="{DynamicResource Shell.AppName}" 
 			HorizontalAlignment="Left" VerticalAlignment="Center"
 			Margin="8 0 0 0"
-			FontSize="22" 
+			FontSize="24" 
 			FontStyle="Italic"
 			Foreground="{StaticResource PastelOrchid_0_080}"
 			TextWrapping="Wrap"
@@ -59,7 +59,7 @@
 		<StackPanel
 			Orientation="Horizontal"
 			Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="999" Grid.RowSpan="1"
-			Margin="0"
+			Margin="0 0 8 0"
 			HorizontalAlignment="Right"
 			>
 			<glyphs:GlyphButton
@@ -88,19 +88,6 @@
 				Text="{DynamicResource Shell.About}"
 				Command="{Binding AboutCommand}"
     		/>
-			<glyphs:GlyphButton
-				Style="{StaticResource ToolbarIconButton}"
-				Behaviour="Tap"
-				HorizontalAlignment="Center" VerticalAlignment="Center"
-				Width="72" Height="48"
-				Margin="4 4 12 4"
-				GlyphSource="power"
-				ButtonBackground="BorderlessRectangle"
-				GlyphStrokeThickness="0"
-				GlyphAngle="0"
-				Text="{DynamicResource Shell.Exit}"
-				Command="{Binding ExitCommand}"
-	    		/>
 		</StackPanel>
 			
 		<StackPanel

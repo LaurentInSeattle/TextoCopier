@@ -112,10 +112,34 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
     private void OnExit(object? _) { }
 
-    private void OnDeleteGroup(object? _) 
+    private void OnDeleteGroup(object? _)
     {
-        var group = this.templatesModel.SelectedGroup; 
-        if ( group is null)
+        var group = this.templatesModel.SelectedGroup;
+        if (group is null)
+        {
+            return;
+        }
+
+        var confirmActionParameters = new ConfirmActionParameters
+        {
+            Title = "Delete Group ?",
+            Message = "All entries in this group will be deleted. This operation cannot be undone.",
+            ActionVerb = "Delete",
+            OnConfirm = this.OnDeleteGroupConfirmed,
+        };
+
+        this.dialogService.Confirm(this.View.ToasterHost, confirmActionParameters );
+    }
+
+    private void OnDeleteGroupConfirmed(bool confirmed)
+    {
+        if ( ! confirmed)
+        {
+            return;
+        }
+
+        var group = this.templatesModel.SelectedGroup;
+        if (group is null)
         {
             return;
         }
@@ -172,7 +196,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
     {
         this.Logger.Info("Binding groups");
 
-        SelectionGroup selectionGroup = this.View!.SelectionGroup;
+        SelectionGroup selectionGroup = this.View.SelectionGroup;
         int groupCount = this.templatesModel.Groups.Count;
         if (groupCount > 0)
         {
