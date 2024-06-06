@@ -10,6 +10,7 @@
 		<FluentTheme />
 		<StyleInclude Source="avares://TextoCopier/Assets/Icons/Icons.axaml" />
 		<StyleInclude Source="avares://TextoCopier/Assets/Palette/DeepBluePalette.axaml" />
+		<StyleInclude Source="avares://TextoCopier/Assets/Theme/TextBoxStyles.axaml" />
 	</Application.Styles>
 
 	<Application.Resources>
