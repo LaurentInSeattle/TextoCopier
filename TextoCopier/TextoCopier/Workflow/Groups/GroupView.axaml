@@ -76,10 +76,16 @@
 					ItemsSource="{Binding Templates}"
 					Margin="0 0 24 0"
 					>
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<WrapPanel />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
 							<vm:TemplateView
-								Width="{Binding Width, ElementName=TemplatesItemControl}"
+								MinWidth="296"
+								MaxWidth="296"
 								>							
 							</vm:TemplateView>
 						</DataTemplate>

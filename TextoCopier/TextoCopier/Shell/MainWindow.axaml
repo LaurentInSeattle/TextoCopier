@@ -8,7 +8,7 @@
     Icon="/Assets/Images/textocopier.ico"
     Title="Texto Copier"
 	Width="440" Height="860"
-	MinWidth="360" MinHeight="420"
+	MinWidth="400" MinHeight="460"
 	SizeToContent="Manual"
 	>
 </Window>
