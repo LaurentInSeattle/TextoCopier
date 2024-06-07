@@ -18,7 +18,7 @@ public sealed class NewGroupViewModel : Bindable<NewGroupView>
     {
         this.Name = string.Empty;
         this.Description = string.Empty;
-        this.Icon = string.Empty;
+        this.Icon = "home";
         this.OnEditing();
     }
 
@@ -81,10 +81,13 @@ public sealed class NewGroupViewModel : Bindable<NewGroupView>
         }
 
         var model = ApplicationBase.GetRequiredService<TemplatesModel>();
-        // TODO: Save to model 
-        // if ( model.AddGroup(........); ) .....
+        // Save to model 
+        if ( model.AddGroup(this.Name, this.Description, this.Icon, out message ))
+        {
+            return true;
+        }
 
-        return true; 
+        return false;
     }
 
     public string Name { get => this.Get<string>()!; set => this.Set(value); }

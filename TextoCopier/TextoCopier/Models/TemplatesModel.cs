@@ -198,7 +198,6 @@ emoji_surprise_regular
             if (status)
             {
                 this.SelectedGroup = group;
-                this.NotifyUpdate();
             }
         }
 
