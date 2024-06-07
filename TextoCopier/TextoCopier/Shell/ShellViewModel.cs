@@ -24,6 +24,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.AboutCommand = new Command(this.OnAbout);
         this.ExitCommand = new Command(this.OnExit);
         this.NewGroupCommand = new Command(this.OnNewGroup);
+        this.EditGroupCommand = new Command(this.OnEditGroup);
         this.DeleteGroupCommand = new Command(this.OnDeleteGroup);
         this.messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
     }
@@ -110,6 +111,8 @@ public sealed class ShellViewModel : Bindable<ShellView>
     private void OnAbout(object? _) => this.OnViewActivation(StaticView.Help);
 
     private void OnNewGroup(object? _) => this.OnViewActivation(StaticView.NewGroup);
+
+    private void OnEditGroup(object? _) => this.OnViewActivation(StaticView.NewGroup);
 
     private void OnExit(object? _) { }
 
@@ -249,6 +252,8 @@ public sealed class ShellViewModel : Bindable<ShellView>
     public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     public ICommand NewGroupCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+
+    public ICommand EditGroupCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     public ICommand DeleteGroupCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 }

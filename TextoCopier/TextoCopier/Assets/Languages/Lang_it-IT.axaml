@@ -5,6 +5,7 @@
 	<system:String x:Key="Shell.AppName">Testo Copiatrice</system:String>
 	<system:String x:Key="Shell.About">Altro su...</system:String>
 	<system:String x:Key="Shell.NewGroup">Nuovo Gruppo</system:String>
+	<system:String x:Key="Shell.EditGroup">Modifica Gruppo</system:String>
 	<system:String x:Key="Shell.DeleteGroup">Elimina Gruppo</system:String>
 	<system:String x:Key="Shell.Settings">Impostazioni</system:String>
 	<system:String x:Key="Shell.Exit">Fine</system:String>
