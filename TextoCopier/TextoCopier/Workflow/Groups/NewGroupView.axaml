@@ -132,12 +132,16 @@
 				Text="{Binding ValidationMessage}"
 				FontStyle="Italic"
 				FontSize="16"
-				Margin="24 0 0 0"
+				Margin="12 0 8 0"
 				IsHitTestVisible="False"
 				TextWrapping="Wrap"
                 />
-
+			<Rectangle
+				Fill="#70000020"
+                Grid.Row="7"
+				/>
 			<glyphs:GlyphButton
+				x:Name="SaveButton"
                 Grid.Row="7"
 				Style="{StaticResource ToolbarIconButton}"
 				Behaviour="Tap"
@@ -150,7 +154,8 @@
 				GlyphAngle="0"
 				Text="{DynamicResource Shell.Save}"
 				Command="{Binding SaveCommand}"
-	    	/>
+				IsDisabled="{Binding SaveButtonIsDisabled}"
+	    		/>
 		</Grid>
 	</Grid>
 </UserControl>

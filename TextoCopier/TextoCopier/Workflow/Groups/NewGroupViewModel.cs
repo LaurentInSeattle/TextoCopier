@@ -1,4 +1,6 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
+
 namespace Lyt.TextoCopier.Workflow;
 
 public sealed class NewGroupViewModel : Bindable<NewGroupView>
@@ -29,6 +31,7 @@ public sealed class NewGroupViewModel : Bindable<NewGroupView>
         else
         {
             this.ValidationMessage = message;
+            this.SaveButtonIsDisabled = true;
         }
     }
 
@@ -36,7 +39,11 @@ public sealed class NewGroupViewModel : Bindable<NewGroupView>
         => this.messenger.Publish(new ViewActivationMessage(ViewActivationMessage.StaticView.GoBack));
 
     public void OnEditing()
-        => this.ValidationMessage = this.Validate(out string message) ? string.Empty : message;
+    {
+        bool validated = this.Validate(out string message);
+        this.ValidationMessage = validated ? string.Empty : message;
+        this.SaveButtonIsDisabled = ! validated;
+    }
 
     private bool Validate(out string message)
     {
@@ -87,6 +94,16 @@ public sealed class NewGroupViewModel : Bindable<NewGroupView>
     public string Icon { get => this.Get<string>()!; set => this.Set(value); }
 
     public string ValidationMessage { get => this.Get<string>()!; set => this.Set(value); }
+
+    public bool SaveButtonIsDisabled 
+    { 
+        get => this.Get<bool>();
+        set
+        {
+            this.Set(value);
+            this.View.SaveButton.IsDisabled = value; 
+        } 
+    }
 
     public ICommand CloseCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
