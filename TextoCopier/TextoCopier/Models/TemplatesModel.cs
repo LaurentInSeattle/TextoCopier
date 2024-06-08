@@ -206,7 +206,11 @@ emoji_surprise_regular
 
     private delegate bool ModelOperationDelegate(Group group, string parameter1, string parameter2, out string message);
 
-    private bool ModelOperation(ModelOperationDelegate modelOperation, string groupName, string parameter1, string parameter2, out string message)
+    private bool ModelOperation(
+        ModelOperationDelegate modelOperation, string groupName, 
+        string parameter1, string parameter2, 
+        out string message,
+        [CallerMemberName] string callerMemberName = "")
     {
         bool status = this.CheckGroup(groupName, out message);
         if (status)
@@ -216,7 +220,7 @@ emoji_surprise_regular
             if (status)
             {
                 this.IsDirty = true;
-                this.NotifyUpdate();
+                this.NotifyUpdate(propertyName:string.Empty, methodName: callerMemberName);
             }
         }
 

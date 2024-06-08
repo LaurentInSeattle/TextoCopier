@@ -3,7 +3,7 @@
 public sealed partial class TemplatesModel
 {
     public const string GroupAlreadyExists = "TemplatesModel.GroupAlreadyExists";
-    public const string NoSuchGroup = "TemplatesModel.NoSuchGroup"; 
+    public const string NoSuchGroup = "TemplatesModel.NoSuchGroup";
 
     public bool CheckGroup(string groupName, out string message)
     {
@@ -15,7 +15,7 @@ public sealed partial class TemplatesModel
             message = NoSuchGroup;
         }
 
-        return ! fail;
+        return !fail;
     }
 
     public Group GetGroup(string groupName)
@@ -38,10 +38,11 @@ public sealed partial class TemplatesModel
 
             message = string.Empty;
             this.IsDirty = true;
-            this.NotifyUpdate();
+            this.SelectedGroup = newGroup;
+            this.NotifyUpdate(propertyName: "", methodName: nameof(this.AddGroup));
         }
 
-        return ! fail;
+        return !fail;
     }
 
     public bool DeleteGroup(string groupName, out string message)
@@ -49,11 +50,15 @@ public sealed partial class TemplatesModel
 
     private bool DeleteGroupInternal(Group group, string _1, string _2, out string message)
     {
+        bool wasSelected = group == this.SelectedGroup;
         this.Groups.Remove(group);
-
         message = string.Empty;
         this.IsDirty = true;
-        this.NotifyUpdate();
+
+        if (wasSelected)
+        {
+            this.SelectedGroup = null;
+        }
 
         return true;
     }
@@ -63,7 +68,7 @@ public sealed partial class TemplatesModel
 
     private bool RenameGroupInternal(Group group, string newGroupName, string _, out string message)
     {
-        bool taken = this.CheckGroup( newGroupName, out string _ );
+        bool taken = this.CheckGroup(newGroupName, out string _);
         if (taken)
         {
             message = GroupAlreadyExists;
@@ -71,13 +76,11 @@ public sealed partial class TemplatesModel
         else
         {
             group.Name = newGroupName;
-
             message = string.Empty;
             this.IsDirty = true;
-            this.NotifyUpdate();
         }
 
-        return ! taken;
+        return !taken;
     }
 
     public bool EditGroupDescription(string groupName, string newGroupDescription, out string message)
@@ -89,7 +92,6 @@ public sealed partial class TemplatesModel
 
         message = string.Empty;
         this.IsDirty = true;
-        this.NotifyUpdate();
         return true;
     }
 
@@ -102,7 +104,6 @@ public sealed partial class TemplatesModel
 
         message = string.Empty;
         this.IsDirty = true;
-        this.NotifyUpdate();
         return true;
     }
 }

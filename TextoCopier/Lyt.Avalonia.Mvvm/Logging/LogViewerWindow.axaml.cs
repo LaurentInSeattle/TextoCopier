@@ -21,7 +21,7 @@ public partial class LogViewerWindow : Window, ILogger, INotifyPropertyChanged
         this.AllLogEntries = [];
         this.observableLogEntries = [];
         this.DataContext = this;
-        this.greenBrushDebug = new SolidColorBrush(Color.FromRgb(0x5E, 0xD9, 0xBF));
+        this.greenBrushDebug = new SolidColorBrush(Color.FromRgb(0x9E, 0xD9, 0xFF));
         this.greenBrushInfo = new SolidColorBrush(Color.FromRgb(0x40, 0xE9, 0xAE));
         this.orangeBrush = new SolidColorBrush(Colors.DarkOrange);
         this.redBrush= new SolidColorBrush(Colors.Orchid);

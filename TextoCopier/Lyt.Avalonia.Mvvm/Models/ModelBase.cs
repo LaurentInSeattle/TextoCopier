@@ -41,9 +41,8 @@ public abstract class ModelBase : IModel
     public void SubscribeToUpdates(Action<ModelUpdateMessage> onUpdate, bool withUiDispatch = false)
         => this.Messenger.Subscribe(onUpdate, withUiDispatch);
 
-    protected void NotifyUpdate() => this.Messenger.Publish(new ModelUpdateMessage(this));
-
-    protected void NotifyUpdate(string propertyName) => this.Messenger.Publish(new ModelUpdateMessage(this, propertyName));
+    protected void NotifyUpdate(string propertyName = "", string methodName="") 
+        => this.Messenger.Publish(new ModelUpdateMessage(this, propertyName, methodName));
 
     /// <summary> Gets the value of a property </summary>
     protected T? Get<T>([CallerMemberName] string? name = null)

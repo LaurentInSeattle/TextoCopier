@@ -1,5 +1,6 @@
 ﻿namespace Lyt.TextoCopier.Shell;
 
+using System.Xml.Linq;
 using static ViewActivationMessage;
 
 public sealed class ShellViewModel : Bindable<ShellView>
@@ -66,6 +67,18 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
     private void OnModelUpdated(ModelUpdateMessage message)
     {
+        string msgProp = string.IsNullOrWhiteSpace(message.PropertyName) ? "<unknown>" : message.PropertyName;
+        string msgMethod = string.IsNullOrWhiteSpace(message.MethodName) ? "<unknown>" : message.MethodName;
+        this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
+
+        if (message.PropertyName == nameof(this.templatesModel.SelectedGroup))
+        {
+            this.UpdateGroupIconsSelection();
+        }
+        else
+        {
+            this.BindGroupIcons();
+        }
     }
 
     private void OnViewActivation(ViewActivationMessage message)
@@ -196,24 +209,51 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.View.ShellViewContent.Content = newViewModel.View;
     }
 
+    private void UpdateGroupIconsSelection()
+    {
+        //this.Logger.Debug("Update group selection");
+        //var selectedGroup = this.templatesModel.SelectedGroup;
+        //if (selectedGroup is null)
+        //{
+        //    return; 
+        //}
+
+        //var newSelection = 
+        //    (from groupVm in this.Groups where groupVm.IconText == selectedGroup.Name select groupVm)
+        //    .FirstOrDefault();
+        //if ( newSelection is null)
+        //{
+        //    return;
+        //}
+
+        //newSelection.IsSelected = true; 
+    }
+
     private void BindGroupIcons()
     {
+        //Debugger.Break(); 
+
         this.Logger.Info("Binding groups");
+        var selectedGroup = this.templatesModel.SelectedGroup; 
+        if ( selectedGroup is null )
+        {
+            selectedGroup = this.templatesModel.Groups[0];
+            this.templatesModel.SelectGroup(selectedGroup.Name, out string _);
+        }
 
         SelectionGroup selectionGroup = this.View.SelectionGroup;
         int groupCount = this.templatesModel.Groups.Count;
         if (groupCount > 0)
         {
-            bool selected = true;
             var list = new List<GroupIconViewModel>();
             foreach (var group in this.templatesModel.Groups)
             {
-                list.Add(new GroupIconViewModel(group, selectionGroup, selected));
-                selected = false;
+                bool selected = selectedGroup == group;
+                GroupIconViewModel groupIconViewModel = new GroupIconViewModel(group, selectionGroup, selected);
+                list.Add(groupIconViewModel);
             }
 
             this.Groups = list;
-            this.templatesModel.SelectGroup(this.templatesModel.Groups[0].Name, out string _);
             this.Logger.Info("Groups: " + this.templatesModel.Groups.Count);
         }
         else
