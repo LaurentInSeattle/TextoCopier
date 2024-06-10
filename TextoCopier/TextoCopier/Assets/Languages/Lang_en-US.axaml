@@ -4,9 +4,11 @@
     xmlns:system="clr-namespace:System;assembly=System.Runtime">
 	<system:String x:Key="Shell.AppName">TextoCopier</system:String>
 	<system:String x:Key="Shell.About">About</system:String>
-	<system:String x:Key="Shell.NewGroup">New Group</system:String>
-	<system:String x:Key="Shell.EditGroup">Edit Group</system:String>
-	<system:String x:Key="Shell.DeleteGroup">Delete Group</system:String>
+	<system:String x:Key="Shell.Groups">Groups</system:String>
+	<system:String x:Key="Shell.NewGroup">New</system:String>
+	<system:String x:Key="Shell.NewGroupLong">New Group</system:String>
+	<system:String x:Key="Shell.EditGroup">Edit</system:String>
+	<system:String x:Key="Shell.DeleteGroup">Delete</system:String>
 	<system:String x:Key="Shell.Settings">Settings</system:String>
 	<system:String x:Key="Shell.Exit">Exit</system:String>
 	<system:String x:Key="Shell.Close">Close</system:String>

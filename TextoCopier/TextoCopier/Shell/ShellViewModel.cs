@@ -279,9 +279,27 @@ public sealed class ShellViewModel : Bindable<ShellView>
         CreateAndBind<NewTemplateViewModel, NewTemplateView>();
     }
 
-    public bool DeleteGroupIsVisible { get => this.Get<bool>(); set => this.Set(value); }
+    public bool GroupsIsVisible { get => this.Get<bool>(); set => this.Set(value); }
 
-    public bool NewGroupIsVisible { get => this.Get<bool>(); set => this.Set(value); }
+    public bool DeleteGroupIsVisible 
+    { 
+        get => this.Get<bool>();
+        set
+        {
+            this.Set(value);
+            this.GroupsIsVisible = this.DeleteGroupIsVisible || this.NewGroupIsVisible; 
+        }
+    }
+
+    public bool NewGroupIsVisible 
+    {
+        get => this.Get<bool>();
+        set
+        {
+            this.Set(value);
+            this.GroupsIsVisible = this.DeleteGroupIsVisible || this.NewGroupIsVisible;
+        }
+    }
 
     public List<GroupIconViewModel> Groups { get => this.Get<List<GroupIconViewModel>>()!; set => this.Set(value); }
 
