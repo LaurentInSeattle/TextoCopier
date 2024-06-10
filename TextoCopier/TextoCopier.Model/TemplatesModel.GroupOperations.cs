@@ -1,4 +1,4 @@
-﻿namespace Lyt.TextoCopier.Models;
+﻿namespace Lyt.TextoCopier.Model;
 
 public sealed partial class TemplatesModel
 {

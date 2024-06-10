@@ -3,6 +3,8 @@ namespace Lyt.TextoCopier.Models;
 
 public sealed class LocalizerModel : ModelBase
 {
+    public LocalizerModel(IMessenger messenger, ILogger logger) : base(messenger, logger) { } 
+
     // TODO : Autopopulate this 
     // LATER : Failing to read existing files 
     // CONSIDER : Make that parametrizable 
@@ -15,14 +17,14 @@ public sealed class LocalizerModel : ModelBase
     public const string LanguagesFilePrefix = "Lang_";
     public const string LanguagesFileExtension = ".axaml";
 
+    private string? currentLanguage;
+    private ResourceInclude? currentLanguageResource;
+
     public override Task Initialize()
     {
         this.DetectAvailableLanguages();
         return Task.CompletedTask;
     }
-
-    private string? currentLanguage;
-    private ResourceInclude? currentLanguageResource;
 
     public bool DetectAvailableLanguages()
     {

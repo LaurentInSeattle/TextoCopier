@@ -1,4 +1,4 @@
-﻿namespace Lyt.TextoCopier.Models;
+﻿namespace Lyt.TextoCopier.Model;
 
 using static FileManagerModel;
 
@@ -154,10 +154,16 @@ emoji_surprise_regular
 
     private readonly FileManagerModel fileManager;
 
-    public TemplatesModel() : base()
+    public TemplatesModel() : base ( null, null)
     {
+
+    }
+
+    public TemplatesModel(FileManagerModel fileManager, IMessenger messenger, ILogger logger) : base(messenger, logger)
+    {
+        // ???? 
         // Do not inject the FileManagerModel instance: a parameter-less ctor is required for Deserialization 
-        FileManagerModel fileManager = App.GetRequiredService<FileManagerModel>();
+        // ???? 
         this.fileManager = fileManager;
     }
 
@@ -225,26 +231,5 @@ emoji_surprise_regular
         }
 
         return status;
-    }
-
-    [Conditional("DEBUG")]
-#pragma warning disable IDE0051 // Remove unused private members
-    private static void TestJSonSaveLoad()
-#pragma warning restore IDE0051 // Remove unused private members
-    {
-        FileManagerModel fileManager = App.GetRequiredService<FileManagerModel>();
-        fileManager.Save(Area.User, Kind.Json, nameof(DefaultTemplate), TemplatesModel.DefaultTemplate);
-        var model = fileManager.Load<TemplatesModel>(Area.User, Kind.Json, nameof(DefaultTemplate));
-        if (model is TemplatesModel templates)
-        {
-            foreach (var group in templates.Groups)
-            {
-                Debug.WriteLine(group.Name);
-                foreach (var template in group.Templates)
-                {
-                    Debug.WriteLine("      " + template.Name + "  " + template.Value);
-                }
-            }
-        }
     }
 }

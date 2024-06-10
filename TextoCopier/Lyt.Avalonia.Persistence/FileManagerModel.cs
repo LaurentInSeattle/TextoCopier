@@ -33,12 +33,13 @@ public sealed class FileManagerModel : ModelBase, IModel
     private FileManagerConfiguration configuration;
     private readonly JsonSerializerOptions jsonSerializerOptions;
 
-    public FileManagerModel() : base()
+    public FileManagerModel(IMessenger messenger, ILogger logger) : base(messenger, logger)
     {
         this.configuration = new FileManagerConfiguration(string.Empty, string.Empty, string.Empty);
         this.jsonSerializerOptions = new JsonSerializerOptions { AllowTrailingCommas = true } ;
         this.jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     }
+
     public string ApplicationFolderPath { get; private set; } = string.Empty;
 
     public string ApplicationUserFolderPath { get; private set; } = string.Empty;

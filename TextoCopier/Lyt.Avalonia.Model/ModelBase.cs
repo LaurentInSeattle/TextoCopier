@@ -1,11 +1,14 @@
-﻿namespace Lyt.Avalonia.Mvvm.Models;
+﻿namespace Lyt.Avalonia.Model;
+
+[AttributeUsage(AttributeTargets.Property)]
+public class DoNotLogAttribute : Attribute { }
 
 public abstract class ModelBase : IModel
 {
-    public ModelBase()
+    public ModelBase(IMessenger messenger, ILogger logger)
     {
-        this.Messenger = ApplicationBase.GetRequiredService<IMessenger>();
-        this.Logger = ApplicationBase.GetRequiredService<ILogger>();
+        this.Messenger = messenger;
+        this.Logger = logger;
         this.properties = []; 
     }
 
