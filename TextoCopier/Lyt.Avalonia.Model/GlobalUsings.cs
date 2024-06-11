@@ -11,6 +11,7 @@ global using System.Runtime.CompilerServices;
 global using System.Runtime.Versioning;
 global using System.Threading.Tasks;
 
+global using Lyt.Avalonia.Interfaces;
 global using Lyt.Avalonia.Interfaces.Logger;
 global using Lyt.Avalonia.Interfaces.Model;
 global using Lyt.Avalonia.Interfaces.Messenger;

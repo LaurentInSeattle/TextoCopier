@@ -12,7 +12,7 @@ public class ApplicationBase(
     List<Type> modelTypes,
     List<Type> singletonTypes,
     List<Tuple<Type, Type>> servicesInterfaceAndType,
-    bool singleInstanceRequested = false) : Application
+    bool singleInstanceRequested = false) : Application, IApplicationBase
 {
     // The host cannot be null or else there is no app...
     public static IHost AppHost { get; private set; }
@@ -116,7 +116,7 @@ public class ApplicationBase(
                 .ConfigureServices((_0, services) =>
                 {
                     // Register the app
-                    _ = services.AddSingleton(typeof(ApplicationBase), this);
+                    _ = services.AddSingleton(typeof(IApplicationBase), this);
 
                     // Always Main Window 
                     _ = services.AddSingleton(typeof(Window), this.mainWindowType);

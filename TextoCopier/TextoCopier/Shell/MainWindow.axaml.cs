@@ -34,8 +34,8 @@ public partial class MainWindow : Window
             Schedule.OnUiThread(50,
                 async () =>
                 {
-                    var app = App.GetRequiredService<ApplicationBase>();
-                    await app.Shutdown();
+                    var application = App.GetRequiredService<IApplicationBase>();
+                    await application.Shutdown();
                     this.isShutdownComplete = true;
                     this.Close();
                 }, DispatcherPriority.Normal);

@@ -1,10 +1,5 @@
 ﻿namespace Lyt.Avalonia.Interfaces.Model;
 
-public interface IApplicationBase
-{
-    IEnumerable<IModel> GetModels(); 
-}
-
 public interface IModel
 {
     /// <summary>  Initializes the model. </summary>

@@ -154,10 +154,14 @@ emoji_surprise_regular
 
     private readonly FileManagerModel fileManager;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
     public TemplatesModel() : base ( null, null)
     {
-
+        // Empty CTOR required for deserialization 
     }
+#pragma warning restore CS8625 
+#pragma warning restore CS8618
 
     public TemplatesModel(FileManagerModel fileManager, IMessenger messenger, ILogger logger) : base(messenger, logger)
     {
