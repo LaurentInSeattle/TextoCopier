@@ -9,9 +9,9 @@ public sealed partial class TemplatesModel
     public const string GroupNameIsBlank = "TemplatesModel.GroupNameIsBlank"; // "Group name cannot be left empty or blank.";
     public const string DescrptionIsBlank = "TemplatesModel.DescriptionIsBlank"; // "Group description cannot be left empty or blank.";
     public const string IconNameIsBlank = "TemplatesModel.IconNameIsBlank";  // "An icon mane is required. ";
-    public const string GroupNameIsTooLong = "TemplatesModel.GroupNameIsTooLong"; 
-    public const string DescrptionIsTooLong = "TemplatesModel.DescriptionIsTooLong"; 
-    public const string IconNotAvailable = "TemplatesModel.IconNotAvailable";  
+    public const string GroupNameIsTooLong = "TemplatesModel.GroupNameIsTooLong";
+    public const string DescrptionIsTooLong = "TemplatesModel.DescriptionIsTooLong";
+    public const string IconNotAvailable = "TemplatesModel.IconNotAvailable";
 
     public bool CheckGroup(string groupName, out string message)
     {
@@ -32,11 +32,46 @@ public sealed partial class TemplatesModel
         return group is null ? throw new InvalidOperationException(NoSuchGroup) : group;
     }
 
-    public bool ValidateGroup(bool isEditing, string groupName, string groupDescription, string iconName, out string message)
+    public bool ValidateGroupForAdd(string groupName, string groupDescription, string iconName, out string message)
+    {
+        if ( ! this.ValidateGroupCommon(groupName, groupDescription, iconName, out message))
+        {
+            return false; 
+        }
+    
+        bool fail = this.CheckGroup(groupName, out _);
+        if (fail)
+        {
+            message = GroupAlreadyExists;
+        }
+
+        return !fail;
+    }
+
+    public bool ValidateGroupForEdit(string newGroupName, string oldGroupName, string groupDescription, string iconName, out string message)
+    {
+        if (!this.ValidateGroupCommon(newGroupName, groupDescription, iconName, out message))
+        {
+            return false;
+        }
+
+        if (newGroupName != oldGroupName)
+        {
+            if (this.CheckGroup(newGroupName, out _))
+            {
+                message = GroupAlreadyExists;
+                return false; 
+            }
+        }
+
+        return true;
+    }
+
+    private bool ValidateGroupCommon(string groupName, string groupDescription, string iconName, out string message)
     {
         message = string.Empty;
         groupName = groupName.Trim();
-        groupDescription = groupDescription.Trim(); 
+        groupDescription = groupDescription.Trim();
         iconName = iconName.Trim();
 
         if (string.IsNullOrWhiteSpace(groupName))
@@ -70,25 +105,7 @@ public sealed partial class TemplatesModel
         //    return false;
         //}
 
-        bool fail = false;
-        if (isEditing)
-        {
-            fail = this.CheckGroup(groupName, out _);
-            if (fail)
-            {
-                message = GroupAlreadyExists;
-            }
-        }
-        else
-        {
-            fail = this.CheckGroup(groupName, out _);
-            if (fail)
-            {
-                message = GroupAlreadyExists;
-            }
-        }
-
-        return !fail;
+        return true;
     }
 
     public bool AddGroup(string groupName, string groupDescription, string iconName, out string message)
@@ -130,44 +147,20 @@ public sealed partial class TemplatesModel
         return true;
     }
 
-    public bool RenameGroup(string groupName, string newGroupName, out string message)
-        => this.ModelOperation(this.RenameGroupInternal, groupName, newGroupName, string.Empty, out message);
-
-    private bool RenameGroupInternal(Group group, string newGroupName, string _, out string message)
+    public bool EditGroup(string newGroupName, string oldGroupName, string groupDescription, string iconName, out string message)
     {
-        bool taken = this.CheckGroup(newGroupName, out string _);
-        if (taken)
+        if (!this.ValidateGroupForEdit(newGroupName, oldGroupName, groupDescription, iconName, out message))
         {
-            message = GroupAlreadyExists;
-        }
-        else
-        {
-            group.Name = newGroupName;
-            message = string.Empty;
-            this.IsDirty = true;
-        }
+            return false;
+        } 
 
-        return !taken;
-    }
+        var group = this.GetGroup(oldGroupName);
+        this.Groups.Remove(group);
+        var newGroup = new Group { Name = newGroupName, Description = groupDescription, Icon = iconName, Templates = group.Templates };
+        this.Groups.Add(newGroup);
 
-    public bool EditGroupDescription(string groupName, string newGroupDescription, out string message)
-        => this.ModelOperation(this.EditGroupDescriptionInternal, groupName, newGroupDescription, string.Empty, out message);
-
-    private bool EditGroupDescriptionInternal(Group group, string newGroupDescription, string _, out string message)
-    {
-        group.Description = newGroupDescription;
-
-        message = string.Empty;
-        this.IsDirty = true;
-        return true;
-    }
-
-    public bool EditGroupIcon(string groupName, string newIconName, out string message)
-        => this.ModelOperation(this.EditGroupIconInternal, groupName, newIconName, string.Empty, out message);
-
-    public bool EditGroupIconInternal(Group group, string newIconName, string _, out string message)
-    {
-        group.Icon = newIconName;
+        this.SelectedGroup = newGroup;
+        this.NotifyUpdate(propertyName: "", methodName: nameof(this.EditGroup));
 
         message = string.Empty;
         this.IsDirty = true;

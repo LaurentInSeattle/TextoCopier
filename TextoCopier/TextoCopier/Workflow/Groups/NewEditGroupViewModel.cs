@@ -11,15 +11,15 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
         this.SaveCommand = new Command(this.OnSave);
     }
 
-    public Group? EditedGroup { get; private set; } 
+    public Group? EditedGroup { get; private set; }
 
     public bool IsEditing => this.EditedGroup != null;
 
     public override void Activate(object? activationParameter)
     {
-        if ( activationParameter is Group group )
+        if (activationParameter is Group group)
         {
-            this.EditedGroup = group; 
+            this.EditedGroup = group;
             this.Name = group.Name;
             this.Description = group.Description;
             this.Icon = group.Icon;
@@ -35,7 +35,7 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
         this.OnEditing();
     }
 
-    public override void Deactivate() => this.EditedGroup = null; 
+    public override void Deactivate() => this.EditedGroup = null;
 
     private void OnSave(object? _)
     {
@@ -63,7 +63,15 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
     private bool Validate(out string message)
     {
         var model = ApplicationBase.GetRequiredService<TemplatesModel>();
-        return model.ValidateGroup(this.IsEditing, this.Name, this.Description, this.Icon, out message);
+        if (this.IsEditing)
+        {
+            // if IsEditing, then this.EditedGroup is not null
+            return model.ValidateGroupForEdit(this.Name, this.EditedGroup!.Name, this.Description, this.Icon, out message);
+        }
+        else
+        {
+            return model.ValidateGroupForAdd(this.Name, this.Description, this.Icon, out message);
+        }
     }
 
     private bool Save(out string message)
@@ -77,18 +85,19 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
         var model = ApplicationBase.GetRequiredService<TemplatesModel>();
         if (this.IsEditing)
         {
-            if (model.AddGroup(this.Name, this.Description, this.Icon, out message))
+            // if IsEditing, then this.EditedGroup is not null
+            if (model.EditGroup(this.Name, this.EditedGroup!.Name, this.Description, this.Icon, out message))
             {
                 return true;
             }
         }
         else
         {
-            // if (model.AddGroup(this.Name, this.Description, this.Icon, out message))
+            if (model.AddGroup(this.Name, this.Description, this.Icon, out message))
             {
                 return true;
             }
-        } 
+        }
 
         return false;
     }
