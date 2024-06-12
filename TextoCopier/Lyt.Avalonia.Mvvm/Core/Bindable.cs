@@ -86,7 +86,7 @@ public class Bindable : NotifyPropertyChanged
     protected virtual void OnViewLoaded() { }
 
     /// <summary> Usually invoked when this bindable is about to be shown, but could be used for other purposes. </summary>
-    public virtual void Activate () { }
+    public virtual void Activate (object? activationParameters) { }
 
     /// <summary> Usually invoked when this bindable is about to be hidden, and same as above. </summary>
     public virtual void Deactivate () { }

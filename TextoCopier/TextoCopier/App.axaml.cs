@@ -23,7 +23,7 @@ public partial class App : ApplicationBase
            typeof(Profiler),
            typeof(ShellViewModel),
            typeof(GroupViewModel),
-           typeof(NewGroupViewModel),
+           typeof(NewEditGroupViewModel),
            typeof(HelpViewModel),
            typeof(SettingsViewModel),
            typeof(NewTemplateViewModel),

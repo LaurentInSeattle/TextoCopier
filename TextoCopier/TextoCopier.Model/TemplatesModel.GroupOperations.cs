@@ -2,8 +2,16 @@
 
 public sealed partial class TemplatesModel
 {
+    public const int StringMaxLength = 64;
+
     public const string GroupAlreadyExists = "TemplatesModel.GroupAlreadyExists";
     public const string NoSuchGroup = "TemplatesModel.NoSuchGroup";
+    public const string GroupNameIsBlank = "TemplatesModel.GroupNameIsBlank"; // "Group name cannot be left empty or blank.";
+    public const string DescrptionIsBlank = "TemplatesModel.DescriptionIsBlank"; // "Group description cannot be left empty or blank.";
+    public const string IconNameIsBlank = "TemplatesModel.IconNameIsBlank";  // "An icon mane is required. ";
+    public const string GroupNameIsTooLong = "TemplatesModel.GroupNameIsTooLong"; 
+    public const string DescrptionIsTooLong = "TemplatesModel.DescriptionIsTooLong"; 
+    public const string IconNotAvailable = "TemplatesModel.IconNotAvailable";  
 
     public bool CheckGroup(string groupName, out string message)
     {
@@ -22,6 +30,65 @@ public sealed partial class TemplatesModel
     {
         var group = (from grp in this.Groups where grp.Name == groupName select grp).FirstOrDefault();
         return group is null ? throw new InvalidOperationException(NoSuchGroup) : group;
+    }
+
+    public bool ValidateGroup(bool isEditing, string groupName, string groupDescription, string iconName, out string message)
+    {
+        message = string.Empty;
+        groupName = groupName.Trim();
+        groupDescription = groupDescription.Trim(); 
+        iconName = iconName.Trim();
+
+        if (string.IsNullOrWhiteSpace(groupName))
+        {
+            message = GroupNameIsBlank;
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(groupDescription))
+        {
+            message = DescrptionIsBlank;
+            return false;
+        }
+
+        if (groupName.Length > StringMaxLength)
+        {
+            message = GroupNameIsTooLong;
+            return false;
+        }
+
+        if (groupDescription.Length > StringMaxLength)
+        {
+            message = DescrptionIsBlank;
+            return false;
+        }
+
+        // TODO: Check icon 
+        //if (string.IsNullOrWhiteSpace(iconName))
+        //{
+        //    message = IconNameIsBlank;
+        //    return false;
+        //}
+
+        bool fail = false;
+        if (isEditing)
+        {
+            fail = this.CheckGroup(groupName, out _);
+            if (fail)
+            {
+                message = GroupAlreadyExists;
+            }
+        }
+        else
+        {
+            fail = this.CheckGroup(groupName, out _);
+            if (fail)
+            {
+                message = GroupAlreadyExists;
+            }
+        }
+
+        return !fail;
     }
 
     public bool AddGroup(string groupName, string groupDescription, string iconName, out string message)

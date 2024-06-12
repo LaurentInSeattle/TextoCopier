@@ -1,5 +1,5 @@
 <UserControl 
-    x:Class="Lyt.TextoCopier.Workflow.NewGroupView"
+    x:Class="Lyt.TextoCopier.Workflow.NewEditGroupView"
 	xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,7 +7,7 @@
 	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
     xmlns:vm="clr-namespace:Lyt.TextoCopier.Workflow"
-    x:DataType="vm:NewGroupViewModel" 
+    x:DataType="vm:NewEditGroupViewModel" 
 	>
 	<Grid
 		x:Name="MainGrid"

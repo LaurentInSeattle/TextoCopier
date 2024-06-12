@@ -1,8 +1,8 @@
 namespace Lyt.TextoCopier.Workflow;
 
-public partial class NewGroupView : UserControl
+public partial class NewEditGroupView : UserControl
 {
-    public NewGroupView()
+    public NewEditGroupView()
     {
         this.InitializeComponent();
         this.NameTextBox.TextChanged += this.OnAnyTextBoxTextChanged;
@@ -10,7 +10,7 @@ public partial class NewGroupView : UserControl
         this.IconNameTextBox.TextChanged += this.OnAnyTextBoxTextChanged;
     }
 
-    ~NewGroupView()
+    ~NewEditGroupView()
     {
         this.NameTextBox.TextChanged -= this.OnAnyTextBoxTextChanged;
         this.DescriptionTextBox.TextChanged -= this.OnAnyTextBoxTextChanged;
@@ -19,7 +19,7 @@ public partial class NewGroupView : UserControl
 
     private void OnAnyTextBoxTextChanged(object? sender, TextChangedEventArgs e)
     {
-        if ( this.DataContext is NewGroupViewModel newGroupViewModel)
+        if ( this.DataContext is NewEditGroupViewModel newGroupViewModel)
         {
             newGroupViewModel.OnEditing();
             e.Handled = true;

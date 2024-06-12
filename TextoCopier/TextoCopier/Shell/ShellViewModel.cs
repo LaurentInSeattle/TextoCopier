@@ -98,23 +98,27 @@ public sealed class ShellViewModel : Bindable<ShellView>
         {
             default:
             case StaticView.Group:
-                this.Activate<GroupViewModel, GroupView>();
+                this.Activate<GroupViewModel, GroupView>(null);
                 break;
 
             case StaticView.NewGroup:
-                this.Activate<NewGroupViewModel, NewGroupView>();
+                this.Activate<NewEditGroupViewModel, NewEditGroupView>(null);
+                break;
+
+            case StaticView.EditGroup:
+                this.Activate<NewEditGroupViewModel, NewEditGroupView>(this.templatesModel.SelectedGroup);
                 break;
 
             case StaticView.Help:
-                this.Activate<HelpViewModel, HelpView>();
+                this.Activate<HelpViewModel, HelpView>(null);
                 break;
 
             case StaticView.Settings:
-                this.Activate<SettingsViewModel, SettingsView>();
+                this.Activate<SettingsViewModel, SettingsView>(null);
                 break;
 
             case StaticView.NewTemplate:
-                this.Activate<NewTemplateViewModel, NewTemplateView>();
+                this.Activate<NewTemplateViewModel, NewTemplateView>(null);
                 break;
         }
     }
@@ -125,7 +129,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
     private void OnNewGroup(object? _) => this.OnViewActivation(StaticView.NewGroup);
 
-    private void OnEditGroup(object? _) => this.OnViewActivation(StaticView.NewGroup);
+    private void OnEditGroup(object? _) => this.OnViewActivation(StaticView.EditGroup);
 
     private void OnExit(object? _) { }
 
@@ -184,7 +188,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.BindGroupIcons(); 
     }
 
-    private void Activate<TViewModel, TControl>()
+    private void Activate<TViewModel, TControl>(object? activationParameters)
         where TViewModel : Bindable<TControl>
         where TControl : Control, new()
     {
@@ -205,7 +209,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         }
 
         var newViewModel = App.GetRequiredService<TViewModel>();
-        newViewModel.Activate();
+        newViewModel.Activate(activationParameters);
         this.View.ShellViewContent.Content = newViewModel.View;
     }
 
@@ -273,7 +277,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         }
 
         CreateAndBind<GroupViewModel, GroupView>();
-        CreateAndBind<NewGroupViewModel, NewGroupView>();
+        CreateAndBind<NewEditGroupViewModel, NewEditGroupView>();
         CreateAndBind<HelpViewModel, HelpView>();
         CreateAndBind<SettingsViewModel, SettingsView>();
         CreateAndBind<NewTemplateViewModel, NewTemplateView>();

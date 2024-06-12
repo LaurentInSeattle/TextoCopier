@@ -33,4 +33,10 @@
     <Folder Include="Controls\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Workflow\Groups\NewEditGroupView.axaml.cs">
+      <DependentUpon>NewEditGroupView.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>

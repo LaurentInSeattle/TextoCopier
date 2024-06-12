@@ -1,16 +1,17 @@
 ﻿namespace Lyt.TextoCopier.Messaging;
 
-public sealed class ViewActivationMessage(ViewActivationMessage.StaticView view )
+public sealed class ViewActivationMessage(ViewActivationMessage.StaticView view)
 {
     public enum StaticView
     {
-           Group,
-           NewGroup,
-           Help,
-           Settings,
-           NewTemplate,
+        Group,
+        NewGroup,
+        EditGroup,
+        Help,
+        Settings,
+        NewTemplate,
 
-           GoBack, 
+        GoBack,
     }
 
     public StaticView View { get; private set; } = view;
