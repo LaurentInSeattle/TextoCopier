@@ -4,15 +4,6 @@ public sealed partial class TemplatesModel
 {
     public const int StringMaxLength = 64;
 
-    public const string GroupAlreadyExists = "TemplatesModel.GroupAlreadyExists";
-    public const string NoSuchGroup = "TemplatesModel.NoSuchGroup";
-    public const string GroupNameIsBlank = "TemplatesModel.GroupNameIsBlank"; // "Group name cannot be left empty or blank.";
-    public const string DescrptionIsBlank = "TemplatesModel.DescriptionIsBlank"; // "Group description cannot be left empty or blank.";
-    public const string IconNameIsBlank = "TemplatesModel.IconNameIsBlank";  // "An icon mane is required. ";
-    public const string GroupNameIsTooLong = "TemplatesModel.GroupNameIsTooLong";
-    public const string DescrptionIsTooLong = "TemplatesModel.DescriptionIsTooLong";
-    public const string IconNotAvailable = "TemplatesModel.IconNotAvailable";
-
     public bool CheckGroup(string groupName, out string message)
     {
         message = string.Empty;
@@ -82,7 +73,7 @@ public sealed partial class TemplatesModel
 
         if (string.IsNullOrWhiteSpace(groupDescription))
         {
-            message = DescrptionIsBlank;
+            message = DescriptionIsBlank;
             return false;
         }
 
@@ -94,7 +85,7 @@ public sealed partial class TemplatesModel
 
         if (groupDescription.Length > StringMaxLength)
         {
-            message = DescrptionIsBlank;
+            message = DescriptionIsTooLong;
             return false;
         }
 

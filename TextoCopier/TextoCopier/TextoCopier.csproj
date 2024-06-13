@@ -37,6 +37,9 @@
     <Compile Update="Workflow\Groups\NewEditGroupView.axaml.cs">
       <DependentUpon>NewEditGroupView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Workflow\Templates\NewEditTemplateView.axaml.cs">
+      <DependentUpon>NewEditTemplateView.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

@@ -4,7 +4,6 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
 {
     private readonly string groupName;
     private readonly Template template;
-    private readonly TemplatesModel templatesModel;
     private readonly Panel? parentPanel;
     private readonly IDialogService dialogService;
 
@@ -13,7 +12,6 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
         this.groupName = groupName;
         this.template = template;
         this.parentPanel = parentPanel;
-        this.templatesModel = ApplicationBase.GetRequiredService<TemplatesModel>();
         this.dialogService = ApplicationBase.GetRequiredService<IDialogService>();
 
         base.DisablePropertyChangedLogging = true;
@@ -47,13 +45,15 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
     private void OnEdit(object? _)
     {
         this.Logger.Info("Clicked on Edit!");
-        //this.templatesModel.EditTemplateValue(Name, this.Value);
+        IMessenger messenger = ApplicationBase.GetRequiredService<IMessenger>();
+        messenger.Publish(new ViewActivationMessage(ViewActivationMessage.StaticView.NewTemplate, this.template));
     }
 
     private void OnDelete(object? _)
     {
         this.Logger.Info("Clicked on Delete!");
-        this.templatesModel.DeleteTemplate(this.groupName, this.template.Name, out string message);
+        var templatesModel = ApplicationBase.GetRequiredService<TemplatesModel>();
+        templatesModel.DeleteTemplate(this.groupName, this.template.Name, out string message);
         if (!string.IsNullOrWhiteSpace(message))
         {
             this.Logger.Warning(message);

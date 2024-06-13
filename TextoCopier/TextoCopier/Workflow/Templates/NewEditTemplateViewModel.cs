@@ -1,42 +1,40 @@
 ﻿namespace Lyt.TextoCopier.Workflow;
 
-public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
+public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
 {
     private readonly IMessenger messenger;
 
-    public NewEditGroupViewModel()
+    public NewEditTemplateViewModel()
     {
         this.messenger = ApplicationBase.GetRequiredService<IMessenger>();
         this.CloseCommand = new Command(this.OnClose);
         this.SaveCommand = new Command(this.OnSave);
     }
 
-    public Group? EditedGroup { get; private set; }
+    public Template? EditedTemplate { get; private set; }
 
-    public bool IsEditing => this.EditedGroup != null;
+    public bool IsEditing => this.EditedTemplate != null;
 
     public override void Activate(object? activationParameter)
     {
-        // TODO: Icon 
-        if (activationParameter is Group group)
+        // TODO: 2 bools 
+        if (activationParameter is Template template)
         {
-            this.EditedGroup = group;
-            this.Name = group.Name;
-            this.Description = group.Description;
-            this.Icon = group.Icon;
+            this.EditedTemplate = template;
+            this.Name = template.Name;
+            this.Value = template.Value;
         }
         else
         {
-            this.EditedGroup = null;
+            this.EditedTemplate = null;
             this.Name = string.Empty;
-            this.Description = string.Empty;
-            this.Icon = "home";
+            this.Value = string.Empty;
         }
 
         this.OnEditing();
     }
 
-    public override void Deactivate() => this.EditedGroup = null;
+    public override void Deactivate() => this.EditedTemplate = null;
 
     private void OnSave(object? _)
     {
@@ -64,14 +62,22 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
     private bool Validate(out string message)
     {
         var model = ApplicationBase.GetRequiredService<TemplatesModel>();
+        if( model.SelectedGroup is null)
+        {
+            message = TemplatesModel.NoSuchGroup;
+            this.Logger.Info("model.SelectedGroup is null: "  + message);
+            return false; 
+        }
+
+        string groupName = model.SelectedGroup.Name; 
         if (this.IsEditing)
         {
             // if IsEditing, then this.EditedGroup is not null
-            return model.ValidateGroupForEdit(this.Name, this.EditedGroup!.Name, this.Description, this.Icon, out message);
+            return model.ValidateTemplateForEdit(groupName, this.Name, this.EditedTemplate!.Name, this.Value, out message);
         }
         else
         {
-            return model.ValidateGroupForAdd(this.Name, this.Description, this.Icon, out message);
+            return model.ValidateTemplateForAdd(groupName, this.Name, this.Value, out message);
         }
     }
 
@@ -82,23 +88,27 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
             return false;
         }
 
-        string groupName = this.Name.Trim();
-        string groupDescription = this.Description.Trim();
-        string iconName = this.Icon.Trim();
-
         // Save to model 
         var model = ApplicationBase.GetRequiredService<TemplatesModel>();
+        if (model.SelectedGroup is null)
+        {
+            message = TemplatesModel.NoSuchGroup;
+            this.Logger.Info("model.SelectedGroup is null: " + message);
+            return false;
+        }
+
+        string groupName = model.SelectedGroup.Name;
         if (this.IsEditing)
         {
-            // if IsEditing, then this.EditedGroup is not null
-            if (model.EditGroup(groupName, this.EditedGroup!.Name, groupDescription, iconName, out message))
+            // if IsEditing, then this.EditedTemplate is not null
+            // if (model.EditTemplate(groupName, this.Name, this.EditedTemplate!.Name, this.Value, this.IsLink, this.ShouldHide, out message)
             {
                 return true;
             }
         }
         else
         {
-            if (model.AddGroup(groupName, groupDescription, iconName, out message))
+            if (model.AddTemplate(groupName, this.Name, this.Value, this.IsLink, this.ShouldHide, out message))
             {
                 return true;
             }
@@ -109,9 +119,11 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
 
     public string Name { get => this.Get<string>()!; set => this.Set(value); }
 
-    public string Description { get => this.Get<string>()!; set => this.Set(value); }
+    public string Value { get => this.Get<string>()!; set => this.Set(value); }
 
-    public string Icon { get => this.Get<string>()!; set => this.Set(value); }
+    public bool IsLink { get => this.Get<bool>()!; set => this.Set(value); }
+
+    public bool ShouldHide { get => this.Get<bool>()!; set => this.Set(value); }
 
     public string ValidationMessage { get => this.Get<string>()!; set => this.Set(value); }
 

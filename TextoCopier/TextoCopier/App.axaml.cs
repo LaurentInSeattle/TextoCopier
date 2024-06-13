@@ -26,7 +26,7 @@ public partial class App : ApplicationBase
            typeof(NewEditGroupViewModel),
            typeof(HelpViewModel),
            typeof(SettingsViewModel),
-           typeof(NewTemplateViewModel),
+           typeof(NewEditTemplateViewModel),
         ],
         [
             // Services 

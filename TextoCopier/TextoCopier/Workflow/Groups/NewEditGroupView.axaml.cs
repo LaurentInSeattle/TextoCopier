@@ -19,9 +19,9 @@ public partial class NewEditGroupView : UserControl
 
     private void OnAnyTextBoxTextChanged(object? sender, TextChangedEventArgs e)
     {
-        if ( this.DataContext is NewEditGroupViewModel newGroupViewModel)
+        if ( this.DataContext is NewEditGroupViewModel newEditGroupViewModel)
         {
-            newGroupViewModel.OnEditing();
+            newEditGroupViewModel.OnEditing();
             e.Handled = true;
         }
     }

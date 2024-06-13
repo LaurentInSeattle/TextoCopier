@@ -71,11 +71,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         string msgMethod = string.IsNullOrWhiteSpace(message.MethodName) ? "<unknown>" : message.MethodName;
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
 
-        if (message.PropertyName == nameof(this.templatesModel.SelectedGroup))
-        {
-            this.UpdateGroupIconsSelection();
-        }
-        else
+        if (message.PropertyName != nameof(this.templatesModel.SelectedGroup))
         {
             this.BindGroupIcons();
         }
@@ -118,7 +114,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
                 break;
 
             case StaticView.NewTemplate:
-                this.Activate<NewTemplateViewModel, NewTemplateView>(null);
+                this.Activate<NewEditTemplateViewModel, NewEditTemplateView>(null);
                 break;
         }
     }
@@ -280,7 +276,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         CreateAndBind<NewEditGroupViewModel, NewEditGroupView>();
         CreateAndBind<HelpViewModel, HelpView>();
         CreateAndBind<SettingsViewModel, SettingsView>();
-        CreateAndBind<NewTemplateViewModel, NewTemplateView>();
+        CreateAndBind<NewEditTemplateViewModel, NewEditTemplateView>();
     }
 
     public bool GroupsIsVisible { get => this.Get<bool>(); set => this.Set(value); }

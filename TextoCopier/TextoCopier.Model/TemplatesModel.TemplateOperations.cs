@@ -2,8 +2,20 @@
 
 public sealed partial class TemplatesModel
 {
-    public const string TemplateAlreadyExists = "TemplatesModel.TemplateAlreadyExists";
-    public const string NoSuchTemplate = "TemplatesModel.NoSuchTemplate";
+    private bool CheckTemplate(string groupName, string templateName, out string message)
+    {
+        if ( !this.CheckGroup(groupName, out message))
+        {
+            return false; 
+        }
+    
+        Group grp = this.GetGroup(groupName);
+        Template? maybeTemplate =
+            (from template in grp.Templates where template.Name == templateName select template).FirstOrDefault();
+        bool fail = maybeTemplate is null;
+        message = fail ? NoSuchTemplate : string.Empty;
+        return !fail;
+    }
 
     private static bool CheckTemplate(Group grp, string templateName, out string message)
     {
@@ -21,19 +33,27 @@ public sealed partial class TemplatesModel
         return maybeTemplate is null ? throw new InvalidOperationException(NoSuchTemplate) : maybeTemplate;
     }
 
-    public bool AddTemplate(string groupName, string templateName, string templateValue, out string message)
-        => this.ModelOperation(this.AddTemplateInternal, groupName, templateName, templateValue, out message);
-
-    private bool AddTemplateInternal(Group group, string templateName, string templateValue, out string message)
+    public bool AddTemplate(
+        string groupName, string templateName, string templateValue,
+        bool isLink, bool shouldHide, out string message)
     {
-        List<Template> templates = group.Templates;
-        var template = new Template { Name = templateName, Value = templateValue };
-        templates.Add(template);
+        bool status = this.CheckGroup(groupName, out message);
+        if (status)
+        {
+            Group group = this.GetGroup(groupName);
+            List<Template> templates = group.Templates;
+            var template = 
+                new Template 
+                { 
+                    Name = templateName, Value = templateValue, 
+                    IsLink = isLink, ShouldHide = shouldHide,
+                };
+            templates.Add(template);
+            this.IsDirty = true;
+            this.NotifyUpdate(propertyName: string.Empty, methodName: nameof(this.AddTemplate));
+        }
 
-        message = string.Empty;
-        this.IsDirty = true;
-        this.NotifyUpdate();
-        return true;
+        return status;
     }
 
     public bool DeleteTemplate(string groupName, string templateName, out string message)
@@ -100,4 +120,75 @@ public sealed partial class TemplatesModel
 
         return status;
     }
+
+    public bool ValidateTemplateForAdd(
+        string groupName, string newTemplateName, string value, out string message)
+    {
+        if (!this.ValidateTemplateCommon(newTemplateName, value, out message))
+        {
+            return false;
+        }
+
+        bool fail = this.CheckTemplate(groupName, newTemplateName, out _);
+        if (fail)
+        {
+            message = TemplateAlreadyExists;
+        }
+
+        return !fail;
+    }
+
+    public bool ValidateTemplateForEdit(
+        string groupName, string newTemplateName, string oldTemplateName, string value, out string message)
+    {
+        if (!this.ValidateTemplateCommon(newTemplateName, value, out message))
+        {
+            return false;
+        }
+
+        if (newTemplateName != oldTemplateName)
+        {
+            if (this.CheckTemplate(groupName, newTemplateName, out _))
+            {
+                message = TemplateAlreadyExists;
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private bool ValidateTemplateCommon(string templateName, string value, out string message)
+    {
+        message = string.Empty;
+        templateName = templateName.Trim();
+        value = value.Trim();
+
+        if (string.IsNullOrWhiteSpace(templateName))
+        {
+            message = TemplateNameIsBlank;
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            message = TemplateValueIsBlank;
+            return false;
+        }
+
+        if (templateName.Length > StringMaxLength)
+        {
+            message = TemplateNameIsTooLong;
+            return false;
+        }
+
+        if (value.Length > StringMaxLength)
+        {
+            message = TemplateValueIsTooLong;
+            return false;
+        }
+
+        return true;
+    }
+
 }
