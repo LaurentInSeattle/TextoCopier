@@ -27,9 +27,6 @@ public partial class ToggleSwitch : UserControl
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
-        //this.ChangeButtonBackground(this.ButtonBackground);
-        //this.ChangeLayout(this.Layout);
-        //this.ChangeBehaviour(this.Behaviour);
         this.ChangeTypography(this.Typography);
         this.UpdateVisualState();
         this.InvalidateVisual();
@@ -52,6 +49,13 @@ public partial class ToggleSwitch : UserControl
 
     private void UpdateVisualState()
     {
+        if ((this.GeneralVisualState is null) || 
+            (this.BackgroundVisualState is null) || 
+            (this.BackgroundBorderVisualState is null))
+        {
+            return;
+        }
+
         this.eventingRectangle.Fill = Brushes.Transparent;
         if (this.isPressed && !this.IsDisabled)
         {
@@ -81,13 +85,13 @@ public partial class ToggleSwitch : UserControl
         this.switchEllipse.Fill = pressedColor;
         if (this.Value)
         {
-            this.trueTextBlock.Foreground = pressedColor;
-            this.falseTextBlock.Foreground = disabledColor;
+            this.trueTextBlock.Foreground = disabledColor;
+            this.falseTextBlock.Foreground = pressedColor;
         }
         else
         {
-            this.trueTextBlock.Foreground = disabledColor;
-            this.falseTextBlock.Foreground = pressedColor;
+            this.trueTextBlock.Foreground = pressedColor;
+            this.falseTextBlock.Foreground = disabledColor;
         }
 
         this.rectangleBackground.Fill = this.BackgroundVisualState.Pressed;
@@ -150,6 +154,7 @@ public partial class ToggleSwitch : UserControl
 
     private void OnPointerEnter(object? sender, PointerEventArgs args)
     {
+        // Debug.WriteLine("Pointer Enter");
         if (this.eventingRectangle.IsPointerOver)
         {
             this.Enter();
@@ -158,6 +163,7 @@ public partial class ToggleSwitch : UserControl
 
     private void OnPointerLeave(object? sender, PointerEventArgs args)
     {
+        // Debug.WriteLine("Pointer Leave");
         if (!this.eventingRectangle.IsPointerOver)
         {
             this.Leave();
@@ -166,7 +172,8 @@ public partial class ToggleSwitch : UserControl
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs args)
     {
-        if (this.eventingRectangle.IsPointerInside(args))
+        // Debug.WriteLine("Pointer Pressed");
+        if (this.eventingRectangle.IsPointerOver)
         {
             this.Down();
         }
@@ -174,7 +181,8 @@ public partial class ToggleSwitch : UserControl
 
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs args)
     {
-        if (this.eventingRectangle.IsPointerInside(args))
+        // Debug.WriteLine("Pointer Released");
+        if (this.eventingRectangle.IsPointerOver)
         {
             this.Up(args);
         }
@@ -186,10 +194,8 @@ public partial class ToggleSwitch : UserControl
 
     private void OnPointerMoved(object? sender, PointerEventArgs args)
     {
-        if (!this.eventingRectangle.IsPointerInside(args))
-        {
-            this.Leave();
-        }
+        //Debug.WriteLine("Pointer Moved");
+        // No need for now 
     }
 
     private void Enter()
@@ -204,6 +210,7 @@ public partial class ToggleSwitch : UserControl
         bool needToLeave = this.isOver || this.isPressed;
         if (!needToLeave)
         {
+            // Debug.WriteLine("No need to Leave, return");
             return;
         }
 
@@ -272,5 +279,4 @@ public partial class ToggleSwitch : UserControl
     }
 
     #endregion Commanding 
-
 }

@@ -8,6 +8,7 @@
     xmlns:vm="clr-namespace:Lyt.TextoCopier.Workflow"
     x:DataType="vm:NewEditTemplateViewModel" 
 	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
+	xmlns:toggle="clr-namespace:Lyt.Avalonia.Controls.Toggle;assembly=Lyt.Avalonia.Controls"
 	>
 	<Grid
 		x:Name="MainGrid"
@@ -53,8 +54,8 @@
 				<RowDefinition Height="44" />
 				<RowDefinition Height="32" />
 				<RowDefinition Height="44" />
-				<RowDefinition Height="32" />
-				<RowDefinition Height="44" />
+				<RowDefinition Height="48" />
+				<RowDefinition Height="48" />
 
 				<!-- Message -->
 				<RowDefinition Height="64" />
@@ -116,6 +117,28 @@
 				IsHitTestVisible="False"
 				TextWrapping="Wrap"
                 />
+			<toggle:ToggleSwitch
+				x:Name="IsHiddenSwitch"
+                Grid.Row="4"
+				Margin="30 4 4 4"
+				Style="{StaticResource StandardToggleSwitch}"
+				TrueText="Hide Text"
+				FalseText="Normal"
+				Height="32"
+				HorizontalAlignment="Left" VerticalAlignment="Center"
+				Value="False"
+				/>
+			<toggle:ToggleSwitch
+				x:Name="IsLinkSwitch"
+				Value="False"
+                Grid.Row="5"
+				Margin="16 4 4 4"
+				Style="{StaticResource StandardToggleSwitch}"
+				TrueText="Is Web Link"
+				FalseText="Regular"
+				Height="32"
+				HorizontalAlignment="Left" VerticalAlignment="Center"
+				/>
 			<Rectangle
 				Fill="#70000020"
                 Grid.Row="7"

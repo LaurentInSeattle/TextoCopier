@@ -13,7 +13,7 @@
         >
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="64" />
+			<ColumnDefinition Width="66" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<!-- Rectangle used as background: MUST be below everything else -->
@@ -24,7 +24,7 @@
             VerticalAlignment="Stretch"
             Margin="0"
             IsHitTestVisible="False"
-            RadiusX="12" RadiusY="12"
+            RadiusX="10" RadiusY="10"
             Stroke="Aquamarine"
             StrokeThickness="1"
             Fill="Transparent"
@@ -51,13 +51,14 @@
             x:Name="switchEllipse"
             Margin="4"
             Grid.Column="1"
-            Height="24" Width="24"
+            Height="20" Width="20"
             VerticalAlignment="Center" HorizontalAlignment="Left"
             Fill="Aquamarine"
             />
 		<!-- Rectangle used for eventing MUST be above everything else -->
 		<Rectangle
             x:Name="eventingRectangle"
+            HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
             Grid.Column="1"
             Margin="0"
             IsHitTestVisible="True"

@@ -14,7 +14,13 @@ public partial class ToggleSwitch
     public bool Value
     {
         get => this.GetValue(ValueProperty);
-        set =>this.SetValue(ValueProperty, value);        
+        set
+        {
+            this.SetValue(ValueProperty, value);
+            this.switchEllipse.HorizontalAlignment =
+                value ? HorizontalAlignment.Left : HorizontalAlignment.Right;
+            this.UpdateVisualState();
+        }
     }
 
     /// <summary> Style Styled Property </summary>
