@@ -66,7 +66,12 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
         string webUrl = this.Value;
         if (!string.IsNullOrWhiteSpace(webUrl))
         {
-            WebUtilities.OpenWebUrl(webUrl);
+            if ( ! WebUtilities.OpenWebUrl(webUrl, out string message))
+            {
+                this.Logger.Warning(message);
+                IToaster toaster = ApplicationBase.GetRequiredService<IToaster>();
+                toaster.Show("404 !", message, 12_000, InformationLevel.Warning);
+            }
         }
     }
 

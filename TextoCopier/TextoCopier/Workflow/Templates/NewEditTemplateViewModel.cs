@@ -17,18 +17,21 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
 
     public override void Activate(object? activationParameter)
     {
-        // TODO: 2 bools 
         if (activationParameter is Template template)
         {
             this.EditedTemplate = template;
             this.Name = template.Name;
             this.Value = template.Value;
+            this.IsHidden = template.ShouldHide;
+            this.IsWebLink = template.IsLink; 
         }
         else
         {
             this.EditedTemplate = null;
             this.Name = string.Empty;
             this.Value = string.Empty;
+            this.IsHidden = false;
+            this.IsWebLink = false;
         }
 
         this.OnEditing();
@@ -108,7 +111,7 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
         }
         else
         {
-            if (model.AddTemplate(groupName, this.Name, this.Value, this.IsLink, this.ShouldHide, out message))
+            if (model.AddTemplate(groupName, this.Name, this.Value, this.IsWebLink, this.IsHidden, out message))
             {
                 return true;
             }
@@ -121,9 +124,9 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
 
     public string Value { get => this.Get<string>()!; set => this.Set(value); }
 
-    public bool IsLink { get => this.Get<bool>()!; set => this.Set(value); }
+    public bool IsWebLink { get => this.Get<bool>()!; set => this.Set(value); }
 
-    public bool ShouldHide { get => this.Get<bool>()!; set => this.Set(value); }
+    public bool IsHidden { get => this.Get<bool>()!; set => this.Set(value); }
 
     public string ValidationMessage { get => this.Get<string>()!; set => this.Set(value); }
 

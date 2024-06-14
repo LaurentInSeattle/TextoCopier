@@ -8,7 +8,8 @@ public partial class ToggleSwitch
 
     /// <summary> Value Styled Property </summary>
     public static readonly StyledProperty<bool> ValueProperty =
-        AvaloniaProperty.Register<ToggleSwitch, bool>(nameof(Value), defaultValue: true);
+        AvaloniaProperty.Register<ToggleSwitch, bool>(
+            nameof(IsShown), defaultValue: true, defaultBindingMode: BindingMode.TwoWay);
 
     /// <summary> Gets or sets the Value property.</summary>
     public bool Value
@@ -40,7 +41,8 @@ public partial class ToggleSwitch
 
     /// <summary> IsShown Styled Property </summary>
     public static readonly StyledProperty<bool> IsShownProperty =
-        AvaloniaProperty.Register<ToggleSwitch, bool>(nameof(IsShown), defaultValue: true);
+        AvaloniaProperty.Register<ToggleSwitch, bool>(
+            nameof(IsShown), defaultValue: true, defaultBindingMode:BindingMode.TwoWay);
 
     /// <summary> Gets or sets the IsShown property.</summary>
     public bool IsShown

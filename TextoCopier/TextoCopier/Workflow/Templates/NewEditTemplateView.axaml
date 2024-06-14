@@ -54,13 +54,12 @@
 				<RowDefinition Height="44" />
 				<RowDefinition Height="32" />
 				<RowDefinition Height="44" />
+				<!-- Toggles -->
 				<RowDefinition Height="48" />
 				<RowDefinition Height="48" />
-
 				<!-- Message -->
 				<RowDefinition Height="64" />
-
-				<!-- Buttons -->
+				<!-- Button -->
 				<RowDefinition Height="64" />
 
 				<RowDefinition Height="*" />
@@ -126,11 +125,10 @@
 				FalseText="Normal"
 				Height="32"
 				HorizontalAlignment="Left" VerticalAlignment="Center"
-				Value="False"
+				Value="{Binding IsHidden}"
 				/>
 			<toggle:ToggleSwitch
 				x:Name="IsLinkSwitch"
-				Value="False"
                 Grid.Row="5"
 				Margin="16 4 4 4"
 				Style="{StaticResource StandardToggleSwitch}"
@@ -138,6 +136,7 @@
 				FalseText="Regular"
 				Height="32"
 				HorizontalAlignment="Left" VerticalAlignment="Center"
+				Value="{Binding IsWebLink}"
 				/>
 			<Rectangle
 				Fill="#70000020"
