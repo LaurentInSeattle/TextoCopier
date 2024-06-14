@@ -1,7 +1,5 @@
 namespace Lyt.Avalonia.Controls.Glyphs;
 
-public delegate void RoutedEventDelegate(object sender, RoutedEventArgs rea);
-
 public partial class GlyphButton : UserControl, ICanSelect 
 {
     // private const double KeyboardPressMilliseconds = 600.0;

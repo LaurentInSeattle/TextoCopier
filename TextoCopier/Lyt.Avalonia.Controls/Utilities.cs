@@ -1,5 +1,7 @@
 ﻿namespace Lyt.Avalonia.Controls;
 
+public delegate void RoutedEventDelegate(object sender, RoutedEventArgs rea);
+
 public static class Utilities
 {
     public static bool TryFindResource<T>(string resourceName, out T? resource)

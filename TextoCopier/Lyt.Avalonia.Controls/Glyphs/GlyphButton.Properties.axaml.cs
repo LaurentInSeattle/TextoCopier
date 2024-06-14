@@ -299,52 +299,6 @@ public partial class GlyphButton
         }
     }
 
-    /*
-            #region Dependency Property TextForeground
-
-            /// <summary> TextForeground Dependency Property </summary>
-            public static readonly DependencyProperty TextForegroundProperty =
-                DependencyProperty.Register("TextForeground", typeof(SolidColorBrush), typeof(GlyphButton),
-                    new FrameworkPropertyMetadata(Brushes.AntiqueWhite,
-                        FrameworkPropertyMetadataOptions.None,
-                        new PropertyChangedCallback(OnTextForegroundChanged),
-                        new CoerceValueCallback(CoerceTextForeground)));
-
-            /// <summary> Gets or sets the TextForeground property.</summary>
-            public SolidColorBrush TextForeground
-            {
-                get => (SolidColorBrush)this.GetValue(TextForegroundProperty);
-                set => this.SetValue(TextForegroundProperty, value);
-            }
-
-            /// <summary> Handles changes to the TextForeground property. </summary>
-            private static void OnTextForegroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            {
-                var target = (GlyphButton)d;
-                var oldForeground = (SolidColorBrush)e.OldValue;
-                var newForeground = target.TextForeground;
-                target.OnTextForegroundChanged(oldForeground, newForeground);
-            }
-
-            /// <summary> Provides derived classes an opportunity to handle changes to the TextForeground property. </summary>
-            protected virtual void OnTextForegroundChanged(SolidColorBrush oldForeground, SolidColorBrush newForeground)
-            {
-                this.textBlock.Foreground = newForeground;
-            }
-
-            /// <summary> Coerces the TextForeground value. </summary>
-            private static object CoerceTextForeground(DependencyObject d, object value)
-            {
-                var target = (GlyphButton)d;
-                var desiredForeground = (SolidColorBrush)value;
-                // TODO
-                return desiredForeground;
-            }
-
-            #endregion Dependency Property TextForeground
-
-    */
-
     #endregion Text Related Styled Properties
 
     #region Dependency Property BackgroundCornerRadius
