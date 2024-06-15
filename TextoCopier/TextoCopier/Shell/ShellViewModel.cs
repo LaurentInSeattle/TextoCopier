@@ -54,7 +54,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         if (groupCount > 0)
         {
             this.toaster.Show(
-                localizer.Lookup("Shell.Ready"), localizer.Lookup("Shell.Greetings"), 4_000, InformationLevel.Info);
+                localizer.Lookup("Shell.Ready"), localizer.Lookup("Shell.Greetings"), 5_000, InformationLevel.Info);
         }
         else
         {

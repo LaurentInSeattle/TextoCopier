@@ -14,7 +14,7 @@
 		Margin ="8"
 	    HorizontalAlignment="Stretch"
 	    VerticalAlignment="Bottom"
-		Height="98"
+		Height="64"
 		Opacity="0"
 		>
 		<Grid.Transitions>
@@ -35,7 +35,7 @@
 		<Border
 			x:Name="outerBorder"
 			Grid.ColumnSpan="999" Grid.RowSpan="999"
-			Height="98" MaxHeight="98"
+			Height="64" MaxHeight="64"
 			Background="Transparent"
 			BorderBrush="{StaticResource LightAqua_1_040}"
 			BorderThickness="1"
@@ -59,7 +59,7 @@
 		<TextBlock
 			Grid.Column="2"
 			Foreground ="{Binding ColorLevel}"
-			Margin="0"
+			Margin="0 8 0 0"
 			FontWeight="Bold"
 			FontSize ="16"
 			Text="{Binding Title, FallbackValue=Toast Title}"
