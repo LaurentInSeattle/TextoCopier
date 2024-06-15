@@ -78,9 +78,9 @@ public sealed class ShellViewModel : Bindable<ShellView>
     }
 
     private void OnViewActivation(ViewActivationMessage message)
-        => this.OnViewActivation(message.View);
+        => this.OnViewActivation(message.View, message.Parameter);
 
-    private void OnViewActivation(StaticView staticView)
+    private void OnViewActivation(StaticView staticView, object? parameter = null)
     {
         if (staticView == StaticView.GoBack)
         {
@@ -113,8 +113,9 @@ public sealed class ShellViewModel : Bindable<ShellView>
                 this.Activate<SettingsViewModel, SettingsView>(null);
                 break;
 
+            case StaticView.EditTemplate:
             case StaticView.NewTemplate:
-                this.Activate<NewEditTemplateViewModel, NewEditTemplateView>(null);
+                this.Activate<NewEditTemplateViewModel, NewEditTemplateView>(parameter);
                 break;
         }
     }

@@ -101,17 +101,20 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
         }
 
         string groupName = model.SelectedGroup.Name;
+        string newName = this.Name.Trim();
+        string value = this.Value.Trim(); 
         if (this.IsEditing)
         {
             // if IsEditing, then this.EditedTemplate is not null
-            // if (model.EditTemplate(groupName, this.Name, this.EditedTemplate!.Name, this.Value, this.IsLink, this.ShouldHide, out message)
+            string oldName = this.EditedTemplate!.Name.Trim();
+            if (model.EditTemplate(groupName, newName, oldName, value, this.IsWebLink, this.IsHidden, out message))
             {
                 return true;
             }
         }
         else
         {
-            if (model.AddTemplate(groupName, this.Name, this.Value, this.IsWebLink, this.IsHidden, out message))
+            if (model.AddTemplate(groupName, newName, value, this.IsWebLink, this.IsHidden, out message))
             {
                 return true;
             }

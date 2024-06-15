@@ -46,7 +46,7 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
     {
         this.Logger.Info("Clicked on Edit!");
         IMessenger messenger = ApplicationBase.GetRequiredService<IMessenger>();
-        messenger.Publish(new ViewActivationMessage(ViewActivationMessage.StaticView.NewTemplate, this.template));
+        messenger.Publish(new ViewActivationMessage(ViewActivationMessage.StaticView.EditTemplate, this.template));
     }
 
     private void OnDelete(object? _)

@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="850"
     xmlns:vm="clr-namespace:Lyt.TextoCopier.Workflow"
     x:DataType="vm:NewEditTemplateViewModel" 
 	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
@@ -53,7 +53,7 @@
 				<RowDefinition Height="32" />
 				<RowDefinition Height="44" />
 				<RowDefinition Height="32" />
-				<RowDefinition Height="44" />
+				<RowDefinition Height="280" />
 				<!-- Toggles -->
 				<RowDefinition Height="48" />
 				<RowDefinition Height="48" />
@@ -79,8 +79,8 @@
                 x:Name="NameTextBox"
                 Grid.Row="1"
                 VerticalAlignment="Center" HorizontalAlignment="Stretch"
-				Watermark="128 characters max."
-				MaxLength="128"
+				Watermark="64 characters max."
+				MaxLength="64"
                 Text="{Binding Name}"
                 Margin="12 0 8 0"
                 />
@@ -98,9 +98,9 @@
 			<TextBox
                 x:Name="ValueTextBox"
                 Grid.Row="3"
-                VerticalAlignment="Center" HorizontalAlignment="Stretch"
-				Watermark="128 characters max."
-				MaxLength="128"
+                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+				Watermark="2048 characters max."
+				MaxLength="2048"
                 Text="{Binding Value}"
                 Margin="12 0 8 0"
                 />

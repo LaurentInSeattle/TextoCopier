@@ -24,7 +24,7 @@
             VerticalAlignment="Stretch"
             Margin="0"
             IsHitTestVisible="False"
-            RadiusX="10" RadiusY="10"
+            RadiusX="8" RadiusY="8"
             Stroke="Aquamarine"
             StrokeThickness="1"
             Fill="Transparent"
@@ -37,6 +37,7 @@
             Foreground="AntiqueWhite"
             VerticalAlignment="Center" HorizontalAlignment="Right"
             TextWrapping="Wrap"
+            IsHitTestVisible="False"
             />
 		<TextBlock
             x:Name="falseTextBlock"
@@ -46,14 +47,16 @@
             Foreground="AntiqueWhite"
             VerticalAlignment="Center" HorizontalAlignment="Left"
             TextWrapping="Wrap"
+            IsHitTestVisible="False"
             />
 		<Ellipse
             x:Name="switchEllipse"
             Margin="4"
             Grid.Column="1"
-            Height="20" Width="20"
+            Height="16" Width="16"
             VerticalAlignment="Center" HorizontalAlignment="Left"
             Fill="Aquamarine"
+            IsHitTestVisible="False"
             />
 		<!-- Rectangle used for eventing MUST be above everything else -->
 		<Rectangle

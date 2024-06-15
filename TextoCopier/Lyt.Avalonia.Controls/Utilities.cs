@@ -33,7 +33,13 @@ public static class Utilities
     public static bool IsPointerInside(this Control control, PointerEventArgs args)
     {
         PointerPoint pp = args.GetCurrentPoint(control);
-        return control.Bounds.Contains(pp.Position);
+        Rect rectangle = new Rect ( control.Bounds.Size) ;
+        Rect inflated = rectangle.Inflate(0.5);
+        //Debug.WriteLine( inflated.ToString() );
+        //Debug.WriteLine(pp.Position.ToString());
+        bool inside = inflated.Contains(pp.Position);
+        // Debug.WriteLine(inside ? "Inside": "Outside");
+        return inside;
     }
 
     public static void ApplyControlTheme(this Control control, ControlTheme theme)

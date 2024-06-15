@@ -28,6 +28,8 @@ public partial class ToggleSwitch : UserControl
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
         this.ChangeTypography(this.Typography);
+        this.switchEllipse.HorizontalAlignment =
+            this.Value ? HorizontalAlignment.Left : HorizontalAlignment.Right;
         this.UpdateVisualState();
         this.InvalidateVisual();
     }
@@ -164,6 +166,7 @@ public partial class ToggleSwitch : UserControl
     private void OnPointerLeave(object? sender, PointerEventArgs args)
     {
         // Debug.WriteLine("Pointer Leave");
+        // Debugger.Break();
         if (!this.eventingRectangle.IsPointerOver)
         {
             this.Leave();
@@ -194,8 +197,20 @@ public partial class ToggleSwitch : UserControl
 
     private void OnPointerMoved(object? sender, PointerEventArgs args)
     {
-        //Debug.WriteLine("Pointer Moved");
-        // No need for now 
+        // Debug.WriteLine("Pointer Moved");
+        if (!this.isOver)
+        {
+            // Debug.WriteLine("Not Over: ignore");
+            return;
+        }
+
+        if (!this.eventingRectangle.IsPointerInside(args))
+        {
+            // Debug.WriteLine("Pointer outside : leave");
+            this.Leave();
+        }
+
+        // Debug.WriteLine("Pointer inside : ignore");
     }
 
     private void Enter()
@@ -222,17 +237,26 @@ public partial class ToggleSwitch : UserControl
 
     private void Down()
     {
-        // Debug.WriteLine("Down");
+        Debug.WriteLine("Down");
+
         this.isPressed = true;
         this.UpdateVisualState();
     }
 
     private void Up(PointerReleasedEventArgs args)
     {
-        // Debug.WriteLine("Up");
-        this.isPressed = false;
-        this.UpdateVisualState();
-        this.ActivateCommand(args);
+        Debug.WriteLine("Up");
+        if (!this.eventingRectangle.IsPointerInside(args))
+        {
+            Debug.WriteLine("Pointer outside : leave");
+            this.Leave();
+        }
+        else
+        {
+            this.isPressed = false;
+            this.UpdateVisualState();
+            this.ActivateCommand(args);
+        }
     }
 
     #endregion Pointer Handling

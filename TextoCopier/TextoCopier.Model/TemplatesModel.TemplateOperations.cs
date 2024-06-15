@@ -1,4 +1,6 @@
-﻿namespace Lyt.TextoCopier.Model;
+﻿using System.Runtime.CompilerServices;
+
+namespace Lyt.TextoCopier.Model;
 
 public sealed partial class TemplatesModel
 {
@@ -56,6 +58,32 @@ public sealed partial class TemplatesModel
         return status;
     }
 
+    public bool EditTemplate(
+        string groupName, string newName, string oldName, string value, bool isWebLink, bool isHidden, out string message)
+    {
+        bool status = this.CheckGroup(groupName, out message);
+        if (status)
+        {
+            Group group = this.GetGroup(groupName);
+            List<Template> templates = group.Templates;
+            Template oldTemplate = TemplatesModel.GetTemplate(group, oldName);
+            group.Templates.Remove(oldTemplate);
+            var newTemplate =
+                new Template
+                {
+                    Name = newName,
+                    Value = value,
+                    IsLink = isWebLink,
+                    ShouldHide = isHidden,
+                };
+            templates.Add(newTemplate);
+            this.IsDirty = true;
+            this.NotifyUpdate(propertyName: string.Empty, methodName: nameof(this.EditTemplate));
+        }
+
+        return status;
+    }
+
     public bool DeleteTemplate(string groupName, string templateName, out string message)
         => this.ModelOperation(this.DeleteTemplateInternal, groupName, templateName, string.Empty, out message);
 
@@ -70,52 +98,6 @@ public sealed partial class TemplatesModel
             message = string.Empty;
             this.IsDirty = true;
             this.NotifyUpdate();
-        }
-
-        return status;
-    }
-
-    public bool EditTemplateValue(string groupName, string templateName, string templateValue, out string message)
-        => this.ModelOperation(this.EditTemplateValueInternal, groupName, templateName, templateValue, out message);
-
-    private bool EditTemplateValueInternal(Group group, string templateName, string templateValue, out string message)
-    {
-        bool status = TemplatesModel.CheckTemplate(group, templateName, out message);
-        if (status)
-        {
-            Template template = TemplatesModel.GetTemplate(group, templateName);
-            template.Value = templateValue;
-
-            message = string.Empty;
-            this.IsDirty = true;
-            this.NotifyUpdate();
-        }
-
-        return status;
-    }
-
-    public bool RenameTemplate(string groupName, string templateName, string newTemplateName, out string message)
-        => this.ModelOperation(this.RenameTemplateInternal, groupName, templateName, newTemplateName, out message);
-
-    private bool RenameTemplateInternal(Group group, string templateName, string newTemplateName, out string message)
-    {
-        bool status = TemplatesModel.CheckTemplate(group, templateName, out message);
-        if (status)
-        {
-            Template template = TemplatesModel.GetTemplate(group, templateName);
-            bool taken = TemplatesModel.CheckTemplate(group, newTemplateName, out _);
-            if (taken)
-            {
-                message = TemplateAlreadyExists;
-                status = false;
-            }
-            else
-            {
-                template.Name = newTemplateName;
-                message = string.Empty;
-                this.IsDirty = true;
-                this.NotifyUpdate();
-            }
         }
 
         return status;
