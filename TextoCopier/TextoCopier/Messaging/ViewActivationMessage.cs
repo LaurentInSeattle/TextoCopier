@@ -1,8 +1,8 @@
 ﻿namespace Lyt.TextoCopier.Messaging;
 
-public sealed class ViewActivationMessage(ViewActivationMessage.StaticView view, object? parameter = null)
+public sealed class ViewActivationMessage(ViewActivationMessage.ActivatedView view, object? activationParameter = null)
 {
-    public enum StaticView
+    public enum ActivatedView
     {
         Group,
         NewGroup,
@@ -15,7 +15,7 @@ public sealed class ViewActivationMessage(ViewActivationMessage.StaticView view,
         GoBack,
     }
 
-    public StaticView View { get; private set; } = view;
+    public ActivatedView View { get; private set; } = view;
 
-    public object?  Parameter{ get; private set; } = parameter;
+    public object? ActivationParameter { get; private set; } = activationParameter;
 }

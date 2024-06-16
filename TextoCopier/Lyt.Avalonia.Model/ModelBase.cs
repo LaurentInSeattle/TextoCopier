@@ -5,11 +5,13 @@ public class DoNotLogAttribute : Attribute { }
 
 public abstract class ModelBase : IModel
 {
+    private bool isDirty;
+
     public ModelBase(IMessenger messenger, ILogger logger)
     {
         this.Messenger = messenger;
         this.Logger = logger;
-        this.properties = []; 
+        this.properties = [];
     }
 
     public abstract Task Initialize();
@@ -24,7 +26,7 @@ public abstract class ModelBase : IModel
 
     public virtual Task Save()
     {
-        this.IsDirty = false ;
+        this.IsDirty = false;
         return Task.CompletedTask;
     }
 
@@ -32,7 +34,20 @@ public abstract class ModelBase : IModel
 
     public IMessenger Messenger { get; private set; }
 
-    public bool IsDirty { get; protected set; }
+    public bool IsDirty
+    {
+        get => this.isDirty;
+        protected set
+        {
+            this.isDirty = value;
+            if (value)
+            {
+                this.Save();
+            }
+        }
+    }
+
+    public bool ShouldAutoSave { get; protected set; }
 
     /// <summary> Allows to disable logging when properties are changing so that we do not flood the logs. </summary>
     /// <remarks> Use for quickly changing properties, mouse, sliders, etc.</remarks>
@@ -42,10 +57,10 @@ public abstract class ModelBase : IModel
     protected readonly Dictionary<string, object?> properties;
 
     public void SubscribeToUpdates(Action<ModelUpdateMessage> onUpdate, bool withUiDispatch = false)
-        => this.Messenger.Subscribe(onUpdate, withUiDispatch);
+        => this.Messenger?.Subscribe(onUpdate, withUiDispatch);
 
-    protected void NotifyUpdate(string propertyName = "", string methodName="") 
-        => this.Messenger.Publish(new ModelUpdateMessage(this, propertyName, methodName));
+    protected void NotifyUpdate(string propertyName = "", string methodName = "")
+        => this.Messenger?.Publish(new ModelUpdateMessage(this, propertyName, methodName));
 
     /// <summary> Gets the value of a property </summary>
     protected T? Get<T>([CallerMemberName] string? name = null)
@@ -105,6 +120,11 @@ public abstract class ModelBase : IModel
     [Conditional("DEBUG")]
     private void LogPropertyChanged(string name, object? value)
     {
+        if (this.Logger is null)
+        {
+            return;
+        }
+
         int frameIndex = 1;
         string typeName;
         do

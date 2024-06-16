@@ -11,7 +11,7 @@ public sealed class HelpViewModel : Bindable <HelpView>
     }
 
     private void OnClose(object? _)
-        => this.messenger.Publish(new ViewActivationMessage(ViewActivationMessage.StaticView.GoBack));
+        => this.messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.GoBack));
 
     public ICommand CloseCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 }

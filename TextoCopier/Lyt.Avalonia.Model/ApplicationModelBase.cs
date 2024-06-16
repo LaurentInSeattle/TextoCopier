@@ -1,9 +1,9 @@
 ﻿namespace Lyt.Avalonia.Model;
 
-public class ApplicationModelBase(ILogger logger, IApplicationBase application) : IApplicationModel
+public class ApplicationModelBase(IProfiler profiler, ILogger logger, IApplicationBase application) : IApplicationModel
 {
+    protected readonly IProfiler profiler = profiler;
     protected readonly ILogger logger = logger;
-
     protected readonly IApplicationBase application = application;
 
     public async Task Initialize()
@@ -25,10 +25,7 @@ public class ApplicationModelBase(ILogger logger, IApplicationBase application) 
 
         try
         {
-            // Launch cleanup threads 
-            // FileHelpers.LaunchAllCleanupThreads();
-            //await MiniProfiler.FullGcCollect();
-            //MiniProfiler.MemorySnapshot("System software initialization complete");
+            this.profiler.MemorySnapshot("Software initialization complete");
         }
         catch (Exception ex)
         {

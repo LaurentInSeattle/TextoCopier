@@ -1,13 +1,10 @@
-﻿
-namespace Lyt.Avalonia.Mvvm.Utilities;
+﻿namespace Lyt.Avalonia.Mvvm.Utilities;
 
-public sealed class Profiler
+public sealed class Profiler(ILogger logger) : IProfiler
 {
-    private readonly ILogger logger; 
+    private readonly ILogger logger = logger; 
     private bool isTimingStarted;
     private Stopwatch? stopwatch;
-
-    public Profiler ( ILogger logger ) => this.logger = logger;
 
     public async Task FullGcCollect(int delay = 0)
     {
@@ -28,6 +25,15 @@ public sealed class Profiler
 
     public int[] CollectionCounts()
         => [GC.CollectionCount(0), GC.CollectionCount(1), GC.CollectionCount(2)];
+
+    // Implemented only on Windows 
+    public void MemorySnapshot(string comment = "")
+    {
+        if (OperatingSystem.IsWindows())
+        {
+            this.WindowsMemorySnapshot(comment);
+        }
+    }
 
     [Conditional("DEBUG")]
     public void Track(
@@ -80,35 +86,22 @@ public sealed class Profiler
         this.logger.Info("***** " + comment + " - Timing: " + millisecs.ToString("F1") + " ms.  - at: " + rightNow);
     }
 
-    [Conditional("DEBUG")]
-    public void MemorySnapshot(string comment = "")
-    {
-        if (OperatingSystem.IsWindows())
-        {
-            this.WindowsMemorySnapshot(comment);
-        }
-    }
-
-    [Conditional("DEBUG")]
     [SupportedOSPlatform("windows")]
-    public async void WindowsMemorySnapshot(string comment)
+    private async void WindowsMemorySnapshot(string comment)
     {
-        string rightNow = DateTime.Now.ToLocalTime().ToLongTimeString();
-        this.logger.Info("***** Memory Snapshot " + comment + "  at: " + rightNow);
         await this.FullGcCollect(50);
         var currentProcess = Process.GetCurrentProcess();
         string processName = currentProcess.ProcessName;
         var ctr1 = new PerformanceCounter("Process", "Private Bytes", processName);
         float privateBytes = ctr1.NextValue();
-        int megaPrivateBytes = (int)((privateBytes + 512 * 1024) / (1024 * 1024));
-        this.logger.Info("***** Private Bytes: " + megaPrivateBytes.ToString() + " MB.");
         ctr1.Dispose();
+        int[] collections = this.CollectionCounts();
 
-        // In dotNet 6, looking up those Perf Counter creates: 
-        // Exception thrown: 'System.InvalidOperationException' in System.Diagnostics.PerformanceCounter.dll
-        // Was working nicely in 4.xxx
-        // 
-        // var ctr2 = new PerformanceCounter(".NET CLR Memory", "# Gen 0 Collections", processName);
-        // And a bunch more of them... 
+        string rightNow = DateTime.Now.ToLocalTime().ToLongTimeString();
+        int megaPrivateBytes = (int)((privateBytes + 512 * 1024) / (1024 * 1024));
+        string part1 = "***** Memory Snapshot: " + comment + "  at: " + rightNow;
+        string part2 = "Private Bytes:  " + megaPrivateBytes.ToString() + " MB.";
+        string part3 = string.Format(" Gen. 0: {0} - 1: {1} - 2: {2}", collections[0], collections[1], collections[2]);
+        this.logger.Info(part1 + "  -  " + part2 + "  -  " + part3);
     }
 }

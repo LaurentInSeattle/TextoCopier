@@ -46,7 +46,7 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
     {
         this.Logger.Info("Clicked on Edit!");
         IMessenger messenger = ApplicationBase.GetRequiredService<IMessenger>();
-        messenger.Publish(new ViewActivationMessage(ViewActivationMessage.StaticView.EditTemplate, this.template));
+        messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.EditTemplate, this.template));
     }
 
     private void OnDelete(object? _)
@@ -70,6 +70,7 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
             {
                 this.Logger.Warning(message);
                 IToaster toaster = ApplicationBase.GetRequiredService<IToaster>();
+                message = "Could not open the provided link in the dafault browser."; 
                 toaster.Show("404 !", message, 12_000, InformationLevel.Warning);
             }
         }

@@ -11,6 +11,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
     private readonly IDialogService dialogService;
     private readonly IToaster toaster;
     private readonly IMessenger messenger;
+    private readonly IProfiler profiler;
 
     public ShellViewModel(TemplatesModel templatesModel)
     {
@@ -18,6 +19,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.dialogService = ApplicationBase.GetRequiredService<IDialogService>();
         this.toaster = ApplicationBase.GetRequiredService<IToaster>();
         this.messenger = ApplicationBase.GetRequiredService<IMessenger>();
+        this.profiler = ApplicationBase.GetRequiredService<IProfiler>();
         this.templatesModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
 
         this.Groups = [];
@@ -46,7 +48,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         // Create all statics views and bind them 
         ShellViewModel.SetupWorkflow();
         this.BindGroupIcons();
-        this.OnViewActivation(StaticView.Group);
+        this.OnViewActivation(ActivatedView.Group);
 
         // Ready 
         this.toaster.Host = this.View.ToasterHost;
@@ -78,55 +80,55 @@ public sealed class ShellViewModel : Bindable<ShellView>
     }
 
     private void OnViewActivation(ViewActivationMessage message)
-        => this.OnViewActivation(message.View, message.Parameter);
+        => this.OnViewActivation(message.View, message.ActivationParameter);
 
-    private void OnViewActivation(StaticView staticView, object? parameter = null)
+    private void OnViewActivation(ActivatedView staticView, object? parameter = null)
     {
-        if (staticView == StaticView.GoBack)
+        if (staticView == ActivatedView.GoBack)
         {
-            staticView = StaticView.Group;
+            staticView = ActivatedView.Group;
         }
 
-        this.DeleteGroupIsVisible = staticView == StaticView.Group;
-        this.NewGroupIsVisible = staticView != StaticView.NewGroup;
+        this.DeleteGroupIsVisible = staticView == ActivatedView.Group;
+        this.NewGroupIsVisible = staticView != ActivatedView.NewGroup;
 
         switch (staticView)
         {
             default:
-            case StaticView.Group:
+            case ActivatedView.Group:
                 this.Activate<GroupViewModel, GroupView>(null);
                 break;
 
-            case StaticView.NewGroup:
+            case ActivatedView.NewGroup:
                 this.Activate<NewEditGroupViewModel, NewEditGroupView>(null);
                 break;
 
-            case StaticView.EditGroup:
+            case ActivatedView.EditGroup:
                 this.Activate<NewEditGroupViewModel, NewEditGroupView>(this.templatesModel.SelectedGroup);
                 break;
 
-            case StaticView.Help:
+            case ActivatedView.Help:
                 this.Activate<HelpViewModel, HelpView>(null);
                 break;
 
-            case StaticView.Settings:
+            case ActivatedView.Settings:
                 this.Activate<SettingsViewModel, SettingsView>(null);
                 break;
 
-            case StaticView.EditTemplate:
-            case StaticView.NewTemplate:
+            case ActivatedView.EditTemplate:
+            case ActivatedView.NewTemplate:
                 this.Activate<NewEditTemplateViewModel, NewEditTemplateView>(parameter);
                 break;
         }
     }
 
-    private void OnSettings(object? _) => this.OnViewActivation(StaticView.Settings);
+    private void OnSettings(object? _) => this.OnViewActivation(ActivatedView.Settings);
 
-    private void OnAbout(object? _) => this.OnViewActivation(StaticView.Help);
+    private void OnAbout(object? _) => this.OnViewActivation(ActivatedView.Help);
 
-    private void OnNewGroup(object? _) => this.OnViewActivation(StaticView.NewGroup);
+    private void OnNewGroup(object? _) => this.OnViewActivation(ActivatedView.NewGroup);
 
-    private void OnEditGroup(object? _) => this.OnViewActivation(StaticView.EditGroup);
+    private void OnEditGroup(object? _) => this.OnViewActivation(ActivatedView.EditGroup);
 
     private void OnExit(object? _) { }
 
@@ -199,7 +201,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
             this.dialogService.Dismiss();
         } 
 
-        var currentView = this.View.ShellViewContent.Content;
+        object? currentView = this.View.ShellViewContent.Content;
         if (currentView is Control control && control.DataContext is Bindable currentViewModel)
         {
             currentViewModel.Deactivate();
@@ -208,26 +210,8 @@ public sealed class ShellViewModel : Bindable<ShellView>
         var newViewModel = App.GetRequiredService<TViewModel>();
         newViewModel.Activate(activationParameters);
         this.View.ShellViewContent.Content = newViewModel.View;
-    }
 
-    private void UpdateGroupIconsSelection()
-    {
-        //this.Logger.Debug("Update group selection");
-        //var selectedGroup = this.templatesModel.SelectedGroup;
-        //if (selectedGroup is null)
-        //{
-        //    return; 
-        //}
-
-        //var newSelection = 
-        //    (from groupVm in this.Groups where groupVm.IconText == selectedGroup.Name select groupVm)
-        //    .FirstOrDefault();
-        //if ( newSelection is null)
-        //{
-        //    return;
-        //}
-
-        //newSelection.IsSelected = true; 
+        this.profiler.MemorySnapshot(newViewModel.View.GetType().Name + " Activated");
     }
 
     private void BindGroupIcons()
@@ -250,8 +234,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
             foreach (var group in this.templatesModel.Groups)
             {
                 bool selected = selectedGroup == group;
-                GroupIconViewModel groupIconViewModel = new GroupIconViewModel(group, selectionGroup, selected);
-                list.Add(groupIconViewModel);
+                list.Add(new GroupIconViewModel(group, selectionGroup, selected));
             }
 
             this.Groups = list;
@@ -265,7 +248,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
     private static void SetupWorkflow()
     {
-        void CreateAndBind<TViewModel, TControl>()
+       static void CreateAndBind<TViewModel, TControl>()
             where TViewModel : Bindable<TControl>
             where TControl : Control, new()
         {

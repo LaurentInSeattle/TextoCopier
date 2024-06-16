@@ -159,6 +159,7 @@ emoji_surprise_regular
     public TemplatesModel() : base ( null, null)
     {
         // Empty CTOR required for deserialization 
+        this.ShouldAutoSave = false;
     }
 #pragma warning restore CS8625 
 #pragma warning restore CS8618
@@ -169,12 +170,19 @@ emoji_surprise_regular
         // Do not inject the FileManagerModel instance: a parameter-less ctor is required for Deserialization 
         // ???? 
         this.fileManager = fileManager;
+        this.ShouldAutoSave = true;
     }
 
     public override async Task Initialize() => await this.Load();
 
-    public override Task Shutdown() => Task.CompletedTask;
-
+    public override async Task Shutdown()
+    {
+        if ( this.IsDirty)
+        {
+            await this.Save();  
+        }
+    }
+    
     public List<Group> Groups { get; set; } = [];
 
     public Group? SelectedGroup { get => this.Get<Group?>(); set => this.Set(value); }
@@ -194,8 +202,15 @@ emoji_surprise_regular
 
     public override Task Save()
     {
-        this.fileManager.Save(Area.User, Kind.Json, TemplatesModel.TemplatesModelFilename, this);
-        base.Save();
+        // Null check is needed !
+        // If the File Manager is null we are currently loading the model and activating properties on a second instance 
+        // causing dirtyness, and in such case we must avoid the null crash and anyway there is no need to save anything.
+        if (this.fileManager is not null)
+        {
+            this.fileManager.Save(Area.User, Kind.Json, TemplatesModel.TemplatesModelFilename, this);
+            base.Save();
+        } 
+
         return Task.CompletedTask;
     }
 

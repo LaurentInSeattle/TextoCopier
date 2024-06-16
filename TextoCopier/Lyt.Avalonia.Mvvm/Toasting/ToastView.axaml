@@ -35,7 +35,7 @@
 		<Border
 			x:Name="outerBorder"
 			Grid.ColumnSpan="999" Grid.RowSpan="999"
-			Height="64" MaxHeight="64"
+			Height="64" MaxHeight=""
 			Background="Transparent"
 			BorderBrush="{StaticResource LightAqua_1_040}"
 			BorderThickness="1"

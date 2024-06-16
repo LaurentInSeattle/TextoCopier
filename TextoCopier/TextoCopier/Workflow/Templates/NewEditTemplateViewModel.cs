@@ -53,7 +53,7 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
     }
 
     private void OnClose(object? _)
-        => this.messenger.Publish(new ViewActivationMessage(ViewActivationMessage.StaticView.GoBack));
+        => this.messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.GoBack));
 
     public void OnEditing()
     {

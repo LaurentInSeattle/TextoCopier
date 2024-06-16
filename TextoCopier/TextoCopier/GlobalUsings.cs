@@ -33,6 +33,7 @@ global using Lyt.Avalonia.Interfaces;
 global using Lyt.Avalonia.Interfaces.Logger;
 global using Lyt.Avalonia.Interfaces.Messenger;
 global using Lyt.Avalonia.Interfaces.Model;
+global using Lyt.Avalonia.Interfaces.Profiler;
 global using Lyt.Avalonia.Interfaces.UserInterface;
 
 global using Lyt.Avalonia.Controls;
