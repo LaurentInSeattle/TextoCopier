@@ -1,62 +1,65 @@
-﻿
-namespace Lyt.TextoCopier.Models;
+﻿namespace Lyt.Avalonia.Localizer;
 
 public sealed class LocalizerModel : ModelBase
 {
-    public LocalizerModel(IMessenger messenger, ILogger logger) : base(messenger, logger) { } 
-
-    // TODO : Autopopulate this 
-    // LATER : Failing to read existing files 
-    // CONSIDER : Make that parametrizable 
-    public HashSet<string> Languages = ["en-US", "fr-FR", "it-IT"];
-
-    // TODO: Make that parametrizable 
-    public const string AssemblyName = "TextoCopier";
-    public const string AssetsFolder = "Assets";
-    public const string LanguagesSubFolder = "Languages";
-    public const string LanguagesFilePrefix = "Lang_";
-    public const string LanguagesFileExtension = ".axaml";
-
+    private readonly global::Avalonia.Application application;
     private string? currentLanguage;
     private ResourceInclude? currentLanguageResource;
+    private LocalizerConfiguration configuration;
 
-    public override Task Initialize()
+    public LocalizerModel(
+        IApplicationBase application, IMessenger messenger, ILogger logger) : base(messenger, logger)
     {
-        this.DetectAvailableLanguages();
+        if (application is not global::Avalonia.Application avaloniaApplication)
+        {
+            string msg = "No valid application object";
+            this.Logger.Error(msg);
+            throw new Exception(msg);
+        }
+
+        this.application = avaloniaApplication;
+        this.configuration = new LocalizerConfiguration();
+    }
+
+    public override Task Initialize() => Task.CompletedTask;
+
+    public override Task Configure(object? modelConfiguration)
+    {
+        if (modelConfiguration is not LocalizerConfiguration configuration)
+        {
+            throw new ArgumentNullException(nameof(modelConfiguration));
+        }
+
+        if (configuration.IsLikelyValid)
+        {
+            this.configuration = configuration;
+            this.DetectAvailableLanguages();
+        }
+        else
+        {
+            this.Logger.Fatal("Invalid configuration object");
+        } 
+
         return Task.CompletedTask;
     }
 
     public bool DetectAvailableLanguages()
     {
-        var app = App.Current;
-        if (app is null)
-        {
-            this.Logger.Warning("No application object");
-            return false;
-        }
-
         // Returns nothing :(   Possible bug ? 
-        string uriString = string.Format("avares://{0}/{1}/{2}", AssemblyName, AssetsFolder, LanguagesSubFolder);
+        string uriString = this.configuration.ResourceFolderUriString();
         _ = AssetLoader.GetAssets(new Uri(uriString), null).ToList();
         return false;
     }
 
     public bool SelectLanguage(string targetLanguage)
     {
-        var app = App.Current;
-        if (app is null)
-        {
-            this.Logger.Warning("No application object");
-            return false;
-        }
-
-        if (!this.Languages.Contains(targetLanguage))
+        if (!this.configuration.Languages.Contains(targetLanguage))
         {
             this.Logger.Error(targetLanguage + "is not a supported language.");
             return false;
         }
 
-        var mergedDictionaries = app.Resources.MergedDictionaries.ToList();
+        var mergedDictionaries = this.application.Resources.MergedDictionaries.ToList();
         if (mergedDictionaries is null)
         {
             this.Logger.Warning("Failed get the MergedDictionaries");
@@ -65,7 +68,7 @@ public sealed class LocalizerModel : ModelBase
 
         var translations =
             mergedDictionaries.OfType<ResourceInclude>()
-            .FirstOrDefault(x => x.Source?.OriginalString?.Contains(LanguagesSubFolder) ?? false);
+            .FirstOrDefault(x => x.Source?.OriginalString?.Contains(this.configuration.LanguagesSubFolder) ?? false);
         if (translations is not null)
         {
             this.Logger.Info("Removed current language");
@@ -78,13 +81,10 @@ public sealed class LocalizerModel : ModelBase
 
         try
         {
-            string uriString = 
-                string.Format(
-                    "avares://{0}/{1}/{2}/{3}{4}{5}", 
-                    AssemblyName, AssetsFolder, LanguagesSubFolder, LanguagesFilePrefix, targetLanguage, LanguagesFileExtension);
+            string uriString = this.configuration.ResourceFileUriString(targetLanguage);
             var uri = new Uri(uriString);
             var newLanguage = new ResourceInclude(uri) { Source = uri };
-            app.Resources.MergedDictionaries.Add(newLanguage);
+            this.application.Resources.MergedDictionaries.Add(newLanguage);
             this.currentLanguageResource = newLanguage;
             this.currentLanguage = targetLanguage;
             this.Logger.Info("Added new language: " + targetLanguage);
@@ -99,20 +99,13 @@ public sealed class LocalizerModel : ModelBase
 
     public string Lookup(string localizationKey)
     {
-        var app = App.Current;
-        if (app is null)
-        {
-            this.Logger.Warning("No application object");
-            return string.Empty;
-        }
-
         if (string.IsNullOrWhiteSpace(this.currentLanguage) || this.currentLanguageResource is null)
         {
             this.Logger.Warning("No language loaded");
             return string.Empty;
         }
 
-        if (this.currentLanguageResource.TryGetResource(localizationKey, app.ActualThemeVariant, out object? resource))
+        if (this.currentLanguageResource.TryGetResource(localizationKey, this.application.ActualThemeVariant, out object? resource))
         {
             if (resource is string localized)
             {

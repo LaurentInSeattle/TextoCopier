@@ -103,7 +103,6 @@ public sealed class FileManagerModel : ModelBase, IModel
         string configurationFolder = Path.Combine(subDirectory, FileManagerModel.ConfigurationFolder);
         this.CreateFolderIfNeeded(configurationFolder);
         this.ApplicationConfigurationFolderPath = configurationFolder;
-        this.UpdateConfiguration();
 
         string logsFolder = Path.Combine(subDirectory, FileManagerModel.LogsFolder);
         this.CreateFolderIfNeeded(logsFolder);
@@ -202,8 +201,6 @@ public sealed class FileManagerModel : ModelBase, IModel
         });
     }
 
-    private void UpdateConfiguration() { /* LATER */ }
-
     public async Task CleanupOldFiles(TimeSpan since, string path, string filter)
     {
         if (!Directory.Exists(path))
@@ -284,7 +281,7 @@ public sealed class FileManagerModel : ModelBase, IModel
         catch (Exception ex)
         {
             string msg = "Failed to deserialize " + typeof(T).FullName + "\n" + ex.ToString();
-            this.Logger.Error(msg);
+            this.Logger.Fatal(msg);
             throw new Exception(msg, ex);
         }
     }
@@ -297,7 +294,7 @@ public sealed class FileManagerModel : ModelBase, IModel
             Area.Settings => this.ApplicationUserFolderPath,
             Area.User => this.ApplicationUserFolderPath,
             Area.Configuration => this.ApplicationConfigurationFolderPath,
-            _ => throw new ArgumentException(nameof(area)),
+            _ => throw new ArgumentException("Unknown area", nameof(area)),
         };
     }
 
@@ -308,7 +305,7 @@ public sealed class FileManagerModel : ModelBase, IModel
             Kind.Json => JsonExtension,
             Kind.Text => TextExtension,
             Kind.Binary => BinaryExtension,
-            _ => throw new ArgumentException(nameof(kind)),
+            _ => throw new ArgumentException("Unknown kind", nameof(kind)),
         };
     }
 
@@ -362,7 +359,7 @@ public sealed class FileManagerModel : ModelBase, IModel
         catch (Exception ex)
         {
             string msg = "Failed to load " + area.ToString() + " - " + name + kind.ToString();
-            this.Logger.Error(msg);
+            this.Logger.Fatal(msg);
             throw new Exception(msg, ex);
         }
     }
@@ -400,9 +397,8 @@ public sealed class FileManagerModel : ModelBase, IModel
         catch (Exception ex)
         {
             string msg = "Failed to save for " + area.ToString() + " - " + name + kind.ToString();
-            this.Logger.Error(msg);
+            this.Logger.Fatal(msg);
             throw new Exception(msg, ex);
         }
     }
 }
-

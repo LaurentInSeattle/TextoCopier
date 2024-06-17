@@ -1,4 +1,6 @@
 
+using Microsoft.Extensions.Logging.Abstractions;
+
 namespace Lyt.Avalonia.Controls.Logging;
 
 public partial class LogViewerWindow : Window, ILogger, INotifyPropertyChanged
@@ -9,11 +11,11 @@ public partial class LogViewerWindow : Window, ILogger, INotifyPropertyChanged
     private readonly SolidColorBrush greenBrushInfo;
     private readonly SolidColorBrush orangeBrush;
     private readonly SolidColorBrush redBrush;
-    private ObservableCollection<LogEntry> observableLogEntries; 
+    private ObservableCollection<LogEntry> observableLogEntries;
 
     private List<LogEntry> AllLogEntries { get; set; }
     private bool showingAll;
-    
+
     public LogViewerWindow()
     {
         this.InitializeComponent();
@@ -24,12 +26,12 @@ public partial class LogViewerWindow : Window, ILogger, INotifyPropertyChanged
         this.greenBrushDebug = new SolidColorBrush(Color.FromRgb(0x9E, 0xD9, 0xFF));
         this.greenBrushInfo = new SolidColorBrush(Color.FromRgb(0x40, 0xE9, 0xAE));
         this.orangeBrush = new SolidColorBrush(Colors.DarkOrange);
-        this.redBrush= new SolidColorBrush(Colors.Orchid);
+        this.redBrush = new SolidColorBrush(Colors.Orchid);
     }
 
-    public ObservableCollection<LogEntry> ObservableLogEntries 
+    public ObservableCollection<LogEntry> ObservableLogEntries
     {
-        get => this.observableLogEntries;  
+        get => this.observableLogEntries;
         set
         {
             this.observableLogEntries = value;
@@ -38,40 +40,22 @@ public partial class LogViewerWindow : Window, ILogger, INotifyPropertyChanged
     }
 
     public void Debug(string message) => this.Log(LogLevel.Debug, message);
-    
-    public void Info(string message)  => this.Log(LogLevel.Info, message);
+
+    public void Info(string message) => this.Log(LogLevel.Info, message);
 
     public void Warning(string message) => this.Log(LogLevel.Warning, message);
 
     public void Error(string message) => this.Log(LogLevel.Error, message);
 
-    private void Log(LogLevel logLevel, string message)
+    public void Fatal(string message)
     {
-        string time = DateTime.Now.ToLongTimeString();
-        message = string.Concat(time, " - ", message);
-        SolidColorBrush brush = this.redBrush;
-        if (logLevel == LogLevel.Debug)
-        {
-            brush = this.greenBrushDebug;
-            System.Diagnostics.Debug.WriteLine(message);
-        }
-        else if (logLevel == LogLevel.Info)
-        {
-            brush = this.greenBrushInfo;
-            Trace.TraceInformation(message);
-        }
-        else if (logLevel == LogLevel.Warning) 
-        {
-            brush = this.orangeBrush;
-            Trace.TraceWarning(message);
-        }
-        else
-        {
-            Trace.TraceError(message);
-        }
-
-        this.Update(new LogEntry { LogLevel = logLevel, Brush = brush, Message = message });
+        this.Error(message);
+        if (Debugger.IsAttached) { Debugger.Break(); }
+        throw new Exception(message);
     }
+
+    private void Log(LogLevel logLevel, string message)
+        => Dispatcher.UIThread.Post(() => { this.Update(logLevel, message); }, DispatcherPriority.Background);
 
     private void OnShowButtonClick(object sender, RoutedEventArgs e)
     {
@@ -91,25 +75,46 @@ public partial class LogViewerWindow : Window, ILogger, INotifyPropertyChanged
         }
     }
 
-    private void Update(LogEntry logEntry)
-        => Dispatcher.UIThread.Post(
-            () =>
-            {
-                this.AllLogEntries.Add(logEntry);
-                if (this.showingAll)
-                {
-                    this.ObservableLogEntries.Add(logEntry);
-                }
-                else
-                {
-                    if ((logEntry.LogLevel == LogLevel.Error) || (logEntry.LogLevel == LogLevel.Warning))
-                    {
-                        this.ObservableLogEntries.Add(logEntry);
-                    }
-                }
+    private void Update(LogLevel logLevel, string message)
+    {
+        string time = DateTime.Now.ToLongTimeString();
+        message = string.Concat(time, " - ", message);
+        SolidColorBrush brush = this.redBrush;
+        if (logLevel == LogLevel.Debug)
+        {
+            brush = this.greenBrushDebug;
+            System.Diagnostics.Debug.WriteLine(message);
+        }
+        else if (logLevel == LogLevel.Info)
+        {
+            brush = this.greenBrushInfo;
+            Trace.TraceInformation(message);
+        }
+        else if (logLevel == LogLevel.Warning)
+        {
+            brush = this.orangeBrush;
+            Trace.TraceWarning(message);
+        }
+        else
+        {
+            Trace.TraceError(message);
+        }
 
-                this.itemsControl.ItemsSource = this.ObservableLogEntries;
-                this.itemsControl.ScrollIntoView(this.ObservableLogEntries.Count-1);
-            },
-            DispatcherPriority.Background);
+        var logEntry = new LogEntry { LogLevel = logLevel, Brush = brush, Message = message };
+        this.AllLogEntries.Add(logEntry);
+        if (this.showingAll)
+        {
+            this.ObservableLogEntries.Add(logEntry);
+        }
+        else
+        {
+            if ((logEntry.LogLevel == LogLevel.Error) || (logEntry.LogLevel == LogLevel.Warning))
+            {
+                this.ObservableLogEntries.Add(logEntry);
+            }
+        }
+
+        this.itemsControl.ItemsSource = this.ObservableLogEntries;
+        this.itemsControl.ScrollIntoView(this.ObservableLogEntries.Count - 1);
+    }
 }

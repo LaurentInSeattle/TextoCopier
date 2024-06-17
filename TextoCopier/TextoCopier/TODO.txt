@@ -1,7 +1,14 @@
-﻿- LOcalizer in separate assembly 
+﻿MUST DO
 - Add Icons to Action buttons 
-- Subtitle for new template 
+- Edit Group Title 
 
+NICE TO HAVE 
+- Reorder templates using drag n drop 
+- Group Icon selection 
+- Data file encryption ? 
+- Logs to files
+
+MUST DO
 - Localize: 
 
     public const string GroupNameIsBlank = "TemplatesModel.GroupNameIsBlank"; // "Group name cannot be left empty or blank.";
@@ -126,3 +133,16 @@
 
                 message = "Could not open the provided link in the dafault browser."; 
                 toaster.Show("404 !", message, 12_000, InformationLevel.Warning);
+
+
+            this.GroupDescription = "To be changed in " + groupName;  
+        }
+        else
+        {
+            this.EditedTemplate = null;
+            this.Name = string.Empty;
+            this.Value = string.Empty;
+            this.IsHidden = false;
+            this.IsWebLink = false;
+            this.TemplateTitle = this.localizer.Lookup("Group.NewTemplateLong"); ;
+            this.GroupDescription = "To be added to " + groupName;

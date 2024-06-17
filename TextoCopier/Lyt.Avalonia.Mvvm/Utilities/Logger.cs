@@ -9,4 +9,11 @@ public sealed class Logger : ILogger
     public void Warning(string message) => Trace.TraceWarning(message);
 
     public void Error(string message) => Trace.TraceError(message);
+
+    public void Fatal(string message)
+    {
+        Trace.TraceError(message);
+        if (Debugger.IsAttached) { Debugger.Break(); }
+        throw new Exception(message);
+    }
 }

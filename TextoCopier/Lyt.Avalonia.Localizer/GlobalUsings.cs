@@ -12,7 +12,6 @@ global using System.Threading.Tasks;
 global using System.Windows.Input;
 
 global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
 
 global using Avalonia;
 global using Avalonia.Controls;
@@ -36,25 +35,4 @@ global using Lyt.Avalonia.Interfaces.Model;
 global using Lyt.Avalonia.Interfaces.Profiler;
 global using Lyt.Avalonia.Interfaces.UserInterface;
 
-global using Lyt.Avalonia.Controls;
-global using Lyt.Avalonia.Controls.Glyphs;
-global using Lyt.Avalonia.Controls.Logging;
-global using Lyt.Avalonia.Controls.Toasting;
-
-global using Lyt.Avalonia.Mvvm;
-global using Lyt.Avalonia.Mvvm.Core;
-global using Lyt.Avalonia.Mvvm.Dialogs;
-global using Lyt.Avalonia.Mvvm.Messenger;
-global using Lyt.Avalonia.Mvvm.Utilities;
-
-global using Lyt.Avalonia.Localizer;
 global using Lyt.Avalonia.Model;
-global using Lyt.Avalonia.Persistence;
-
-global using Lyt.TextoCopier.Messaging;
-global using Lyt.TextoCopier.Model;
-global using Lyt.TextoCopier.Shell;
-global using Lyt.TextoCopier.Utilities;
-global using Lyt.TextoCopier.Workflow;
-
-

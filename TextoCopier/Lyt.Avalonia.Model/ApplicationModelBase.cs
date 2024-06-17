@@ -23,17 +23,20 @@ public class ApplicationModelBase(IProfiler profiler, ILogger logger, IApplicati
             throw new ApplicationException("Failed to initialize models.", ex);
         }
 
-        try
+        _ = Task.Run(() =>
         {
-            this.profiler.MemorySnapshot("Software initialization complete");
-        }
-        catch (Exception ex)
-        {
-            // Should never fail here
-            if (Debugger.IsAttached) { Debugger.Break(); }
-            this.logger.Error(ex.ToString());
-            throw new ApplicationException("Failed to cleanup on startup.", ex);
-        }
+            try
+            {
+                this.profiler.MemorySnapshot("Software initialization complete");
+            }
+            catch (Exception ex)
+            {
+                // Should never fail here
+                if (Debugger.IsAttached) { Debugger.Break(); }
+                this.logger.Error(ex.ToString());
+                throw new ApplicationException("Failed to cleanup on startup.", ex);
+            }
+        }); 
     }
 
     public async Task Shutdown()

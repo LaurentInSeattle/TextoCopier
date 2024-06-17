@@ -49,6 +49,14 @@ public partial class App : ApplicationBase
         // This needs to complete before all models are initialized.
         var fileManager = App.GetRequiredService<FileManagerModel>();
         await fileManager.Configure(new FileManagerConfiguration(App.Organization, App.Application, App.RootNamespace));
+        var localizer = App.GetRequiredService<LocalizerModel>();
+        await localizer.Configure(
+            new LocalizerConfiguration
+            {
+                AssemblyName = App.Application,
+                Languages = ["en-US", "fr-FR", "it-IT"],
+                // Use default for all other config parameters 
+            });
     }
 
     // Why does it need to be there ??? 
