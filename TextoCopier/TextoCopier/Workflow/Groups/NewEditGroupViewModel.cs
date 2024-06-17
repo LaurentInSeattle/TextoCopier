@@ -3,10 +3,14 @@
 public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
 {
     private readonly IMessenger messenger;
+    private readonly LocalizerModel localizer;
+    private readonly TemplatesModel templatesModel; 
 
-    public NewEditGroupViewModel()
+    public NewEditGroupViewModel(IMessenger messenger, LocalizerModel localizer, TemplatesModel templatesModel)
     {
-        this.messenger = ApplicationBase.GetRequiredService<IMessenger>();
+        this.messenger = messenger;
+        this.localizer = localizer;
+        this.templatesModel = templatesModel;
         this.CloseCommand = new Command(this.OnClose);
         this.SaveCommand = new Command(this.OnSave);
     }
@@ -24,6 +28,7 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
             this.Name = group.Name;
             this.Description = group.Description;
             this.Icon = group.Icon;
+            this.Title = this.Name;  
         }
         else
         {
@@ -31,6 +36,8 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
             this.Name = string.Empty;
             this.Description = string.Empty;
             this.Icon = "home";
+            this.Title = this.localizer.Lookup("Shell.NewGroupLong"); 
+
         }
 
         this.OnEditing();
@@ -63,15 +70,14 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
 
     private bool Validate(out string message)
     {
-        var model = ApplicationBase.GetRequiredService<TemplatesModel>();
         if (this.IsEditing)
         {
             // if IsEditing, then this.EditedGroup is not null
-            return model.ValidateGroupForEdit(this.Name, this.EditedGroup!.Name, this.Description, this.Icon, out message);
+            return this.templatesModel.ValidateGroupForEdit(this.Name, this.EditedGroup!.Name, this.Description, this.Icon, out message);
         }
         else
         {
-            return model.ValidateGroupForAdd(this.Name, this.Description, this.Icon, out message);
+            return this.templatesModel.ValidateGroupForAdd(this.Name, this.Description, this.Icon, out message);
         }
     }
 
@@ -87,18 +93,17 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
         string iconName = this.Icon.Trim();
 
         // Save to model 
-        var model = ApplicationBase.GetRequiredService<TemplatesModel>();
         if (this.IsEditing)
         {
             // if IsEditing, then this.EditedGroup is not null
-            if (model.EditGroup(groupName, this.EditedGroup!.Name, groupDescription, iconName, out message))
+            if (this.templatesModel.EditGroup(groupName, this.EditedGroup!.Name, groupDescription, iconName, out message))
             {
                 return true;
             }
         }
         else
         {
-            if (model.AddGroup(groupName, groupDescription, iconName, out message))
+            if (this.templatesModel.AddGroup(groupName, groupDescription, iconName, out message))
             {
                 return true;
             }
@@ -106,6 +111,8 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
 
         return false;
     }
+
+    public string Title { get => this.Get<string>()!; set => this.Set(value); }
 
     public string Name { get => this.Get<string>()!; set => this.Set(value); }
 

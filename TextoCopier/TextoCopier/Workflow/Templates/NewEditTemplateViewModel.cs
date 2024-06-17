@@ -4,11 +4,13 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
 {
     private readonly IMessenger messenger;
     private readonly LocalizerModel localizer;
+    private readonly TemplatesModel templatesModel; 
 
-    public NewEditTemplateViewModel()
+    public NewEditTemplateViewModel(IMessenger messenger, LocalizerModel localizer, TemplatesModel templatesModel)
     {
-        this.messenger = ApplicationBase.GetRequiredService<IMessenger>();
-        this.localizer = ApplicationBase.GetRequiredService<LocalizerModel>();
+        this.messenger = messenger; 
+        this.localizer = localizer;
+        this.templatesModel = templatesModel;
         this.CloseCommand = new Command(this.OnClose);
         this.SaveCommand = new Command(this.OnSave);
         this.SelectedGroup = new();
@@ -22,8 +24,7 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
 
     public override void Activate(object? activationParameter)
     {
-        var model = ApplicationBase.GetRequiredService<TemplatesModel>();
-        if (model.SelectedGroup is null)
+        if (this.templatesModel.SelectedGroup is null)
         {
             string message = TemplatesModel.NoSuchGroup;
             this.Logger.Info("model.SelectedGroup is null: " + message);
@@ -31,10 +32,8 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
         }
         else
         {
-            this.SelectedGroup = model.SelectedGroup; 
+            this.SelectedGroup = this.templatesModel.SelectedGroup; 
         }
-
-        // 				Text="{DynamicResource Group.NewTemplateLong}"
 
         string groupName = this.SelectedGroup.Name;
         if (activationParameter is Template template)
@@ -88,16 +87,15 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
 
     private bool Validate(out string message)
     {
-        var model = ApplicationBase.GetRequiredService<TemplatesModel>();
         string groupName = this.SelectedGroup.Name; 
         if (this.IsEditing)
         {
             // if IsEditing, then this.EditedGroup is not null
-            return model.ValidateTemplateForEdit(groupName, this.Name, this.EditedTemplate!.Name, this.Value, out message);
+            return this.templatesModel.ValidateTemplateForEdit(groupName, this.Name, this.EditedTemplate!.Name, this.Value, out message);
         }
         else
         {
-            return model.ValidateTemplateForAdd(groupName, this.Name, this.Value, out message);
+            return this.templatesModel.ValidateTemplateForAdd(groupName, this.Name, this.Value, out message);
         }
     }
 
@@ -109,7 +107,6 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
         }
 
         // Save to model 
-        var model = ApplicationBase.GetRequiredService<TemplatesModel>();
         string groupName = this.SelectedGroup.Name;
         string newName = this.Name.Trim();
         string value = this.Value.Trim(); 
@@ -117,14 +114,14 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
         {
             // if IsEditing, then this.EditedTemplate is not null
             string oldName = this.EditedTemplate!.Name.Trim();
-            if (model.EditTemplate(groupName, newName, oldName, value, this.IsWebLink, this.IsHidden, out message))
+            if (this.templatesModel.EditTemplate(groupName, newName, oldName, value, this.IsWebLink, this.IsHidden, out message))
             {
                 return true;
             }
         }
         else
         {
-            if (model.AddTemplate(groupName, newName, value, this.IsWebLink, this.IsHidden, out message))
+            if (this.templatesModel.AddTemplate(groupName, newName, value, this.IsWebLink, this.IsHidden, out message))
             {
                 return true;
             }
