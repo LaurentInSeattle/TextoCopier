@@ -3,7 +3,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
 	>
-	
+
+	<!-- é è ê -->
+	<!-- à ò -->
+
+
 	<system:String x:Key="Shell.AppName">Testo Copiatrice</system:String>
 	<system:String x:Key="Shell.About">Altro su...</system:String>
 	<system:String x:Key="Shell.Groups">Gruppi</system:String>
@@ -44,5 +48,12 @@
 	<system:String x:Key="TemplatesModel.GroupNameIsTooLong">Il nome del gruppo è troppo lungo.</system:String>
 	<system:String x:Key="TemplatesModel.DescriptionIsTooLong">La descrizione del gruppo è troppo lunga.</system:String>
 	<system:String x:Key="TemplatesModel.IconNotAvailable">Impossibile trovare questa icona.</system:String>
+
+	<system:String x:Key="TemplatesModel.TemplateAlreadyExists">Esiste già un modello di testo con questo nome.</system:String>
+	<system:String x:Key="TemplatesModel.NoSuchTemplate">Questo testo modello non esiste.</system:String>
+	<system:String x:Key="TemplatesModel.TemplateNameIsBlank">Il nome del testo del modello non può essere lasciato vuoto.</system:String>
+	<system:String x:Key="TemplatesModel.TemplateValueIsBlank">Il testo in questo modello non può essere lasciato vuoto.</system:String>
+	<system:String x:Key="TemplatesModel.TemplateNameIsTooLong">Il nome di questo modello è troppo lungo.</system:String>
+	<system:String x:Key="TemplatesModel.TemplateValueIsTooLong">Il testo in questo modello è troppo lungo.</system:String>
 
 </ResourceDictionary>

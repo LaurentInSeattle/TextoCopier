@@ -14,6 +14,8 @@ public class ApplicationModelBase(IProfiler profiler, ILogger logger, IApplicati
             {
                 await model.Initialize();
             }
+
+            this.logger.Info("Software initialization complete");
         }
         catch (Exception ex)
         {
@@ -23,13 +25,13 @@ public class ApplicationModelBase(IProfiler profiler, ILogger logger, IApplicati
             throw new ApplicationException("Failed to initialize models.", ex);
         }
 
-        _ = Task.Run(() =>
+        _ = Task.Run(async () =>
         {
             try
             {
                 // Delay until the app has fully started up before freezing it with a collection 
-                Task.Delay(2000);
-                this.profiler.MemorySnapshot("Software initialization complete");
+                await Task.Delay(5_000);
+                this.profiler.MemorySnapshot("Initial Memory Snapshot");
             }
             catch (Exception ex)
             {

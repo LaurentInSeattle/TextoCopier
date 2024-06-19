@@ -89,7 +89,7 @@ public sealed class Profiler(ILogger logger) : IProfiler
     [SupportedOSPlatform("windows")]
     private async void WindowsMemorySnapshot(string comment)
     {
-        await this.FullGcCollect(50);
+        await this.FullGcCollect(0);
         var currentProcess = Process.GetCurrentProcess();
         string processName = currentProcess.ProcessName;
         var ctr1 = new PerformanceCounter("Process", "Private Bytes", processName);

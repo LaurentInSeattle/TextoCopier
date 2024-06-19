@@ -1,6 +1,3 @@
-
-using Microsoft.Extensions.Logging.Abstractions;
-
 namespace Lyt.Avalonia.Controls.Logging;
 
 public partial class LogViewerWindow : Window, ILogger, INotifyPropertyChanged

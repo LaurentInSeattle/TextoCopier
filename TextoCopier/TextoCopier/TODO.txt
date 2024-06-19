@@ -10,14 +10,6 @@ NICE TO HAVE
 MUST DO
 - Localize: 
 
-    public const string TemplateAlreadyExists = "TemplatesModel.TemplateAlreadyExists";
-    public const string NoSuchTemplate = "TemplatesModel.NoSuchTemplate";
-
-    public const string TemplateNameIsBlank = "TemplatesModel.TemplateNameIsBlank";
-    public const string TemplateValueIsBlank = "TemplatesModel.TemplateValueIsBlank";
-    public const string TemplateNameIsTooLong = "TemplatesModel.TemplateNameIsTooLong";
-    public const string TemplateValueIsTooLong = "TemplatesModel.TemplateValueIsTooLong";
-
 			<TextBlock
 				Grid.Row="0"
 				VerticalAlignment="Center" HorizontalAlignment="Stretch"

@@ -43,16 +43,11 @@
 	<system:String x:Key="TemplatesModel.DescriptionIsTooLong">The group description is too long.</system:String>
 	<system:String x:Key="TemplatesModel.IconNotAvailable">This icon cannot be found.</system:String>
 
-	<!--
+	<system:String x:Key="TemplatesModel.TemplateAlreadyExists">A template with this name already exists.</system:String>
+    <system:String x:Key="TemplatesModel.NoSuchTemplate">No such template.</system:String>
+    <system:String x:Key="TemplatesModel.TemplateNameIsBlank">The template name cannot be left empty or blank.</system:String>
+    <system:String x:Key="TemplatesModel.TemplateValueIsBlank">The template string value cannot be left empty or blank.</system:String>
+    <system:String x:Key="TemplatesModel.TemplateNameIsTooLong">The template name is too long.</system:String>
+    <system:String x:Key="TemplatesModel.TemplateValueIsTooLong">The template string value is too long.</system:String>
 
-public const string TemplateAlreadyExists = "TemplatesModel.TemplateAlreadyExists";
-    public const string NoSuchTemplate = "TemplatesModel.NoSuchTemplate";
-
-    public const string TemplateNameIsBlank = "TemplatesModel.TemplateNameIsBlank";
-    public const string TemplateValueIsBlank = "TemplatesModel.TemplateValueIsBlank";
-    public const string TemplateNameIsTooLong = "TemplatesModel.TemplateNameIsTooLong";
-    public const string TemplateValueIsTooLong = "TemplatesModel.TemplateValueIsTooLong";
-
-
-	-->
 </ResourceDictionary>
