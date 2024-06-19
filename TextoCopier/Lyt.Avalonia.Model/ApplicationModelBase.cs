@@ -27,6 +27,8 @@ public class ApplicationModelBase(IProfiler profiler, ILogger logger, IApplicati
         {
             try
             {
+                // Delay until the app has fully started up before freezing it with a collection 
+                Task.Delay(2000);
                 this.profiler.MemorySnapshot("Software initialization complete");
             }
             catch (Exception ex)

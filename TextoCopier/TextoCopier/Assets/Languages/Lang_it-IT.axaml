@@ -1,7 +1,9 @@
 <ResourceDictionary 
 	xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:system="clr-namespace:System;assembly=System.Runtime">
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+	>
+	
 	<system:String x:Key="Shell.AppName">Testo Copiatrice</system:String>
 	<system:String x:Key="Shell.About">Altro su...</system:String>
 	<system:String x:Key="Shell.Groups">Gruppi</system:String>
@@ -15,8 +17,32 @@
 	<system:String x:Key="Shell.Save">Salva</system:String>
 	<system:String x:Key="Shell.Ready">Pronto.</system:String>
 	<system:String x:Key="Shell.Greetings">Benvenuto in Testo Copiatrice!</system:String>
+
+	<system:String x:Key="Shell.Delete">Eliminare</system:String>
+	<system:String x:Key="Shell.GroupDelete.Question">Eliminare questo gruppo?</system:String>
+	<system:String x:Key="Shell.GroupDelete.Hint">Tutte le voci in questo gruppo verranno eliminate. Questa operazione non può essere annullata.</system:String>
+
+	<system:String x:Key="Shell.Deleted">Eliminato.</system:String>
+	<system:String x:Key="Shell.GroupDeleted">Questo gruppo è stato eliminato.</system:String>
+
+	<system:String x:Key="Shell.Error">Errore</system:String>
+	<system:String x:Key="Shell.FailGroupDelete">Impossibile eliminare questo gruppo.</system:String>
+
+	<system:String x:Key="Shell.NoGroups.Title">Nessun gruppo definito.</system:String>
+	<system:String x:Key="Shell.NoGroups.Hint">Crea un nuovo gruppo per iniziare...</system:String>
+
 	<system:String x:Key="Template.Copy">Copia</system:String>
 	<system:String x:Key="Toast.Dismiss">Chiudi</system:String>
+
 	<system:String x:Key="Group.NewTemplate">Nuovo...</system:String>
 	<system:String x:Key="Group.NewTemplateLong">Nuovo Testo</system:String>
+	<system:String x:Key="Group.NoSelection">Nessun gruppo selezionato...</system:String>
+
+	<system:String x:Key="TemplatesModel.GroupNameIsBlank">Il nome del gruppo non può essere lasciato vuoto.</system:String>
+	<system:String x:Key="TemplatesModel.DescriptionIsBlank">La descrizione del gruppo non può essere lasciata vuota.</system:String>
+	<system:String x:Key="TemplatesModel.IconNameIsBlank">È richiesto un nome per l'icona.</system:String>
+	<system:String x:Key="TemplatesModel.GroupNameIsTooLong">Il nome del gruppo è troppo lungo.</system:String>
+	<system:String x:Key="TemplatesModel.DescriptionIsTooLong">La descrizione del gruppo è troppo lunga.</system:String>
+	<system:String x:Key="TemplatesModel.IconNotAvailable">Impossibile trovare questa icona.</system:String>
+
 </ResourceDictionary>

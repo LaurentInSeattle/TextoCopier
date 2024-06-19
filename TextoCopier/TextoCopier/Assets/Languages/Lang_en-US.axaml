@@ -15,8 +15,44 @@
 	<system:String x:Key="Shell.Save">Save</system:String>
 	<system:String x:Key="Shell.Ready">Ready</system:String>
 	<system:String x:Key="Shell.Greetings">Welcome to TextoCopier!</system:String>
+
+	<system:String x:Key="Shell.Delete">Delete</system:String>
+	<system:String x:Key="Shell.GroupDelete.Question">Delete this Group?</system:String>
+	<system:String x:Key="Shell.GroupDelete.Hint">All entries in this group will be deleted. This operation cannot be undone.</system:String>
+
+	<system:String x:Key="Shell.Deleted">Deleted.</system:String>
+	<system:String x:Key="Shell.GroupDeleted">Group has been deleted.</system:String>
+
+	<system:String x:Key="Shell.Error">Error</system:String>
+	<system:String x:Key="Shell.FailGroupDelete">Failed to delete group</system:String>
+
+	<system:String x:Key="Shell.NoGroups.Title">No groups defined.</system:String>
+	<system:String x:Key="Shell.NoGroups.Hint">Create a new group to get started...</system:String>
+
 	<system:String x:Key="Template.Copy">Copy</system:String>
 	<system:String x:Key="Toast.Dismiss">Dismiss</system:String>
+	
 	<system:String x:Key="Group.NewTemplate">New...</system:String>
 	<system:String x:Key="Group.NewTemplateLong">New Template</system:String>
+	<system:String x:Key="Group.NoSelection">No group selected...</system:String>
+
+	<system:String x:Key="TemplatesModel.GroupNameIsBlank">Group name cannot be left empty or blank.</system:String>
+	<system:String x:Key="TemplatesModel.DescriptionIsBlank">Group description cannot be left empty or blank.</system:String>
+	<system:String x:Key="TemplatesModel.IconNameIsBlank">An icon name is required.</system:String>
+	<system:String x:Key="TemplatesModel.GroupNameIsTooLong">The group name is too long.</system:String>
+	<system:String x:Key="TemplatesModel.DescriptionIsTooLong">The group description is too long.</system:String>
+	<system:String x:Key="TemplatesModel.IconNotAvailable">This icon cannot be found.</system:String>
+
+	<!--
+
+public const string TemplateAlreadyExists = "TemplatesModel.TemplateAlreadyExists";
+    public const string NoSuchTemplate = "TemplatesModel.NoSuchTemplate";
+
+    public const string TemplateNameIsBlank = "TemplatesModel.TemplateNameIsBlank";
+    public const string TemplateValueIsBlank = "TemplatesModel.TemplateValueIsBlank";
+    public const string TemplateNameIsTooLong = "TemplatesModel.TemplateNameIsTooLong";
+    public const string TemplateValueIsTooLong = "TemplatesModel.TemplateValueIsTooLong";
+
+
+	-->
 </ResourceDictionary>

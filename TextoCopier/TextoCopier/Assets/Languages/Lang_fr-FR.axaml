@@ -16,9 +16,32 @@
 	<system:String x:Key="Shell.Save">Sauvegarder</system:String>
 	<system:String x:Key="Shell.Ready">Pret.</system:String>
 	<system:String x:Key="Shell.Greetings">Bienvenue dans Texto Copieur !</system:String>
+
+	<system:String x:Key="Shell.Delete">Supprimer</system:String>
+	<system:String x:Key="Shell.GroupDelete.Question">Supprimer ce Groupe?</system:String>
+	<system:String x:Key="Shell.GroupDelete.Hint">Toutes les entrées de ce groupe seront supprimées. Cette opération ne peut pas être annulée.</system:String>
+
+	<system:String x:Key="Shell.Deleted">Supprime.</system:String>
+	<system:String x:Key="Shell.GroupDeleted">Ce groupe a ete supprime.</system:String>
+
+	<system:String x:Key="Shell.Error">Erreur</system:String>
+	<system:String x:Key="Shell.FailGroupDelete">Impossible de supprimer ce groupe.</system:String>
+
+	<system:String x:Key="Shell.NoGroups.Title">Aucun groupe defini.</system:String>
+	<system:String x:Key="Shell.NoGroups.Hint">Creer un nouveau groupe pour commencer...</system:String>
+
 	<system:String x:Key="Template.Copy">Copier</system:String>
 	<system:String x:Key="Toast.Dismiss">Fermer</system:String>
+	
 	<system:String x:Key="Group.NewTemplate">Nouveau...</system:String>
 	<system:String x:Key="Group.NewTemplateLong">Nouveau Texte</system:String>
+	<system:String x:Key="Group.NoSelection">Aucun groupe selectionne...</system:String>
+
+	<system:String x:Key="TemplatesModel.GroupNameIsBlank">Le nom d'un groupe ne peut etre laisse blanc.</system:String>
+	<system:String x:Key="TemplatesModel.DescriptionIsBlank">Le description d'un groupe ne peut etre laisse en blanc.</system:String>
+	<system:String x:Key="TemplatesModel.IconNameIsBlank">Le nom d'un icone est requis.</system:String>
+	<system:String x:Key="TemplatesModel.GroupNameIsTooLong">Le nom de groupe est trop long.</system:String>
+	<system:String x:Key="TemplatesModel.DescriptionIsTooLong">Le texte de description de ce groupe est trop long.</system:String>
+	<system:String x:Key="TemplatesModel.IconNotAvailable">Cette icone n'est disponible.</system:String>
 
 </ResourceDictionary>

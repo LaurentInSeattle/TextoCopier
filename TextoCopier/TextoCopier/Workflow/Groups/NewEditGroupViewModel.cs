@@ -53,7 +53,7 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
         }
         else
         {
-            this.ValidationMessage = message;
+            this.ValidationMessage = this.localizer.Lookup(message);
             this.SaveButtonIsDisabled = true;
         }
     }
@@ -64,7 +64,7 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
     public void OnEditing()
     {
         bool validated = this.Validate(out string message);
-        this.ValidationMessage = validated ? string.Empty : message;
+        this.ValidationMessage = validated ? string.Empty : this.localizer.Lookup(message);
         this.SaveButtonIsDisabled = !validated;
     }
 

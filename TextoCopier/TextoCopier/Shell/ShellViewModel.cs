@@ -1,6 +1,5 @@
 ﻿namespace Lyt.TextoCopier.Shell;
 
-using System.Xml.Linq;
 using static ViewActivationMessage;
 
 public sealed class ShellViewModel : Bindable<ShellView>
@@ -12,6 +11,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
     private readonly IToaster toaster;
     private readonly IMessenger messenger;
     private readonly IProfiler profiler;
+    private readonly LocalizerModel localizer;
 
     public ShellViewModel(TemplatesModel templatesModel)
     {
@@ -20,6 +20,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.toaster = ApplicationBase.GetRequiredService<IToaster>();
         this.messenger = ApplicationBase.GetRequiredService<IMessenger>();
         this.profiler = ApplicationBase.GetRequiredService<IProfiler>();
+        this.localizer = App.GetRequiredService<LocalizerModel>();
         this.templatesModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
 
         this.Groups = [];
@@ -41,9 +42,8 @@ public sealed class ShellViewModel : Bindable<ShellView>
         }
 
         // Select default language 
-        var localizer = App.GetRequiredService<LocalizerModel>();
-        localizer.DetectAvailableLanguages();
-        localizer.SelectLanguage("it-IT");
+        this.localizer.DetectAvailableLanguages();
+        this.localizer.SelectLanguage("it-IT");
 
         // Create all statics views and bind them 
         ShellViewModel.SetupWorkflow();
@@ -52,17 +52,15 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         // Ready 
         this.toaster.Host = this.View.ToasterHost;
-        int groupCount = this.templatesModel.Groups.Count;
-        if (groupCount > 0)
+        if (this.templatesModel.Groups.Count > 0)
         {
             this.toaster.Show(
-                localizer.Lookup("Shell.Ready"), localizer.Lookup("Shell.Greetings"), 5_000, InformationLevel.Info);
+                this.localizer.Lookup("Shell.Ready"), this.localizer.Lookup("Shell.Greetings"), 5_000, InformationLevel.Info);
         }
         else
         {
             this.toaster.Show(
-                "No groups defined", // localizer.Lookup("Shell.Ready"), 
-                "Create a new group to get started...", // localizer.Lookup("Shell.Greetings"), 
+                this.localizer.Lookup("Shell.NoGroups.Title"), this.localizer.Lookup("Shell.NoGroups.Hint"), 
                 10_000, InformationLevel.Warning);
         }
     }
@@ -82,17 +80,18 @@ public sealed class ShellViewModel : Bindable<ShellView>
     private void OnViewActivation(ViewActivationMessage message)
         => this.OnViewActivation(message.View, message.ActivationParameter);
 
-    private void OnViewActivation(ActivatedView staticView, object? parameter = null)
+    private void OnViewActivation(ActivatedView activatedView, object? parameter = null)
     {
-        if (staticView == ActivatedView.GoBack)
+        if (activatedView == ActivatedView.GoBack)
         {
-            staticView = ActivatedView.Group;
+            // We always go back to the Group View 
+            activatedView = ActivatedView.Group;
         }
 
-        this.DeleteGroupIsVisible = staticView == ActivatedView.Group;
-        this.NewGroupIsVisible = staticView != ActivatedView.NewGroup;
+        this.DeleteGroupIsVisible = activatedView == ActivatedView.Group;
+        this.NewGroupIsVisible = activatedView != ActivatedView.NewGroup;
 
-        switch (staticView)
+        switch (activatedView)
         {
             default:
             case ActivatedView.Group:
@@ -142,9 +141,9 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         var confirmActionParameters = new ConfirmActionParameters
         {
-            Title = "Delete Group ?",
-            Message = "All entries in this group will be deleted. This operation cannot be undone.",
-            ActionVerb = "Delete",
+            Title = this.localizer.Lookup("Shell.GroupDelete.Question"),
+            Message = this.localizer.Lookup("Shell.GroupDelete.Hint"),
+            ActionVerb = this.localizer.Lookup("Shell.Delete"),
             OnConfirm = this.OnDeleteGroupConfirmed,
         };
 
@@ -172,15 +171,13 @@ public sealed class ShellViewModel : Bindable<ShellView>
         if (string.IsNullOrEmpty(message))
         {
             this.toaster.Show(
-                "Deleted", // localizer.Lookup("Shell.Ready"), 
-                "Group has been deleted", // localizer.Lookup("Shell.Greetings"), 
+                this.localizer.Lookup("Shell.Deleted"),  this.localizer.Lookup("Shell.GroupDeleted"), 
                 5_000, InformationLevel.Info);
         }
         else
         {
             this.toaster.Show(
-                "Error", // localizer.Lookup("Shell.Ready"), 
-                "Failed to delete group", // localizer.Lookup("Shell.Greetings"), 
+                this.localizer.Lookup("Shell.Error"), this.localizer.Lookup("Shell.FailGroupDelete"), 
                 12_000, InformationLevel.Error);
         }
 
@@ -211,13 +208,11 @@ public sealed class ShellViewModel : Bindable<ShellView>
         newViewModel.Activate(activationParameters);
         this.View.ShellViewContent.Content = newViewModel.View;
 
-        this.profiler.MemorySnapshot(newViewModel.View.GetType().Name + " Activated");
+        this.profiler.MemorySnapshot(newViewModel.View.GetType().Name + ":  Activated");
     }
 
     private void BindGroupIcons()
     {
-        //Debugger.Break(); 
-
         this.Logger.Info("Binding groups");
         var selectedGroup = this.templatesModel.SelectedGroup; 
         if ( selectedGroup is null )

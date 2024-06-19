@@ -6,10 +6,12 @@ public sealed class GroupViewModel : Bindable<GroupView>
 
     private readonly TemplatesModel templatesModel;
     private readonly IMessenger messenger;
+    private readonly LocalizerModel localizer;
 
     public GroupViewModel(TemplatesModel templatesModel)
     {
         this.messenger = ApplicationBase.GetRequiredService<IMessenger>();
+        this.localizer = ApplicationBase.GetRequiredService<LocalizerModel>();
         this.templatesModel = templatesModel;
         this.templatesModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
         this.Templates = [];
@@ -48,7 +50,7 @@ public sealed class GroupViewModel : Bindable<GroupView>
         }
         else
         {
-            this.GroupName = "No group selected...";
+            this.GroupName = this.localizer.Lookup("Group.NoSelection"); 
             this.GroupDescription = string.Empty;
         }
     }
