@@ -136,7 +136,7 @@
 				Style="{StaticResource StandardToggleSwitch}"
 				TrueText="{DynamicResource NewEditTemplateview.HideText.TrueText}"
 				FalseText="{DynamicResource NewEditTemplateview.HideText.FalseText}"
-				Height="30" Width="320"
+				Height="30" Width="300"
 				HorizontalAlignment="Left" VerticalAlignment="Center"
 				Value="{Binding IsHidden}"
 				/>
@@ -147,7 +147,7 @@
 				Style="{StaticResource StandardToggleSwitch}"
 				TrueText="{DynamicResource NewEditTemplateview.IsWebLink.TrueText}"
 				FalseText="{DynamicResource NewEditTemplateview.IsWebLink.FalseText}"
-				Height="30" Width="320"
+				Height="30" Width="300"
 				HorizontalAlignment="Left" VerticalAlignment="Center"
 				Value="{Binding IsWebLink}"
 				/>

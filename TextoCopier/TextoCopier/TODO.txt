@@ -1,6 +1,7 @@
 ﻿MUST DO
 - Add Icons to Action buttons 
 - Base class for NewEdit Groups and Templates 
+- Use open link icon as main button for web links 
 
 NICE TO HAVE 
 - Reorder templates using drag n drop 
