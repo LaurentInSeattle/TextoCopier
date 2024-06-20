@@ -1,5 +1,6 @@
 ﻿MUST DO
 - Add Icons to Action buttons 
+- Base class for NewEdit Groups and Templates 
 
 NICE TO HAVE 
 - Reorder templates using drag n drop 
@@ -73,39 +74,3 @@ MUST DO
                 VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 				Watermark="2048 characters max."
 				MaxLength="2048"
-
-
-			<toggle:ToggleSwitch
-				x:Name="IsHiddenSwitch"
-                Grid.Row="4"
-				Margin="30 4 4 4"
-				Style="{StaticResource StandardToggleSwitch}"
-				TrueText="Hide Text"
-				FalseText="Normal"
-				Height="32"
-				HorizontalAlignment="Left" VerticalAlignment="Center"
-				Value="{Binding IsHidden}"
-				/>
-			<toggle:ToggleSwitch
-				x:Name="IsLinkSwitch"
-                Grid.Row="5"
-				Margin="16 4 4 4"
-				Style="{StaticResource StandardToggleSwitch}"
-				TrueText="Is Web Link"
-				FalseText="Regular"
-
-                message = "Could not open the provided link in the dafault browser."; 
-                toaster.Show("404 !", message, 12_000, InformationLevel.Warning);
-
-
-            this.GroupDescription = "To be changed in " + groupName;  
-        }
-        else
-        {
-            this.EditedTemplate = null;
-            this.Name = string.Empty;
-            this.Value = string.Empty;
-            this.IsHidden = false;
-            this.IsWebLink = false;
-            this.TemplateTitle = this.localizer.Lookup("Group.NewTemplateLong"); ;
-            this.GroupDescription = "To be added to " + groupName;

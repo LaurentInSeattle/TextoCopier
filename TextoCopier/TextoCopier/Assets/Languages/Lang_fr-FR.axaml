@@ -40,6 +40,17 @@
 	<system:String x:Key="Group.NewTemplateLong">Nouveau Texte</system:String>
 	<system:String x:Key="Group.NoSelection">Aucun groupe selectionné...</system:String>
 
+	<system:String x:Key="TemplateView.LinkNotFound.Title">404, Introuvable!</system:String>
+	<system:String x:Key="TemplateView.LinkNotFound.Hint">Impossible d'ouvrir ce lien dans le navigateur par defaut.</system:String>
+
+	<system:String x:Key="NewEditTemplateView.Changed.Format">Sera modifié dans {0}</system:String>
+	<system:String x:Key="NewEditTemplateView.Added.Format">Sera ajouté à {0}</system:String>
+
+	<system:String x:Key="NewEditTemplateview.HideText.TrueText">Masquer le Texte</system:String>
+	<system:String x:Key="NewEditTemplateview.HideText.FalseText">Normal</system:String>
+	<system:String x:Key="NewEditTemplateview.IsWebLink.TrueText">Lien Internet</system:String>
+	<system:String x:Key="NewEditTemplateview.IsWebLink.FalseText">Standard</system:String>
+
 	<system:String x:Key="TemplatesModel.GroupNameIsBlank">Le nom d'un groupe ne peut être laissé en blanc.</system:String>
 	<system:String x:Key="TemplatesModel.DescriptionIsBlank">Le description d'un groupe ne peut être laissé en blanc.</system:String>
 	<system:String x:Key="TemplatesModel.IconNameIsBlank">Le nom d'une icone est requis.</system:String>

@@ -4,11 +4,11 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
 {
     private readonly IMessenger messenger;
     private readonly LocalizerModel localizer;
-    private readonly TemplatesModel templatesModel; 
+    private readonly TemplatesModel templatesModel;
 
     public NewEditTemplateViewModel(IMessenger messenger, LocalizerModel localizer, TemplatesModel templatesModel)
     {
-        this.messenger = messenger; 
+        this.messenger = messenger;
         this.localizer = localizer;
         this.templatesModel = templatesModel;
         this.CloseCommand = new Command(this.OnClose);
@@ -16,7 +16,7 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
         this.SelectedGroup = new();
     }
 
-    public Group SelectedGroup { get; private set; } 
+    public Group SelectedGroup { get; private set; }
 
     public Template? EditedTemplate { get; private set; }
 
@@ -28,11 +28,11 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
         {
             string message = TemplatesModel.NoSuchGroup;
             this.Logger.Info("model.SelectedGroup is null: " + message);
-            return ;
+            return;
         }
         else
         {
-            this.SelectedGroup = this.templatesModel.SelectedGroup; 
+            this.SelectedGroup = this.templatesModel.SelectedGroup;
         }
 
         string groupName = this.SelectedGroup.Name;
@@ -43,8 +43,9 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
             this.Value = template.Value;
             this.IsHidden = template.ShouldHide;
             this.IsWebLink = template.IsLink;
-            this.TemplateTitle = this.Name; 
-            this.GroupDescription = "To be changed in " + groupName;  
+            this.TemplateTitle = this.Name;
+            string format = this.localizer.Lookup("NewEditTemplateView.Changed.Format");
+            this.GroupDescription = string.Format(format, groupName);
         }
         else
         {
@@ -54,7 +55,8 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
             this.IsHidden = false;
             this.IsWebLink = false;
             this.TemplateTitle = this.localizer.Lookup("Group.NewTemplateLong"); ;
-            this.GroupDescription = "To be added to " + groupName;
+            string format = this.localizer.Lookup("NewEditTemplateView.Added.Format");
+            this.GroupDescription = string.Format(format, groupName);
         }
 
         this.OnEditing();
@@ -87,7 +89,7 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
 
     private bool Validate(out string message)
     {
-        string groupName = this.SelectedGroup.Name; 
+        string groupName = this.SelectedGroup.Name;
         if (this.IsEditing)
         {
             // if IsEditing, then this.EditedGroup is not null
@@ -109,7 +111,7 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
         // Save to model 
         string groupName = this.SelectedGroup.Name;
         string newName = this.Name.Trim();
-        string value = this.Value.Trim(); 
+        string value = this.Value.Trim();
         if (this.IsEditing)
         {
             // if IsEditing, then this.EditedTemplate is not null

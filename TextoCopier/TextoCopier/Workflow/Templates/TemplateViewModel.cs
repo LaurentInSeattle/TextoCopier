@@ -66,12 +66,14 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
         string webUrl = this.Value;
         if (!string.IsNullOrWhiteSpace(webUrl))
         {
-            if ( ! WebUtilities.OpenWebUrl(webUrl, out string message))
+            if (!WebUtilities.OpenWebUrl(webUrl, out string message))
             {
                 this.Logger.Warning(message);
+                var localizer = ApplicationBase.GetRequiredService<LocalizerModel>();
                 IToaster toaster = ApplicationBase.GetRequiredService<IToaster>();
-                message = "Could not open the provided link in the dafault browser."; 
-                toaster.Show("404 !", message, 12_000, InformationLevel.Warning);
+                toaster.Show(
+                    localizer.Lookup("TemplateView.LinkNotFound.Title"), localizer.Lookup("TemplateView.LinkNotFound.Hint"),
+                    12_000, InformationLevel.Warning);
             }
         }
     }

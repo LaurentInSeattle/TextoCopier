@@ -7,7 +7,6 @@
 	<!-- é è ê -->
 	<!-- à ò -->
 
-
 	<system:String x:Key="Shell.AppName">Testo Copiatrice</system:String>
 	<system:String x:Key="Shell.About">Altro su...</system:String>
 	<system:String x:Key="Shell.Groups">Gruppi</system:String>
@@ -41,6 +40,17 @@
 	<system:String x:Key="Group.NewTemplate">Nuovo...</system:String>
 	<system:String x:Key="Group.NewTemplateLong">Nuovo Testo</system:String>
 	<system:String x:Key="Group.NoSelection">Nessun gruppo selezionato...</system:String>
+
+	<system:String x:Key="TemplateView.LinkNotFound.Title">404, Non trovato!</system:String>
+	<system:String x:Key="TemplateView.LinkNotFound.Hint">Impossibile aprire questo collegamento nel browser predefinito.</system:String>
+
+	<system:String x:Key="NewEditTemplateView.Changed.Format">Verrà modificato in {0}</system:String>
+	<system:String x:Key="NewEditTemplateView.Added.Format">Verrà aggiunto a {0}</system:String>
+
+	<system:String x:Key="NewEditTemplateview.HideText.TrueText">Nascondi testo</system:String>
+	<system:String x:Key="NewEditTemplateview.HideText.FalseText">Normale</system:String>
+	<system:String x:Key="NewEditTemplateview.IsWebLink.TrueText">Collegamento</system:String>
+	<system:String x:Key="NewEditTemplateview.IsWebLink.FalseText">Standard</system:String>
 
 	<system:String x:Key="TemplatesModel.GroupNameIsBlank">Il nome del gruppo non può essere lasciato vuoto.</system:String>
 	<system:String x:Key="TemplatesModel.DescriptionIsBlank">La descrizione del gruppo non può essere lasciata vuota.</system:String>

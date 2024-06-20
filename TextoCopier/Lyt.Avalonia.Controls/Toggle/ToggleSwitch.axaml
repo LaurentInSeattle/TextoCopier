@@ -13,7 +13,7 @@
         >
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="66" />
+			<ColumnDefinition Width="62" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<!-- Rectangle used as background: MUST be below everything else -->
