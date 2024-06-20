@@ -50,12 +50,18 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.BindGroupIcons();
         this.OnViewActivation(ActivatedView.Group);
 
+        // Detect Available Icons in asset file and pass that to the model 
+        List<string> icons = ShellViewModel.DetectAvailableIcons();
+        this.Logger.Debug(icons.Count + " icons available.");
+        this.templatesModel.AvailableIcons = icons; 
+
         // Ready 
         this.toaster.Host = this.View.ToasterHost;
         if (this.templatesModel.Groups.Count > 0)
         {
             this.toaster.Show(
-                this.localizer.Lookup("Shell.Ready"), this.localizer.Lookup("Shell.Greetings"), 5_000, InformationLevel.Info);
+                this.localizer.Lookup("Shell.Ready"), this.localizer.Lookup("Shell.Greetings"), 
+                5_000, InformationLevel.Info);
         }
         else
         {
@@ -63,6 +69,30 @@ public sealed class ShellViewModel : Bindable<ShellView>
                 this.localizer.Lookup("Shell.NoGroups.Title"), this.localizer.Lookup("Shell.NoGroups.Hint"), 
                 10_000, InformationLevel.Warning);
         }
+    }
+
+    private static List<string> DetectAvailableIcons()
+    {
+        var icons = new List<string>(2200);
+        string uriString = "avares://TextoCopier/Assets/Icons/FluentSVGResourceDictionary.axaml";
+        var uri = new Uri(uriString);
+        var resourceInclude = new ResourceInclude(uri) { Source = uri };
+        var dict = resourceInclude.Loaded;
+        foreach (object? keyObject in dict.Keys)
+        {
+            if (keyObject is string keyString)
+            {
+                if (keyString.Contains("DrawingGroup"))
+                {
+                    continue;
+                }
+
+                icons.Add(keyString);
+            }
+        }
+
+        icons.Sort();
+        return icons; 
     }
 
     private void OnModelUpdated(ModelUpdateMessage message)
@@ -139,15 +169,23 @@ public sealed class ShellViewModel : Bindable<ShellView>
             return;
         }
 
-        var confirmActionParameters = new ConfirmActionParameters
+        if (group.Templates.Count > 0)
         {
-            Title = this.localizer.Lookup("Shell.GroupDelete.Question"),
-            Message = this.localizer.Lookup("Shell.GroupDelete.Hint"),
-            ActionVerb = this.localizer.Lookup("Shell.Delete"),
-            OnConfirm = this.OnDeleteGroupConfirmed,
-        };
+            var confirmActionParameters = new ConfirmActionParameters
+            {
+                Title = this.localizer.Lookup("Shell.GroupDelete.Question"),
+                Message = this.localizer.Lookup("Shell.GroupDelete.Hint"),
+                ActionVerb = this.localizer.Lookup("Shell.Delete"),
+                OnConfirm = this.OnDeleteGroupConfirmed,
+            };
 
-        this.dialogService.Confirm(this.View.ToasterHost, confirmActionParameters );
+            this.dialogService.Confirm(this.View.ToasterHost, confirmActionParameters);
+        } 
+        else
+        {
+            // No UI confirmation needed if no templates created yet
+            this.OnDeleteGroupConfirmed(confirmed: true);
+        }
     }
 
     private void OnDeleteGroupConfirmed(bool confirmed)

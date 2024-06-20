@@ -46,6 +46,7 @@
 	<system:String x:Key="NewEditGroupView.GroupName">Nom</system:String>
 	<system:String x:Key="NewEditGroupView.GroupDescription">Description</system:String>
 	<system:String x:Key="NewEditGroupView.GroupIconName">Nom de l'icone</system:String>
+	<system:String x:Key="NewEditGroupView.StartTyping">Commencez à taper pour rechercher...</system:String>
 
 	<system:String x:Key="TemplateView.LinkNotFound.Title">404, Introuvable!</system:String>
 	<system:String x:Key="TemplateView.LinkNotFound.Hint">Impossible d'ouvrir ce lien dans le navigateur par défaut.</system:String>

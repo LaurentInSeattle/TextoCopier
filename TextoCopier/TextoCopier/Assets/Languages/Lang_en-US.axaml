@@ -42,7 +42,8 @@
 	<system:String x:Key="NewEditGroupView.GroupName">Name</system:String>
 	<system:String x:Key="NewEditGroupView.GroupDescription">Description</system:String>
 	<system:String x:Key="NewEditGroupView.GroupIconName">Icon Name</system:String>
-
+	<system:String x:Key="NewEditGroupView.StartTyping">Start typing to search... </system:String>
+	
 	<system:String x:Key="TemplateView.LinkNotFound.Title">404, Not Found!</system:String>
 	<system:String x:Key="TemplateView.LinkNotFound.Hint">Could not open the provided link in the default browser.</system:String>
 

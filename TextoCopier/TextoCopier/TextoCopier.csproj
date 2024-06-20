@@ -11,6 +11,10 @@
     <AvaloniaResource Include="Assets\**" />
     <AvaloniaResource Include="Assets\Languages\**" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <AvaloniaXaml Remove="Assets\Theme\AutoCompleteBoxStyles.axaml" />
+  </ItemGroup>
     
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.10" />

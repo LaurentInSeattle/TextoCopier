@@ -1,10 +1,13 @@
 ﻿MUST DO
-- Group Icon selection 
 - Add Icons to Action buttons 
 - Base class for NewEdit Groups and Templates 
-- Use open link icon as main button for web links 
+- Verify use of dependency injection for all VMs
+- Style for the Auto Complete Box 
+- Settings 
+- About View
 
 NICE TO HAVE 
+- Use open link icon as main button for web links 
 - Reorder templates using drag n drop 
 - Data file encryption ? 
 - Logs to files

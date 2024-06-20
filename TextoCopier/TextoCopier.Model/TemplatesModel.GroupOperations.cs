@@ -89,12 +89,18 @@ public sealed partial class TemplatesModel
             return false;
         }
 
-        // TODO: Check icon 
-        //if (string.IsNullOrWhiteSpace(iconName))
-        //{
-        //    message = IconNameIsBlank;
-        //    return false;
-        //}
+        // Check icon 
+        if (string.IsNullOrWhiteSpace(iconName))
+        {
+            message = IconNameIsBlank;
+            return false;
+        }
+
+        if (!this.AvailableIcons.Contains(iconName))
+        {
+            message = IconNotAvailable;
+            return false;
+        }
 
         return true;
     }

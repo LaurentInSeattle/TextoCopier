@@ -21,7 +21,6 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
 
     public override void Activate(object? activationParameter)
     {
-        // TODO: Icon 
         if (activationParameter is Group group)
         {
             this.EditedGroup = group;
@@ -35,11 +34,12 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
             this.EditedGroup = null;
             this.Name = string.Empty;
             this.Description = string.Empty;
-            this.Icon = "home";
+            this.Icon = string.Empty;
             this.Title = this.localizer.Lookup("Shell.NewGroupLong"); 
 
         }
 
+        this.IconNames = this.templatesModel.AvailableIcons; 
         this.OnEditing();
     }
 
@@ -119,6 +119,8 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
     public string Description { get => this.Get<string>()!; set => this.Set(value); }
 
     public string Icon { get => this.Get<string>()!; set => this.Set(value); }
+
+    public List<string> IconNames { get => this.Get<List<string>>()!; set => this.Set(value); }
 
     public string ValidationMessage { get => this.Get<string>()!; set => this.Set(value); }
 

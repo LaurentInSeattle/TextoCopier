@@ -1,5 +1,7 @@
 ﻿namespace Lyt.TextoCopier.Model;
 
+using System.Linq.Expressions;
+using System;
 using static FileManagerModel;
 
 public sealed partial class TemplatesModel : ModelBase
@@ -156,11 +158,13 @@ emoji_surprise_regular
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+#pragma warning disable IDE0021 // Use expression body for constructor 
     public TemplatesModel() : base ( null, null)
     {
         // Empty CTOR required for deserialization 
         this.ShouldAutoSave = false;
     }
+#pragma warning restore IDE0021
 #pragma warning restore CS8625 
 #pragma warning restore CS8618
 
@@ -168,7 +172,6 @@ emoji_surprise_regular
     {
         // ???? 
         // Do not inject the FileManagerModel instance: a parameter-less ctor is required for Deserialization 
-        // ???? 
         this.fileManager = fileManager;
         this.ShouldAutoSave = true;
     }
@@ -182,10 +185,20 @@ emoji_surprise_regular
             await this.Save();  
         }
     }
-    
+
+    // Serialized 
+    // No model changed event
     public List<Group> Groups { get; set; } = [];
 
+    [JsonIgnore]
+    // Not serialized 
+    // With model changed event
     public Group? SelectedGroup { get => this.Get<Group?>(); set => this.Set(value); }
+
+    [JsonIgnore]
+    // Not serialized 
+    // No model changed event
+    public List<string> AvailableIcons { get; set; } = []; 
 
     public Task Load()
     {
