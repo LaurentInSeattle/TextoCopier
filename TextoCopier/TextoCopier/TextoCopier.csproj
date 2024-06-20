@@ -11,11 +11,7 @@
     <AvaloniaResource Include="Assets\**" />
     <AvaloniaResource Include="Assets\Languages\**" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <AvaloniaXaml Remove="Assets\Theme\Toggles.axaml" />
-  </ItemGroup>
-  
+    
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.10" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10" />
@@ -36,16 +32,6 @@
 
   <ItemGroup>
     <Folder Include="Controls\" />
-    <Folder Include="Models\" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Workflow\Groups\NewEditGroupView.axaml.cs">
-      <DependentUpon>NewEditGroupView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Workflow\Templates\NewEditTemplateView.axaml.cs">
-      <DependentUpon>NewEditTemplateView.axaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
+	
 </Project>

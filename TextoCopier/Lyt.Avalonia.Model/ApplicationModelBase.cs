@@ -30,7 +30,7 @@ public class ApplicationModelBase(IProfiler profiler, ILogger logger, IApplicati
             try
             {
                 // Delay until the app has fully started up before freezing it with a collection 
-                await Task.Delay(5_000);
+                await Task.Delay(200);
                 this.profiler.MemorySnapshot("Initial Memory Snapshot");
             }
             catch (Exception ex)

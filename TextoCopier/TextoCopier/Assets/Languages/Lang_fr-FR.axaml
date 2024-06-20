@@ -35,21 +35,31 @@
 
 	<system:String x:Key="Template.Copy">Copier</system:String>
 	<system:String x:Key="Toast.Dismiss">Fermer</system:String>
-	
+
+	<system:String x:Key="NewEditView.Max64">Maximum 64 caractères.</system:String>
+	<system:String x:Key="NewEditView.Max2048">Maximum 2048 caractères.</system:String>
+
 	<system:String x:Key="Group.NewTemplate">Nouveau...</system:String>
 	<system:String x:Key="Group.NewTemplateLong">Nouveau Texte</system:String>
 	<system:String x:Key="Group.NoSelection">Aucun groupe selectionné...</system:String>
 
+	<system:String x:Key="NewEditGroupView.GroupName">Nom</system:String>
+	<system:String x:Key="NewEditGroupView.GroupDescription">Description</system:String>
+	<system:String x:Key="NewEditGroupView.GroupIconName">Nom de l'icone</system:String>
+
 	<system:String x:Key="TemplateView.LinkNotFound.Title">404, Introuvable!</system:String>
-	<system:String x:Key="TemplateView.LinkNotFound.Hint">Impossible d'ouvrir ce lien dans le navigateur par defaut.</system:String>
+	<system:String x:Key="TemplateView.LinkNotFound.Hint">Impossible d'ouvrir ce lien dans le navigateur par défaut.</system:String>
 
 	<system:String x:Key="NewEditTemplateView.Changed.Format">Sera modifié dans {0}</system:String>
 	<system:String x:Key="NewEditTemplateView.Added.Format">Sera ajouté à {0}</system:String>
 
-	<system:String x:Key="NewEditTemplateview.HideText.TrueText">Masquer le Texte</system:String>
-	<system:String x:Key="NewEditTemplateview.HideText.FalseText">Normal</system:String>
-	<system:String x:Key="NewEditTemplateview.IsWebLink.TrueText">Lien Internet</system:String>
-	<system:String x:Key="NewEditTemplateview.IsWebLink.FalseText">Standard</system:String>
+	<system:String x:Key="NewEditTemplateView.TemplateName">Nom du Texte Modele</system:String>
+	<system:String x:Key="NewEditTemplateView.TemplateValue">Texte pour ce Modele</system:String>
+
+	<system:String x:Key="NewEditTemplateView.HideText.TrueText">Masquer le Texte</system:String>
+	<system:String x:Key="NewEditTemplateView.HideText.FalseText">Normal</system:String>
+	<system:String x:Key="NewEditTemplateView.IsWebLink.TrueText">Lien Internet</system:String>
+	<system:String x:Key="NewEditTemplateView.IsWebLink.FalseText">Standard</system:String>
 
 	<system:String x:Key="TemplatesModel.GroupNameIsBlank">Le nom d'un groupe ne peut être laissé en blanc.</system:String>
 	<system:String x:Key="TemplatesModel.DescriptionIsBlank">Le description d'un groupe ne peut être laissé en blanc.</system:String>
