@@ -1,10 +1,12 @@
 ﻿MUST DO
+- Style for the Auto Complete Box 
 - Add Icons to Action buttons 
+- Icon selection preview 
 - Base class for NewEdit Groups and Templates 
 - Verify use of dependency injection for all VMs
-- Style for the Auto Complete Box 
-- Settings 
+- Settings View
 - About View
+- Slow startup 
 
 NICE TO HAVE 
 - Use open link icon as main button for web links 

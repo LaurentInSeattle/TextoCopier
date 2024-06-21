@@ -50,11 +50,6 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.BindGroupIcons();
         this.OnViewActivation(ActivatedView.Group);
 
-        // Detect Available Icons in asset file and pass that to the model 
-        List<string> icons = ShellViewModel.DetectAvailableIcons();
-        this.Logger.Debug(icons.Count + " icons available.");
-        this.templatesModel.AvailableIcons = icons; 
-
         // Ready 
         this.toaster.Host = this.View.ToasterHost;
         if (this.templatesModel.Groups.Count > 0)
@@ -69,6 +64,19 @@ public sealed class ShellViewModel : Bindable<ShellView>
                 this.localizer.Lookup("Shell.NoGroups.Title"), this.localizer.Lookup("Shell.NoGroups.Hint"), 
                 10_000, InformationLevel.Warning);
         }
+
+        this.SetupAvailableIcons();
+    }
+
+    private void SetupAvailableIcons()
+    {
+        _ = Task.Run(() => 
+        {
+            // Detect Available Icons in asset file and pass that to the model 
+            List<string> icons = ShellViewModel.DetectAvailableIcons();
+            this.Logger.Debug(icons.Count + " icons available.");
+            this.templatesModel.AvailableIcons = icons;
+        }); 
     }
 
     private static List<string> DetectAvailableIcons()
@@ -82,7 +90,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         {
             if (keyObject is string keyString)
             {
-                if (keyString.Contains("DrawingGroup"))
+                if (keyString.Contains("DrawingGroup") || keyString.Contains("ic_"))
                 {
                     continue;
                 }

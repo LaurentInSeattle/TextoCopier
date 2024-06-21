@@ -3,16 +3,9 @@
 [AttributeUsage(AttributeTargets.Property)]
 public class DoNotLogAttribute : Attribute { }
 
-public abstract class ModelBase : IModel
+public abstract class ModelBase(IMessenger messenger, ILogger logger) : IModel
 {
     private bool isDirty;
-
-    public ModelBase(IMessenger messenger, ILogger logger)
-    {
-        this.Messenger = messenger;
-        this.Logger = logger;
-        this.properties = [];
-    }
 
     public abstract Task Initialize();
 
@@ -30,9 +23,9 @@ public abstract class ModelBase : IModel
         return Task.CompletedTask;
     }
 
-    public ILogger Logger { get; private set; }
+    public ILogger Logger { get; private set; } = logger;
 
-    public IMessenger Messenger { get; private set; }
+    public IMessenger Messenger { get; private set; } = messenger;
 
     public bool IsDirty
     {
@@ -54,7 +47,7 @@ public abstract class ModelBase : IModel
     public bool DisablePropertyChangedLogging { get; protected set; }
 
     /// <summary> The model properties.</summary>
-    protected readonly Dictionary<string, object?> properties;
+    protected readonly Dictionary<string, object?> properties = [];
 
     public void SubscribeToUpdates(Action<ModelUpdateMessage> onUpdate, bool withUiDispatch = false)
         => this.Messenger?.Subscribe(onUpdate, withUiDispatch);

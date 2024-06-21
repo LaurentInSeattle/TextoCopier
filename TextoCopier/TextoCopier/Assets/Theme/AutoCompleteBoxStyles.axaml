@@ -1,49 +1,64 @@
-﻿<Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<Styles 
+	xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:generic="using:System.Collections.Generic"
+	>
     <Design.PreviewWith>
-        <Border Padding="20" Background="Transparent" >
-			<TextBox Text="Some Text" 
-					 Margin="4"
-					 />
+        <Border Padding="20" Background="Black" >
+			<AutoCompleteBox Width="200" IsEnabled="True" IsDropDownOpen="True">
+				<AutoCompleteBox.ItemsSource>
+					<generic:List x:TypeArguments="x:String">
+						Alabama
+						Alaska
+						Arizona
+						Arkansas
+						California
+						Colorado
+						Connecticut
+						Delaware
+					</generic:List>
+				</AutoCompleteBox.ItemsSource>
+			</AutoCompleteBox>
         </Border>
     </Design.PreviewWith>
 
-    <!-- TextBox -->
-	<Style Selector="TextBox">
+	<Style Selector="AutoCompleteBox">
 		<Setter Property="Foreground" Value="{StaticResource LightAqua_0_120}"/>
 		<Setter Property="Background" Value="Transparent"/>
-		<Setter Property="CaretBrush" Value="{StaticResource LightAqua_0_120}" />
 		<Setter Property="BorderBrush" Value="{StaticResource OrangePeel_0_040}"/>
-		<Setter Property="SelectionBrush" Value="{StaticResource PastelOrchid_0_080}" />
 		<Setter Property="IsEnabled" Value="True"/>
-		<Setter Property="FontSize" Value="16"/>
-		<Setter Property="TextAlignment" Value="Left"/>
-		<Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+		<Setter Property="FontSize" Value="15"/>
 	</Style>
 
-	<Style Selector="TextBox /template/ Border#PART_BorderElement">
+	<Style Selector="AutoCompleteBox /template/ Border#PART_BorderElement">
 		<Setter Property="BorderBrush" Value="{StaticResource PastelOrchid_0_040}"/>
 		<Setter Property="Background" Value="Transparent"/>
 	</Style>
 
+	<!--
+	<Style Selector="AutoCompleteBox /template/ Border#PART_SuggestionsContainer">
+		<Setter Property="BorderBrush" Value="{StaticResource LightAqua_0_100}"/>
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+	-->
+
 	<!-- Hover State -->
-	<Style Selector="TextBox:pointerover">
+	<Style Selector="AutoCompleteBox:pointerover">
 		<Setter Property="Foreground" Value="{StaticResource LightAqua_0_120}"/>
 	</Style>
 
 	<!-- Focused State -->
-	<Style Selector="TextBox:focus">
+	<Style Selector="AutoCompleteBox:focus">
 		<Setter Property="Foreground" Value="{StaticResource LightAqua_0_120}"/>
 	</Style>
 
 	<!-- Hover State -->
-	<Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+	<Style Selector="AutoCompleteBox:pointerover /template/ Border#PART_BorderElement">
 		<Setter Property="Background" Value="Transparent"/>
 		<Setter Property="BorderBrush" Value="{StaticResource LightAqua_0_080}"/>
 	</Style>
 
 	<!-- Focused State -->
-	<Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+	<Style Selector="AutoCompleteBox:focus /template/ Border#PART_BorderElement">
 		<Setter Property="Background" Value="Transparent"/>
 		<Setter Property="BorderBrush" Value="{StaticResource LightAqua_0_100}"/>
 	</Style>
