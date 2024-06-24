@@ -1,5 +1,6 @@
 ﻿MUST DO
 - Style for the Auto Complete Box 
+	=> Style for ListBox and ListBoxItem 
 - Add Icons to Action buttons 
 - Icon selection preview 
 - Base class for NewEdit Groups and Templates 
