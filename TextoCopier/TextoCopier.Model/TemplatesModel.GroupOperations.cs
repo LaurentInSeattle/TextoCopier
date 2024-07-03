@@ -3,7 +3,7 @@
 public sealed partial class TemplatesModel
 {
     public const int StringMaxLength = 64;
-    public const int LongStringMaxLength = 64;
+    public const int LongStringMaxLength = 2048;
 
     public bool CheckGroup(string groupName, out string message)
     {
