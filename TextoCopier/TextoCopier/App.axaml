@@ -12,6 +12,10 @@
 		<StyleInclude Source="avares://TextoCopier/Assets/Palette/DeepBluePalette.axaml" />
 		<StyleInclude Source="avares://TextoCopier/Assets/Theme/TextBoxStyles.axaml" />
 		<StyleInclude Source="avares://TextoCopier/Assets/Theme/AutoCompleteBoxStyles.axaml" />
+		<!--
+		<StyleInclude Source="avares://TextoCopier/Assets/Theme/ListBoxStyles.axaml" />
+		<StyleInclude Source="avares://TextoCopier/Assets/Theme/ListBoxItemStyles.axaml" />
+		-->
 	</Application.Styles>
 
 	<Application.Resources>

@@ -13,6 +13,11 @@
   </ItemGroup>
   
   <ItemGroup>
+    <AvaloniaResource Remove="Assets\Theme\ListBoxItemStyles.axaml" />
+    <AvaloniaResource Remove="Assets\Theme\ListBoxStyles.axaml" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <AvaloniaXaml Remove="Assets\Theme\AutoCompleteBoxStyles.axaml" />
   </ItemGroup>
     
@@ -36,6 +41,18 @@
 
   <ItemGroup>
     <Folder Include="Controls\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Update="Assets\Theme\ListBoxItemStyles.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaXaml>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Update="Assets\Theme\ListBoxStyles.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaXaml>
   </ItemGroup>
 	
 </Project>

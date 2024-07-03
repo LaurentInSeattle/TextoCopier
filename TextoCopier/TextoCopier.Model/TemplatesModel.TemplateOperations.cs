@@ -164,7 +164,7 @@ public sealed partial class TemplatesModel
             return false;
         }
 
-        if (value.Length > StringMaxLength)
+        if (value.Length > LongStringMaxLength)
         {
             message = TemplateValueIsTooLong;
             return false;
