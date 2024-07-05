@@ -4,7 +4,6 @@
 - Add Icons to Action buttons 
 - Icon selection preview 
 - Base class for NewEdit Groups and Templates 
-- Verify use of dependency injection for all VMs
 - Settings View
 - About View
 
