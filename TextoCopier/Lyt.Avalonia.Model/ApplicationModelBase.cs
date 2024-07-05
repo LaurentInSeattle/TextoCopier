@@ -25,13 +25,14 @@ public class ApplicationModelBase(IProfiler profiler, ILogger logger, IApplicati
             throw new ApplicationException("Failed to initialize models.", ex);
         }
 
-        _ = Task.Run(async () =>
+        _ = Task.Run(async() =>
         {
             try
             {
-                // Delay until the app has fully started up before freezing it with a collection 
-                await Task.Delay(200);
-                this.profiler.MemorySnapshot("Initial Memory Snapshot");
+                // Delay until the app has fully started up before looking up the perf counters 
+                // Do not collect, again to avoid a slow startup.
+                await Task.Delay(250);
+                this.profiler.MemorySnapshot("All Models Initialized", withGCCollect: false);
             }
             catch (Exception ex)
             {

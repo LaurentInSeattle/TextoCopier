@@ -35,6 +35,8 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
     protected override void OnViewLoaded()
     {
+        this.Logger.Debug("OnViewLoaded begins");
+
         base.OnViewLoaded();
         if (this.View is null)
         {
@@ -45,10 +47,18 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.localizer.DetectAvailableLanguages();
         this.localizer.SelectLanguage("it-IT");
 
+        this.Logger.Debug("OnViewLoaded language loaded");
+
         // Create all statics views and bind them 
         ShellViewModel.SetupWorkflow();
+        this.Logger.Debug("OnViewLoaded SetupWorkflow complete");
+
         this.BindGroupIcons();
-        this.OnViewActivation(ActivatedView.Group);
+
+        this.Logger.Debug("OnViewLoaded BindGroupIcons complete");
+
+        this.OnViewActivation(ActivatedView.Group, parameter: null, isFirstActivation: true);
+        this.Logger.Debug("OnViewLoaded OnViewActivation complete");
 
         // Ready 
         this.toaster.Host = this.View.ToasterHost;
@@ -65,28 +75,35 @@ public sealed class ShellViewModel : Bindable<ShellView>
                 10_000, InformationLevel.Warning);
         }
 
+        this.Logger.Debug("OnViewLoaded SetupAvailableIcons begins");
+
         this.SetupAvailableIcons();
+
+        this.Logger.Debug("OnViewLoaded SetupAvailableIcons complete");
+
+        this.Logger.Debug("OnViewLoaded complete");
     }
 
     private void SetupAvailableIcons()
     {
-        _ = Task.Run(() => 
+        _ = Task.Run(async () => 
         {
             // Detect Available Icons in asset file and pass that to the model 
             List<string> icons = ShellViewModel.DetectAvailableIcons();
             this.Logger.Debug(icons.Count + " icons available.");
             this.templatesModel.AvailableIcons = icons;
+            await Task.Delay(250); 
+            this.profiler.MemorySnapshot("Shell View Loaded", withGCCollect: true);
         }); 
     }
 
     private static List<string> DetectAvailableIcons()
     {
         var icons = new List<string>(2200);
-        string uriString = "avares://TextoCopier/Assets/Icons/FluentSVGResourceDictionary.axaml";
+        const string uriString = "avares://TextoCopier/Assets/Icons/FluentSVGResourceDictionary.axaml";
         var uri = new Uri(uriString);
         var resourceInclude = new ResourceInclude(uri) { Source = uri };
-        var dict = resourceInclude.Loaded;
-        foreach (object? keyObject in dict.Keys)
+        foreach (object? keyObject in resourceInclude.Loaded.Keys)
         {
             if (keyObject is string keyString)
             {
@@ -100,7 +117,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         }
 
         icons.Sort();
-        return icons; 
+        return icons;
     }
 
     private void OnModelUpdated(ModelUpdateMessage message)
@@ -116,9 +133,9 @@ public sealed class ShellViewModel : Bindable<ShellView>
     }
 
     private void OnViewActivation(ViewActivationMessage message)
-        => this.OnViewActivation(message.View, message.ActivationParameter);
+        => this.OnViewActivation(message.View, message.ActivationParameter, false);
 
-    private void OnViewActivation(ActivatedView activatedView, object? parameter = null)
+    private void OnViewActivation(ActivatedView activatedView, object? parameter = null, bool isFirstActivation = false)
     {
         if (activatedView == ActivatedView.GoBack)
         {
@@ -133,28 +150,28 @@ public sealed class ShellViewModel : Bindable<ShellView>
         {
             default:
             case ActivatedView.Group:
-                this.Activate<GroupViewModel, GroupView>(null);
+                this.Activate<GroupViewModel, GroupView>(isFirstActivation, null);
                 break;
 
             case ActivatedView.NewGroup:
-                this.Activate<NewEditGroupViewModel, NewEditGroupView>(null);
+                this.Activate<NewEditGroupViewModel, NewEditGroupView>(isFirstActivation, null);
                 break;
 
             case ActivatedView.EditGroup:
-                this.Activate<NewEditGroupViewModel, NewEditGroupView>(this.templatesModel.SelectedGroup);
+                this.Activate<NewEditGroupViewModel, NewEditGroupView>(isFirstActivation, this.templatesModel.SelectedGroup);
                 break;
 
             case ActivatedView.Help:
-                this.Activate<HelpViewModel, HelpView>(null);
+                this.Activate<HelpViewModel, HelpView>(isFirstActivation, null);
                 break;
 
             case ActivatedView.Settings:
-                this.Activate<SettingsViewModel, SettingsView>(null);
+                this.Activate<SettingsViewModel, SettingsView>(isFirstActivation, null);
                 break;
 
             case ActivatedView.EditTemplate:
             case ActivatedView.NewTemplate:
-                this.Activate<NewEditTemplateViewModel, NewEditTemplateView>(parameter);
+                this.Activate<NewEditTemplateViewModel, NewEditTemplateView>(isFirstActivation, parameter);
                 break;
         }
     }
@@ -230,7 +247,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.BindGroupIcons(); 
     }
 
-    private void Activate<TViewModel, TControl>(object? activationParameters)
+    private void Activate<TViewModel, TControl>(bool isFirstActivation, object? activationParameters)
         where TViewModel : Bindable<TControl>
         where TControl : Control, new()
     {
@@ -254,7 +271,10 @@ public sealed class ShellViewModel : Bindable<ShellView>
         newViewModel.Activate(activationParameters);
         this.View.ShellViewContent.Content = newViewModel.View;
 
-        this.profiler.MemorySnapshot(newViewModel.View.GetType().Name + ":  Activated");
+        if( ! isFirstActivation)
+        {
+            this.profiler.MemorySnapshot(newViewModel.View.GetType().Name + ":  Activated");
+        }
     }
 
     private void BindGroupIcons()

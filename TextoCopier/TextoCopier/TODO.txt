@@ -7,7 +7,6 @@
 - Verify use of dependency injection for all VMs
 - Settings View
 - About View
-- Slow startup 
 
 NICE TO HAVE 
 - Use open link icon as main button for web links 

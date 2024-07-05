@@ -27,11 +27,11 @@ public sealed class Profiler(ILogger logger) : IProfiler
         => [GC.CollectionCount(0), GC.CollectionCount(1), GC.CollectionCount(2)];
 
     // Implemented only on Windows 
-    public void MemorySnapshot(string comment = "")
+    public void MemorySnapshot(string comment = "", bool withGCCollect = true)
     {
         if (OperatingSystem.IsWindows())
         {
-            this.WindowsMemorySnapshot(comment);
+            this.WindowsMemorySnapshot(comment, withGCCollect);
         }
     }
 
@@ -87,9 +87,13 @@ public sealed class Profiler(ILogger logger) : IProfiler
     }
 
     [SupportedOSPlatform("windows")]
-    private async void WindowsMemorySnapshot(string comment)
+    private async void WindowsMemorySnapshot(string comment, bool withGCCollect)
     {
-        await this.FullGcCollect(0);
+        if (withGCCollect)
+        {
+            await this.FullGcCollect(0);
+        }
+
         var currentProcess = Process.GetCurrentProcess();
         string processName = currentProcess.ProcessName;
         var ctr1 = new PerformanceCounter("Process", "Private Bytes", processName);
@@ -98,8 +102,9 @@ public sealed class Profiler(ILogger logger) : IProfiler
         int[] collections = this.CollectionCounts();
 
         string rightNow = DateTime.Now.ToLocalTime().ToLongTimeString();
+        string withCollect = withGCCollect ? ", with GC Collect " : " "; 
         int megaPrivateBytes = (int)((privateBytes + 512 * 1024) / (1024 * 1024));
-        string part1 = "***** Memory Snapshot: " + comment + "  at: " + rightNow;
+        string part1 = "***** Memory Snapshot: " + comment + "  at: " + rightNow + withCollect;
         string part2 = "Private Bytes:  " + megaPrivateBytes.ToString() + " MB.";
         string part3 = string.Format(" Gen. 0: {0} - 1: {1} - 2: {2}", collections[0], collections[1], collections[2]);
         this.logger.Info(part1 + "  -  " + part2 + "  -  " + part3);

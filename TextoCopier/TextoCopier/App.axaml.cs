@@ -46,6 +46,9 @@ public partial class App : ApplicationBase
 
     protected override async Task OnStartupBegin()
     {
+        var logger = App.GetRequiredService<ILogger>();
+        logger.Debug("OnStartupBegin begins" ); 
+
         // This needs to complete before all models are initialized.
         var fileManager = App.GetRequiredService<FileManagerModel>();
         await fileManager.Configure(new FileManagerConfiguration(App.Organization, App.Application, App.RootNamespace));
@@ -57,6 +60,8 @@ public partial class App : ApplicationBase
                 Languages = ["en-US", "fr-FR", "it-IT"],
                 // Use default for all other config parameters 
             });
+
+        logger.Debug("OnStartupBegin complete");
     }
 
     // Why does it need to be there ??? 
