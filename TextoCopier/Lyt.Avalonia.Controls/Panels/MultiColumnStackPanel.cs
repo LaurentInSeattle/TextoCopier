@@ -1,7 +1,6 @@
-
 namespace Lyt.Avalonia.Controls.Panels;
 
-/// <summary> A panel which lays out its children horizontally or vertically, using a multi-column layout. </summary>
+/// <summary> A panel which lays out its children vertically, using a multi-column layout. </summary>
 /// <remarks> The panel is always Vertical. </remarks>
 public class MultiColumnStackPanel : Panel 
 {
@@ -169,7 +168,8 @@ public class MultiColumnStackPanel : Panel
         }
         else if (columnCount > 1)
         {
-            // Regardless of the actual possible count of columns, we are performing layout on two columns, named left and right
+            // Regardless of the actual possible count of columns, we are performing layout on two columns,
+            // named left and right.
             var rectangleLeft = new Rect(finalSize);
             var rectangleRight = new Rect(finalSize);
             double availableWidth = finalSize.Width / 2.0 - spacing;
