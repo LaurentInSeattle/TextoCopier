@@ -7,6 +7,7 @@
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
     xmlns:vm="clr-namespace:Lyt.TextoCopier.Workflow"
 	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
+	xmlns:panels="clr-namespace:Lyt.Avalonia.Controls.Panels;assembly=Lyt.Avalonia.Controls"
     x:DataType="vm:GroupViewModel" 
     Background="Transparent"
     >
@@ -78,16 +79,12 @@
 					>
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
-							<WrapPanel />
+							<panels:MultiColumnStackPanel ColumnMaxWidth="360"/>
 						</ItemsPanelTemplate>
 					</ItemsControl.ItemsPanel>
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<vm:TemplateView
-								MinWidth="296"
-								MaxWidth="296"
-								>							
-							</vm:TemplateView>
+							<vm:TemplateView />
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
