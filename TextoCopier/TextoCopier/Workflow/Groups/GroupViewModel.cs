@@ -2,17 +2,16 @@
 
 public sealed class GroupViewModel : Bindable<GroupView>
 {
-    public GroupViewModel() : this(ApplicationBase.GetRequiredService<TemplatesModel>()) { }
-
-    private readonly TemplatesModel templatesModel;
     private readonly IMessenger messenger;
     private readonly LocalizerModel localizer;
+    private readonly TemplatesModel templatesModel;
 
-    public GroupViewModel(TemplatesModel templatesModel)
+    public GroupViewModel(IMessenger messenger, LocalizerModel localizer, TemplatesModel templatesModel)
     {
-        this.messenger = ApplicationBase.GetRequiredService<IMessenger>();
-        this.localizer = ApplicationBase.GetRequiredService<LocalizerModel>();
+        this.messenger = messenger;
+        this.localizer = localizer;
         this.templatesModel = templatesModel;
+
         this.templatesModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
         this.Templates = [];
         this.NewTemplateCommand = new Command(this.OnNewTemplate);
