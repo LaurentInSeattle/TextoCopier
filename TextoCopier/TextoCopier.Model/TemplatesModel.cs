@@ -1,16 +1,17 @@
 ﻿namespace Lyt.TextoCopier.Model;
 
-using System.Linq.Expressions;
-using System;
 using static FileManagerModel;
 
 public sealed partial class TemplatesModel : ModelBase
 {
+    public const string DefaultLanguage = "it-IT";
+
     #region Default Template
 
     private static readonly TemplatesModel DefaultTemplate =
         new()
         {
+            Language = DefaultLanguage ,
             Groups =
             [
                 new Group
@@ -20,16 +21,9 @@ public sealed partial class TemplatesModel : ModelBase
                     Icon = "person",
                     Templates =
                     [
-                        new Template { Name = "Email" , Value = "ly.testud@outlook.com" },
-                        new Template { Name = "Git Password" , Value = "laurent.4.git", ShouldHide = true },
-                        new Template { Name = "First" , Value = "Laurent" },
-                        new Template { Name = "Middle" , Value = "Yves" },
-                        new Template { Name = "Last" , Value = "Testud" },
-                        new Template { Name = "Full Name" , Value = "Laurent Y. Testud" },
-                        new Template { Name = "Phone" , Value = "+1 (206) 619-7238" },
-                        new Template { Name = "Phone - Numbers only" , Value = "2066197238" },
-                        // LATER 
-                        // new Template { Name = "Full Name" , Value = "{First} {Last}" },
+                        new Template { Name = "Email" , Value = "john.doe@email.com" },
+                        new Template { Name = "Git Password" , Value = "john.4.git", ShouldHide = true },
+                        new Template { Name = "Phone" , Value = "+1 (206) 420-0666" },
                     ]
                 },
                 new Group
@@ -39,8 +33,6 @@ public sealed partial class TemplatesModel : ModelBase
                     Icon = "link",
                     Templates =
                     [
-                        new Template { Name = "Email" , Value = "ly.testud@outlook.com" },
-                        new Template { Name = "Password" , Value = "Faster.Dude", ShouldHide = true },
                         new Template 
                         { 
                             Name = "Thanks + Yes" , 
@@ -52,7 +44,7 @@ public sealed partial class TemplatesModel : ModelBase
                         },
                         new Template
                         {
-                            Name = "Sig - Regards" , Value = "Best regards,    \nLaurent"
+                            Name = "Sig - Regards" , Value = "Best regards,    \nJohn"
                         },
                     ]
                 },
@@ -65,12 +57,12 @@ public sealed partial class TemplatesModel : ModelBase
                     [
                         new Template { Name = "Incontro ID" , Value = "84240413222" },
                         new Template { Name = "Incontro Codice" , Value = "717140" },
-                        new Template { Name = "Nome di Schermo" , Value = "Enzo ~ Laurent" },
+                        new Template { Name = "Nome di Schermo" , Value = "John" },
                         new Template { Name = "Kahoot" , Value = "https://kahoot.it/", IsLink = true},
                         new Template
                         {
                             Name = "Introduzione" ,
-                            Value = "Ciao! Mi chiamo Lorenzo e vivo in Pleasanton, una piccola citta nella periferia di San Francisco, California."
+                            Value = "Ciao! Mi chiamo John e vivo in Pleasanton, una piccola citta nella periferia di San Francisco, California."
                         },
                         new Template
                         {
@@ -102,54 +94,9 @@ public sealed partial class TemplatesModel : ModelBase
 " },
                     ]
                 },
-                new Group
-                {
-                    Name = "Test",
-                    Description = "Testing Deletion",
-                    Icon = "dismiss",
-                    Templates =
-                    [
-                        new Template { Name = "Email" , Value = "ly.testud@outlook.com" },
-                        new Template { Name = "Password" , Value = "Faster.Dude", ShouldHide = true },
-                    ]
-                },
             ]
         };
 
-    /*
-     copy_regular
-     edit_regular
-    clipboard_paste_regular
-    delete_forever_regular
-    delete_regular
-    image_add_regular
-    folder_add_regular
-    text_add_regular
-    mail_regular
-    add_regular
-    add_circle_regular
-    settings_regular
-    home_regular
-    info_regular
-    question_regular
-    question_circle_regular
-    warning_regular
-    checkmark_regular
-    checkmark_square_regular
-    checkbox_checked_regular
-    people_community_regular
-    globe_regular
-    heart_regular
-
-emoji_regular
-emoji_sad_regular
-emoji_angry_regular
-emoji_laugh_regular
-emoji_meh_regular
-emoji_surprise_regular
-
-
-    * */
     #endregion Default Template
 
     private const string TemplatesModelFilename = "Templates";
@@ -170,7 +117,6 @@ emoji_surprise_regular
 
     public TemplatesModel(FileManagerModel fileManager, IMessenger messenger, ILogger logger) : base(messenger, logger)
     {
-        // ???? 
         // Do not inject the FileManagerModel instance: a parameter-less ctor is required for Deserialization 
         this.fileManager = fileManager;
         this.ShouldAutoSave = true;
@@ -186,18 +132,18 @@ emoji_surprise_regular
         }
     }
 
-    // Serialized 
-    // No model changed event
+    // Serialized -  No model changed event
+    public string Language { get; set; } = TemplatesModel.DefaultLanguage;
+
+    // Serialized -  No model changed event
     public List<Group> Groups { get; set; } = [];
 
     [JsonIgnore]
-    // Not serialized 
-    // With model changed event
+    // Not serialized -  With model changed event
     public Group? SelectedGroup { get => this.Get<Group?>(); set => this.Set(value); }
 
     [JsonIgnore]
-    // Not serialized 
-    // No model changed event
+    // Not serialized - No model changed event
     public List<string> AvailableIcons { get; set; } = []; 
 
     public Task Load()
@@ -210,6 +156,7 @@ emoji_surprise_regular
         TemplatesModel model =
             this.fileManager.Load<TemplatesModel>(Area.User, Kind.Json, TemplatesModel.TemplatesModelFilename);
         this.Groups = model.Groups;
+        this.Language = model.Language; 
         return Task.CompletedTask;
     }
 

@@ -197,7 +197,9 @@ public class ApplicationBase(
 
     protected virtual Task OnStartupComplete() => Task.CompletedTask;
 
-    protected virtual Task OnShutdown() => Task.CompletedTask;
+    protected virtual Task OnShutdownBegin() => Task.CompletedTask;
+
+    protected virtual Task OnShutdownComplete() => Task.CompletedTask;
 
     private async Task Startup()
     {
@@ -241,12 +243,14 @@ public class ApplicationBase(
     public async Task Shutdown()
     {
         this.Logger.Info("***   Shutdown   ***");
-        await this.OnShutdown();
+        await this.OnShutdownBegin();
 
         //startupWindow.Closing += (_, _) => { this.logViewer?.Close(); };
         IApplicationModel applicationModel = ApplicationBase.GetRequiredService<IApplicationModel>();
         await applicationModel.Shutdown();
         await ApplicationBase.AppHost!.StopAsync();
+        await this.OnShutdownComplete();
+
         this.ForceShutdown();
     }
 

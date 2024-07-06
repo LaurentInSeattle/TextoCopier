@@ -4,8 +4,6 @@ using static ViewActivationMessage;
 
 public sealed class ShellViewModel : Bindable<ShellView>
 {
-    public ShellViewModel() : this(ApplicationBase.GetRequiredService<TemplatesModel>()) { }
-
     private readonly TemplatesModel templatesModel;
     private readonly IDialogService dialogService;
     private readonly IToaster toaster;
@@ -13,15 +11,19 @@ public sealed class ShellViewModel : Bindable<ShellView>
     private readonly IProfiler profiler;
     private readonly LocalizerModel localizer;
 
-    public ShellViewModel(TemplatesModel templatesModel)
+    public ShellViewModel(
+        TemplatesModel templatesModel, LocalizerModel localizer, 
+        IDialogService dialogService, IToaster toaster, IMessenger messenger, IProfiler profiler)
     {
         this.templatesModel = templatesModel;
-        this.dialogService = ApplicationBase.GetRequiredService<IDialogService>();
-        this.toaster = ApplicationBase.GetRequiredService<IToaster>();
-        this.messenger = ApplicationBase.GetRequiredService<IMessenger>();
-        this.profiler = ApplicationBase.GetRequiredService<IProfiler>();
-        this.localizer = App.GetRequiredService<LocalizerModel>();
+        this.localizer = localizer;
+        this.dialogService = dialogService;
+        this.toaster = toaster;
+        this.messenger = messenger;
+        this.profiler = profiler;
+
         this.templatesModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
+        this.messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
 
         this.Groups = [];
         this.SettingsCommand = new Command(this.OnSettings);
@@ -30,7 +32,6 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.NewGroupCommand = new Command(this.OnNewGroup);
         this.EditGroupCommand = new Command(this.OnEditGroup);
         this.DeleteGroupCommand = new Command(this.OnDeleteGroup);
-        this.messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
     }
 
     protected override void OnViewLoaded()
@@ -45,7 +46,9 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         // Select default language 
         this.localizer.DetectAvailableLanguages();
-        this.localizer.SelectLanguage("it-IT");
+        string preferredLanguage = this.templatesModel.Language;
+        this.Logger.Debug("Language: " + preferredLanguage);
+        this.localizer.SelectLanguage(preferredLanguage);
 
         this.Logger.Debug("OnViewLoaded language loaded");
 
@@ -80,7 +83,6 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.SetupAvailableIcons();
 
         this.Logger.Debug("OnViewLoaded SetupAvailableIcons complete");
-
         this.Logger.Debug("OnViewLoaded complete");
     }
 

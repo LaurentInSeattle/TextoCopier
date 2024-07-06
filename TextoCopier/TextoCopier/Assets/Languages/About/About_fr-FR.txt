@@ -1,6 +1,6 @@
 ﻿À propos de Texto Copieur
 
-Texto Copieur est un logiciel utilitaire pratique conçu pour stocker et organiser les différents extraits de texte que vous utilisez souvent dans la correspondance, tels que les e-mails ou les soumissions Web, les liens vers vos sites Web favoris, les éléments de texte requis pour remplir des formulaires en ligne ou divers codes et clés. pour une utilisation dans d'autres applications.
+Texto Copieur est un logiciel utilitaire pratique conçu pour stocker et organiser les différents extraits de texte que vous utilisez souvent dans votre correspondance, tels que les e-mails ou les soumissions Web, les liens vers vos sites Web favoris, les éléments de texte requis pour remplir des formulaires en ligne ou divers codes et clés. pour une utilisation dans d'autres applications.
 
 Tant qu'un texte peut être régulièrement collé quelque part, l'extrait de texte correspondant devrait être mémorisé dans Texto Copieur...
 
@@ -12,13 +12,14 @@ Comment commencer...
 
 Commencez par créer un nouveau groupe.
 Donnez-lui un nom court et une brève description.
-Choisissez une icône pour la rappeler facilement depuis la barre latérale.
+Choisissez une icône pour s'en rappeler facilement depuis la barre latérale.
 Sélectionnez ce groupe dans la barre latérale gauche et ajoutez des extraits de texte.
 Entrez un nom court et le modèle de texte.
 Vous pouvez éventuellement le masquer dans la vue principale, si nécessaire.
 Signalez les liens Web, si nécessaire.
 Sauvegarder.
 "Faites passer" la souris sur un extrait et cliquez sur le bouton "Copier"
+
 Le texte est maintenant prêt à être collé dans votre navigateur ou dans toute autre application de bureau permettant de coller du texte.
 
 Important!

@@ -1,11 +1,11 @@
 ﻿MUST DO
 - Style for the Auto Complete Box 
 	=> Style for ListBox and ListBoxItem 
+- Style for the ComboBox 
 - Add Icons to Action buttons 
 - Icon selection preview 
 - Base class for NewEdit Groups and Templates 
 - Settings View
-- About View
 
 NICE TO HAVE 
 - Use open link icon as main button for web links 

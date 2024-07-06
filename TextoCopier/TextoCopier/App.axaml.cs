@@ -46,6 +46,8 @@ public partial class App : ApplicationBase
         // This should be empty, use the OnStartup override
     }
 
+    public bool RestartRequired { get; set; }
+
     protected override async Task OnStartupBegin()
     {
         var logger = App.GetRequiredService<ILogger>();
@@ -56,16 +58,36 @@ public partial class App : ApplicationBase
         await fileManager.Configure(
             new FileManagerConfiguration(
                 App.Organization, App.Application, App.RootNamespace, App.AssemblyName, App.AssetsFolder));
+
+        // The localizer needs the File Manager, do not change the order.
         var localizer = App.GetRequiredService<LocalizerModel>();
         await localizer.Configure(
             new LocalizerConfiguration
             {
-                AssemblyName = App.Application,
+                AssemblyName = App.AssemblyName,
                 Languages = ["en-US", "fr-FR", "it-IT"],
                 // Use default for all other config parameters 
             });
 
         logger.Debug("OnStartupBegin complete");
+    }
+
+    protected override Task OnShutdownComplete()
+    {
+        var logger = App.GetRequiredService<ILogger>();
+        logger.Debug("On Shutdown Complete");
+
+        if (this.RestartRequired)
+        {
+            logger.Debug("On Shutdown Complete: Restart Required");
+            var process = Process.GetCurrentProcess();
+            if ( (process is not null) && (process.MainModule is not null ) )
+            {
+                Process.Start(process.MainModule.FileName);
+            } 
+        }
+
+        return Task.CompletedTask; 
     }
 
     // Why does it need to be there ??? 
