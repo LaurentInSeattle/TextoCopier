@@ -20,6 +20,12 @@
   <ItemGroup>
     <AvaloniaXaml Remove="Assets\Theme\AutoCompleteBoxStyles.axaml" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="Assets\Languages\About\About_en-US.txt" />
+    <None Remove="Assets\Languages\About\About_fr-FR.txt" />
+    <None Remove="Assets\Languages\About\About_it-IT.txt" />
+  </ItemGroup>
     
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.11" />

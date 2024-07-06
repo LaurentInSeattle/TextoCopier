@@ -8,6 +8,7 @@ public sealed class FileManagerModel : ModelBase, IModel
         Settings,
         Configuration,
         User,
+        Resources,
     }
 
     public enum Kind
@@ -35,8 +36,8 @@ public sealed class FileManagerModel : ModelBase, IModel
 
     public FileManagerModel(IMessenger messenger, ILogger logger) : base(messenger, logger)
     {
-        this.configuration = new FileManagerConfiguration(string.Empty, string.Empty, string.Empty);
-        this.jsonSerializerOptions = new JsonSerializerOptions { AllowTrailingCommas = true } ;
+        this.configuration = new FileManagerConfiguration(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+        this.jsonSerializerOptions = new JsonSerializerOptions { AllowTrailingCommas = true };
         this.jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     }
 
@@ -61,7 +62,9 @@ public sealed class FileManagerModel : ModelBase, IModel
 
         if (string.IsNullOrWhiteSpace(configuration.Organization) ||
             string.IsNullOrWhiteSpace(configuration.Application) ||
-            string.IsNullOrWhiteSpace(configuration.RootNamespace))
+            string.IsNullOrWhiteSpace(configuration.RootNamespace) ||
+            string.IsNullOrWhiteSpace(configuration.AssemblyName) ||
+            string.IsNullOrWhiteSpace(configuration.AssetsFolder))
         {
             throw new Exception("Invalid File Manager Configuration");
         }
@@ -165,7 +168,7 @@ public sealed class FileManagerModel : ModelBase, IModel
         // This is causing more troubles than solutions
         // // Spaces are valid in Windows path names but often cause problems, so avoid...
         // // validFileName = validFileName.Replace(' ', '_');
-        
+
         changed = validFileName != fileName;
         return validFileName;
     }
@@ -246,7 +249,7 @@ public sealed class FileManagerModel : ModelBase, IModel
         }
     }
 
-    public string Serialize<T>(T deserialized) where T: class
+    public string Serialize<T>(T deserialized) where T : class
     {
         try
         {
@@ -325,15 +328,20 @@ public sealed class FileManagerModel : ModelBase, IModel
 
     public bool Exists(Area area, Kind kind, string name)
     {
-        string path = this.MakePath(area, kind, name); 
+        string path = this.MakePath(area, kind, name);
         return Path.Exists(path);
     }
 
-    public T Load<T> (Area area, Kind kind, string name) where T : class 
+    public T Load<T>(Area area, Kind kind, string name) where T : class
     {
         try
         {
-            string path = 
+            if (area == Area.Resources)
+            {
+                return this.LoadResource<T>(kind, name);
+            }
+
+            string path =
                 Path.Combine(this.PathFromArea(area), string.Concat(name, FileManagerModel.ExtensionFromKind(kind)));
             switch (kind)
             {
@@ -364,17 +372,48 @@ public sealed class FileManagerModel : ModelBase, IModel
         }
     }
 
-    public void Save<T> (Area area, Kind kind, string name, T content) where T : class
+    private T LoadResource<T>(Kind kind, string name) where T : class
+    {
+        string uriString = string.Format("{0}{1}", this.configuration.AvaresUriString(), name);
+        var streamReader = new StreamReader(AssetLoader.Open(new Uri(uriString)));
+        switch (kind)
+        {
+            default:
+            case Kind.Text:
+                if (typeof(T) == typeof(string))
+                {
+                    string content = streamReader.ReadToEnd();
+                    return (content as T)!;
+                }
+
+                throw new NotSupportedException("string type mismatch");
+
+            case Kind.Json:
+                string serialized = streamReader.ReadToEnd();
+                T deserialized = this.Deserialize<T>(serialized);
+                return deserialized;
+
+            case Kind.Binary:
+                throw new NotSupportedException("No binaries for now");
+        }
+    }
+
+    public void Save<T>(Area area, Kind kind, string name, T content) where T : class
     {
         try
         {
-            string path = 
+            if (area == Area.Resources)
+            {
+                throw new NotSupportedException("Cant save resource files");
+            }
+
+            string path =
                 Path.Combine(this.PathFromArea(area), string.Concat(name, FileManagerModel.ExtensionFromKind(kind)));
             switch (kind)
             {
                 default:
                 case Kind.Text:
-                    if ( content is string contentString )
+                    if (content is string contentString)
                     {
                         File.WriteAllText(path, contentString);
                     }

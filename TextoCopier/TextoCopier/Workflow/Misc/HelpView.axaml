@@ -48,20 +48,18 @@
 			x:Name="InnerGrid"
 			Grid.Row="1"
 			>
-			<glyphs:GlyphButton
-				Style="{StaticResource ToolbarIconButton}"
-				Layout="TextOnly"
-				Behaviour="Tap"
-				HorizontalAlignment="Center" VerticalAlignment="Center"
-				Width="140" Height="48"
-				Margin="4 4 12 4"
-				ButtonBackground="BorderOnly"
-				GlyphStrokeThickness="0.1"
-				GlyphAngle="0"
-				Text="Text Only Layout"
-				FontSize="16"
-				Command="{Binding CloseCommand}"
-	    	/>
+			<ScrollViewer>				
+				<TextBlock
+					Grid.Row="0"
+					Text="{Binding About}"
+					HorizontalAlignment="Left" VerticalAlignment="Top"
+					Margin="12 4 24 4"
+					FontSize="16"
+					FontStyle="Normal"
+					Foreground="{StaticResource LightAqua_0_080}"
+					TextWrapping="Wrap"
+					/>
+			</ScrollViewer>
 		</Grid>
 	</Grid>
 </UserControl>

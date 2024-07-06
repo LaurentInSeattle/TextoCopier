@@ -1,0 +1,38 @@
+﻿À propos de Texto Copieur
+
+Texto Copieur est un logiciel utilitaire pratique conçu pour stocker et organiser les différents extraits de texte que vous utilisez souvent dans la correspondance, tels que les e-mails ou les soumissions Web, les liens vers vos sites Web favoris, les éléments de texte requis pour remplir des formulaires en ligne ou divers codes et clés. pour une utilisation dans d'autres applications.
+
+Tant qu'un texte peut être régulièrement collé quelque part, l'extrait de texte correspondant devrait être mémorisé dans Texto Copieur...
+
+Par exemple, les developpeurs de logiciels peuvent l'utiliser pour rappeler de longues structures de code, de longues lignes de commande, etc.
+
+Vous organiserez vos extraits de code et modèles de texte en groupes pour une catégorisation et un accès facile.
+
+Comment commencer...
+
+Commencez par créer un nouveau groupe.
+Donnez-lui un nom court et une brève description.
+Choisissez une icône pour la rappeler facilement depuis la barre latérale.
+Sélectionnez ce groupe dans la barre latérale gauche et ajoutez des extraits de texte.
+Entrez un nom court et le modèle de texte.
+Vous pouvez éventuellement le masquer dans la vue principale, si nécessaire.
+Signalez les liens Web, si nécessaire.
+Sauvegarder.
+"Faites passer" la souris sur un extrait et cliquez sur le bouton "Copier"
+Le texte est maintenant prêt à être collé dans votre navigateur ou dans toute autre application de bureau permettant de coller du texte.
+
+Important!
+
+Vous pouvez utiliser Texto Copieur pour mémoriser les mots de passe et autres données similaires. 
+Mais... ce serait une très mauvaise idée. Veuillez garder à l'esprit que Texto Copieur ne crypte PAS vos données.
+
+N'utilisez pas Texto Copieur pour stocker des informations critiques.
+
+Trucs techniques
+
+Texto Copieur est écrit en C# 12, .Net 8 et utilise le framework Interface Utilisateur Avalonia sans aucune autre dépendance.
+
+Texto Copieur respecte votre droit à la vie privée, ne nécessite aucune connexion Internet, n'enregistre rien, ne collecte aucune donnée et ne « téléphone jamais à la maison ».
+
+Le code source de Texto Copieur vous est proposé sous la très permissive licence logicielle MIT et est disponible sur le site GitHub, ici :
+https://github.com/LaurentInSeattle/TextoCopier

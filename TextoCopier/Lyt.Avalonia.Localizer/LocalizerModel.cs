@@ -2,15 +2,18 @@
 
 public sealed class LocalizerModel : ModelBase
 {
-    private readonly global::Avalonia.Application application;
-    private string? currentLanguage;
-    private ResourceInclude? currentLanguageResource;
+    private readonly Application application;
+    private readonly FileManagerModel fileManagerModel;
+
     private LocalizerConfiguration configuration;
 
+    private string? currentLanguage;
+    private ResourceInclude? currentLanguageResource;
+
     public LocalizerModel(
-        IApplicationBase application, IMessenger messenger, ILogger logger) : base(messenger, logger)
+        IApplicationBase application, IMessenger messenger, ILogger logger, FileManagerModel fileManagerModel) : base(messenger, logger)
     {
-        if (application is not global::Avalonia.Application avaloniaApplication)
+        if (application is not Application avaloniaApplication)
         {
             string msg = "No valid application object";
             this.Logger.Error(msg);
@@ -18,7 +21,8 @@ public sealed class LocalizerModel : ModelBase
         }
 
         this.application = avaloniaApplication;
-        this.configuration = new LocalizerConfiguration();
+        this.fileManagerModel = fileManagerModel;
+        this.configuration = new ();
     }
 
     public override Task Initialize() => Task.CompletedTask;
@@ -115,5 +119,35 @@ public sealed class LocalizerModel : ModelBase
 
         this.Logger.Warning("Failed to translate: " + localizationKey + " for language: " + this.currentLanguage);
         return string.Empty;
+    }
+
+    public string LookupResource(string localizationKey)
+    {
+        if (string.IsNullOrWhiteSpace(this.currentLanguage) || this.currentLanguageResource is null)
+        {
+            this.Logger.Warning("No language loaded");
+            return string.Empty;
+        }
+
+        try
+        {
+            string name = 
+                string.Format(
+                    "{0}/{1}/{1}_{2}.txt", this.configuration.LanguagesSubFolder, localizationKey, this.currentLanguage);
+            string localized = 
+                this.fileManagerModel.Load<string>(FileManagerModel.Area.Resources, FileManagerModel.Kind.Text, name);
+            if (string.IsNullOrWhiteSpace(localized)) 
+            {
+                throw new Exception("No localized data"); 
+            }
+
+            return localized;
+        }
+        catch (Exception ex)
+        {
+            this.Logger.Warning("Failed to translate resource: " + localizationKey + " for language: " + this.currentLanguage);
+            this.Logger.Warning("Exception thrown: \n" + ex.ToString());
+            return string.Empty;
+        }
     }
 }

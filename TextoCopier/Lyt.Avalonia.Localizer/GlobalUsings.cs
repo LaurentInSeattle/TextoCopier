@@ -36,3 +36,4 @@ global using Lyt.Avalonia.Interfaces.Profiler;
 global using Lyt.Avalonia.Interfaces.UserInterface;
 
 global using Lyt.Avalonia.Model;
+global using Lyt.Avalonia.Persistence;

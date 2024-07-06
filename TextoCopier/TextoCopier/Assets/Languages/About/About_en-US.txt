@@ -1,0 +1,35 @@
+﻿Texto-Copier is a handy software utility program designed to store and organize the various text snippets that you often use in correspondence such as emails or web submissions, links to favorite web sites, text elements required to fill online forms, or various codes and keys for use in other applications.
+
+As long as some text can be regularly pasted somewhere, the corresponding text snippet should be memorized in Texto-Copier... 
+
+For example Software folks can use it to recall lengthy code structures, long command lines, etc. 
+
+You will organize your snippets and text templates in groups for categorization and easy access.
+
+How to get started...
+
+Begin with creating a new group.
+Give it a short name and brief description.
+Choose an icon to recall it easily from the side bar.
+Select this group on the left side bar and add text snippets.
+Enter a short name and the text template.
+Optionally, hide it on the main view, if required.
+Flag web links, as needed. 
+Save.
+"Fly" the mouse over a snippet and click the "Copy" button
+The text is now ready to be pasted in your browser, or any other desktop application where text can be pasted.
+
+Important! 
+
+You could use Texto-Copier to remember passwords and other similar data. This would be a very bad idea. Please keep in mind that Texto-Copier does NOT encrypt your data. 
+
+Do not use Texto-Copier to store critical information.
+
+Tech' Stuff
+
+Texto-Copier is written in C# 12, .Net 8 and uses the Avalonia framework with no other dependency. 
+
+Texto-Copier respects your right to privacy, does not require any internet connection, does not log anything, does not collect any data, and never "phone home".
+
+Texto-Copier source code is offered under the very permissive MIT software license and is available on the GitHub website, here: 
+https://github.com/LaurentInSeattle/TextoCopier

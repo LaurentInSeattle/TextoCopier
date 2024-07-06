@@ -1,0 +1,37 @@
+﻿Informazioni su Testo Copiatrice
+
+Testo Copiatrice è un pratico programma di utilità software progettato per archiviare e organizzare i vari frammenti di testo che utilizzi spesso nella corrispondenza come e-mail o invii Web, collegamenti a siti Web preferiti, elementi di testo necessari per compilare moduli online o vari codici e chiavi da utilizzare in altre applicazioni.
+
+Finché del testo può essere incollato regolarmente da qualche parte, il frammento di testo corrispondente dovrebbe essere memorizzato in Testo Copiatrice...
+
+Ad esempio, gli utenti di software possono usarlo per richiamare lunghe strutture di codice, lunghe righe di comando, ecc.
+
+Organizzerai i tuoi frammenti e modelli di testo in gruppi per la categorizzazione e un facile accesso.
+
+Come iniziare...
+
+Inizia con la creazione di un nuovo gruppo.
+Dategli un nome breve e una breve descrizione.
+Scegli un'icona per richiamarla facilmente dalla barra laterale.
+Seleziona questo gruppo sulla barra laterale sinistra e aggiungi frammenti di testo.
+Inserisci un nome breve e il modello di testo.
+Facoltativamente, nascondilo nella vista principale, se necessario.
+Contrassegnare i collegamenti Web, secondo necessità.
+Salva.
+"Vola" il mouse su uno snippet e fai clic sul pulsante "Copia".
+Il testo è ora pronto per essere incollato nel browser o in qualsiasi altra applicazione desktop in cui è possibile incollare il testo.
+
+Importante!
+
+Potresti utilizzare Testo Copiatrice per ricordare password e altri dati simili. Sarebbe una pessima idea. Tieni presente che Testo Copiatrice NON crittografa i tuoi dati.
+
+Non utilizzare Testo Copiatrice per archiviare informazioni critiche.
+
+Roba tecnologica
+
+Testo Copiatrice è scritto in C# 12, .Net 8 e utilizza il framework Avalonia senza altre dipendenze.
+
+Testo Copiatrice rispetta il tuo diritto alla privacy, non richiede alcuna connessione Internet, non registra nulla, non raccoglie dati e non "telefona mai a casa".
+
+Il codice sorgente di Testo Copiatrice è offerto sotto la licenza software molto permissiva del MIT ed è disponibile sul sito web GitHub, qui:
+https://github.com/LaurentInSeattle/TextoCopier

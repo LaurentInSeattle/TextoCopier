@@ -5,6 +5,8 @@ public partial class App : ApplicationBase
     public const string Organization = "Lyt";
     public const string Application = "TextoCopier";
     public const string RootNamespace = "Lyt.TextoCopier";
+    public const string AssemblyName = "TextoCopier";
+    public const string AssetsFolder = "Assets";
 
     public App() : base(
         App.Organization,
@@ -51,7 +53,9 @@ public partial class App : ApplicationBase
 
         // This needs to complete before all models are initialized.
         var fileManager = App.GetRequiredService<FileManagerModel>();
-        await fileManager.Configure(new FileManagerConfiguration(App.Organization, App.Application, App.RootNamespace));
+        await fileManager.Configure(
+            new FileManagerConfiguration(
+                App.Organization, App.Application, App.RootNamespace, App.AssemblyName, App.AssetsFolder));
         var localizer = App.GetRequiredService<LocalizerModel>();
         await localizer.Configure(
             new LocalizerConfiguration
