@@ -1,6 +1,4 @@
-﻿using Lyt.Avalonia.Interfaces.UserInterface;
-
-namespace Lyt.Avalonia.Mvvm.Dialogs;
+﻿namespace Lyt.Avalonia.Mvvm.Dialogs;
 
 public sealed class DialogService(ILogger logger) : IDialogService
 {

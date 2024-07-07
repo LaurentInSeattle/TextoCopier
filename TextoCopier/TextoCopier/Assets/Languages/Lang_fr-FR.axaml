@@ -4,7 +4,7 @@
     xmlns:system="clr-namespace:System;assembly=System.Runtime">
 
 	<!-- é è ê -->	
-	<!-- à ò -->
+	<!-- à ò ç -->
 
 	<system:String x:Key="Shell.AppName">Texto Copieur</system:String>
 	<system:String x:Key="Shell.About">A propos...</system:String>
@@ -19,17 +19,13 @@
 	<system:String x:Key="Shell.Save">Sauvegarder</system:String>
 	<system:String x:Key="Shell.Ready">Pret.</system:String>
 	<system:String x:Key="Shell.Greetings">Bienvenue dans Texto Copieur !</system:String>
-
 	<system:String x:Key="Shell.Delete">Supprimer</system:String>
 	<system:String x:Key="Shell.GroupDelete.Question">Supprimer ce Groupe?</system:String>
 	<system:String x:Key="Shell.GroupDelete.Hint">Toutes les entrées de ce groupe seront supprimées. Cette opération ne peut pas être annulée.</system:String>
-
 	<system:String x:Key="Shell.Deleted">Supprimé.</system:String>
 	<system:String x:Key="Shell.GroupDeleted">Ce groupe a été supprimé.</system:String>
-
 	<system:String x:Key="Shell.Error">Erreur</system:String>
 	<system:String x:Key="Shell.FailGroupDelete">Impossible de supprimer ce groupe.</system:String>
-
 	<system:String x:Key="Shell.NoGroups.Title">Aucun groupe défini.</system:String>
 	<system:String x:Key="Shell.NoGroups.Hint">Créer un nouveau groupe pour commencer...</system:String>
 
@@ -53,17 +49,15 @@
 
 	<system:String x:Key="NewEditTemplateView.Changed.Format">Sera modifié dans {0}</system:String>
 	<system:String x:Key="NewEditTemplateView.Added.Format">Sera ajouté à {0}</system:String>
-
 	<system:String x:Key="NewEditTemplateView.TemplateName">Nom du Texte Modele</system:String>
 	<system:String x:Key="NewEditTemplateView.TemplateValue">Texte pour ce Modele</system:String>
-
 	<system:String x:Key="NewEditTemplateView.HideText.TrueText">Masquer le Texte</system:String>
 	<system:String x:Key="NewEditTemplateView.HideText.FalseText">Normal</system:String>
 	<system:String x:Key="NewEditTemplateView.IsWebLink.TrueText">Lien Internet</system:String>
 	<system:String x:Key="NewEditTemplateView.IsWebLink.FalseText">Standard</system:String>
 
 	<system:String x:Key="Settings.Language">Langue Interface Utilisateur</system:String>
-	<system:String x:Key="Settings.French">Francais</system:String>
+	<system:String x:Key="Settings.French">Français</system:String>
 	<system:String x:Key="Settings.English">Anglais (U.S.A.)</system:String>
 	<system:String x:Key="Settings.Italian">Italien</system:String>
 	<system:String x:Key="Settings.RestartRequired.Title">Redémarrage Nécessaire</system:String>
@@ -76,7 +70,6 @@
 	<system:String x:Key="TemplatesModel.GroupNameIsTooLong">Le nom de groupe est trop long.</system:String>
 	<system:String x:Key="TemplatesModel.DescriptionIsTooLong">Le texte de description de ce groupe est trop long.</system:String>
 	<system:String x:Key="TemplatesModel.IconNotAvailable">Cette icone n'est disponible.</system:String>
-
 	<system:String x:Key="TemplatesModel.TemplateAlreadyExists">Un text modèle avec ce nom existe déjà.</system:String>
 	<system:String x:Key="TemplatesModel.NoSuchTemplate">Ce texte modèle est inexistant.</system:String>
 	<system:String x:Key="TemplatesModel.TemplateNameIsBlank">Le nom du texte modèle ne peut être laissé en blanc.</system:String>
