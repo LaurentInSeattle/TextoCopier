@@ -62,6 +62,14 @@
 	<system:String x:Key="NewEditTemplateView.IsWebLink.TrueText">Lien Internet</system:String>
 	<system:String x:Key="NewEditTemplateView.IsWebLink.FalseText">Standard</system:String>
 
+	<system:String x:Key="Settings.Language">Langue Interface Utilisateur</system:String>
+	<system:String x:Key="Settings.French">Francais</system:String>
+	<system:String x:Key="Settings.English">Anglais (U.S.A.)</system:String>
+	<system:String x:Key="Settings.Italian">Italien</system:String>
+	<system:String x:Key="Settings.RestartRequired.Title">Redémarrage Nécessaire</system:String>
+	<system:String x:Key="Settings.RestartRequired.Hint">Changer cette préférence requiert le redémarrage de l'application.</system:String>
+	<system:String x:Key="Settings.RestartRequired.Verb">Redémarrer</system:String>
+
 	<system:String x:Key="TemplatesModel.GroupNameIsBlank">Le nom d'un groupe ne peut être laissé en blanc.</system:String>
 	<system:String x:Key="TemplatesModel.DescriptionIsBlank">Le description d'un groupe ne peut être laissé en blanc.</system:String>
 	<system:String x:Key="TemplatesModel.IconNameIsBlank">Le nom d'une icone est requis.</system:String>

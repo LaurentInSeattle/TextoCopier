@@ -47,6 +47,54 @@
 			x:Name="InnerGrid"
 			Grid.Row="1"
 			>
+			<Grid.RowDefinitions>
+				<!-- Field -->
+				<RowDefinition Height="32" />
+				<RowDefinition Height="44" />
+				<!-- Button -->
+				<RowDefinition Height="64" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<TextBlock
+				Grid.Row="0"
+				VerticalAlignment="Center" HorizontalAlignment="Stretch"
+				TextAlignment="Left"
+				Foreground="{StaticResource LightAqua_0_080}"
+				Text="{DynamicResource Settings.Language}"
+				FontStyle="Italic"
+				FontSize="14"
+				Margin="6 0 0 0"
+				IsHitTestVisible="False"
+                />
+			<ComboBox
+				Grid.Row="1"
+				VerticalAlignment="Center" HorizontalAlignment="Stretch"
+				Margin="12 0 0 0"
+				SelectedIndex="{Binding SelectedLanguage, Mode=TwoWay}"
+				>
+				<ComboBoxItem  Content="{DynamicResource Settings.English}" />
+				<ComboBoxItem  Content="{DynamicResource Settings.French}" />
+				<ComboBoxItem  Content="{DynamicResource Settings.Italian}" />
+			</ComboBox>
+			<Rectangle
+				Fill="#70000020"
+                Grid.Row="2"
+				/>
+			<glyphs:GlyphButton
+				x:Name="SaveButton"
+                Grid.Row="2"
+				Style="{StaticResource ToolbarIconButton}"
+				Behaviour="Tap"
+				HorizontalAlignment="Right" VerticalAlignment="Center"
+				Width="72" Height="48"
+				Margin="4 4 12 4"
+				GlyphSource="save"
+				ButtonBackground="BorderlessRectangle"
+				GlyphStrokeThickness="0"
+				GlyphAngle="0"
+				Text="{DynamicResource Shell.Save}"
+				Command="{Binding SaveCommand}"
+	    		/>
 		</Grid>
 	</Grid>
 </UserControl>

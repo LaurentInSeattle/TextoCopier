@@ -63,6 +63,14 @@
 	<system:String x:Key="NewEditTemplateView.IsWebLink.TrueText">Collegamento</system:String>
 	<system:String x:Key="NewEditTemplateView.IsWebLink.FalseText">Standard</system:String>
 
+	<system:String x:Key="Settings.Language">Lingua Interfaccia Utente </system:String>
+	<system:String x:Key="Settings.French">Francese</system:String>
+	<system:String x:Key="Settings.English">Inglese (Stati Uniti)</system:String>
+	<system:String x:Key="Settings.Italian">Italiano</system:String>
+	<system:String x:Key="Settings.RestartRequired.Title">Riavvio necessario</system:String>
+	<system:String x:Key="Settings.RestartRequired.Hint">La modifica di questa preferenza richiede il riavvio dell'applicazione.</system:String>
+	<system:String x:Key="Settings.RestartRequired.Verb">Riavviare</system:String>
+
 	<system:String x:Key="TemplatesModel.GroupNameIsBlank">Il nome del gruppo non può essere lasciato vuoto.</system:String>
 	<system:String x:Key="TemplatesModel.DescriptionIsBlank">La descrizione del gruppo non può essere lasciata vuota.</system:String>
 	<system:String x:Key="TemplatesModel.IconNameIsBlank">È richiesto un nome per l'icona.</system:String>
