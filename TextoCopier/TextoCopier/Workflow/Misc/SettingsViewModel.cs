@@ -7,7 +7,7 @@ public sealed class SettingsViewModel : Bindable<SettingsView>
     private readonly TemplatesModel templatesModel;
 
     // Must match the order of the ComboBox items listed in the view
-    private readonly string [] Languages = [ "en-US", "fr-FR", "it-IT" ] ;
+    private readonly string[] Languages = ["en-US", "fr-FR", "it-IT"];
 
     public SettingsViewModel(IMessenger messenger, LocalizerModel localizerModel, TemplatesModel templatesModel)
     {
@@ -32,10 +32,10 @@ public sealed class SettingsViewModel : Bindable<SettingsView>
             this.localizerModel.SelectLanguage(language);
             this.templatesModel.Save();
             this.Logger.Debug("Selected language changed to: " + language);
-        } 
+        }
         else
         {
-            this.OnClose(null); 
+            this.OnClose(null);
         }
     }
 
@@ -45,20 +45,20 @@ public sealed class SettingsViewModel : Bindable<SettingsView>
 
     public ICommand SaveCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
-    private int LanguageToIndex (string language)
+    private int LanguageToIndex(string language)
     {
         int index = 0;
-        foreach (string item in this.Languages) 
-        { 
-            if( item == language)
+        foreach (string item in this.Languages)
+        {
+            if (item == language)
             {
-                return index; 
+                return index;
             }
 
-            ++index; 
+            ++index;
         }
 
-        throw new Exception("Incorrect language definitions."); 
+        throw new Exception("Incorrect language definitions.");
     }
 
     private string IndexToLanguage(int index) => this.Languages[index];
