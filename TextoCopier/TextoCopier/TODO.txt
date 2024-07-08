@@ -2,13 +2,14 @@
 - Style for the Auto Complete Box 
 	=> Style for ListBox and ListBoxItem 
 - Style for the ComboBox 
-- Add Icons to Action buttons 
 - Icon selection preview 
-- Base class for NewEdit Groups and Templates 
-- Restart on language changed 
 
 NICE TO HAVE 
+- Logs to files
 - Use open link icon as main button for web links 
 - Reorder templates using drag n drop 
+- Base class for NewEdit Groups and Templates 
+
+CONSIDER 
 - Data file encryption ? 
-- Logs to files
+- Add Icons to Action buttons in modal dialogs ? 

@@ -107,6 +107,32 @@ public abstract class ModelBase(IMessenger messenger, ILogger logger) : IModel
         this.properties.Clear();
     }
 
+    protected void CopyJSonRequiredProperties<T>(T source)
+    {
+        if (source is not ModelBase)
+        {
+            throw new Exception("Source is not a model.");
+        }
+
+        var allProperties = source.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+        List<PropertyInfo> copyProperties = new (allProperties.Length);
+        for (int i = 0; i < allProperties.Length; ++i)
+        {
+            var property = allProperties[i];
+            object[] attributes = property.GetCustomAttributes(typeof(JsonRequiredAttribute), true);
+            if (attributes.Length > 0)
+            {
+                copyProperties.Add(property);
+            }
+        }
+
+        foreach (PropertyInfo property in copyProperties)
+        {
+            object? value = property.GetValue(source, null);
+            property.SetValue(this, value, null);
+        }
+    }
+
     #region Debug Utilities 
 
     /// <summary> Logs that a model property is changing. </summary>

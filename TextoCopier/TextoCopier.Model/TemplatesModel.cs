@@ -122,20 +122,12 @@ public sealed partial class TemplatesModel : ModelBase
         this.ShouldAutoSave = true;
     }
 
-    public override async Task Initialize() => await this.Load();
-
-    public override async Task Shutdown()
-    {
-        if ( this.IsDirty)
-        {
-            await this.Save();  
-        }
-    }
-
     // Serialized -  No model changed event
+    [JsonRequired]
     public string Language { get; set; } = TemplatesModel.DefaultLanguage;
 
     // Serialized -  No model changed event
+    [JsonRequired]
     public List<Group> Groups { get; set; } = [];
 
     [JsonIgnore]
@@ -144,20 +136,41 @@ public sealed partial class TemplatesModel : ModelBase
 
     [JsonIgnore]
     // Not serialized - No model changed event
-    public List<string> AvailableIcons { get; set; } = []; 
+    public List<string> AvailableIcons { get; set; } = [];
+
+
+    public override async Task Initialize() => await this.Load();
+
+    public override async Task Shutdown()
+    {
+        if (this.IsDirty)
+        {
+            await this.Save();
+        }
+    }
 
     public Task Load()
     {
-        if (!this.fileManager.Exists(Area.User, Kind.Json, TemplatesModel.TemplatesModelFilename))
+        try
         {
-            this.fileManager.Save(Area.User, Kind.Json, TemplatesModel.TemplatesModelFilename, TemplatesModel.DefaultTemplate);
-        }
+            if (!this.fileManager.Exists(Area.User, Kind.Json, TemplatesModel.TemplatesModelFilename))
+            {
+                this.fileManager.Save(Area.User, Kind.Json, TemplatesModel.TemplatesModelFilename, TemplatesModel.DefaultTemplate);
+            }
 
-        TemplatesModel model =
-            this.fileManager.Load<TemplatesModel>(Area.User, Kind.Json, TemplatesModel.TemplatesModelFilename);
-        this.Groups = model.Groups;
-        this.Language = model.Language; 
-        return Task.CompletedTask;
+            TemplatesModel model =
+                this.fileManager.Load<TemplatesModel>(Area.User, Kind.Json, TemplatesModel.TemplatesModelFilename);
+
+            // Copy all properties with attribute [JsonRequired]
+            base.CopyJSonRequiredProperties<TemplatesModel>(model);
+            return Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            string msg = "Failed to load TemplatesModel from " + TemplatesModel.TemplatesModelFilename;
+            this.Logger.Fatal(msg);
+            throw new Exception(msg, ex);
+        }
     }
 
     public override Task Save()
@@ -169,7 +182,7 @@ public sealed partial class TemplatesModel : ModelBase
         {
             this.fileManager.Save(Area.User, Kind.Json, TemplatesModel.TemplatesModelFilename, this);
             base.Save();
-        } 
+        }
 
         return Task.CompletedTask;
     }
