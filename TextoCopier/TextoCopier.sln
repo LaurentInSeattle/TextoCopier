@@ -15,11 +15,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lyt.Avalonia.Persistence", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lyt.Avalonia.Controls", "Lyt.Avalonia.Controls\Lyt.Avalonia.Controls.csproj", "{915D44F8-8237-48AF-A781-7011CF601650}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextoCopier.Model", "TextoCopier.Model\TextoCopier.Model.csproj", "{CE040246-152A-4D89-BFF1-B8AB896301D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextoCopier.Model", "TextoCopier.Model\TextoCopier.Model.csproj", "{CE040246-152A-4D89-BFF1-B8AB896301D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Avalonia.Model", "Lyt.Avalonia.Model\Lyt.Avalonia.Model.csproj", "{0718D072-9880-4FC8-8CB9-9583D1EB9389}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lyt.Avalonia.Model", "Lyt.Avalonia.Model\Lyt.Avalonia.Model.csproj", "{0718D072-9880-4FC8-8CB9-9583D1EB9389}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Avalonia.Localizer", "Lyt.Avalonia.Localizer\Lyt.Avalonia.Localizer.csproj", "{B76AA5FF-9706-4CCF-92D4-2BA450CC8A03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lyt.Avalonia.Localizer", "Lyt.Avalonia.Localizer\Lyt.Avalonia.Localizer.csproj", "{B76AA5FF-9706-4CCF-92D4-2BA450CC8A03}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Invasion", "Invasion\Invasion.csproj", "{61F25FED-7E10-48EB-8DA9-2CD0E19C7905}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Invasion.Desktop", "Invasion.Desktop\Invasion.Desktop.csproj", "{9078657D-AD5C-440F-B606-E8E5F9CB43B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Invasion.Model", "Invasion.Model\Invasion.Model.csproj", "{C249708D-FB39-405C-A714-60BF000D89F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +69,18 @@ Global
 		{B76AA5FF-9706-4CCF-92D4-2BA450CC8A03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B76AA5FF-9706-4CCF-92D4-2BA450CC8A03}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B76AA5FF-9706-4CCF-92D4-2BA450CC8A03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61F25FED-7E10-48EB-8DA9-2CD0E19C7905}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61F25FED-7E10-48EB-8DA9-2CD0E19C7905}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61F25FED-7E10-48EB-8DA9-2CD0E19C7905}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61F25FED-7E10-48EB-8DA9-2CD0E19C7905}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9078657D-AD5C-440F-B606-E8E5F9CB43B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9078657D-AD5C-440F-B606-E8E5F9CB43B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9078657D-AD5C-440F-B606-E8E5F9CB43B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9078657D-AD5C-440F-B606-E8E5F9CB43B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C249708D-FB39-405C-A714-60BF000D89F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C249708D-FB39-405C-A714-60BF000D89F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C249708D-FB39-405C-A714-60BF000D89F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C249708D-FB39-405C-A714-60BF000D89F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

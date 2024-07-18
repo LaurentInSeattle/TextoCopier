@@ -108,6 +108,7 @@ public sealed partial class TemplatesModel : ModelBase
 #pragma warning disable IDE0021 // Use expression body for constructor 
     public TemplatesModel() : base ( null, null)
     {
+        // Do not inject the FileManagerModel instance: a parameter-less ctor is required for Deserialization 
         // Empty CTOR required for deserialization 
         this.ShouldAutoSave = false;
     }
@@ -117,7 +118,6 @@ public sealed partial class TemplatesModel : ModelBase
 
     public TemplatesModel(FileManagerModel fileManager, IMessenger messenger, ILogger logger) : base(messenger, logger)
     {
-        // Do not inject the FileManagerModel instance: a parameter-less ctor is required for Deserialization 
         this.fileManager = fileManager;
         this.ShouldAutoSave = true;
     }
