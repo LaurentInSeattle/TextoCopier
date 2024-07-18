@@ -1,12 +1,14 @@
 ﻿using static Lyt.Avalonia.Persistence.FileManagerModel;
 
-namespace Lyt.Invasion.Model; 
+namespace Lyt.Invasion.Model;
 
 public sealed class InvasionModel : ModelBase
 {
     private const string InvasionModelFilename = "Invasion";
 
     private readonly FileManagerModel fileManager;
+
+    private Game? game;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
@@ -63,5 +65,10 @@ public sealed class InvasionModel : ModelBase
         }
 
         return Task.CompletedTask;
+    }
+
+    public void NewGame(GameOptions gameOptions)
+    {
+        this.game = new Game(gameOptions);
     }
 }

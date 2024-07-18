@@ -5,6 +5,7 @@ global using System.Collections.Generic;
 global using System.Collections.ObjectModel;
 global using System.ComponentModel;
 global using System.Diagnostics;
+global using System.Diagnostics.Metrics;
 global using System.Linq;
 global using System.Reflection;
 global using System.Runtime.CompilerServices;
@@ -18,4 +19,9 @@ global using Lyt.Avalonia.Interfaces.Messenger;
 
 global using Lyt.Avalonia.Model;
 global using Lyt.Avalonia.Persistence;
+
+
+global using Lyt.Invasion.Model.GameControl;
+global using Lyt.Invasion.Model.MapData;
+global using Lyt.Invasion.Model.Players;
 
