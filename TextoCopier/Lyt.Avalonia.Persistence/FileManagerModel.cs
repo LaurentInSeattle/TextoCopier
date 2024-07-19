@@ -31,15 +31,16 @@ public sealed class FileManagerModel : ModelBase, IModel
     // private const string SettingsFolder = "Settings";
     // private static readonly string[] ApplicationFolders = [LogsFolder, SettingsFolder, ConfigurationFolder, UserFolder];
 
-    private FileManagerConfiguration configuration;
     private readonly JsonSerializerOptions jsonSerializerOptions;
 
     public FileManagerModel(IMessenger messenger, ILogger logger) : base(messenger, logger)
     {
-        this.configuration = new FileManagerConfiguration(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+        this.Configuration = new FileManagerConfiguration(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
         this.jsonSerializerOptions = new JsonSerializerOptions { AllowTrailingCommas = true };
         this.jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     }
+
+    public FileManagerConfiguration Configuration { get; private set; }
 
     public string ApplicationFolderPath { get; private set; } = string.Empty;
 
@@ -69,7 +70,7 @@ public sealed class FileManagerModel : ModelBase, IModel
             throw new Exception("Invalid File Manager Configuration");
         }
 
-        this.configuration = configuration;
+        this.Configuration = configuration;
         try
         {
             this.SetupEnvironment();
@@ -96,10 +97,10 @@ public sealed class FileManagerModel : ModelBase, IModel
         string directory =
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                this.configuration.Organization);
+                this.Configuration.Organization);
         this.CreateFolderIfNeeded(directory);
 
-        string subDirectory = Path.Combine(directory, this.configuration.Application);
+        string subDirectory = Path.Combine(directory, this.Configuration.Application);
         this.CreateFolderIfNeeded(subDirectory);
         this.ApplicationFolderPath = subDirectory;
 
@@ -115,11 +116,11 @@ public sealed class FileManagerModel : ModelBase, IModel
         string userDirectory =
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                this.configuration.Organization);
+                this.Configuration.Organization);
         this.CreateFolderIfNeeded(userDirectory);
 
         string userSubDirectory =
-            Path.Combine(userDirectory, this.configuration.Application);
+            Path.Combine(userDirectory, this.Configuration.Application);
         this.CreateFolderIfNeeded(userSubDirectory);
         this.ApplicationUserFolderPath = userSubDirectory;
     }
@@ -338,7 +339,7 @@ public sealed class FileManagerModel : ModelBase, IModel
         {
             if (area == Area.Resources)
             {
-                return this.LoadResource<T>(kind, name);
+                throw new NotSupportedException("Use LoadResourceFromStream<T>");
             }
 
             string path =
@@ -372,10 +373,8 @@ public sealed class FileManagerModel : ModelBase, IModel
         }
     }
 
-    private T LoadResource<T>(Kind kind, string name) where T : class
+    public T LoadResourceFromStream<T>(Kind kind, StreamReader streamReader) where T : class
     {
-        string uriString = string.Format("{0}{1}", this.configuration.AvaresUriString(), name);
-        var streamReader = new StreamReader(AssetLoader.Open(new Uri(uriString)));
         switch (kind)
         {
             default:

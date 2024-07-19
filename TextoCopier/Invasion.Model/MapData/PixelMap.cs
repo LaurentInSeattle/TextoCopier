@@ -1,6 +1,4 @@
-﻿using Avalonia.Data;
-
-namespace Lyt.Invasion.Model.MapData;
+﻿namespace Lyt.Invasion.Model.MapData;
 
 public sealed class PixelMap
 {

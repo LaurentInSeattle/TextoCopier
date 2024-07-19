@@ -134,8 +134,10 @@ public sealed class LocalizerModel : ModelBase
             string name = 
                 string.Format(
                     "{0}/{1}/{1}_{2}.txt", this.configuration.LanguagesSubFolder, localizationKey, this.currentLanguage);
+            string uriString = string.Format("{0}{1}", this.fileManagerModel.Configuration.AvaresUriString(), name);
+            var streamReader = new StreamReader(AssetLoader.Open(new Uri(uriString)));
             string localized = 
-                this.fileManagerModel.Load<string>(FileManagerModel.Area.Resources, FileManagerModel.Kind.Text, name);
+                this.fileManagerModel.LoadResourceFromStream<string>(FileManagerModel.Kind.Text, streamReader);
             if (string.IsNullOrWhiteSpace(localized)) 
             {
                 throw new Exception("No localized data"); 

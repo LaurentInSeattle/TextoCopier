@@ -7,6 +7,7 @@ public sealed class HelpViewModel : Bindable<HelpView>
 
     public HelpViewModel(IMessenger messenger, LocalizerModel localizerModel)
     {
+        this.DisablePropertyChangedLogging = true; 
         this.messenger = messenger;
         this.localizerModel = localizerModel;
         this.CloseCommand = new Command(this.OnClose);

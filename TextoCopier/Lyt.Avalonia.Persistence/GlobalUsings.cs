@@ -12,10 +12,6 @@ global using System.Text.Json.Serialization;
 global using System.Text.Json;
 global using System.Threading.Tasks;
 
-global using Avalonia;
-global using Avalonia.Platform;
-global using Avalonia.Threading;
-
 global using Lyt.Avalonia.Interfaces.Logger;
 global using Lyt.Avalonia.Interfaces.Messenger;
 global using Lyt.Avalonia.Interfaces.Model;
