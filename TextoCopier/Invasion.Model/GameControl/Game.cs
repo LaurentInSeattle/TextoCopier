@@ -1,9 +1,9 @@
-﻿namespace Lyt.Invasion.Model.GameControl; 
+﻿namespace Lyt.Invasion.Model.GameControl;
 
 public sealed class Game
 {
-    public readonly GameOptions GameOptions; 
-        
+    public readonly GameOptions GameOptions;
+
     public readonly List<Player> Players = [];
 
     public readonly Map Map = new();
@@ -13,13 +13,74 @@ public sealed class Game
 
     public Player? Winner { get; private set; }
 
-    public Game (GameOptions gameOptions)
+    public int PlayerIndex { get; private set; }
+
+    public Phase CurrentPhase { get; private set; }
+
+    public Player CurrentPlayer => this.Players[this.PlayerIndex];
+
+    public Game(GameOptions gameOptions)
     {
         this.GameOptions = gameOptions;
     }
 
     public void Start()
     {
+        this.PlayerIndex = 0;
+        this.CurrentPhase = Phase.Collect;
+    }
+
+    public void Next()
+    {
+    }
+
+    public void AiPlayerPhase()
+    {
+        switch (this.CurrentPhase)
+        {
+            case Phase.Collect:
+                this.CurrentPlayer.DoCollect();
+                break;
+            case Phase.Deploy:
+                this.CurrentPlayer.DoDeploy();
+                break;
+            case Phase.Destroy:
+                this.CurrentPlayer.DoDestroy();
+                break;
+            case Phase.Build:
+                this.CurrentPlayer.DoBuild();
+                break;
+            case Phase.Attack:
+                this.CurrentPlayer.DoAttack();
+                break;
+            case Phase.Colonize:
+                this.CurrentPlayer.DoColonize();
+                break;
+            case Phase.Move:
+                this.CurrentPlayer.DoMove();
+                break;
+            default:
+                break;
+        }
+
+        this.NextPhase();
+    }
+
+    private void NextPhase()
+    { 
+        if (this.CurrentPhase == Phase.Move)
+        {
+            ++this.PlayerIndex;
+            if (this.PlayerIndex == this.Players.Count)
+            {
+                this.PlayerIndex = 0;
+                this.CurrentPhase = Phase.Collect;
+            }
+        }
+        else
+        {
+            this.CurrentPhase = (Phase)(1 + (int)this.CurrentPhase);
+        }
     }
 
     public void Destroy()

@@ -70,5 +70,16 @@ public sealed class InvasionModel : ModelBase
     public void NewGame(GameOptions gameOptions)
     {
         this.game = new Game(gameOptions);
+        this.game.Start();
+    }
+
+    public void Next()
+    {
+        if (this.game is null)
+        {
+            return; 
+        }
+
+        this.game.Next();
     }
 }

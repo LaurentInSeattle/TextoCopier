@@ -1,8 +1,8 @@
 ﻿namespace Lyt.Invasion.Model.GameControl; 
 
-public enum Phase
+public enum Phase : int
 {
-    Collect,
+    Collect = 0,
     Deploy, 
     Destroy, 
     Build,

@@ -60,7 +60,7 @@ public sealed class Region
                 return false;
             }
 
-            if (neighbour.Owner.Id != this.Owner.Id)
+            if (neighbour.Owner.Index != this.Owner.Index)
             {
                 return true;
             }
@@ -87,7 +87,7 @@ public sealed class Region
                 return false;
             }
 
-            if (neighbour.Owner.Id != this.Owner.Id)
+            if (neighbour.Owner.Index != this.Owner.Index)
             {
                 return false;
             }
@@ -120,7 +120,7 @@ public sealed class Region
                 continue;
             }
 
-            if (neighbour.Owner.Id != this.Owner.Id)
+            if (neighbour.Owner.Index != this.Owner.Index)
             {
                 return false;
             }
