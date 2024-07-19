@@ -1,18 +1,54 @@
 ﻿namespace Lyt.Invasion.Model.MapData;
 
 [DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
-public sealed class Coordinate : IEquatable<Coordinate>
+public sealed class Coordinate(int x, int y) : IEquatable<Coordinate>
 {
     /// <summary> Offset from left border of PixelMap </summary>
-    public readonly int X = int.MinValue;
+    public readonly int X = x;
 
     /// <summary> Offset from top border of PixelMap </summary>
-    public readonly int Y = int.MinValue;
+    public readonly int Y = y;
 
-    public Coordinate(int x, int y)
+    /// <summary>
+    /// Returns the coordinate of the pixel left of this coordinate pixel. 
+    /// If the coordinate is at the left border, the right most pixel gets returned.
+    /// </summary>
+    public Coordinate Left(PixelMap map) => new(this.X < 1 ? map.XMax : this.X - 1, this.Y);
+
+    /// <summary>
+    /// Returns the coordinate of the pixel right of this coordinate pixel. 
+    /// If the coordinate is at the right border, the left mostpixel gets returned.
+    /// </summary>
+    public Coordinate Right(PixelMap map)
     {
-        this.X = x;
-        this.Y = y;
+        int newX = this.X + 1;
+        if (newX >= map.XCount)
+        {
+            newX = 0;
+        }
+
+        return new Coordinate(newX, this.Y);
+    }
+
+    /// <summary>
+    /// Returns the coordinate of the pixel above of this coordinate pixel. 
+    /// If the coordinate is at the top border, the bottom most pixel gets returned.
+    /// </summary>
+    public Coordinate Up(PixelMap map) => new(this.X, this.Y < 1 ? map.YCount - 1 : this.Y - 1);
+
+    /// <summary>
+    /// Returns the coordinate of the pixel below of this coordinate pixel. 
+    /// If the coordinate is at the bottom border, the top most pixel gets returned.
+    /// </summary>
+    public Coordinate Down(PixelMap map)
+    {
+        int newY = this.Y + 1;
+        if (newY >= map.YCount)
+        {
+            newY = 0;
+        }
+
+        return new(this.X, newY);
     }
 
     /// <summary> 
@@ -53,7 +89,7 @@ public sealed class Coordinate : IEquatable<Coordinate>
     /// <summary> Returns the X and Y value of the coordinate as string </summary>
     public override string ToString()
         => "X: " + (this.X == int.MinValue ? "undef" : this.X.ToString()) +
-            ", Y: " + (this.Y == int.MinValue ? "undef" : this.Y.ToString());
+           ", Y: " + (this.Y == int.MinValue ? "undef" : this.Y.ToString());
 
     private string GetDebuggerDisplay() => this.ToString();
 }

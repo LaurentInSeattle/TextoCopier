@@ -4,9 +4,9 @@ public sealed class Game
 {
     public readonly GameOptions GameOptions;
 
-    public readonly List<Player> Players = [];
+    public readonly List<Player> Players;
 
-    public readonly Map Map = new();
+    public readonly Map Map;
 
     /// <summary> Indicates if the game is over. </summary>
     public bool IsGameOver { get; private set; }
@@ -22,12 +22,14 @@ public sealed class Game
     public Game(GameOptions gameOptions)
     {
         this.GameOptions = gameOptions;
+        this.Map = new Map(gameOptions);
+        this.Players = new(8);
     }
 
     public void Start()
     {
         this.PlayerIndex = 0;
-        this.CurrentPhase = Phase.Collect;
+        this.CurrentPhase = (Phase)0;
     }
 
     public void Next()
@@ -67,7 +69,7 @@ public sealed class Game
     }
 
     private void NextPhase()
-    { 
+    {
         if (this.CurrentPhase == Phase.Move)
         {
             ++this.PlayerIndex;

@@ -1,7 +1,24 @@
-﻿namespace Lyt.Invasion.Model.MapData;
+﻿using Avalonia.Data;
+
+namespace Lyt.Invasion.Model.MapData;
 
 public sealed class PixelMap
 {
+    // minimum distance from the border of a region's coordinate
+    private const int padding = 15;
+    private const short noCountry = short.MaxValue;
+
+    // Random number generator used during creation of PixelMap
+    private readonly Random random;
+
+    /// <summary> 
+    /// Coordinates of every region, which is the starting point for the algorithm assigning pixels to a region.
+    /// </summary>
+    private readonly Coordinate[] coordinatesByRegion;
+
+    /// <summary> Count of regions </summary>
+    public readonly int RegionCount;
+
     /// <summary> Count of map-pixels in x direction, largest V coordinate is XCount-1 </summary>
     public readonly int XCount;
 
@@ -23,4 +40,564 @@ public sealed class PixelMap
 
     /// <summary> Count of pixels the largest country occupies </summary>
     public double BiggestCountrySize { get; private set; }
+
+    public PixelMap(GameOptions gameOptions)
+    {
+        this.random = new Random(Environment.TickCount);
+        this.RegionCount = gameOptions.RegionCount;
+        this.coordinatesByRegion = new Coordinate[this.RegionCount];
+        this.XCount = gameOptions.PixelWidth;
+        this.XMax = this.XCount - 1;
+        this.YCount = gameOptions.PixelHeight;
+        this.YMax = this.YCount - 1;
+        this.RegionIdsPerPixel = new short[this.XCount, this.YCount];
+
+        this.ClearMap();
+        this.GenerateRegionStartingPoints();
+        this.GenerateRegionCoordinates();
+        this.ProcessMap();
+        this.VerifyNoSinglePixelAreas();
+    }
+
+    private void ClearMap()
+    {
+        for (int y = 0; y < this.YCount; ++y)
+        {
+            for (int x = 0; x < this.XCount; ++x)
+            {
+                this.RegionIdsPerPixel[x, y] = noCountry;
+            }
+        }
+    }
+
+    private void GenerateRegionStartingPoints()
+    {
+        // Place for each region a random starting point on the map
+        for (int regionIndex = 0; regionIndex < this.RegionCount; ++regionIndex)
+        {
+            bool isTooClose;
+            int loopCounter = 0;
+            Coordinate coordinate1;
+            do
+            {
+                coordinate1 = 
+                    new Coordinate(
+                        this.random.Next(padding, this.XMax - padding),
+                        this.random.Next(padding, this.YMax - padding));
+                isTooClose = false;
+                for (int regionIndex2 = 0; regionIndex2 < regionIndex; ++regionIndex2)
+                {
+                    var coordinate2 = this.coordinatesByRegion[regionIndex2];
+                    if (coordinate1.GetSquareDistance(this, coordinate2) < 200)
+                    {
+                        // Closer than 20 pixels
+                        isTooClose = true;
+                        break;
+                    }
+                }
+
+                ++loopCounter;
+                if (loopCounter > 666)
+                {
+                    throw new Exception("failed 666 time to place a region.");
+                }
+
+            } while (isTooClose);
+
+            this.coordinatesByRegion[regionIndex] = coordinate1;
+        }
+    }
+
+    private void GenerateRegionCoordinates()
+    {
+        // Use the country coordinates as start pixel for map filling
+        var fillCoordinatesByCountry = new List<Coordinate>[this.RegionCount];
+        var borderPixelsByCountry = new HashSet<Coordinate>[this.RegionCount];
+
+        // Create a list of fillCoordinates for every country, with the region's coordinate as start for every country
+        for (int regionIndex = 0; regionIndex < this.RegionCount; ++regionIndex)
+        {
+            var countryCoordinates = new List<Coordinate> { this.coordinatesByRegion[regionIndex] };
+            fillCoordinatesByCountry[regionIndex] = countryCoordinates;
+            borderPixelsByCountry[regionIndex] = [];
+        }
+
+        // Fill the map
+        bool isIncomplete;
+        var workCoordinates = new List<Coordinate>();
+        do
+        {
+            isIncomplete = false;
+            for (int regionIndex = 0; regionIndex < this.RegionCount; ++regionIndex)
+            {
+                void OccupyIfAvailable(
+                  Coordinate originCoordinate,
+                  Func<Coordinate, Coordinate> GetNeighbouringPixel)
+                {
+                    int pixelIndexMax = this.random.Next(1, 4);
+                    for (int pixelIndex = 0; pixelIndex < pixelIndexMax; ++pixelIndex)
+                    {
+                        Coordinate nextCoordinate = GetNeighbouringPixel(originCoordinate);
+                        short mapCountryId = this[nextCoordinate];
+                        if (mapCountryId == noCountry)
+                        {
+                            // Empty pixel found
+                            this.RegionIdsPerPixel[nextCoordinate.X, nextCoordinate.Y] = (short)regionIndex;
+                            workCoordinates.Add(nextCoordinate);
+                        }
+                        else
+                        {
+                            if (mapCountryId != regionIndex + 1)
+                            {
+                                // neighbour found
+                                borderPixelsByCountry[regionIndex].Add(originCoordinate);
+                            }
+                            break;
+                        }
+
+                        originCoordinate = nextCoordinate;
+                    }
+                }
+
+                var countryCoordinates = fillCoordinatesByCountry[regionIndex];
+                foreach (var coordinate in countryCoordinates)
+                {
+                    OccupyIfAvailable(coordinate, c => c.Left(this));
+                    OccupyIfAvailable(coordinate, c => c.Up(this));
+                    OccupyIfAvailable(coordinate, c => c.Right(this));
+                    OccupyIfAvailable(coordinate, c => c.Down(this));
+                }
+
+                if (workCoordinates.Count > 0)
+                {
+                    isIncomplete = true;
+                    fillCoordinatesByCountry[regionIndex].AddRange(workCoordinates);
+
+                    // reuse this list for next country instead creating each time a new list
+                    workCoordinates.Clear();
+                }
+            }
+        } while (isIncomplete);
+    }
+
+    private void ProcessMap()
+    {
+        int[] sizeByCountry;
+        Coordinate[] centerByCountry;
+        bool[,] neighboursByCountry;
+        List<Coordinate>[] borderCoordinatesByCountry;
+        int loopCounter = 0;
+        do
+        {
+            loopCounter++;
+            if (loopCounter > 7)
+            {
+                throw new Exception("Failed too many times to process this PixelMap.");
+            }
+
+            this.RemoveSinglePixelAreas();
+
+            // Find border pixels, size and center
+            sizeByCountry = new int[this.RegionCount];
+
+            bool[] isLeftBorderCountry = new bool[this.RegionCount];
+            for (int x = 0; x < this.XCount; x++)
+            {
+                isLeftBorderCountry[this.RegionIdsPerPixel[x, 0]] = true;
+            }
+            bool[] isTopBorderCountry = new bool[this.RegionCount];
+            for (int y = 0; y < this.YCount; y++)
+            {
+                isTopBorderCountry[this.RegionIdsPerPixel[0, y]] = true;
+            }
+
+            long[,] sumCoordinatesByCountry = new long[this.RegionCount, 2];
+            neighboursByCountry = new bool[this.RegionCount, this.RegionCount];
+            int yHalf = this.YCount / 2;
+            int xHalf = this.XCount / 2;
+            for (int y = 0; y < this.YCount; ++y)
+            {
+                for (int x = 0; x < this.XCount; ++x)
+                {
+                    int countryId = this.RegionIdsPerPixel[x, y];
+                    sizeByCountry[countryId]++;
+                    var coordinate = new Coordinate(x, y);
+
+                    void CheckNeighbour(Coordinate neighbourCoordinate)
+                    {
+                        int neighbourId = this[neighbourCoordinate];
+                        if (countryId != neighbourId)
+                        {
+                            // border found
+                            neighboursByCountry[neighbourId, countryId] = true;
+                            neighboursByCountry[countryId, neighbourId] = true;
+                        }
+                    }
+
+                    CheckNeighbour(coordinate.Right(this));
+                    CheckNeighbour(coordinate.Down(this));
+
+                    if (isTopBorderCountry[countryId] && x < xHalf)
+                    {
+                        sumCoordinatesByCountry[countryId, 0] += x + this.XCount;
+                    }
+                    else
+                    {
+                        sumCoordinatesByCountry[countryId, 0] += x;
+                    }
+
+                    if (isLeftBorderCountry[countryId] && y < yHalf)
+                    {
+                        sumCoordinatesByCountry[countryId, 1] += y + this.YCount;
+                    }
+                    else
+                    {
+                        sumCoordinatesByCountry[countryId, 1] += y;
+                    }
+                }
+            }
+
+            int xPadding = 0;
+            if (this.XCount > 100)
+            {
+                xPadding = 15;
+            }
+
+            int yPadding = 0;
+            if (this.YCount > 100)
+            {
+                yPadding = 15;
+            }
+
+            centerByCountry = new Coordinate[this.RegionCount];
+            for (int regionIndex = 0; regionIndex < this.RegionCount; ++regionIndex)
+            {
+
+                int x = (int)(sumCoordinatesByCountry[regionIndex, 0] / sizeByCountry[regionIndex]);
+                if (x > this.XMax)
+                {
+                    x -= this.XCount;
+                }
+
+                x = Math.Max(x, xPadding);
+                x = Math.Min(x, this.XMax - xPadding);
+
+                int y = (int)(sumCoordinatesByCountry[regionIndex, 1] / sizeByCountry[regionIndex]);
+                if (y > this.YMax)
+                {
+                    y -= this.YCount;
+                }
+
+                y = Math.Max(y, yPadding);
+                y = Math.Min(y, this.YMax - yPadding);
+                centerByCountry[regionIndex] = new Coordinate(x, y);
+            }
+
+            borderCoordinatesByCountry = new List<Coordinate>[this.RegionCount];
+        } while (!this.FindBorderLines(borderCoordinatesByCountry));
+
+        #region Mountains : Later 
+        //// sort countries by size
+        //var countrySizeByIds = new List<Tuple<int, int>>(RegionCount);
+        //for (var countryIndex = 0; countryIndex < RegionCount; countryIndex++)
+        //{
+        //    countrySizeByIds.Add(new Tuple<int, int>(countryIndex, sizeByCountry[countryIndex]));
+        //}
+        //var sortedCountrySizeByIds = countrySizeByIds.OrderByDescending(c => c.Item2).ToArray();
+        //BiggestCountrySize = sortedCountrySizeByIds[0].Item2;
+        //armiesPerSize = armiesInBiggestCountry / BiggestCountrySize;
+
+        ////mark the smallest countries as mountains
+        //var isMountainByCountry = new bool[RegionCount];
+        //for (var sortedCountryIndex = sortedCountrySizeByIds.Length - mountainCount; sortedCountryIndex < sortedCountrySizeByIds.Length; sortedCountryIndex++)
+        //{
+        //    var countryIndex = sortedCountrySizeByIds[sortedCountryIndex].Item1;
+        //    isMountainByCountry[countryIndex] = true;
+        //}
+
+        //// mark a country as mountain if it is surrounded by mountains only
+        //for (var sortedCountryIndex = 0; sortedCountryIndex < sortedCountrySizeByIds.Length - mountainCount; sortedCountryIndex++)
+        //{
+        //    var countryIndex = sortedCountrySizeByIds[sortedCountryIndex].Item1;
+        //    var allNeighboursAreMountains = true;
+        //    for (var neighbourIndex = 0; neighbourIndex < RegionCount; neighbourIndex++)
+        //    {
+        //        if (neighbourIndex != countryIndex && neighboursByCountry[countryIndex, neighbourIndex])
+        //        {
+        //            if (!isMountainByCountry[neighbourIndex])
+        //            {
+        //                allNeighboursAreMountains = false;
+        //                break;
+        //            }
+        //        }
+        //    }
+        //    if (allNeighboursAreMountains)
+        //    {
+        //        isMountainByCountry[countryIndex] = true;
+        //    }
+        //}
+
+        #endregion Mountains : Later  
+
+        //// create CountryFix
+        //countryFixArray = new CountryFix[RegionCount];
+        //for (var countryIndex = 0; countryIndex < RegionCount; countryIndex++)
+        //{
+        //    var countryFix = new CountryFix(countryIndex, coordinatesByCountry[countryIndex], centerByCountry[countryIndex],
+        //      isMountainByCountry[countryIndex], sizeByCountry[countryIndex], (int)(sizeByCountry[countryIndex] * armiesPerSize),
+        //      borderCoordinatesByCountry[countryIndex]);
+        //    countryFixArray[countryIndex] = countryFix;
+        //}
+
+        // find neighbours
+        // TODO 
+
+        //for (var countryIndex = 0; countryIndex < this.RegionCount; countryIndex++)
+        //{
+        //    var countryFix = countryFixArray[countryIndex];
+        //    if (countryFix.IsMountain)
+        //        continue;
+
+        //    for (var neighbourIndex = 0; neighbourIndex < countryIndex; neighbourIndex++)
+        //    {
+        //        if (neighboursByCountry[countryIndex, neighbourIndex])
+        //        {
+        //            var neighbour = countryFixArray[neighbourIndex];
+        //            if (neighbour.IsMountain)
+        //                continue;
+        //            countryFix.AddNeighbour(neighbour);
+        //            neighbour.AddNeighbour(countryFix);
+        //        }
+        //    }
+        //}
+    }
+
+    private void RemovePixel(Coordinate pixel)
+    {
+        short countryId = this[pixel];
+        var regionIdIdCounts = new Dictionary<short, int>(8);
+
+        void Count(Coordinate pixel)
+        {
+            short pixelRegionId = this[pixel];
+            regionIdIdCounts[pixelRegionId] = regionIdIdCounts.TryGetValue(pixelRegionId, out int count) ? count + 1 : 1;
+        }
+
+        var startPixel = pixel;
+        pixel = pixel.Up(this);
+        Count(pixel);
+        pixel = pixel.Right(this);
+        Count(pixel);
+        pixel = pixel.Down(this);
+        Count(pixel);
+        pixel = pixel.Down(this);
+        Count(pixel);
+        pixel = pixel.Left(this);
+        Count(pixel);
+        pixel = pixel.Left(this);
+        Count(pixel);
+        pixel = pixel.Up(this);
+        Count(pixel);
+        pixel = pixel.Up(this);
+        Count(pixel);
+
+        int biggestCount = 0;
+        int majorityRegionId = 0;
+        foreach (var keyValuePair in regionIdIdCounts)
+        {
+            if (countryId != keyValuePair.Key && biggestCount < keyValuePair.Value)
+            {
+                biggestCount = keyValuePair.Value;
+                majorityRegionId = keyValuePair.Key;
+            }
+        }
+
+        this.RegionIdsPerPixel[startPixel.X, startPixel.Y] = (short)majorityRegionId;
+    }
+
+    private void RemoveSinglePixelAreas()
+    {
+        // remove all single pixel wide areas.
+        // They cause problems when tracing borders and look ugly
+        for (int y = 0; y < this.YCount; y++)
+        {
+            for (int x = 0; x < this.XCount; x++)
+            {
+                int regionId = this.RegionIdsPerPixel[x, y];
+                var pixel = new Coordinate(x, y);
+                if (
+                  (this[pixel.Up(this)] != regionId && this[pixel.Down(this)] != regionId) ||
+                  (this[pixel.Left(this)] != regionId && this[pixel.Right(this)] != regionId))
+                {
+                    this.RemovePixel(pixel);
+
+                    Coordinate prev1Pixel;
+                    Coordinate prev2Pixel;
+                    if (pixel.X > 0)
+                    {
+                        //check pixel left. There is no need to check pixel 0, because pixel XMax will be tested later
+                        prev1Pixel = pixel.Left(this);
+                        prev2Pixel = prev1Pixel.Left(this);
+                        if (this[prev1Pixel] == regionId && this[prev2Pixel] != regionId)
+                        {
+                            // there were 2 'single' pixels in a row with the same regionId.
+                            // Since the second got removed, the first is now single and needs to be removed too:
+                            //....
+                            //.21.
+                            //.*..
+                            //****
+                            // after 1 gets removed, 2 becomes a single pixel area and must be removed too.
+                            // Note: '1', '2' and '*' have the same regionId, but different from '.'
+                            this.RemovePixel(prev1Pixel);
+                        }
+                    }
+
+                    if (pixel.Y > 0)
+                    {
+                        //check pixel above
+                        prev1Pixel = pixel.Up(this);
+                        prev2Pixel = prev1Pixel.Up(this);
+                        if (this[prev1Pixel] == regionId && this[prev2Pixel] != regionId)
+                        {
+                            this.RemovePixel(prev1Pixel);
+                        }
+                    }
+                }
+
+                // If connection between 2 country regions is only 1 pixel, add another pixel.
+                // Otherwise border tracing gets stuck in an endless loop
+                //***..       ***..
+                //**1..       **1**
+                //..***   or  ...**
+                //..***       ...**
+            }
+        }
+    }
+
+    private bool FindBorderLines(List<Coordinate>[] borderCoordinatesByCountry)
+    {
+        bool hasFound = true;
+        for (int countryIndex = 0; countryIndex < this.coordinatesByRegion.Length; countryIndex++)
+        {
+            Coordinate startPixel = this.coordinatesByRegion[countryIndex];
+            Coordinate lastStartPixel;
+            bool isSearchUp = true;
+            int stepCount = 0;
+
+            //search up or right, until a different country is found
+            do
+            {
+                lastStartPixel = startPixel;
+                startPixel = isSearchUp ? startPixel.Up(this) : startPixel.Right(this);
+                stepCount++;
+                if (stepCount == this.YCount)
+                {
+                    //no border found searching vertically. search horizontally
+                    isSearchUp = false;
+                }
+
+                if (stepCount > this.YCount + this.XCount)
+                {
+                    throw new Exception("No border found for country ID: " + countryIndex);
+                }
+            } while (this[startPixel] == countryIndex);
+
+            //first border pixel found
+            startPixel = lastStartPixel;
+            Coordinate pixel = startPixel;
+            var borderCoordinates = new List<Coordinate>();
+            var lastCoordinates = new Coordinate?[20];
+            int lastCoordinatesIndex;
+            for (lastCoordinatesIndex = 0; lastCoordinatesIndex < lastCoordinates.Length; lastCoordinatesIndex++)
+            {
+                lastCoordinates[lastCoordinatesIndex] = null;
+            }
+
+            lastCoordinatesIndex = 0;
+
+            // TODO 
+
+            //            do
+            //            {
+            //                //move to pixel above current pixel
+            //                pixel = pixel.Up(this);
+            //                if (countryIdsPerPixel[pixel.X, pixel.Y] == countryIndex)
+            //                {
+            //                    //top pixel has  countryId, search counter clock wise for different countryId
+            //                    searchNextPixelInside(ref pixel, countryIndex);
+            //                }
+            //                else
+            //                {
+            //                    //top pixel has different countryId, search clock wise for countryId
+            //                    searchNextPixelOutside(ref pixel, countryIndex);
+            //                }
+            //                if (arePixelRepeating(pixel, lastCoordinates, ref lastCoordinatesIndex))
+            //                {
+            //                    //tracing the border line is stuck in a loop. The problematic pixels were removed from this country
+            //                    //and the processing of the map has to be repeated, since the map has changed
+            //                    pixel = startPixel;
+            //                    hasFound = false;
+            //                }
+            //                borderCoordinates.Add(pixel);
+
+            //                if (borderCoordinates.Count > 10000)
+            //                {
+            //#if debugBorderCoordinates
+            //            string s;
+            //            if (coordinatesbyCountry.Length<92) {
+            //              s = ToPlainString(countryIdsPerPixel, pixel, 5);
+            //            }
+            //#endif
+            //                    throw new Exception("too many border points. Press \"New Game\" to create a new game.");
+            //                }
+            //            } while (!pixel.Equals(startPixel));
+
+            //            if (isTestBorderProblem)
+            //            {
+            //                int firstPixelIndex;
+            //                var isLastPixelAtBottomBorder = false;
+            //                for (firstPixelIndex = 0; firstPixelIndex < borderCoordinates.Count; firstPixelIndex++)
+            //                {
+            //                    var y = borderCoordinates[firstPixelIndex].Y;
+            //                    if (isLastPixelAtBottomBorder)
+            //                    {
+            //                        if (y == 0)
+            //                        {
+            //                            //border of country as switched from bottom border of window to top border of window
+            //                            //for testing for border problem, shift border pixels so that it starts with y=0
+            //                            var borderCoordinatesCopy = new List<Coordinate>(borderCoordinates.Count);
+            //                            for (var copyPixelIndex = 0; copyPixelIndex < borderCoordinates.Count; copyPixelIndex++)
+            //                            {
+            //                                borderCoordinatesCopy.Add(borderCoordinates[(firstPixelIndex + copyPixelIndex) % borderCoordinates.Count]);
+            //                            }
+            //                            borderCoordinates = borderCoordinatesCopy;
+            //                            break;
+            //                        }
+            //                    }
+            //                    isLastPixelAtBottomBorder = y == YMax;
+            //                }
+            //            }
+            //            borderCoordinatesByCountry[countryIndex] = borderCoordinates;
+        }
+
+        return hasFound;
+    }
+
+    private void VerifyNoSinglePixelAreas()
+    {
+        // Check if there are still "single" pixels, i.e. without neighbours with the same countryId
+        for (int y = 0; y < this.YCount; ++y)
+        {
+            for (int x = 0; x < this.XCount; ++x)
+            {
+                int countryId = this.RegionIdsPerPixel[x, y];
+                var pixel = new Coordinate(x, y);
+                if ((this[pixel.Up(this)] != countryId && this[pixel.Down(this)] != countryId) ||
+                  (this[pixel.Left(this)] != countryId && this[pixel.Right(this)] != countryId))
+                {
+                    if (Debugger.IsAttached) { Debugger.Break(); }
+                }
+            }
+        }
+    }
 }
