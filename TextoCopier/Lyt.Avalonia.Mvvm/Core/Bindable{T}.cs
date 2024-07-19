@@ -1,5 +1,10 @@
 ﻿namespace Lyt.Avalonia.Mvvm.Core;
 
+// TODO
+// Change Control to StyledElement which is the class that defines the DataContext property
+// Inheritance chain: Control -> InputELement -> Interactive -> Layoutable -> Visual -> StyledElement
+// Wait until V1 of Avalonia to avoid breaking changes  
+
 /// <summary> Strongly typed bindable </summary>
 /// <typeparam name="TControl"></typeparam>
 public class Bindable<TControl> : Bindable where TControl : Control, new()

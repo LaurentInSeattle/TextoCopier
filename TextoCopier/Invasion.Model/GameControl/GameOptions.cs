@@ -40,12 +40,12 @@ public sealed class GameOptions
             _ => 1800, // Huge
         };
 
-    public int PixelHeight => this.PixelWidth * 3 / 4;
+    public int PixelHeight => this.PixelWidth * 9 / 16;
 
     public int RegionCount =>
         this.MapSize switch
         {
-            MapSize.Tiny => 110,
+            MapSize.Tiny => 100,
             MapSize.Small => 220,
             MapSize.Medium => 330,
             MapSize.Large => 460,

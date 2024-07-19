@@ -63,4 +63,8 @@ global using Lyt.Avalonia.Persistence;
 
 #endregion Framework 
 
+global using Lyt.Invasion.Model;
+global using Lyt.Invasion.Model.GameControl;
+global using Lyt.Invasion.Model.Players;
 global using Lyt.Invasion.Shell;
+

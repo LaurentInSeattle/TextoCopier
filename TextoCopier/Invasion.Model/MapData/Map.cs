@@ -2,18 +2,24 @@
 
 public sealed class Map
 {
-    private readonly Region[] regions;
-
-    private readonly PixelMap pixelMap; 
-
-     /// <summary> Indexer to regions by region.Id /// </summary>
-    public Region this[short index] => this.regions[index];
-
-    public Map(GameOptions gameOptions)
+    public Map(GameOptions gameOptions, IMessenger messenger, ILogger logger)
     {
-        this.regions = new Region[gameOptions.RegionCount];
-        this.pixelMap = new PixelMap(gameOptions);
+        this.Messenger = messenger;
+        this.Logger = logger;
+        this.Regions = new Region[gameOptions.RegionCount];
+        this.PixelMap = new PixelMap(gameOptions, messenger, logger);
     }
+
+    public ILogger Logger { get; private set; }
+
+    public IMessenger Messenger { get; private set; }
+
+    public Region[] Regions { get; private set; }
+
+    public PixelMap PixelMap { get; private set; }
+
+    /// <summary> Indexer to regions by region.Id /// </summary>
+    public Region this[short index] => this.Regions[index];
 
     public void Destroy()
     {

@@ -8,8 +8,6 @@ public sealed class InvasionModel : ModelBase
 
     private readonly FileManagerModel fileManager;
 
-    private Game? game;
-
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 #pragma warning disable IDE0021 // Use expression body for constructor 
@@ -28,6 +26,9 @@ public sealed class InvasionModel : ModelBase
         this.fileManager = fileManager;
         this.ShouldAutoSave = true;
     }
+
+    [JsonIgnore]
+    public Game? Game { get ; private set; }
 
     public override async Task Initialize() => await this.Load();
 
@@ -69,17 +70,17 @@ public sealed class InvasionModel : ModelBase
 
     public void NewGame(GameOptions gameOptions)
     {
-        this.game = new Game(gameOptions);
-        this.game.Start();
+        this.Game = new Game(gameOptions, this.Messenger, this.Logger);
+        this.Game.Start();
     }
 
     public void Next()
     {
-        if (this.game is null)
+        if (this.Game is null)
         {
             return; 
         }
 
-        this.game.Next();
+        this.Game.Next();
     }
 }

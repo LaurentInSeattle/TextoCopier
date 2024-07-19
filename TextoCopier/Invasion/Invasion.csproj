@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Invasion.Model\Invasion.Model.csproj" />
     <ProjectReference Include="..\Lyt.Avalonia.Controls\Lyt.Avalonia.Controls.csproj" />
     <ProjectReference Include="..\Lyt.Avalonia.Interfaces\Lyt.Avalonia.Interfaces.csproj" />
     <ProjectReference Include="..\Lyt.Avalonia.Localizer\Lyt.Avalonia.Localizer.csproj" />

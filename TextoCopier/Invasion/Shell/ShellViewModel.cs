@@ -1,4 +1,7 @@
-﻿namespace Lyt.Invasion.Shell;
+﻿using Avalonia.Media.Imaging;
+using System.Linq;
+
+namespace Lyt.Invasion.Shell;
 
 public sealed class ShellViewModel : Bindable<ShellView>
 {
@@ -7,12 +10,14 @@ public sealed class ShellViewModel : Bindable<ShellView>
     private readonly IMessenger messenger;
     private readonly IProfiler profiler;
     private readonly LocalizerModel localizer;
+    private readonly InvasionModel invasionModel;
 
     public ShellViewModel(
-        LocalizerModel localizer, 
+        LocalizerModel localizer, InvasionModel invasionModel,
         IDialogService dialogService, IToaster toaster, IMessenger messenger, IProfiler profiler)
     {
         this.localizer = localizer;
+        this.invasionModel = invasionModel;
         this.dialogService = dialogService;
         this.toaster = toaster;
         this.messenger = messenger;
@@ -37,6 +42,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         this.Logger.Debug("OnViewLoaded language loaded");
 
+        this.SetupWorkflow();
         this.Logger.Debug("OnViewLoaded complete");
     }
 
@@ -47,14 +53,81 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
     }
 
-    private static void SetupWorkflow()
+    private void SetupWorkflow()
     {
-       static void CreateAndBind<TViewModel, TControl>()
-            where TViewModel : Bindable<TControl>
-            where TControl : Control, new()
+        var gameOptions = new GameOptions
         {
-            var vm = App.GetRequiredService<TViewModel>();
-            vm.CreateViewAndBind();
-        }
+            MapSize = MapSize.Huge,
+            HumanPlayers =
+             [
+                 new HumanPlayer { Name = "Laurent"},
+                 new HumanPlayer { Name = "Annalisa"},
+             ],
+            AiPlayers =
+             [
+                 new AiPlayer { Name = "Oksana"},
+                 new AiPlayer { Name = "Irina"},
+             ],
+        };
+
+        this.invasionModel.NewGame(gameOptions);
+        this.GenerateMapImage();
+        //static void CreateAndBind<TViewModel, TControl>()
+        //     where TViewModel : Bindable<TControl>
+        //     where TControl : Control, new()
+        // {
+        //     var vm = App.GetRequiredService<TViewModel>();
+        //     vm.CreateViewAndBind();
+        // }
     }
+
+    private void GenerateMapImage()
+    {
+        var game = this.invasionModel.Game;
+        if (game is null)
+        {
+            return;
+        }
+
+        var pixelMap = game.Map.PixelMap;
+        var regionCount = game.GameOptions.RegionCount;
+        var colors = new Color[regionCount];
+        byte a = 255;
+        for (int i = 0; i < regionCount; i++)
+        {
+            byte r = (byte)pixelMap.Random.Next(10, 250);
+            byte g = (byte)pixelMap.Random.Next(10, 250);
+            byte b = (byte)pixelMap.Random.Next(10, 250);
+            colors[i] = new Color(a, r, g, b);
+        }
+
+        int width = game.GameOptions.PixelWidth;
+        int height = game.GameOptions.PixelHeight;
+        var bgraPixelData = new byte[width * height*4];
+        int byteIndex = 0;
+        for (int h = 0; h < height; h++)
+        {
+            for (int w = 0; w < width; w++)
+            {
+                int region = pixelMap.RegionAt(w, h);
+                bgraPixelData[byteIndex++] = colors[region].B;
+                bgraPixelData[byteIndex++] = colors[region].G;
+                bgraPixelData[byteIndex++] = colors[region].R;
+                bgraPixelData[byteIndex++] = 255;
+            }
+        }
+
+        Vector dpi = new Vector(96, 96);
+        var bitmap = new WriteableBitmap(new PixelSize(width, height), dpi, PixelFormat.Bgra8888, AlphaFormat.Premul);
+        using (var frameBuffer = bitmap.Lock())
+        {
+            Marshal.Copy(bgraPixelData, 0, frameBuffer.Address, bgraPixelData.Length);
+        }
+
+        this.MapImage = bitmap;
+    }
+
+    public Bitmap? MapImage { get => this.Get<Bitmap?>(); set => this.Set(value); }
+
+    
 }

@@ -18,6 +18,7 @@ public partial class App : ApplicationBase
             // Models 
             typeof(LocalizerModel),
             typeof(FileManagerModel),
+            typeof(InvasionModel),
         ],
         [
            // Singletons

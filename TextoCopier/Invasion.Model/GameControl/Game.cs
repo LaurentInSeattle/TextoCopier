@@ -6,7 +6,20 @@ public sealed class Game
 
     public readonly List<Player> Players;
 
-    public readonly Map Map;
+    public Game(GameOptions gameOptions, IMessenger messenger, ILogger logger)
+    {
+        this.Messenger = messenger;
+        this.Logger = logger;
+        this.GameOptions = gameOptions;
+        this.Map = new Map(gameOptions, this.Messenger, this.Logger);
+        this.Players = new(8);
+    }
+
+    public ILogger Logger { get; private set; } 
+
+    public IMessenger Messenger { get; private set; } 
+
+    public Map Map { get; private set; }
 
     /// <summary> Indicates if the game is over. </summary>
     public bool IsGameOver { get; private set; }
@@ -18,13 +31,6 @@ public sealed class Game
     public Phase CurrentPhase { get; private set; }
 
     public Player CurrentPlayer => this.Players[this.PlayerIndex];
-
-    public Game(GameOptions gameOptions)
-    {
-        this.GameOptions = gameOptions;
-        this.Map = new Map(gameOptions);
-        this.Players = new(8);
-    }
 
     public void Start()
     {

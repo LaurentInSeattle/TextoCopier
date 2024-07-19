@@ -6,9 +6,6 @@ public sealed class PixelMap
     private const int padding = 15;
     private const short noCountry = short.MaxValue;
 
-    // Random number generator used during creation of PixelMap
-    private readonly Random random;
-
     /// <summary> 
     /// Coordinates of every region, which is the starting point for the algorithm assigning pixels to a region.
     /// </summary>
@@ -31,17 +28,13 @@ public sealed class PixelMap
 
     /// <summary> The Id for each pixel </summary>
     /// <remarks> there are hundred thousands of pixels. It's better to store the Id as short</remarks>
-    private readonly short[,] RegionIdsPerPixel;
+    public short[,] RegionIdsPerPixel { get; private set; }
 
-    /// <summary> Indexer, returns the Id of the region owning that pixel </summary>
-    public short this[Coordinate coordinate] => this.RegionIdsPerPixel[coordinate.X, coordinate.Y];
-
-    /// <summary> Count of pixels the largest country occupies </summary>
-    public double BiggestCountrySize { get; private set; }
-
-    public PixelMap(GameOptions gameOptions)
+    public PixelMap(GameOptions gameOptions, IMessenger messenger, ILogger logger)
     {
-        this.random = new Random(Environment.TickCount);
+        this.Messenger = messenger;
+        this.Logger = logger;
+        this.Random = new Random(Environment.TickCount);
         this.RegionCount = gameOptions.RegionCount;
         this.coordinatesByRegion = new Coordinate[this.RegionCount];
         this.XCount = gameOptions.PixelWidth;
@@ -53,9 +46,31 @@ public sealed class PixelMap
         this.ClearMap();
         this.GenerateRegionStartingPoints();
         this.GenerateRegionCoordinates();
-        this.ProcessMap();
-        this.VerifyNoSinglePixelAreas();
+
+        int retries = 5; 
+        while (retries > 0 && this.VerifyNoSinglePixelAreas())
+        {
+            this.RemoveSinglePixelAreas();
+            -- retries;
+        }
+
+        // this.ProcessMap();
     }
+
+    public ILogger Logger { get; private set; }
+
+    public IMessenger Messenger { get; private set; }
+
+    // Random number generator used during creation of PixelMap
+    public Random Random { get; private set; }
+
+    /// <summary> Count of pixels the largest country occupies </summary>
+    public double BiggestCountrySize { get; private set; }
+
+    /// <summary> Indexer, returns the Id of the region owning that pixel </summary>
+    public short this[Coordinate coordinate] => this.RegionIdsPerPixel[coordinate.X, coordinate.Y];
+
+    public short RegionAt(int x, int y) => this.RegionIdsPerPixel[x, y];
 
     private void ClearMap()
     {
@@ -78,10 +93,10 @@ public sealed class PixelMap
             Coordinate coordinate1;
             do
             {
-                coordinate1 = 
+                coordinate1 =
                     new Coordinate(
-                        this.random.Next(padding, this.XMax - padding),
-                        this.random.Next(padding, this.YMax - padding));
+                        this.Random.Next(padding, this.XMax - padding),
+                        this.Random.Next(padding, this.YMax - padding));
                 isTooClose = false;
                 for (int regionIndex2 = 0; regionIndex2 < regionIndex; ++regionIndex2)
                 {
@@ -112,7 +127,7 @@ public sealed class PixelMap
         var fillCoordinatesByCountry = new List<Coordinate>[this.RegionCount];
         var borderPixelsByCountry = new HashSet<Coordinate>[this.RegionCount];
 
-        // Create a list of fillCoordinates for every country, with the region's coordinate as start for every country
+        // Create a list of fillCoordinates for every region, with the region's coordinate as start for every region
         for (int regionIndex = 0; regionIndex < this.RegionCount; ++regionIndex)
         {
             var countryCoordinates = new List<Coordinate> { this.coordinatesByRegion[regionIndex] };
@@ -122,7 +137,7 @@ public sealed class PixelMap
 
         // Fill the map
         bool isIncomplete;
-        var workCoordinates = new List<Coordinate>();
+        var workCoordinates = new List<Coordinate>(256);
         do
         {
             isIncomplete = false;
@@ -132,7 +147,7 @@ public sealed class PixelMap
                   Coordinate originCoordinate,
                   Func<Coordinate, Coordinate> GetNeighbouringPixel)
                 {
-                    int pixelIndexMax = this.random.Next(1, 4);
+                    int pixelIndexMax = this.Random.Next(1, 4);
                     for (int pixelIndex = 0; pixelIndex < pixelIndexMax; ++pixelIndex)
                     {
                         Coordinate nextCoordinate = GetNeighbouringPixel(originCoordinate);
@@ -581,9 +596,12 @@ public sealed class PixelMap
         return hasFound;
     }
 
-    private void VerifyNoSinglePixelAreas()
+    /// <summary> Verify Single Pixel Areas </summary>
+    /// <returns> True if any </returns>
+    private bool VerifyNoSinglePixelAreas()
     {
         // Check if there are still "single" pixels, i.e. without neighbours with the same countryId
+        int count = 0;
         for (int y = 0; y < this.YCount; ++y)
         {
             for (int x = 0; x < this.XCount; ++x)
@@ -593,9 +611,18 @@ public sealed class PixelMap
                 if ((this[pixel.Up(this)] != countryId && this[pixel.Down(this)] != countryId) ||
                   (this[pixel.Left(this)] != countryId && this[pixel.Right(this)] != countryId))
                 {
-                    if (Debugger.IsAttached) { Debugger.Break(); }
+                    ++count;
                 }
             }
         }
+
+        if (count > 0)
+        {
+            // if (Debugger.IsAttached) { Debugger.Break(); }
+            this.Logger.Debug( "Single Pixels Count: " + count.ToString() );
+            return true;
+        }
+
+        return false;
     }
 }
