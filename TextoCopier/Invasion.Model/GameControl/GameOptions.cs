@@ -2,6 +2,7 @@
 
 public enum MapSize
 {
+    Debug, 
     Tiny , 
     Small , 
     Medium, 
@@ -31,6 +32,7 @@ public sealed class GameOptions
     public int PixelWidth =>    
         this.MapSize switch
         {
+            MapSize.Debug => 512,
             MapSize.Tiny => 600,
             MapSize.Small => 800,
             MapSize.Medium => 1000,
@@ -43,6 +45,7 @@ public sealed class GameOptions
     public int RegionCount =>
         this.MapSize switch
         {
+            MapSize.Debug => 20,
             MapSize.Tiny => 80,
             MapSize.Small => 160,
             MapSize.Medium => 240,

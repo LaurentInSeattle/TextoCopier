@@ -1,7 +1,4 @@
-﻿using Avalonia.Media.Imaging;
-using System.Linq;
-
-namespace Lyt.Invasion.Shell;
+﻿namespace Lyt.Invasion.Shell;
 
 public sealed class ShellViewModel : Bindable<ShellView>
 {
@@ -57,7 +54,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
     {
         var gameOptions = new GameOptions
         {
-            MapSize = MapSize.Medium,
+            MapSize = MapSize.Debug,
             Players =
             [
                  new PlayerInfo { Name = "Laurent", IsHuman =true},
@@ -69,6 +66,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         this.invasionModel.NewGame(gameOptions);
         this.GenerateMapImage();
+        this.GeneratePaths();
         //static void CreateAndBind<TViewModel, TControl>()
         //     where TViewModel : Bindable<TControl>
         //     where TControl : Control, new()
@@ -76,6 +74,38 @@ public sealed class ShellViewModel : Bindable<ShellView>
         //     var vm = App.GetRequiredService<TViewModel>();
         //     vm.CreateViewAndBind();
         // }
+    }
+
+    private void GeneratePaths() 
+    {
+        var game = this.invasionModel.Game;
+        if (game is null)
+        {
+            return;
+        }
+
+        int count = 0;
+        var canvas = this.View.InnerGrid;
+        var map = game.Map;
+        foreach (var region in map.Regions)
+        {
+            var path = region.SimplifiedPath;
+            var points = ( from v in path select new Point(v.X, v.Y) ).ToList();
+            var polygon = new Polygon
+            {
+                Stroke = Brushes.Red,
+                Fill = Brushes.Transparent,
+                Points = points ,
+                StrokeThickness = 2.0,
+            };
+
+            canvas.Children.Add(polygon);   
+            ++count;
+            if(count > 1)
+            {
+                break;
+            }
+        }
     }
 
     private void GenerateMapImage()
@@ -135,7 +165,5 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.MapImage = bitmap;
     }
 
-    public Bitmap? MapImage { get => this.Get<Bitmap?>(); set => this.Set(value); }
-
-    
+    public Bitmap? MapImage { get => this.Get<Bitmap?>(); set => this.Set(value); }   
 }

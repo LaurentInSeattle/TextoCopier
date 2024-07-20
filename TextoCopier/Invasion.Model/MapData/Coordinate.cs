@@ -9,6 +9,9 @@ public sealed class Coordinate(int x, int y) : IEquatable<Coordinate>
     /// <summary> Offset from top border of PixelMap </summary>
     public readonly int Y = y;
 
+    /// <summary> Converts to System.Numerics.Vector2 </summary>
+    public Vector2 ToVector2() => new(this.X, this.Y);
+
     /// <summary>
     /// Returns the coordinate of the pixel left of this coordinate pixel. 
     /// If the coordinate is at the left border, the right most pixel gets returned.
@@ -29,9 +32,6 @@ public sealed class Coordinate(int x, int y) : IEquatable<Coordinate>
 
         return new Coordinate(newX, this.Y);
     }
-
-    /// <summary> Converts to System.Numerics.Vector2 </summary>
-    public Vector2 ToVector2() => new(this.X, this.Y);
 
     /// <summary>
     /// Returns the coordinate of the pixel above of this coordinate pixel. 

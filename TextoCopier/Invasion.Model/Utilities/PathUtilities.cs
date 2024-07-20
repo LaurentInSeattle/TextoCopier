@@ -2,6 +2,28 @@
 
 public static class PathUtilities
 {
+    public static List<Vector2> CreatePath(List<Vector2> points, Vector2 center)
+    {
+        var list = new List<Tuple<float, float, Vector2>>(points.Count);
+        foreach (Vector2 point in points)
+        {
+            SquaredPolar(point, center, out float angle, out float squaredRadius);
+            list.Add(new Tuple<float, float, Vector2>(angle, squaredRadius, point));
+        }
+
+        var sortedList =
+            (from item in list orderby item.Item1 ascending orderby item.Item2 ascending select item.Item3);
+        return sortedList.ToList();
+    }
+
+    private static void SquaredPolar(Vector2 point, Vector2 center, out float angle, out float squaredRadius)
+    {
+        float dx = point.X - center.X;
+        float dy = point.Y - center.Y;
+        angle = (float)Math.Atan2(dy, dx);
+        squaredRadius = dx * dx + dy * dy;
+    }
+
     // Return minimum distance between line segment v-w and point p
     private static float SquaredSegmentDistance(Vector2 p, Vector2 v, Vector2 w)
     {
@@ -21,7 +43,6 @@ public static class PathUtilities
         return Vector2.DistanceSquared(p, projection);
     }
 
-
     // simplification using optimized the Ramer-Douglas-Peucker algorithm with recursion elimination
     private static List<Vector2> RamerDouglasPeucker(IList<Vector2> points, double sqTolerance)
     {
@@ -34,7 +55,7 @@ public static class PathUtilities
         var newPoints = new List<Vector2>();
         markers[first.Value] = markers[last.Value] = 1;
 
-        while ((last is not null) && (first  is  not null))
+        while ((last is not null) && (first is not null))
         {
             double maxSqDist = 0.0;
             for (int? i = first + 1; i < last; i++)

@@ -35,7 +35,9 @@ public sealed class Region
         this.Capacity = 0; // For now
         this.BorderCoordinates = borderCoordinates;
         this.NeighbourIds = new (16);
-        this.Path = new (32);
+        this.Path = new(256);
+        this.SimplifiedPath = new(256);
+        this.CreateBorderPath();
         this.SimplifyBorderPath();
     }
 
@@ -48,7 +50,9 @@ public sealed class Region
     /// <summary> Player who owned the region previously, or null </summary>
     public Player? PreviousOwner { get; private set; }
 
-    public List<Vector2> Path { get; private set; } 
+    public List<Vector2> Path { get; private set; }
+
+    public List<Vector2> SimplifiedPath { get; private set; }
 
     /// <summary> Size of the army within the region </summary>
     public int ArmySize { get; set; } = 0;
@@ -60,19 +64,25 @@ public sealed class Region
     /// the neighbour might not be constructed yet.
     /// </summary>
     internal void AddNeighbour(Region neighbour) => this.NeighbourIds.Add(neighbour.Id);
-    
-    public void SimplifyBorderPath ()
+
+    private void CreateBorderPath()
     {
-        // Smooth the border 
         var points = new List<Vector2>();
         foreach (var coordinate in this.BorderCoordinates)
         {
             points.Add(coordinate.ToVector2());
         }
 
-        var avgPoints = PathUtilities.MovingAverage(points);
+        var path = PathUtilities.CreatePath(points, this.Center.ToVector2());
+        this.Path = path;
+    }
+
+    private void SimplifyBorderPath ()
+    {
+        // Smooth the border 
+        var avgPoints = PathUtilities.MovingAverage(this.Path);
         var simplified = PathUtilities.Simplify(avgPoints, 2.0f);
-        this.Path = simplified;
+        this.SimplifiedPath = simplified;
     }
 
     /// <summary> Has this region a neighbouring region with a different owner ? </summary>
