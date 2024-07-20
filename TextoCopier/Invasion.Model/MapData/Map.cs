@@ -7,7 +7,7 @@ public sealed class Map
         this.Messenger = messenger;
         this.Logger = logger;
         this.Regions = new Region[gameOptions.RegionCount];
-        this.PixelMap = new PixelMap(gameOptions, messenger, logger);
+        this.PixelMap = new PixelMap(gameOptions, this, messenger, logger);
     }
 
     public ILogger Logger { get; private set; }
@@ -20,6 +20,8 @@ public sealed class Map
 
     /// <summary> Indexer to regions by region.Id /// </summary>
     public Region this[short index] => this.Regions[index];
+
+    public void AddRegionAt(short index, Region region) => this.Regions[index] = region;
 
     public void Destroy()
     {

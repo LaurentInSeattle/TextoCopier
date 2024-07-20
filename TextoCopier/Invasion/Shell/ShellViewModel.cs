@@ -57,7 +57,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
     {
         var gameOptions = new GameOptions
         {
-            MapSize = MapSize.Huge,
+            MapSize = MapSize.Small,
             HumanPlayers =
              [
                  new HumanPlayer { Name = "Laurent"},
@@ -90,34 +90,45 @@ public sealed class ShellViewModel : Bindable<ShellView>
         }
 
         var pixelMap = game.Map.PixelMap;
-        var regionCount = game.GameOptions.RegionCount;
+        int regionCount = game.GameOptions.RegionCount;
         var colors = new Color[regionCount];
         byte a = 255;
         for (int i = 0; i < regionCount; i++)
         {
-            byte r = (byte)pixelMap.Random.Next(10, 250);
-            byte g = (byte)pixelMap.Random.Next(10, 250);
-            byte b = (byte)pixelMap.Random.Next(10, 250);
+            byte r = (byte)pixelMap.Random.Next(10, 200);
+            byte g = (byte)pixelMap.Random.Next(10, 200);
+            byte b = (byte)pixelMap.Random.Next(10, 200);
             colors[i] = new Color(a, r, g, b);
         }
 
         int width = game.GameOptions.PixelWidth;
         int height = game.GameOptions.PixelHeight;
-        var bgraPixelData = new byte[width * height*4];
+        byte[] bgraPixelData = new byte[width * height*4];
         int byteIndex = 0;
         for (int h = 0; h < height; h++)
         {
             for (int w = 0; w < width; w++)
             {
-                int region = pixelMap.RegionAt(w, h);
-                bgraPixelData[byteIndex++] = colors[region].B;
-                bgraPixelData[byteIndex++] = colors[region].G;
-                bgraPixelData[byteIndex++] = colors[region].R;
+                int regionIndex = pixelMap.RegionAt(w, h);
+                bool isBorder = pixelMap.IsBorderPixel[w, h];
+                if (isBorder)
+                {
+                    bgraPixelData[byteIndex++] = 255;
+                    bgraPixelData[byteIndex++] = 255;
+                    bgraPixelData[byteIndex++] = 255;
+                }
+                else
+                {
+                    bgraPixelData[byteIndex++] = colors[regionIndex].B;
+                    bgraPixelData[byteIndex++] = colors[regionIndex].G;
+                    bgraPixelData[byteIndex++] = colors[regionIndex].R;
+                }
+
                 bgraPixelData[byteIndex++] = 255;
             }
         }
 
-        Vector dpi = new Vector(96, 96);
+        var dpi = new Vector(96, 96);
         var bitmap = new WriteableBitmap(new PixelSize(width, height), dpi, PixelFormat.Bgra8888, AlphaFormat.Premul);
         using (var frameBuffer = bitmap.Lock())
         {

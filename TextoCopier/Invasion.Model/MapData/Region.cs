@@ -26,15 +26,17 @@ public sealed class Region
     public readonly List<short> NeighbourIds;
 
     public Region(
-        short id, Coordinate coordinate, Coordinate center, int size, double capacity, List<Coordinate> borderCoordinates)
+        short id, Coordinate coordinate, Coordinate center, int size, List<Coordinate> borderCoordinates)
     {
         this.Id = id;
         this.Coordinate = coordinate;
         this.Center = center;
         this.Size = size;
-        this.Capacity = capacity;
+        this.Capacity = 0; // For now
         this.BorderCoordinates = borderCoordinates;
         this.NeighbourIds = new (16);
+        this.Path = new (32);
+        this.SimplifyBorderPath();
     }
 
     // LATER 
@@ -45,6 +47,8 @@ public sealed class Region
 
     /// <summary> Player who owned the region previously, or null </summary>
     public Player? PreviousOwner { get; private set; }
+
+    public List<Vector2> Path { get; private set; } 
 
     /// <summary> Size of the army within the region </summary>
     public int ArmySize { get; set; } = 0;
@@ -57,6 +61,20 @@ public sealed class Region
     /// </summary>
     internal void AddNeighbour(Region neighbour) => this.NeighbourIds.Add(neighbour.Id);
     
+    public void SimplifyBorderPath ()
+    {
+        // Smooth the border 
+        var points = new List<Vector2>();
+        foreach (var coordinate in this.BorderCoordinates)
+        {
+            points.Add(coordinate.ToVector2());
+        }
+
+        var avgPoints = PathUtilities.MovingAverage(points);
+        var simplified = PathUtilities.Simplify(avgPoints, 2.0f);
+        this.Path = simplified;
+    }
+
     /// <summary> Has this region a neighbouring region with a different owner ? </summary>
     public bool HasEnemies(Map map)
     {

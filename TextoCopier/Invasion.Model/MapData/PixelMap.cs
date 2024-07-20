@@ -19,9 +19,22 @@ public sealed class PixelMap
     private const short noCountry = short.MaxValue;
 
     /// <summary> 
-    /// Coordinates of every region, which is the starting point for the algorithm assigning pixels to a region.
+    /// Coordinates of each region, which is the starting point for the algorithm assigning pixels to a region.
     /// </summary>
     private readonly Coordinate[] coordinatesByRegion;
+
+    /// <summary>  Barycenter coordinates of each region. </summary>
+    private readonly Coordinate[] centersByRegion;
+
+    public List<Coordinate>[] borderCoordinatesByCountry;
+
+    private readonly int[] sizeByRegion;
+
+    private readonly bool [,] neighboursByRegion; 
+
+    private readonly GameOptions gameOptions;
+
+    private readonly Map map ;
 
     /// <summary> Count of regions </summary>
     public readonly int RegionCount;
@@ -42,22 +55,31 @@ public sealed class PixelMap
     /// <remarks> there are hundred thousands of pixels. It's better to store the Id as short</remarks>
     public short[,] RegionIdsPerPixel { get; private set; }
 
+    public bool [,] IsBorderPixel { get; private set; }
+
 #pragma warning disable IDE0044 // Add readonly modifier. isTestBorderProblem can be manually set during debugging
     private bool isTestBorderProblem;
 #pragma warning restore IDE0044
 
-    public PixelMap(GameOptions gameOptions, IMessenger messenger, ILogger logger)
+    public PixelMap(GameOptions gameOptions, Map map, IMessenger messenger, ILogger logger)
     {
+        this.gameOptions = gameOptions;
+        this.map = map;
         this.Messenger = messenger;
         this.Logger = logger;
         this.Random = new Random(Environment.TickCount);
         this.RegionCount = gameOptions.RegionCount;
-        this.coordinatesByRegion = new Coordinate[this.RegionCount];
         this.XCount = gameOptions.PixelWidth;
         this.XMax = this.XCount - 1;
         this.YCount = gameOptions.PixelHeight;
         this.YMax = this.YCount - 1;
         this.RegionIdsPerPixel = new short[this.XCount, this.YCount];
+        this.IsBorderPixel = new bool[this.XCount, this.YCount];
+
+        this.coordinatesByRegion = new Coordinate[this.RegionCount];
+        this.centersByRegion = new Coordinate[this.RegionCount];
+        this.sizeByRegion = new int[this.RegionCount];
+        this.neighboursByRegion = new bool[this.RegionCount, this.RegionCount];
 
         this.ClearMap();
         this.GenerateRegionStartingPoints();
@@ -70,7 +92,9 @@ public sealed class PixelMap
             -- retries;
         }
 
-        this.ProcessMap();
+        this.GenerateRegionBordersSizeCenters();
+        this.CreateRegions();
+        this.GenerateRegionNeighbours(); 
     }
 
     public ILogger Logger { get; private set; }
@@ -209,16 +233,13 @@ public sealed class PixelMap
         } while (isIncomplete);
     }
 
-    private void ProcessMap()
+    private void GenerateRegionBordersSizeCenters()
     {
-        int[] sizeByCountry;
-        Coordinate[] centerByCountry;
-        bool[,] neighboursByCountry;
-        List<Coordinate>[] borderCoordinatesByCountry;
         int loopCounter = 0;
         do
         {
             loopCounter++;
+            this.Logger.Debug ("Processing map, loop #" + loopCounter);
             if (loopCounter > 7)
             {
                 throw new Exception("Failed too many times to process this PixelMap.");
@@ -227,8 +248,6 @@ public sealed class PixelMap
             this.RemoveSinglePixelAreas();
 
             // Find border pixels, size and center
-            sizeByCountry = new int[this.RegionCount];
-
             bool[] isLeftBorderCountry = new bool[this.RegionCount];
             for (int x = 0; x < this.XCount; x++)
             {
@@ -241,7 +260,6 @@ public sealed class PixelMap
             }
 
             long[,] sumCoordinatesByCountry = new long[this.RegionCount, 2];
-            neighboursByCountry = new bool[this.RegionCount, this.RegionCount];
             int yHalf = this.YCount / 2;
             int xHalf = this.XCount / 2;
             for (int y = 0; y < this.YCount; ++y)
@@ -249,7 +267,7 @@ public sealed class PixelMap
                 for (int x = 0; x < this.XCount; ++x)
                 {
                     int countryId = this.RegionIdsPerPixel[x, y];
-                    sizeByCountry[countryId]++;
+                    this.sizeByRegion[countryId]++;
                     var coordinate = new Coordinate(x, y);
 
                     void CheckNeighbour(Coordinate neighbourCoordinate)
@@ -258,8 +276,8 @@ public sealed class PixelMap
                         if (countryId != neighbourId)
                         {
                             // border found
-                            neighboursByCountry[neighbourId, countryId] = true;
-                            neighboursByCountry[countryId, neighbourId] = true;
+                            this.neighboursByRegion[neighbourId, countryId] = true;
+                            this.neighboursByRegion[countryId, neighbourId] = true;
                         }
                     }
 
@@ -298,11 +316,9 @@ public sealed class PixelMap
                 yPadding = 15;
             }
 
-            centerByCountry = new Coordinate[this.RegionCount];
             for (int regionIndex = 0; regionIndex < this.RegionCount; ++regionIndex)
             {
-
-                int x = (int)(sumCoordinatesByCountry[regionIndex, 0] / sizeByCountry[regionIndex]);
+                int x = (int)(sumCoordinatesByCountry[regionIndex, 0] / this.sizeByRegion[regionIndex]);
                 if (x > this.XMax)
                 {
                     x -= this.XCount;
@@ -311,7 +327,7 @@ public sealed class PixelMap
                 x = Math.Max(x, xPadding);
                 x = Math.Min(x, this.XMax - xPadding);
 
-                int y = (int)(sumCoordinatesByCountry[regionIndex, 1] / sizeByCountry[regionIndex]);
+                int y = (int)(sumCoordinatesByCountry[regionIndex, 1] / this.sizeByRegion[regionIndex]);
                 if (y > this.YMax)
                 {
                     y -= this.YCount;
@@ -319,11 +335,11 @@ public sealed class PixelMap
 
                 y = Math.Max(y, yPadding);
                 y = Math.Min(y, this.YMax - yPadding);
-                centerByCountry[regionIndex] = new Coordinate(x, y);
+                this.centersByRegion[regionIndex] = new Coordinate(x, y);
             }
 
-            borderCoordinatesByCountry = new List<Coordinate>[this.RegionCount];
-        } while (!this.FindBorderLines(borderCoordinatesByCountry));
+            this.borderCoordinatesByCountry = new List<Coordinate>[this.RegionCount];
+        } while (!this.FindBorderLines(this.borderCoordinatesByCountry));
 
         #region Mountains : Later 
         //// sort countries by size
@@ -661,6 +677,7 @@ public sealed class PixelMap
                         break;
                     }
                 }
+
                 if (sameIndex >= lastCoordinates.Length)
                 {
                     lastCoordinates[lastCoordinatesIndex] = pixel;
@@ -693,12 +710,12 @@ public sealed class PixelMap
                 pixel = pixel.Up(this);
                 if (this.RegionIdsPerPixel[pixel.X, pixel.Y] == countryIndex)
                 {
-                    //top pixel has  countryId, search counter clock wise for different countryId
+                    // top pixel has  countryId, search counter clock wise for different countryId
                     SearchNextPixelInside(ref pixel);
                 }
                 else
                 {
-                    //top pixel has different countryId, search clock wise for countryId
+                    // top pixel has different countryId, search clock wise for countryId
                     SearchNextPixelOutside(ref pixel);
                 }
 
@@ -710,6 +727,7 @@ public sealed class PixelMap
                     hasFound = false;
                 }
 
+                this.IsBorderPixel[pixel.X, pixel.Y] = true;
                 borderCoordinates.Add(pixel);
 
                 if (borderCoordinates.Count > 10000)
@@ -754,6 +772,36 @@ public sealed class PixelMap
         }
 
         return hasFound;
+    }
+
+    private void CreateRegions()
+    {
+        for (short regionIndex = 0; regionIndex < this.RegionCount; regionIndex++)
+        {
+            var region = new Region(
+                regionIndex, this.coordinatesByRegion[regionIndex], this.centersByRegion[regionIndex],
+                this.sizeByRegion[regionIndex], this.borderCoordinatesByCountry[regionIndex]);
+            this.map.AddRegionAt(regionIndex, region);
+        }
+    }
+
+    private void GenerateRegionNeighbours()
+    {
+        // find neighbours
+        var regions = this.map.Regions;
+        for (short regionIndex = 0; regionIndex < this.RegionCount; regionIndex++)
+        {
+            var region = regions[regionIndex];
+            for (short neighbourIndex = 0; neighbourIndex < regionIndex; neighbourIndex++)
+            {
+                if (this.neighboursByRegion[regionIndex, neighbourIndex])
+                {
+                    var neighbour = regions[neighbourIndex];
+                    region.AddNeighbour(neighbour);
+                    neighbour.AddNeighbour(region);
+                }
+            }
+        }
     }
 
     /// <summary> Verify Single Pixel Areas </summary>
