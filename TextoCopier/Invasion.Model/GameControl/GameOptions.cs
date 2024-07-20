@@ -20,9 +20,7 @@ public enum GameDifficulty
 
 public sealed class GameOptions
 {
-    public List<HumanPlayer> HumanPlayers { get; set; } = [];
-
-    public List<AiPlayer> AiPlayers { get; set; } = [];
+    public List<PlayerInfo> Players { get; set; } = [];
 
     public MapSize MapSize { get; set; }
 
@@ -45,10 +43,10 @@ public sealed class GameOptions
     public int RegionCount =>
         this.MapSize switch
         {
-            MapSize.Tiny => 100,
-            MapSize.Small => 220,
-            MapSize.Medium => 330,
-            MapSize.Large => 460,
-            _ => 600, // Huge
+            MapSize.Tiny => 80,
+            MapSize.Small => 160,
+            MapSize.Medium => 240,
+            MapSize.Large => 360,
+            _ => 420, // Huge
         };
 }

@@ -57,17 +57,14 @@ public sealed class ShellViewModel : Bindable<ShellView>
     {
         var gameOptions = new GameOptions
         {
-            MapSize = MapSize.Small,
-            HumanPlayers =
-             [
-                 new HumanPlayer { Name = "Laurent"},
-                 new HumanPlayer { Name = "Annalisa"},
-             ],
-            AiPlayers =
-             [
-                 new AiPlayer { Name = "Oksana"},
-                 new AiPlayer { Name = "Irina"},
-             ],
+            MapSize = MapSize.Medium,
+            Players =
+            [
+                 new PlayerInfo { Name = "Laurent", IsHuman =true},
+                 new PlayerInfo { Name = "Annalisa", IsHuman =true},
+                 new PlayerInfo { Name = "Oksana"},
+                 new PlayerInfo { Name = "Irina"},
+            ],
         };
 
         this.invasionModel.NewGame(gameOptions);

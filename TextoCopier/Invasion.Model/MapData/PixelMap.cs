@@ -68,10 +68,10 @@ public sealed class PixelMap
         this.Messenger = messenger;
         this.Logger = logger;
         this.Random = new Random(Environment.TickCount);
-        this.RegionCount = gameOptions.RegionCount;
-        this.XCount = gameOptions.PixelWidth;
+        this.RegionCount = this.gameOptions.RegionCount;
+        this.XCount = this.gameOptions.PixelWidth;
         this.XMax = this.XCount - 1;
-        this.YCount = gameOptions.PixelHeight;
+        this.YCount = this.gameOptions.PixelHeight;
         this.YMax = this.YCount - 1;
         this.RegionIdsPerPixel = new short[this.XCount, this.YCount];
         this.IsBorderPixel = new bool[this.XCount, this.YCount];
@@ -80,6 +80,8 @@ public sealed class PixelMap
         this.centersByRegion = new Coordinate[this.RegionCount];
         this.sizeByRegion = new int[this.RegionCount];
         this.neighboursByRegion = new bool[this.RegionCount, this.RegionCount];
+        this.borderCoordinatesByCountry = new List<Coordinate>[this.RegionCount];
+        this.isTestBorderProblem = false;
 
         this.ClearMap();
         this.GenerateRegionStartingPoints();
@@ -742,7 +744,7 @@ public sealed class PixelMap
                 }
             } while (!pixel.Equals(startPixel));
 
-            if (isTestBorderProblem)
+            if (this.isTestBorderProblem)
             {
                 //    int firstPixelIndex;
                 //    var isLastPixelAtBottomBorder = false;
