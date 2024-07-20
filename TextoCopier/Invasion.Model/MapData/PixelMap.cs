@@ -2,6 +2,18 @@
 
 public sealed class PixelMap
 {
+    private enum PositionEnum
+    {
+        Top,
+        TopRight,
+        Right,
+        BottomRight,
+        Bottom,
+        BottomLeft,
+        Left,
+        TopLeft
+    }
+
     // minimum distance from the border of a region's coordinate
     private const int padding = 15;
     private const short noCountry = short.MaxValue;
@@ -30,6 +42,10 @@ public sealed class PixelMap
     /// <remarks> there are hundred thousands of pixels. It's better to store the Id as short</remarks>
     public short[,] RegionIdsPerPixel { get; private set; }
 
+#pragma warning disable IDE0044 // Add readonly modifier. isTestBorderProblem can be manually set during debugging
+    private bool isTestBorderProblem;
+#pragma warning restore IDE0044
+
     public PixelMap(GameOptions gameOptions, IMessenger messenger, ILogger logger)
     {
         this.Messenger = messenger;
@@ -54,7 +70,7 @@ public sealed class PixelMap
             -- retries;
         }
 
-        // this.ProcessMap();
+        this.ProcessMap();
     }
 
     public ILogger Logger { get; private set; }
@@ -130,7 +146,7 @@ public sealed class PixelMap
         // Create a list of fillCoordinates for every region, with the region's coordinate as start for every region
         for (int regionIndex = 0; regionIndex < this.RegionCount; ++regionIndex)
         {
-            var countryCoordinates = new List<Coordinate> { this.coordinatesByRegion[regionIndex] };
+            var countryCoordinates = new List<Coordinate>(4096) { this.coordinatesByRegion[regionIndex] };
             fillCoordinatesByCountry[regionIndex] = countryCoordinates;
             borderPixelsByCountry[regionIndex] = [];
         }
@@ -497,7 +513,7 @@ public sealed class PixelMap
             bool isSearchUp = true;
             int stepCount = 0;
 
-            //search up or right, until a different country is found
+            // search up or right, until a different country is found
             do
             {
                 lastStartPixel = startPixel;
@@ -505,7 +521,7 @@ public sealed class PixelMap
                 stepCount++;
                 if (stepCount == this.YCount)
                 {
-                    //no border found searching vertically. search horizontally
+                    // no border found searching vertically. search horizontally
                     isSearchUp = false;
                 }
 
@@ -515,82 +531,226 @@ public sealed class PixelMap
                 }
             } while (this[startPixel] == countryIndex);
 
-            //first border pixel found
+            // first border pixel found
             startPixel = lastStartPixel;
             Coordinate pixel = startPixel;
-            var borderCoordinates = new List<Coordinate>();
-            var lastCoordinates = new Coordinate?[20];
+            var borderCoordinates = new List<Coordinate>(1024);
+            var lastCoordinates = new Coordinate[20];
             int lastCoordinatesIndex;
             for (lastCoordinatesIndex = 0; lastCoordinatesIndex < lastCoordinates.Length; lastCoordinatesIndex++)
             {
-                lastCoordinates[lastCoordinatesIndex] = null;
+                lastCoordinates[lastCoordinatesIndex] = new Coordinate(-1,-1);
             }
 
             lastCoordinatesIndex = 0;
 
-            // TODO 
+            #region Search Next Pixel 
 
-            //            do
-            //            {
-            //                //move to pixel above current pixel
-            //                pixel = pixel.Up(this);
-            //                if (countryIdsPerPixel[pixel.X, pixel.Y] == countryIndex)
-            //                {
-            //                    //top pixel has  countryId, search counter clock wise for different countryId
-            //                    searchNextPixelInside(ref pixel, countryIndex);
-            //                }
-            //                else
-            //                {
-            //                    //top pixel has different countryId, search clock wise for countryId
-            //                    searchNextPixelOutside(ref pixel, countryIndex);
-            //                }
-            //                if (arePixelRepeating(pixel, lastCoordinates, ref lastCoordinatesIndex))
-            //                {
-            //                    //tracing the border line is stuck in a loop. The problematic pixels were removed from this country
-            //                    //and the processing of the map has to be repeated, since the map has changed
-            //                    pixel = startPixel;
-            //                    hasFound = false;
-            //                }
-            //                borderCoordinates.Add(pixel);
+            void SearchNextPixelInside(ref Coordinate pixel)
+            {
+                //search counter clock wise from Top for pixel different from countryId
+                //use second last pixel, which still has the countryId
+                var position = PositionEnum.Top;
+                Coordinate lastPixel;
+                do
+                {
+                    //turn counter clockwise
+                    lastPixel = pixel;
+                    switch (position)
+                    {
+                        case PositionEnum.Top:
+                            position = PositionEnum.TopLeft;
+                            pixel = pixel.Left(this);
+                            break;
 
-            //                if (borderCoordinates.Count > 10000)
-            //                {
-            //#if debugBorderCoordinates
-            //            string s;
-            //            if (coordinatesbyCountry.Length<92) {
-            //              s = ToPlainString(countryIdsPerPixel, pixel, 5);
-            //            }
-            //#endif
-            //                    throw new Exception("too many border points. Press \"New Game\" to create a new game.");
-            //                }
-            //            } while (!pixel.Equals(startPixel));
+                        case PositionEnum.TopRight:
+                            throw new Exception("none of the neighbouring pixels have the country Id: " + countryIndex + ".");
 
-            //            if (isTestBorderProblem)
-            //            {
-            //                int firstPixelIndex;
-            //                var isLastPixelAtBottomBorder = false;
-            //                for (firstPixelIndex = 0; firstPixelIndex < borderCoordinates.Count; firstPixelIndex++)
-            //                {
-            //                    var y = borderCoordinates[firstPixelIndex].Y;
-            //                    if (isLastPixelAtBottomBorder)
-            //                    {
-            //                        if (y == 0)
-            //                        {
-            //                            //border of country as switched from bottom border of window to top border of window
-            //                            //for testing for border problem, shift border pixels so that it starts with y=0
-            //                            var borderCoordinatesCopy = new List<Coordinate>(borderCoordinates.Count);
-            //                            for (var copyPixelIndex = 0; copyPixelIndex < borderCoordinates.Count; copyPixelIndex++)
-            //                            {
-            //                                borderCoordinatesCopy.Add(borderCoordinates[(firstPixelIndex + copyPixelIndex) % borderCoordinates.Count]);
-            //                            }
-            //                            borderCoordinates = borderCoordinatesCopy;
-            //                            break;
-            //                        }
-            //                    }
-            //                    isLastPixelAtBottomBorder = y == YMax;
-            //                }
-            //            }
-            //            borderCoordinatesByCountry[countryIndex] = borderCoordinates;
+                        case PositionEnum.Right:
+                            position = PositionEnum.TopRight;
+                            pixel = pixel.Up(this);
+                            break;
+
+                        case PositionEnum.BottomRight:
+                            position = PositionEnum.Right;
+                            pixel = pixel.Up(this);
+                            break;
+
+                        case PositionEnum.Bottom:
+                            position = PositionEnum.BottomRight;
+                            pixel = pixel.Right(this);
+                            break;
+
+                        case PositionEnum.BottomLeft:
+                            position = PositionEnum.Bottom;
+                            pixel = pixel.Right(this);
+                            break;
+
+                        case PositionEnum.Left:
+                            position = PositionEnum.BottomLeft;
+                            pixel = pixel.Down(this);
+                            break;
+
+                        case PositionEnum.TopLeft:
+                            position = PositionEnum.Left;
+                            pixel = pixel.Down(this);
+                            break;
+
+                        default:
+                            throw new NotSupportedException();
+                    }
+                } while (this.RegionIdsPerPixel[pixel.X, pixel.Y] == countryIndex);
+
+                pixel = lastPixel; // lastPixel has still countryIndex
+            }
+
+            void SearchNextPixelOutside(ref Coordinate pixel)
+            {
+                // search clock wise from Top for countryId
+                // use last pixel found, it has already the countryId
+                var position = PositionEnum.Top;
+                do
+                {
+                    //turn clockwise
+                    switch (position)
+                    {
+                        case PositionEnum.Top:
+                            position = PositionEnum.TopRight;
+                            pixel = pixel.Right(this);
+                            break;
+                        case PositionEnum.TopRight:
+                            position = PositionEnum.Right;
+                            pixel = pixel.Down(this);
+                            break;
+                        case PositionEnum.Right:
+                            position = PositionEnum.BottomRight;
+                            pixel = pixel.Down(this);
+                            break;
+                        case PositionEnum.BottomRight:
+                            position = PositionEnum.Bottom;
+                            pixel = pixel.Left(this);
+                            break;
+                        case PositionEnum.Bottom:
+                            position = PositionEnum.BottomLeft;
+                            pixel = pixel.Left(this);
+                            break;
+                        case PositionEnum.BottomLeft:
+                            position = PositionEnum.Left;
+                            pixel = pixel.Up(this);
+                            break;
+                        case PositionEnum.Left:
+                            position = PositionEnum.TopLeft;
+                            pixel = pixel.Up(this);
+                            break;
+                        case PositionEnum.TopLeft:
+                            throw new Exception("all neighbouring pixels have the country countryId: " + countryIndex + ".");
+                        default:
+                            throw new NotSupportedException();
+                    }
+                } while (this.RegionIdsPerPixel[pixel.X, pixel.Y] != countryIndex);
+            }
+
+            bool ArePixelRepeating(Coordinate pixel, Coordinate[] lastCoordinates, ref int lastCoordinatesIndex)
+            {
+                // check if Pixel is in lastCoordinates
+                int sameIndex;
+                for (sameIndex = 0; sameIndex < lastCoordinates.Length; sameIndex++)
+                {
+                    if (lastCoordinates[sameIndex].Equals(pixel))
+                    {
+                        break;
+                    }
+                }
+                if (sameIndex >= lastCoordinates.Length)
+                {
+                    lastCoordinates[lastCoordinatesIndex] = pixel;
+                    lastCoordinatesIndex = (lastCoordinatesIndex + 1) % lastCoordinates.Length;
+                    return false;
+                }
+
+                // same pixel was processed before. Remove the remaining pixels from the map
+                int  removeIndex = (sameIndex + 1) % lastCoordinates.Length; //leave the first repeated pixel
+                if (removeIndex == lastCoordinatesIndex)
+                {
+                    throw new Exception("The loop consists of only 1 pixel. This can not happen, but checking anyway.");
+                }
+
+                do
+                {
+                    this.RemovePixel(lastCoordinates[removeIndex]);
+                    lastCoordinates[removeIndex] = new Coordinate(-1,-1);
+                    removeIndex = (removeIndex + 1) % lastCoordinates.Length;
+                } while (removeIndex != lastCoordinatesIndex);
+
+                return true;
+            }
+
+            #endregion Search Next Pixel 
+
+            do
+            {
+                //move to pixel above current pixel
+                pixel = pixel.Up(this);
+                if (this.RegionIdsPerPixel[pixel.X, pixel.Y] == countryIndex)
+                {
+                    //top pixel has  countryId, search counter clock wise for different countryId
+                    SearchNextPixelInside(ref pixel);
+                }
+                else
+                {
+                    //top pixel has different countryId, search clock wise for countryId
+                    SearchNextPixelOutside(ref pixel);
+                }
+
+                if (ArePixelRepeating(pixel, lastCoordinates, ref lastCoordinatesIndex))
+                {
+                    //tracing the border line is stuck in a loop. The problematic pixels were removed from this country
+                    //and the processing of the map has to be repeated, since the map has changed
+                    pixel = startPixel;
+                    hasFound = false;
+                }
+
+                borderCoordinates.Add(pixel);
+
+                if (borderCoordinates.Count > 10000)
+                {
+//#if debugBorderCoordinates
+//                        string s;
+//                        if (coordinatesbyCountry.Length<92) {
+//                          s = ToPlainString(countryIdsPerPixel, pixel, 5);
+//                        }
+//#endif
+                    throw new Exception("too many border points. Press \"New Game\" to create a new game.");
+                }
+            } while (!pixel.Equals(startPixel));
+
+            if (isTestBorderProblem)
+            {
+                //    int firstPixelIndex;
+                //    var isLastPixelAtBottomBorder = false;
+                //    for (firstPixelIndex = 0; firstPixelIndex < borderCoordinates.Count; firstPixelIndex++)
+                //    {
+                //        var y = borderCoordinates[firstPixelIndex].Y;
+                //        if (isLastPixelAtBottomBorder)
+                //        {
+                //            if (y == 0)
+                //            {
+                //                //border of country as switched from bottom border of window to top border of window
+                //                //for testing for border problem, shift border pixels so that it starts with y=0
+                //                var borderCoordinatesCopy = new List<Coordinate>(borderCoordinates.Count);
+                //                for (var copyPixelIndex = 0; copyPixelIndex < borderCoordinates.Count; copyPixelIndex++)
+                //                {
+                //                    borderCoordinatesCopy.Add(borderCoordinates[(firstPixelIndex + copyPixelIndex) % borderCoordinates.Count]);
+                //                }
+                //                borderCoordinates = borderCoordinatesCopy;
+                //                break;
+                //            }
+                //        }
+                //        isLastPixelAtBottomBorder = y == YMax;
+                //    }
+            }
+
+            borderCoordinatesByCountry[countryIndex] = borderCoordinates;
         }
 
         return hasFound;

@@ -19,19 +19,32 @@ public sealed class Region
     /// <summary> Biggest army size the region can host </summary>
     public readonly double Capacity;
 
-    /// <summary> Ids of all other regions neighbouring this region. </summary>
-    public readonly List<short> NeighbourIds = [];
-
     /// <summary> Every pixel on the border of this region. This is used to draw the country as vector graph. </summary>
-    public readonly List<Coordinate> BorderCoordinates = [];
+    public readonly List<Coordinate> BorderCoordinates;
 
-    public Dictionary<ResourceKind, int> Resources = new(10);
+    /// <summary> Ids of all other regions neighbouring this region. </summary>
+    public readonly List<short> NeighbourIds;
+
+    public Region(
+        short id, Coordinate coordinate, Coordinate center, int size, double capacity, List<Coordinate> borderCoordinates)
+    {
+        this.Id = id;
+        this.Coordinate = coordinate;
+        this.Center = center;
+        this.Size = size;
+        this.Capacity = capacity;
+        this.BorderCoordinates = borderCoordinates;
+        this.NeighbourIds = new (16);
+    }
+
+    // LATER 
+    // public Dictionary<ResourceKind, int> Resources = new(10);
 
     /// <summary> Player who currently owns the region, or null </summary>
-    public Player? Owner { get; }
+    public Player? Owner { get; private set;  }
 
     /// <summary> Player who owned the region previously, or null </summary>
-    public Player? PreviousOwner { get; }
+    public Player? PreviousOwner { get; private set; }
 
     /// <summary> Size of the army within the region </summary>
     public int ArmySize { get; set; } = 0;
