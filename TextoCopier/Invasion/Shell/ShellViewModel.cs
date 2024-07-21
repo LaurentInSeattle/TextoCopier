@@ -1,13 +1,24 @@
-﻿namespace Lyt.Invasion.Shell;
+﻿using Lyt.Invasion.Model.GameControl;
+
+namespace Lyt.Invasion.Shell;
 
 public sealed class ShellViewModel : Bindable<ShellView>
 {
+    private const byte red = 0x10;
+    private const byte blu = 0x10;
+    private const byte gre = 0x10;
+
+    //private const byte red = 0xA0;
+    //private const byte blu = 0xC0;
+    //private const byte gre = 0xD0;
+
     private readonly IDialogService dialogService;
     private readonly IToaster toaster;
     private readonly IMessenger messenger;
     private readonly IProfiler profiler;
     private readonly LocalizerModel localizer;
     private readonly InvasionModel invasionModel;
+    private readonly GameOptions gameOptions;
 
     public ShellViewModel(
         LocalizerModel localizer, InvasionModel invasionModel,
@@ -19,6 +30,18 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.toaster = toaster;
         this.messenger = messenger;
         this.profiler = profiler;
+
+        this.gameOptions = new GameOptions
+        {
+            MapSize = MapSize.Tiny,
+            Players =
+            [
+                 new PlayerInfo { Name = "Laurent", IsHuman =true},
+                 new PlayerInfo { Name = "Annalisa", IsHuman =true},
+                 new PlayerInfo { Name = "Oksana"},
+                 new PlayerInfo { Name = "Irina"},
+            ],
+        };
     }
 
     protected override void OnViewLoaded()
@@ -39,7 +62,13 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         this.Logger.Debug("OnViewLoaded language loaded");
 
-        this.SetupWorkflow();
+        var canvas = this.View.Canvas;
+        canvas.Width =  this.gameOptions.PixelWidth;
+        canvas.Height = this.gameOptions.PixelHeight;
+        canvas.InvalidateVisual();
+
+        Schedule.OnUiThread( 500, this.SetupWorkflow, DispatcherPriority.Background);
+
         this.Logger.Debug("OnViewLoaded complete");
     }
 
@@ -52,21 +81,12 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
     private void SetupWorkflow()
     {
-        var gameOptions = new GameOptions
-        {
-            MapSize = MapSize.Debug,
-            Players =
-            [
-                 new PlayerInfo { Name = "Laurent", IsHuman =true},
-                 new PlayerInfo { Name = "Annalisa", IsHuman =true},
-                 new PlayerInfo { Name = "Oksana"},
-                 new PlayerInfo { Name = "Irina"},
-            ],
-        };
+        this.invasionModel.NewGame(this.gameOptions);
 
-        this.invasionModel.NewGame(gameOptions);
         this.GenerateMapImage();
         this.GeneratePaths();
+        this.GenerateCenters();
+
         //static void CreateAndBind<TViewModel, TControl>()
         //     where TViewModel : Bindable<TControl>
         //     where TControl : Control, new()
@@ -74,6 +94,39 @@ public sealed class ShellViewModel : Bindable<ShellView>
         //     var vm = App.GetRequiredService<TViewModel>();
         //     vm.CreateViewAndBind();
         // }
+    }
+
+    private void GenerateCenters()
+    {
+        var game = this.invasionModel.Game;
+        if (game is null)
+        {
+            return;
+        }
+
+        int count = 0;
+        var canvas = this.View.Canvas;
+        var map = game.Map;
+        foreach (var region in map.Regions)
+        {
+            var center = region.Center;
+            //Debug.WriteLine(center);
+            var ellipse = new Ellipse
+            {
+                Width=10, Height=10,
+                Stroke = Brushes.Red,
+                Fill = Brushes.Transparent,
+                StrokeThickness = 3.0,
+            };
+            ellipse.SetValue(Canvas.TopProperty, center.Y);
+            ellipse.SetValue(Canvas.LeftProperty, center.X);
+            canvas.Children.Add(ellipse);
+            ++count;
+            if (count > 1000)
+            {
+                break;
+            }
+        }
     }
 
     private void GeneratePaths() 
@@ -85,23 +138,26 @@ public sealed class ShellViewModel : Bindable<ShellView>
         }
 
         int count = 0;
-        var canvas = this.View.InnerGrid;
+        var canvas = this.View.Canvas;
         var map = game.Map;
+        var strokeBrush = new SolidColorBrush(Color.FromRgb(red, blu, gre));
         foreach (var region in map.Regions)
         {
             var path = region.SimplifiedPath;
             var points = ( from v in path select new Point(v.X, v.Y) ).ToList();
             var polygon = new Polygon
             {
-                Stroke = Brushes.Red,
+                Stroke = strokeBrush,
                 Fill = Brushes.Transparent,
                 Points = points ,
-                StrokeThickness = 2.0,
+                StrokeThickness = 3.0,
             };
 
+            polygon.SetValue(Canvas.TopProperty, 0.0);
+            polygon.SetValue(Canvas.LeftProperty, 0.0);
             canvas.Children.Add(polygon);   
             ++count;
-            if(count > 1)
+            if(count > 1000)
             {
                 break;
             }
@@ -138,13 +194,13 @@ public sealed class ShellViewModel : Bindable<ShellView>
             {
                 int regionIndex = pixelMap.RegionAt(w, h);
                 bool isBorder = pixelMap.IsBorderPixel[w, h];
-                if (isBorder)
-                {
-                    bgraPixelData[byteIndex++] = 255;
-                    bgraPixelData[byteIndex++] = 255;
-                    bgraPixelData[byteIndex++] = 255;
-                }
-                else
+                //if (isBorder)
+                //{
+                //    bgraPixelData[byteIndex++] = blu;
+                //    bgraPixelData[byteIndex++] = red;
+                //    bgraPixelData[byteIndex++] = gre;
+                //}
+                //else
                 {
                     bgraPixelData[byteIndex++] = colors[regionIndex].B;
                     bgraPixelData[byteIndex++] = colors[regionIndex].G;

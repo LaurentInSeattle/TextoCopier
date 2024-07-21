@@ -13,21 +13,33 @@
     >
 	<Grid
         x:Name="InnerGrid"
-        Background="Transparent"
+        Background="PeachPuff"
         >
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="80" MaxWidth="80" />
+			<ColumnDefinition Width="10" MaxWidth="10" />
 			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="10" MaxWidth="10" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="56" MaxHeight="56" />
+			<RowDefinition Height="10" MaxHeight="10" />
 			<RowDefinition Height="*" />
+			<RowDefinition Height="10" MaxHeight="10" />
 		</Grid.RowDefinitions>
-		<Image
-			Source="{Binding MapImage}"
-			Grid.Column="0" Grid.Row="0" 
-			Grid.ColumnSpan="999" Grid.RowSpan="999" 
-			Stretch="Uniform"
+		<Viewbox
+			Grid.Column="1" Grid.Row="1"
+			VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+			RenderOptions.BitmapInterpolationMode="LowQuality"
+			>
+			<Canvas
+				x:Name="Canvas"
+				RenderOptions.BitmapInterpolationMode="LowQuality"
+				>
+				<Image
+					Source="{Binding MapImage}"
+					RenderOptions.BitmapInterpolationMode="LowQuality"
+					Stretch="Uniform"
 			/>
+			</Canvas>
+		</Viewbox>
 	</Grid>
 </UserControl>

@@ -37,6 +37,8 @@ public sealed class Region
         this.NeighbourIds = new (16);
         this.Path = new(256);
         this.SimplifiedPath = new(256);
+
+        this.ClearDuplicateBorderPoints(); 
         this.CreateBorderPath();
         this.SimplifyBorderPath();
     }
@@ -50,7 +52,7 @@ public sealed class Region
     /// <summary> Player who owned the region previously, or null </summary>
     public Player? PreviousOwner { get; private set; }
 
-    public List<Vector2> Path { get; private set; }
+    public List<Coordinate> Path { get; private set; }
 
     public List<Vector2> SimplifiedPath { get; private set; }
 
@@ -65,23 +67,84 @@ public sealed class Region
     /// </summary>
     internal void AddNeighbour(Region neighbour) => this.NeighbourIds.Add(neighbour.Id);
 
-    private void CreateBorderPath()
+    private void ClearDuplicateBorderPoints ()
     {
-        var points = new List<Vector2>();
+        var hash = new HashSet<Coordinate>(this.BorderCoordinates.Count);
         foreach (var coordinate in this.BorderCoordinates)
         {
-            points.Add(coordinate.ToVector2());
+            hash.Add(coordinate);
         }
 
-        var path = PathUtilities.CreatePath(points, this.Center.ToVector2());
-        this.Path = path;
+        if( hash.Count < this.BorderCoordinates.Count)
+        {
+            Debug.WriteLine("List: " + this.BorderCoordinates.Count);
+            Debug.WriteLine("Hash: " + hash.Count);
+            this.BorderCoordinates.Clear();
+            this.BorderCoordinates.AddRange(hash.ToArray());
+        }
     }
+
+    private void CreateBorderPath()
+    {
+        var pathPoints = new List<Coordinate>();
+        var pointsToTest = this.BorderCoordinates.ToList(); 
+        pointsToTest.RemoveAt(0);
+        pathPoints.Add(this.BorderCoordinates[0]);
+        foreach (var coordinate in this.BorderCoordinates)
+        {
+            int minSquareDistance = int.MaxValue;
+            Coordinate? closest = null; 
+            foreach (var point in pointsToTest)
+            {
+                int distance = coordinate.GetRawSquareDistance(point);
+                if ( distance == 1)
+                {
+                    closest = point;
+                    break;
+                }
+                else
+                {
+                    if ( distance < minSquareDistance)
+                    {
+                        closest = point;
+                        minSquareDistance = distance;
+                    }
+                }
+            }
+
+            if (closest is not null)
+            {
+                pointsToTest.Remove(closest);
+                pathPoints.Add(closest);
+            } 
+        }
+
+        this.Path = pathPoints;
+    }
+
+    //private void CreateBorderPath()
+    //{
+    //    var points = new List<Vector2>();
+    //    foreach (var coordinate in this.BorderCoordinates)
+    //    {
+    //        points.Add(coordinate.ToVector2());
+    //    }
+
+    //    var path = PathUtilities.CreatePath(points, this.Center.ToVector2());
+    //    this.Path = path;
+    //}
 
     private void SimplifyBorderPath ()
     {
         // Smooth the border 
-        var avgPoints = PathUtilities.MovingAverage(this.Path);
-        var simplified = PathUtilities.Simplify(avgPoints, 2.0f);
+        var points = new List<Vector2>();
+        foreach (var coordinate in this.Path)
+        {
+            points.Add(coordinate.ToVector2());
+        }
+
+        var avgPoints = PathUtilities.MovingAverage(points);
+        var simplified = PathUtilities.Simplify(avgPoints, 0.4f);
         this.SimplifiedPath = simplified;
     }
 

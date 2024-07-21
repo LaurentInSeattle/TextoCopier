@@ -2,17 +2,41 @@
 
 public static class PathUtilities
 {
+    private const float BigEpsilon = 1_000_000 * float.Epsilon; 
+
     public static List<Vector2> CreatePath(List<Vector2> points, Vector2 center)
     {
+        double angle;
+        float cx = center.X;
+        float cy = center.Y;
         var list = new List<Tuple<float, float, Vector2>>(points.Count);
         foreach (Vector2 point in points)
         {
-            SquaredPolar(point, center, out float angle, out float squaredRadius);
-            list.Add(new Tuple<float, float, Vector2>(angle, squaredRadius, point));
+            float dx = point.X - cx;
+            float dy = point.Y - cy;
+            if ((Math.Abs(dx) < BigEpsilon) && (Math.Abs(dy) < BigEpsilon))
+            {
+                continue;
+            }
+            if (Math.Abs(dy) < BigEpsilon) 
+            {
+                angle = Math.Sign(dx) * Math.PI ;
+            }
+            else if (Math.Abs(dx) < BigEpsilon)
+            {
+                angle = Math.Sign(dy) * Math.PI / 2.0;
+            }
+            else
+            {
+                angle = Math.Atan2(dy, dx);
+            }
+
+            angle += 0.5+Math.Tau;
+            list.Add(new Tuple<float, float, Vector2>((float)angle, dx * dx + dy * dy, point));
         }
 
         var sortedList =
-            (from item in list orderby item.Item1 ascending orderby item.Item2 ascending select item.Item3);
+            (from item in list orderby item.Item1 ascending , item.Item2 select item.Item3);
         return sortedList.ToList();
     }
 
@@ -151,6 +175,7 @@ public static class PathUtilities
 
         averagedValues.Add(Vector2.Add(values[count - 2], values[count - 1]) / 2.0f);
         averagedValues.Add(values[count - 1]);
+
         return averagedValues;
     }
 }

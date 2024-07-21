@@ -58,6 +58,17 @@ public sealed class Coordinate(int x, int y) : IEquatable<Coordinate>
     /// Returns square distance between 2 coordinates. 
     /// It is faster to calculate the square distance than the distance, bit often the square is enough.
     /// </summary>
+    public int GetRawSquareDistance(Coordinate other)
+    {
+        int xDistance = this.X - other.X;
+        int yDistance = this.Y - other.Y;
+        return xDistance * xDistance + yDistance * yDistance;
+    }
+
+    /// <summary> 
+    /// Returns square distance between 2 coordinates. 
+    /// It is faster to calculate the square distance than the distance, bit often the square is enough.
+    /// </summary>
     public int GetSquareDistance(PixelMap pixelMap, Coordinate other)
     {
         int xDistance = (pixelMap.XCount + this.X - other.X) % pixelMap.XCount;
