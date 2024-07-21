@@ -143,7 +143,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         var strokeBrush = new SolidColorBrush(Color.FromRgb(red, blu, gre));
         foreach (var region in map.Regions)
         {
-            var path = region.SimplifiedPath;
+            var path = region.SimplifiedPaths [0];
             var points = ( from v in path select new Point(v.X, v.Y) ).ToList();
             var polygon = new Polygon
             {

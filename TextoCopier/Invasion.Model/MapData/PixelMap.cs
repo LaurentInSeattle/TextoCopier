@@ -30,7 +30,9 @@ public sealed class PixelMap
 
     private readonly int[] sizeByRegion;
 
-    private readonly bool [,] neighboursByRegion; 
+    private readonly bool [,] neighboursByRegion;
+
+    private readonly Game game;
 
     private readonly GameOptions gameOptions;
 
@@ -61,9 +63,12 @@ public sealed class PixelMap
     private bool isTestBorderProblem;
 #pragma warning restore IDE0044
 
-    public PixelMap(GameOptions gameOptions, Map map, IMessenger messenger, ILogger logger)
+    public PixelMap(Game game, Map map, IMessenger messenger, ILogger logger)
     {
-        this.gameOptions = gameOptions;
+        this.game = game;
+        this.gameOptions = game.GameOptions;
+
+        // Map is not fully constructed yet. Field in Game is still null so we need to pass the map object 
         this.map = map;
         this.Messenger = messenger;
         this.Logger = logger;
@@ -781,6 +786,7 @@ public sealed class PixelMap
         for (short regionIndex = 0; regionIndex < this.RegionCount; regionIndex++)
         {
             var region = new Region(
+                this.game,
                 regionIndex, this.coordinatesByRegion[regionIndex], this.centersByRegion[regionIndex],
                 this.sizeByRegion[regionIndex], this.borderCoordinatesByCountry[regionIndex]);
             this.map.AddRegionAt(regionIndex, region);

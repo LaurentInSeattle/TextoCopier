@@ -11,7 +11,7 @@ public sealed class Game
         this.Messenger = messenger;
         this.Logger = logger;
         this.GameOptions = gameOptions;
-        this.Map = new Map(gameOptions, this.Messenger, this.Logger);
+        this.Map = new Map(this, this.Messenger, this.Logger);
         this.Players = new(8);
     }
 

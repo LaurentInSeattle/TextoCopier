@@ -1,7 +1,11 @@
-﻿namespace Lyt.Invasion.Model.MapData;
+﻿using System.Drawing;
+
+namespace Lyt.Invasion.Model.MapData;
 
 public sealed class Region
 {
+    public readonly Game game;
+
     /// <summary> Unique ID number of region  </summary>
     public readonly short Id;
 
@@ -25,41 +29,51 @@ public sealed class Region
     /// <summary> Ids of all other regions neighbouring this region. </summary>
     public readonly List<short> NeighbourIds;
 
+    private List<List<Coordinate>> CoordinateBuckets { get; set; }
+
     public Region(
-        short id, Coordinate coordinate, Coordinate center, int size, List<Coordinate> borderCoordinates)
+        Game game, short id, Coordinate coordinate, Coordinate center, int size, List<Coordinate> borderCoordinates)
     {
+        this.game = game;
         this.Id = id;
         this.Coordinate = coordinate;
         this.Center = center;
         this.Size = size;
         this.Capacity = 0; // For now
         this.BorderCoordinates = borderCoordinates;
-        this.NeighbourIds = new (16);
-        this.Path = new(256);
-        this.SimplifiedPath = new(256);
+        this.NeighbourIds = new(16);
+        this.Paths = new(4);
+        this.SimplifiedPaths = new(4);
+        this.CoordinateBuckets = new(4);
 
-        this.ClearDuplicateBorderPoints(); 
-        this.CreateBorderPath();
-        this.SimplifyBorderPath();
+        this.ClearDuplicateBorderPoints();
+        this.CreateCoordinateBuckets();
+        this.CreateBorderPaths();
+        this.SimplifyBorderPaths();
     }
 
-    // LATER 
-    // public Dictionary<ResourceKind, int> Resources = new(10);
+    public List<List<Coordinate>> Paths { get; private set; }
+
+    public List<List<Vector2>> SimplifiedPaths { get; private set; }
+
+    #region LATER 
 
     /// <summary> Player who currently owns the region, or null </summary>
-    public Player? Owner { get; private set;  }
+    public Player? Owner { get; private set; }
 
     /// <summary> Player who owned the region previously, or null </summary>
     public Player? PreviousOwner { get; private set; }
 
-    public List<Coordinate> Path { get; private set; }
+    // LATER 
+    // public Dictionary<ResourceKind, int> Resources = new(10);
 
-    public List<Vector2> SimplifiedPath { get; private set; }
-
+    // LATER 
     /// <summary> Size of the army within the region </summary>
-    public int ArmySize { get; set; } = 0;
+    // public int ArmySize { get; set; } = 0;
 
     public bool IsOwned => this.Owner is not null;
+
+    #endregion LATER 
 
     /// <summary>
     /// Used by PixelMap to add neighbours, since it is not possible to add the neighbours in the constructor, because
@@ -67,7 +81,49 @@ public sealed class Region
     /// </summary>
     internal void AddNeighbour(Region neighbour) => this.NeighbourIds.Add(neighbour.Id);
 
-    private void ClearDuplicateBorderPoints ()
+    private void CreateCoordinateBuckets()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            this.CoordinateBuckets.Add(new List<Coordinate>(256));
+        }
+
+        var gameOptions = game.GameOptions;
+        int mapHalfWidth = gameOptions.PixelWidth / 2;
+        int mapHalfHeight = gameOptions.PixelHeight / 2;
+
+        Coordinate startPoint = this.BorderCoordinates[0];
+        this.CoordinateBuckets[0].Add(startPoint);
+        for (int i = 1; i < this.BorderCoordinates.Count; ++i)
+        {
+            var point = this.BorderCoordinates[i];
+            bool farX = startPoint.GetRawXDistance(point) > mapHalfWidth;
+            bool farY = startPoint.GetRawXDistance(point) > mapHalfHeight;
+            if (farX && farY)
+            {
+                this.CoordinateBuckets[3].Add(point);
+            }
+            else if (farX && !farY)
+            {
+                this.CoordinateBuckets[1].Add(point);
+            }
+            else if (!farX && farY)
+            {
+                this.CoordinateBuckets[2].Add(point);
+            }
+            else
+            {
+                this.CoordinateBuckets[0].Add(point);
+            }
+        }
+
+        //Debug.WriteLine(
+        //    "Buckets: " + 
+        //    this.CoordinateBuckets[0].Count + " " + this.CoordinateBuckets[1].Count + " " +
+        //    this.CoordinateBuckets[2].Count + " " + this.CoordinateBuckets[3].Count); 
+    }
+
+    private void ClearDuplicateBorderPoints()
     {
         var hash = new HashSet<Coordinate>(this.BorderCoordinates.Count);
         foreach (var coordinate in this.BorderCoordinates)
@@ -75,7 +131,7 @@ public sealed class Region
             hash.Add(coordinate);
         }
 
-        if( hash.Count < this.BorderCoordinates.Count)
+        if (hash.Count < this.BorderCoordinates.Count)
         {
             Debug.WriteLine("List: " + this.BorderCoordinates.Count);
             Debug.WriteLine("Hash: " + hash.Count);
@@ -84,42 +140,52 @@ public sealed class Region
         }
     }
 
-    private void CreateBorderPath()
+    private void CreateBorderPaths()
     {
-        var pathPoints = new List<Coordinate>();
-        var pointsToTest = this.BorderCoordinates.ToList(); 
-        pointsToTest.RemoveAt(0);
-        pathPoints.Add(this.BorderCoordinates[0]);
-        foreach (var coordinate in this.BorderCoordinates)
+        foreach (var bucket in this.CoordinateBuckets)
         {
-            int minSquareDistance = int.MaxValue;
-            Coordinate? closest = null; 
-            foreach (var point in pointsToTest)
+            if (bucket.Count == 0)
             {
-                int distance = coordinate.GetRawSquareDistance(point);
-                if ( distance == 1)
+                continue;
+            }
+            
+            // Create a copy is necessary
+            var pointsToTest = bucket.ToList();
+            pointsToTest.RemoveAt(0);
+
+            var pathPoints = new List<Coordinate>();
+            pathPoints.Add(bucket[0]);
+            foreach (var coordinate in bucket)
+            {
+                int minSquareDistance = int.MaxValue;
+                Coordinate? closest = null;
+                foreach (var point in pointsToTest)
                 {
-                    closest = point;
-                    break;
-                }
-                else
-                {
-                    if ( distance < minSquareDistance)
+                    int distance = coordinate.GetRawSquareDistance(point);
+                    if (distance == 1)
                     {
                         closest = point;
-                        minSquareDistance = distance;
+                        break;
                     }
+                    else
+                    {
+                        if (distance < minSquareDistance)
+                        {
+                            closest = point;
+                            minSquareDistance = distance;
+                        }
+                    }
+                }
+
+                if (closest is not null)
+                {
+                    pointsToTest.Remove(closest);
+                    pathPoints.Add(closest);
                 }
             }
 
-            if (closest is not null)
-            {
-                pointsToTest.Remove(closest);
-                pathPoints.Add(closest);
-            } 
+            this.Paths.Add(pathPoints);
         }
-
-        this.Path = pathPoints;
     }
 
     //private void CreateBorderPath()
@@ -129,23 +195,25 @@ public sealed class Region
     //    {
     //        points.Add(coordinate.ToVector2());
     //    }
-
     //    var path = PathUtilities.CreatePath(points, this.Center.ToVector2());
     //    this.Path = path;
     //}
 
-    private void SimplifyBorderPath ()
+    private void SimplifyBorderPaths()
     {
-        // Smooth the border 
-        var points = new List<Vector2>();
-        foreach (var coordinate in this.Path)
+        foreach (var path in this.Paths)
         {
-            points.Add(coordinate.ToVector2());
-        }
+            // Smooth the border 
+            var points = new List<Vector2>();
+            foreach (var coordinate in path)
+            {
+                points.Add(coordinate.ToVector2());
+            }
 
-        var avgPoints = PathUtilities.MovingAverage(points);
-        var simplified = PathUtilities.Simplify(avgPoints, 0.4f);
-        this.SimplifiedPath = simplified;
+            var avgPoints = PathUtilities.MovingAverage(points);
+            var simplified = PathUtilities.Simplify(avgPoints, 0.4f);
+            this.SimplifiedPaths.Add (simplified);
+        }
     }
 
     /// <summary> Has this region a neighbouring region with a different owner ? </summary>

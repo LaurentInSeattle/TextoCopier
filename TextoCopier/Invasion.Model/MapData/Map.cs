@@ -2,12 +2,12 @@
 
 public sealed class Map
 {
-    public Map(GameOptions gameOptions, IMessenger messenger, ILogger logger)
+    public Map(Game game, IMessenger messenger, ILogger logger)
     {
         this.Messenger = messenger;
         this.Logger = logger;
-        this.Regions = new Region[gameOptions.RegionCount];
-        this.PixelMap = new PixelMap(gameOptions, this, messenger, logger);
+        this.Regions = new Region[game.GameOptions.RegionCount];
+        this.PixelMap = new PixelMap(game, this, messenger, logger);
     }
 
     public ILogger Logger { get; private set; }

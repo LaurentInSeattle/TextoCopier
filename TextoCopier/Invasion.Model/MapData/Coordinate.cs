@@ -65,6 +65,12 @@ public sealed class Coordinate(int x, int y) : IEquatable<Coordinate>
         return xDistance * xDistance + yDistance * yDistance;
     }
 
+    /// <summary> Returns distance between 2 coordinates along the X axis.  </summary>
+    public int GetRawXDistance(Coordinate other) => Math.Abs (this.X - other.X);
+
+    /// <summary> Returns distance between 2 coordinates along the Y axis.  </summary>
+    public int GetRawYDistance(Coordinate other) => Math.Abs(this.Y - other.Y);
+
     /// <summary> 
     /// Returns square distance between 2 coordinates. 
     /// It is faster to calculate the square distance than the distance, bit often the square is enough.
