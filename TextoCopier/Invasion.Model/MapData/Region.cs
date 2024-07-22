@@ -50,16 +50,16 @@ public sealed class Region
         this.ClearDuplicateBorderPoints();
         this.CreateBorderPaths();
         this.SimplifyBorderPaths();
-        this.CalculateCenters () ;
+        this.AltCenter = this.CalculateCenter () ;
     }
 
-    private void CalculateCenters() 
+    private Coordinate CalculateCenter() 
     {
         int x = 0;
         int y = 0;
         int count = 0;
         // Debug.WriteLine("Path Count: " + this.Paths.Count);
-        this.AltCenter = new(0, 0);
+        Coordinate center = new(0, 0);
         var path = (from p in this.Paths orderby p.Count descending select p).FirstOrDefault();
         if (path is not null)
         {
@@ -75,9 +75,11 @@ public sealed class Region
 
             if (count > 0)
             {
-                this.AltCenter = new(x / count, y / count);
+                center = new(x / count, y / count);
             }
         }
+
+        return center;
     }
 
     public List<List<Coordinate>> Paths { get; private set; }
