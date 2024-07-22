@@ -1,4 +1,5 @@
-﻿namespace Lyt.Invasion.Model.MapData;
+﻿
+namespace Lyt.Invasion.Model.MapData;
 
 public sealed class Region
 {
@@ -16,6 +17,9 @@ public sealed class Region
 
     /// <summary> Center of country, i.e. middle of the country </summary>
     public readonly Coordinate Center;
+
+    /// <summary> Center of country, i.e. middle of the country </summary>
+    public Coordinate AltCenter;
 
     /// <summary> Count of pixels within the region </summary>
     public readonly int Size;
@@ -46,6 +50,34 @@ public sealed class Region
         this.ClearDuplicateBorderPoints();
         this.CreateBorderPaths();
         this.SimplifyBorderPaths();
+        this.CalculateCenters () ;
+    }
+
+    private void CalculateCenters() 
+    {
+        int x = 0;
+        int y = 0;
+        int count = 0;
+        // Debug.WriteLine("Path Count: " + this.Paths.Count);
+        this.AltCenter = new(0, 0);
+        var path = (from p in this.Paths orderby p.Count descending select p).FirstOrDefault();
+        if (path is not null)
+        {
+            //foreach (var path in this.Paths)
+            {
+                foreach (var coordinate in path)
+                {
+                    x += coordinate.X;
+                    y += coordinate.Y;
+                    count++;
+                }
+            }
+
+            if (count > 0)
+            {
+                this.AltCenter = new(x / count, y / count);
+            }
+        }
     }
 
     public List<List<Coordinate>> Paths { get; private set; }

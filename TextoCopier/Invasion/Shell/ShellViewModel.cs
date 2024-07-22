@@ -1,6 +1,4 @@
-﻿using Lyt.Invasion.Model.GameControl;
-
-namespace Lyt.Invasion.Shell;
+﻿namespace Lyt.Invasion.Shell;
 
 public sealed class ShellViewModel : Bindable<ShellView>
 {
@@ -33,7 +31,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         this.gameOptions = new GameOptions
         {
-            MapSize = MapSize.Small,
+            MapSize = MapSize.Huge,
             Players =
             [
                  new PlayerInfo { Name = "Laurent", IsHuman =true},
@@ -113,7 +111,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         var map = game.Map;
         foreach (var region in map.Regions)
         {
-            var center = region.Center;
+            var center = region.AltCenter;
             //Debug.WriteLine(center);
             var ellipse = new Ellipse
             {

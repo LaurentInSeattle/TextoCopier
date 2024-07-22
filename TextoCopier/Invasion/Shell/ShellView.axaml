@@ -13,17 +13,17 @@
     >
 	<Grid
         x:Name="InnerGrid"
-        Background="PeachPuff"
+        Background="Black"
         >
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="10" MaxWidth="10" />
+			<ColumnDefinition Width="2" MaxWidth="2" />
 			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="10" MaxWidth="10" />
+			<ColumnDefinition Width="2" MaxWidth="2" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="10" MaxHeight="10" />
+			<RowDefinition Height="2" MaxHeight="2" />
 			<RowDefinition Height="*" />
-			<RowDefinition Height="10" MaxHeight="10" />
+			<RowDefinition Height="2" MaxHeight="2" />
 		</Grid.RowDefinitions>
 		<Viewbox
 			Grid.Column="1" Grid.Row="1"

@@ -45,11 +45,11 @@ public sealed class GameOptions
     public int RegionCount =>
         this.MapSize switch
         {
-            MapSize.Debug => 40,
-            MapSize.Tiny => 80,
-            MapSize.Small => 160,
-            MapSize.Medium => 240,
-            MapSize.Large => 360,
-            _ => 420, // Huge
+            MapSize.Debug => 50,
+            MapSize.Tiny => 90,
+            MapSize.Small => 130,
+            MapSize.Medium => 170,
+            MapSize.Large => 210,
+            _ => 260, // Huge
         };
 }
