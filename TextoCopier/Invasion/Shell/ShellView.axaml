@@ -32,13 +32,16 @@
 			>
 			<Canvas
 				x:Name="Canvas"
+				Grid.Column="1" Grid.Row="1"
+				VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 				RenderOptions.BitmapInterpolationMode="LowQuality"
+				Background="AliceBlue"
 				>
 				<Image
 					Source="{Binding MapImage}"
 					RenderOptions.BitmapInterpolationMode="LowQuality"
 					Stretch="Uniform"
-			/>
+					/>
 			</Canvas>
 		</Viewbox>
 	</Grid>

@@ -1,9 +1,9 @@
-﻿using System.Drawing;
-
-namespace Lyt.Invasion.Model.MapData;
+﻿namespace Lyt.Invasion.Model.MapData;
 
 public sealed class Region
 {
+    const int maxSquareDistance = 500;
+
     public readonly Game game;
 
     /// <summary> Unique ID number of region  </summary>
@@ -29,8 +29,6 @@ public sealed class Region
     /// <summary> Ids of all other regions neighbouring this region. </summary>
     public readonly List<short> NeighbourIds;
 
-    private List<List<Coordinate>> CoordinateBuckets { get; set; }
-
     public Region(
         Game game, short id, Coordinate coordinate, Coordinate center, int size, List<Coordinate> borderCoordinates)
     {
@@ -42,12 +40,10 @@ public sealed class Region
         this.Capacity = 0; // For now
         this.BorderCoordinates = borderCoordinates;
         this.NeighbourIds = new(16);
-        this.Paths = new(4);
+        this.Paths = new(8);
         this.SimplifiedPaths = new(4);
-        this.CoordinateBuckets = new(4);
 
         this.ClearDuplicateBorderPoints();
-        this.CreateCoordinateBuckets();
         this.CreateBorderPaths();
         this.SimplifyBorderPaths();
     }
@@ -81,48 +77,6 @@ public sealed class Region
     /// </summary>
     internal void AddNeighbour(Region neighbour) => this.NeighbourIds.Add(neighbour.Id);
 
-    private void CreateCoordinateBuckets()
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            this.CoordinateBuckets.Add(new List<Coordinate>(256));
-        }
-
-        var gameOptions = game.GameOptions;
-        int mapHalfWidth = gameOptions.PixelWidth / 2;
-        int mapHalfHeight = gameOptions.PixelHeight / 2;
-
-        Coordinate startPoint = this.BorderCoordinates[0];
-        this.CoordinateBuckets[0].Add(startPoint);
-        for (int i = 1; i < this.BorderCoordinates.Count; ++i)
-        {
-            var point = this.BorderCoordinates[i];
-            bool farX = startPoint.GetRawXDistance(point) > mapHalfWidth;
-            bool farY = startPoint.GetRawXDistance(point) > mapHalfHeight;
-            if (farX && farY)
-            {
-                this.CoordinateBuckets[3].Add(point);
-            }
-            else if (farX && !farY)
-            {
-                this.CoordinateBuckets[1].Add(point);
-            }
-            else if (!farX && farY)
-            {
-                this.CoordinateBuckets[2].Add(point);
-            }
-            else
-            {
-                this.CoordinateBuckets[0].Add(point);
-            }
-        }
-
-        //Debug.WriteLine(
-        //    "Buckets: " + 
-        //    this.CoordinateBuckets[0].Count + " " + this.CoordinateBuckets[1].Count + " " +
-        //    this.CoordinateBuckets[2].Count + " " + this.CoordinateBuckets[3].Count); 
-    }
-
     private void ClearDuplicateBorderPoints()
     {
         var hash = new HashSet<Coordinate>(this.BorderCoordinates.Count);
@@ -142,36 +96,51 @@ public sealed class Region
 
     private void CreateBorderPaths()
     {
-        foreach (var bucket in this.CoordinateBuckets)
+        // Create a copy is necessary
+        var pointsToTest = this.BorderCoordinates.ToList();
+        Coordinate point;
+        Coordinate? lastPoint = null;
+        while (pointsToTest.Count > 2)
         {
-            if (bucket.Count == 0)
+            var pathPoints = new List<Coordinate>(256);
+            if (lastPoint is not null)
             {
-                continue;
+                pathPoints.Add(lastPoint);
+                pointsToTest.Remove(lastPoint);
+                point = lastPoint;
             }
-            
-            // Create a copy is necessary
-            var pointsToTest = bucket.ToList();
-            pointsToTest.RemoveAt(0);
+            else
+            {
+                point = pointsToTest[0];
+                pathPoints.Add(point);
+                pointsToTest.RemoveAt(0);
+            }
 
-            var pathPoints = new List<Coordinate>();
-            pathPoints.Add(bucket[0]);
-            foreach (var coordinate in bucket)
+            bool found = true;
+            while (found)
             {
                 int minSquareDistance = int.MaxValue;
                 Coordinate? closest = null;
-                foreach (var point in pointsToTest)
+                found = false;
+                foreach (var coordinate in pointsToTest)
                 {
                     int distance = coordinate.GetRawSquareDistance(point);
                     if (distance == 1)
                     {
-                        closest = point;
+                        closest = coordinate;
                         break;
                     }
                     else
                     {
+                        if (distance > maxSquareDistance)
+                        {
+                            lastPoint = coordinate;
+                            continue;
+                        }
+
                         if (distance < minSquareDistance)
                         {
-                            closest = point;
+                            closest = coordinate;
                             minSquareDistance = distance;
                         }
                     }
@@ -179,25 +148,17 @@ public sealed class Region
 
                 if (closest is not null)
                 {
+                    found = true;
                     pointsToTest.Remove(closest);
                     pathPoints.Add(closest);
+                    point = closest;
                 }
-            }
+
+            } // Inner loop 
 
             this.Paths.Add(pathPoints);
-        }
+        } // Outer loop 
     }
-
-    //private void CreateBorderPath()
-    //{
-    //    var points = new List<Vector2>();
-    //    foreach (var coordinate in this.BorderCoordinates)
-    //    {
-    //        points.Add(coordinate.ToVector2());
-    //    }
-    //    var path = PathUtilities.CreatePath(points, this.Center.ToVector2());
-    //    this.Path = path;
-    //}
 
     private void SimplifyBorderPaths()
     {
@@ -212,7 +173,7 @@ public sealed class Region
 
             var avgPoints = PathUtilities.MovingAverage(points);
             var simplified = PathUtilities.Simplify(avgPoints, 0.4f);
-            this.SimplifiedPaths.Add (simplified);
+            this.SimplifiedPaths.Add(simplified);
         }
     }
 

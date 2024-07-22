@@ -45,7 +45,7 @@ public sealed class GameOptions
     public int RegionCount =>
         this.MapSize switch
         {
-            MapSize.Debug => 20,
+            MapSize.Debug => 40,
             MapSize.Tiny => 80,
             MapSize.Small => 160,
             MapSize.Medium => 240,

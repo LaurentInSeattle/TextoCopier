@@ -72,7 +72,11 @@ public sealed class PixelMap
         this.map = map;
         this.Messenger = messenger;
         this.Logger = logger;
+#if DEBUG
+        this.Random = new Random(666);
+#else
         this.Random = new Random(Environment.TickCount);
+#endif
         this.RegionCount = this.gameOptions.RegionCount;
         this.XCount = this.gameOptions.PixelWidth;
         this.XMax = this.XCount - 1;

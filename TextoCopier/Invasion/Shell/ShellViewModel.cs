@@ -33,7 +33,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         this.gameOptions = new GameOptions
         {
-            MapSize = MapSize.Tiny,
+            MapSize = MapSize.Small,
             Players =
             [
                  new PlayerInfo { Name = "Laurent", IsHuman =true},
@@ -63,11 +63,11 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.Logger.Debug("OnViewLoaded language loaded");
 
         var canvas = this.View.Canvas;
-        canvas.Width =  this.gameOptions.PixelWidth;
+        canvas.Width = this.gameOptions.PixelWidth;
         canvas.Height = this.gameOptions.PixelHeight;
         canvas.InvalidateVisual();
 
-        Schedule.OnUiThread( 500, this.SetupWorkflow, DispatcherPriority.Background);
+        Schedule.OnUiThread(500, this.SetupWorkflow, DispatcherPriority.Background);
 
         this.Logger.Debug("OnViewLoaded complete");
     }
@@ -82,7 +82,11 @@ public sealed class ShellViewModel : Bindable<ShellView>
     private void SetupWorkflow()
     {
         this.invasionModel.NewGame(this.gameOptions);
+        Schedule.OnUiThread(500, this.UpdateUi, DispatcherPriority.Background);
+    }
 
+    private void UpdateUi()
+    {
         this.GenerateMapImage();
         this.GeneratePaths();
         this.GenerateCenters();
@@ -113,23 +117,25 @@ public sealed class ShellViewModel : Bindable<ShellView>
             //Debug.WriteLine(center);
             var ellipse = new Ellipse
             {
-                Width=10, Height=10,
-                Stroke = Brushes.Red,
-                Fill = Brushes.Transparent,
-                StrokeThickness = 3.0,
+                Width = 12,
+                Height = 12,
+                Stroke = Brushes.Firebrick,
+                Fill = Brushes.Black,
+                StrokeThickness = 2.0,
             };
+            canvas.Children.Add(ellipse);
             ellipse.SetValue(Canvas.TopProperty, center.Y);
             ellipse.SetValue(Canvas.LeftProperty, center.X);
-            canvas.Children.Add(ellipse);
+
             ++count;
-            if (count > 1000)
+            if (count > 1_000)
             {
                 break;
             }
         }
     }
 
-    private void GeneratePaths() 
+    private void GeneratePaths()
     {
         var game = this.invasionModel.Game;
         if (game is null)
@@ -143,21 +149,26 @@ public sealed class ShellViewModel : Bindable<ShellView>
         var strokeBrush = new SolidColorBrush(Color.FromRgb(red, blu, gre));
         foreach (var region in map.Regions)
         {
-            var path = region.SimplifiedPaths [0];
-            var points = ( from v in path select new Point(v.X, v.Y) ).ToList();
-            var polygon = new Polygon
+            foreach (var path in region.SimplifiedPaths)
             {
-                Stroke = strokeBrush,
-                Fill = Brushes.Transparent,
-                Points = points ,
-                StrokeThickness = 3.0,
-            };
+                var points = (from v in path select new Point(v.X, v.Y)).ToList();
+                var polyline = new Polyline
+                {
+                    Stroke = strokeBrush,
+                    Fill = Brushes.Transparent,
+                    Points = points,
+                    StrokeThickness = 3.0,
+                    StrokeJoin = PenLineJoin.Round,
+                    StrokeLineCap = PenLineCap.Round,
+                };
 
-            polygon.SetValue(Canvas.TopProperty, 0.0);
-            polygon.SetValue(Canvas.LeftProperty, 0.0);
-            canvas.Children.Add(polygon);   
+                polyline.SetValue(Canvas.TopProperty, 0.0);
+                polyline.SetValue(Canvas.LeftProperty, 0.0);
+                canvas.Children.Add(polyline);
+            }
+
             ++count;
-            if(count > 1000)
+            if (count > 1000)
             {
                 break;
             }
@@ -186,7 +197,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         int width = game.GameOptions.PixelWidth;
         int height = game.GameOptions.PixelHeight;
-        byte[] bgraPixelData = new byte[width * height*4];
+        byte[] bgraPixelData = new byte[width * height * 4];
         int byteIndex = 0;
         for (int h = 0; h < height; h++)
         {
@@ -221,5 +232,5 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.MapImage = bitmap;
     }
 
-    public Bitmap? MapImage { get => this.Get<Bitmap?>(); set => this.Set(value); }   
+    public Bitmap? MapImage { get => this.Get<Bitmap?>(); set => this.Set(value); }
 }
