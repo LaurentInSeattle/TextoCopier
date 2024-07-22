@@ -2,11 +2,16 @@
 
 public enum Ecosystem
 {
+    Unknown,
+
     Forest,
-    Plain, 
+    Grassland,
+    Desert,
+
     Mountain, 
-    Wetland, 
-    Coast, 
-    Ocean, 
-    Desert, 
+    Hills,
+
+    Ocean,
+    Wetland,
+    Coast,
 }

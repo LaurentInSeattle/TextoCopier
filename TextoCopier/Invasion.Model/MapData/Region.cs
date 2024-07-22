@@ -29,7 +29,9 @@ public sealed class Region
     public readonly List<short> NeighbourIds;
 
     /// <summary> Simpliefied border paths. </summary>
-    public List<List<Vector2>> SimplifiedPaths { get; private set; }
+    public readonly List<List<Vector2>> SimplifiedPaths;
+
+    public Ecosystem Ecosystem { get; internal set; }
 
     public Region(
         Game game, short id, Coordinate coordinate, Coordinate center, int size, List<Coordinate> borderCoordinates)
@@ -39,6 +41,7 @@ public sealed class Region
         this.Coordinate = coordinate;
         this.Center = center;
         this.Size = size;
+        this.Ecosystem = Ecosystem.Unknown;
         this.NeighbourIds = new(16);
 
         // this.Capacity = 0; // For now
@@ -47,8 +50,6 @@ public sealed class Region
         var paths = Region.CreateBorderPaths(borderCoordinates);
         this.SimplifiedPaths = Region.SimplifyBorderPaths(paths);
         this.AltCenter = Region.CalculateCenter(paths);
-
-        Debug.WriteLine(size);
     }
 
     /// <summary>
@@ -73,6 +74,7 @@ public sealed class Region
             borderCoordinates.AddRange(hash.ToArray());
         }
     }
+
     private static List<List<Coordinate>> CreateBorderPaths(List<Coordinate> borderCoordinates)
     {
         var paths = new List<List<Coordinate>>(8);
@@ -140,6 +142,7 @@ public sealed class Region
 
         return paths;
     }
+
     private static List<List<Vector2>> SimplifyBorderPaths(List<List<Coordinate>> paths)
     {
         var simplifiedPaths = new List<List<Vector2>>(paths.Count);
@@ -159,6 +162,7 @@ public sealed class Region
 
         return simplifiedPaths;
     }
+
     private static Coordinate CalculateCenter(List<List<Coordinate>> paths)
     {
         int x = 0;
@@ -189,8 +193,6 @@ public sealed class Region
     }
 
     #region LATER 
-
-    public readonly Ecosystem Ecosystem;
 
     /// <summary> Biggest army size the region can host </summary>
     public readonly double Capacity;

@@ -2,13 +2,10 @@
 
 public sealed class ShellViewModel : Bindable<ShellView>
 {
+    // Border paths color components
     private const byte red = 0x10;
-    private const byte blu = 0x10;
+    private const byte blu = 0x20;
     private const byte gre = 0x10;
-
-    //private const byte red = 0xA0;
-    //private const byte blu = 0xC0;
-    //private const byte gre = 0xD0;
 
     private readonly IDialogService dialogService;
     private readonly IToaster toaster;
@@ -111,8 +108,12 @@ public sealed class ShellViewModel : Bindable<ShellView>
         var map = game.Map;
         foreach (var region in map.Regions)
         {
+            if (( region.Ecosystem == Ecosystem.Ocean) || (region.Ecosystem == Ecosystem.Mountain))
+            {
+                continue;
+            }
+
             var center = region.AltCenter;
-            //Debug.WriteLine(center);
             var ellipse = new Ellipse
             {
                 Width = 12,
@@ -181,17 +182,9 @@ public sealed class ShellViewModel : Bindable<ShellView>
             return;
         }
 
-        var pixelMap = game.Map.PixelMap;
+        var map = game.Map;
+        var pixelMap = map.PixelMap;
         int regionCount = game.GameOptions.RegionCount;
-        var colors = new Color[regionCount];
-        byte a = 255;
-        for (int i = 0; i < regionCount; i++)
-        {
-            byte r = (byte)pixelMap.Random.Next(10, 200);
-            byte g = (byte)pixelMap.Random.Next(10, 200);
-            byte b = (byte)pixelMap.Random.Next(10, 200);
-            colors[i] = new Color(a, r, g, b);
-        }
 
         int width = game.GameOptions.PixelWidth;
         int height = game.GameOptions.PixelHeight;
@@ -202,20 +195,11 @@ public sealed class ShellViewModel : Bindable<ShellView>
             for (int w = 0; w < width; w++)
             {
                 int regionIndex = pixelMap.RegionAt(w, h);
-                bool isBorder = pixelMap.IsBorderPixel[w, h];
-                //if (isBorder)
-                //{
-                //    bgraPixelData[byteIndex++] = blu;
-                //    bgraPixelData[byteIndex++] = red;
-                //    bgraPixelData[byteIndex++] = gre;
-                //}
-                //else
-                {
-                    bgraPixelData[byteIndex++] = colors[regionIndex].B;
-                    bgraPixelData[byteIndex++] = colors[regionIndex].G;
-                    bgraPixelData[byteIndex++] = colors[regionIndex].R;
-                }
-
+                var ecosystem = map.Regions[regionIndex].Ecosystem;
+                var color = ShellViewModel.EcosystemToColor(ecosystem);
+                bgraPixelData[byteIndex++] = color.B;
+                bgraPixelData[byteIndex++] = color.G;
+                bgraPixelData[byteIndex++] = color.R;
                 bgraPixelData[byteIndex++] = 255;
             }
         }
@@ -231,4 +215,18 @@ public sealed class ShellViewModel : Bindable<ShellView>
     }
 
     public Bitmap? MapImage { get => this.Get<Bitmap?>(); set => this.Set(value); }
+
+    private static Color EcosystemToColor(Ecosystem ecosystem)
+        => ecosystem switch
+        {
+            Ecosystem.Desert => Colors.Cornsilk,
+            Ecosystem.Grassland => Colors.GreenYellow,
+            Ecosystem.Forest => Colors.ForestGreen,
+            Ecosystem.Mountain => Colors.SaddleBrown,
+            Ecosystem.Hills => Colors.Peru,
+            Ecosystem.Ocean => Colors.DarkBlue,
+            Ecosystem.Wetland => Colors.LightSeaGreen,
+            Ecosystem.Coast => Colors.PaleTurquoise,
+            _ => Colors.LightGray,
+        };
 }
