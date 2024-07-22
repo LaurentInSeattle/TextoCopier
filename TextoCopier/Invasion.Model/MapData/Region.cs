@@ -1,37 +1,35 @@
-﻿
-namespace Lyt.Invasion.Model.MapData;
+﻿namespace Lyt.Invasion.Model.MapData;
 
 public sealed class Region
 {
-    const int maxSquareDistance = 500;
+    /// <summary> Factor used to set how much of simplification is needed for the border paths.</summary>
+    private const float simplificationTolerance = 0.4f;
+
+    /// <summary> Distance used to determine if a border path is "broken" by the wrapping of the map  </summary>
+    private const int maxSquareDistance = 500;
 
     public readonly Game game;
 
-    /// <summary> Unique ID number of region  </summary>
+    /// <summary> Unique ID number of this region  </summary>
     public readonly short Id;
 
     /// <summary> X and y pixels where region started to grow from </summary>
     public readonly Coordinate Coordinate;
 
-    public readonly Ecosystem Ecosystem;
-
     /// <summary> Center of country, i.e. middle of the country </summary>
     public readonly Coordinate Center;
 
     /// <summary> Center of country, i.e. middle of the country </summary>
-    public Coordinate AltCenter;
+    public readonly Coordinate AltCenter;
 
     /// <summary> Count of pixels within the region </summary>
     public readonly int Size;
 
-    /// <summary> Biggest army size the region can host </summary>
-    public readonly double Capacity;
-
-    /// <summary> Every pixel on the border of this region. This is used to draw the country as vector graph. </summary>
-    public readonly List<Coordinate> BorderCoordinates;
-
     /// <summary> Ids of all other regions neighbouring this region. </summary>
     public readonly List<short> NeighbourIds;
+
+    /// <summary> Simpliefied border paths. </summary>
+    public List<List<Vector2>> SimplifiedPaths { get; private set; }
 
     public Region(
         Game game, short id, Coordinate coordinate, Coordinate center, int size, List<Coordinate> borderCoordinates)
@@ -41,69 +39,17 @@ public sealed class Region
         this.Coordinate = coordinate;
         this.Center = center;
         this.Size = size;
-        this.Capacity = 0; // For now
-        this.BorderCoordinates = borderCoordinates;
         this.NeighbourIds = new(16);
-        this.Paths = new(8);
-        this.SimplifiedPaths = new(4);
 
-        this.ClearDuplicateBorderPoints();
-        this.CreateBorderPaths();
-        this.SimplifyBorderPaths();
-        this.AltCenter = this.CalculateCenter () ;
+        // this.Capacity = 0; // For now
+
+        Region.ClearDuplicateBorderPoints(borderCoordinates);
+        var paths = Region.CreateBorderPaths(borderCoordinates);
+        this.SimplifiedPaths = Region.SimplifyBorderPaths(paths);
+        this.AltCenter = Region.CalculateCenter(paths);
+
+        Debug.WriteLine(size);
     }
-
-    private Coordinate CalculateCenter() 
-    {
-        int x = 0;
-        int y = 0;
-        int count = 0;
-        // Debug.WriteLine("Path Count: " + this.Paths.Count);
-        Coordinate center = new(0, 0);
-        var path = (from p in this.Paths orderby p.Count descending select p).FirstOrDefault();
-        if (path is not null)
-        {
-            //foreach (var path in this.Paths)
-            {
-                foreach (var coordinate in path)
-                {
-                    x += coordinate.X;
-                    y += coordinate.Y;
-                    count++;
-                }
-            }
-
-            if (count > 0)
-            {
-                center = new(x / count, y / count);
-            }
-        }
-
-        return center;
-    }
-
-    public List<List<Coordinate>> Paths { get; private set; }
-
-    public List<List<Vector2>> SimplifiedPaths { get; private set; }
-
-    #region LATER 
-
-    /// <summary> Player who currently owns the region, or null </summary>
-    public Player? Owner { get; private set; }
-
-    /// <summary> Player who owned the region previously, or null </summary>
-    public Player? PreviousOwner { get; private set; }
-
-    // LATER 
-    // public Dictionary<ResourceKind, int> Resources = new(10);
-
-    // LATER 
-    /// <summary> Size of the army within the region </summary>
-    // public int ArmySize { get; set; } = 0;
-
-    public bool IsOwned => this.Owner is not null;
-
-    #endregion LATER 
 
     /// <summary>
     /// Used by PixelMap to add neighbours, since it is not possible to add the neighbours in the constructor, because
@@ -111,27 +57,26 @@ public sealed class Region
     /// </summary>
     internal void AddNeighbour(Region neighbour) => this.NeighbourIds.Add(neighbour.Id);
 
-    private void ClearDuplicateBorderPoints()
+    private static void ClearDuplicateBorderPoints(List<Coordinate> borderCoordinates)
     {
-        var hash = new HashSet<Coordinate>(this.BorderCoordinates.Count);
-        foreach (var coordinate in this.BorderCoordinates)
+        var hash = new HashSet<Coordinate>(borderCoordinates.Count);
+        foreach (var coordinate in borderCoordinates)
         {
             hash.Add(coordinate);
         }
 
-        if (hash.Count < this.BorderCoordinates.Count)
+        if (hash.Count < borderCoordinates.Count)
         {
-            Debug.WriteLine("List: " + this.BorderCoordinates.Count);
+            Debug.WriteLine("List: " + borderCoordinates.Count);
             Debug.WriteLine("Hash: " + hash.Count);
-            this.BorderCoordinates.Clear();
-            this.BorderCoordinates.AddRange(hash.ToArray());
+            borderCoordinates.Clear();
+            borderCoordinates.AddRange(hash.ToArray());
         }
     }
-
-    private void CreateBorderPaths()
+    private static List<List<Coordinate>> CreateBorderPaths(List<Coordinate> borderCoordinates)
     {
-        // Create a copy is necessary
-        var pointsToTest = this.BorderCoordinates.ToList();
+        var paths = new List<List<Coordinate>>(8);
+        var pointsToTest = borderCoordinates;
         Coordinate point;
         Coordinate? lastPoint = null;
         while (pointsToTest.Count > 2)
@@ -190,13 +135,15 @@ public sealed class Region
 
             } // Inner loop 
 
-            this.Paths.Add(pathPoints);
+            paths.Add(pathPoints);
         } // Outer loop 
-    }
 
-    private void SimplifyBorderPaths()
+        return paths;
+    }
+    private static List<List<Vector2>> SimplifyBorderPaths(List<List<Coordinate>> paths)
     {
-        foreach (var path in this.Paths)
+        var simplifiedPaths = new List<List<Vector2>>(paths.Count);
+        foreach (var path in paths)
         {
             // Smooth the border 
             var points = new List<Vector2>();
@@ -206,10 +153,62 @@ public sealed class Region
             }
 
             var avgPoints = PathUtilities.MovingAverage(points);
-            var simplified = PathUtilities.Simplify(avgPoints, 0.4f);
-            this.SimplifiedPaths.Add(simplified);
+            var simplified = PathUtilities.Simplify(avgPoints, simplificationTolerance);
+            simplifiedPaths.Add(simplified);
         }
+
+        return simplifiedPaths;
     }
+    private static Coordinate CalculateCenter(List<List<Coordinate>> paths)
+    {
+        int x = 0;
+        int y = 0;
+        int count = 0;
+        // Debug.WriteLine("Path Count: " + this.Paths.Count);
+        Coordinate center = new(0, 0);
+        var path = (from p in paths orderby p.Count descending select p).FirstOrDefault();
+        if (path is not null)
+        {
+            //foreach (var path in this.Paths)
+            {
+                foreach (var coordinate in path)
+                {
+                    x += coordinate.X;
+                    y += coordinate.Y;
+                    count++;
+                }
+            }
+
+            if (count > 0)
+            {
+                center = new(x / count, y / count);
+            }
+        }
+
+        return center;
+    }
+
+    #region LATER 
+
+    public readonly Ecosystem Ecosystem;
+
+    /// <summary> Biggest army size the region can host </summary>
+    public readonly double Capacity;
+
+    /// <summary> Player who currently owns the region, or null </summary>
+    public Player? Owner { get; private set; }
+
+    /// <summary> Player who owned the region previously, or null </summary>
+    public Player? PreviousOwner { get; private set; }
+
+    // LATER 
+    // public Dictionary<ResourceKind, int> Resources = new(10);
+
+    // LATER 
+    /// <summary> Size of the army within the region </summary>
+    // public int ArmySize { get; set; } = 0;
+
+    public bool IsOwned => this.Owner is not null;
 
     /// <summary> Has this region a neighbouring region with a different owner ? </summary>
     public bool HasEnemies(Map map)
@@ -295,4 +294,6 @@ public sealed class Region
 
         return true;
     }
+
+    #endregion LATER 
 }
