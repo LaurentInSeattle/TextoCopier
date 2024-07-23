@@ -32,12 +32,12 @@ public sealed class GameOptions
     public int InitialTerritory
         => this.Difficulty switch
         {
-            GameDifficulty.Easy => 8,
-            GameDifficulty.Fair => 7,
-            GameDifficulty.Challenging => 6,
+            GameDifficulty.Easy => 6,
+            GameDifficulty.Fair => 6,
+            GameDifficulty.Challenging => 5,
             GameDifficulty.Hard => 5,
-            GameDifficulty.Insane => 4,
-            _ => 8, // Easy 
+            GameDifficulty.Insane => 5,
+            _ => 6, // Easy 
         };
 
     public int PixelWidth =>    

@@ -1,6 +1,4 @@
-﻿using Lyt.Invasion.Model.MapData;
-
-namespace Lyt.Invasion.Shell;
+﻿namespace Lyt.Invasion.Shell;
 
 public sealed class ShellViewModel : Bindable<ShellView>
 {
@@ -32,7 +30,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         this.gameOptions = new GameOptions
         {
-            MapSize = MapSize.Huge,
+            MapSize = MapSize.Medium,
             Difficulty = GameDifficulty.Fair,
             Players =
             [

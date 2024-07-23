@@ -1,6 +1,4 @@
-﻿
-
-namespace Lyt.Invasion.Model.GameControl;
+﻿namespace Lyt.Invasion.Model.GameControl;
 
 public sealed class Game
 {
@@ -17,7 +15,7 @@ public sealed class Game
         this.Logger = logger;
         this.GameOptions = gameOptions;
         int playerCount = gameOptions.Players.Count;
-        if ((playerCount < 2) || (playerCount > 4) ) 
+        if ((playerCount < 2) || (playerCount > 4))
         {
             throw new ArgumentException("Invalid player count.");
         }
@@ -26,7 +24,7 @@ public sealed class Game
         // this.Random = new Random(Environment.TickCount);
         this.Map = new Map(this, this.Messenger, this.Logger);
         this.Players = this.CreatePlayers();
-        this.AllocateInitialRegions(); 
+        this.AllocateInitialRegions();
     }
 
     public ILogger Logger { get; private set; }
@@ -122,7 +120,7 @@ public sealed class Game
         foreach (var playerInfo in this.GameOptions.Players)
         {
             list.Add(playerInfo.IsHuman ? new HumanPlayer(index, playerInfo) : new AiPlayer(index, playerInfo));
-            ++index; 
+            ++index;
         }
 
         return list;
@@ -133,56 +131,70 @@ public sealed class Game
         List<Coordinate> initialPositions = this.GenerateInitialPositions(this.Players.Count);
         foreach (Player player in this.Players)
         {
+            if ( player.Color == "Red")
+            {
+                // if ( Debugger.IsAttached ) {  Debugger.Break(); }   
+            }
+
             // Initial capture 
             Coordinate initialPosition = initialPositions[player.Index];
             short regionId = this.Map.PixelMap.RegionIdsPerPixel[initialPosition.X, initialPosition.Y];
             Region region = this.Map.Regions[regionId];
-            if (region.CanBeOwned)
-            {
-                region.CaptureBy(player);
-            }
-            else
+            if (region.IsOwned || !region.CanBeOwned)
             {
                 region = this.FindCapturableRegionNear(region);
-            } 
-
-            // Build territory around initial region, up to capture provided count 
-            int requiredCount = this.GameOptions.InitialTerritory;
-            int immediateNeighboursCount = region.NeighbourIds.Count; 
-            int minCount = Math.Min(requiredCount, immediateNeighboursCount);
-            Region lastNeighbour;
-            int captured = 0;
-            int i = 0;
-            while( (i < minCount) && ( i < region.NeighbourIds.Count))
-            {
-                short neighbourId = region.NeighbourIds[i];
-                Region neighbour = this.Map.Regions[neighbourId];
-                if (neighbour.CanBeOwned)
-                {
-                    neighbour.CaptureBy(player);
-                    lastNeighbour = neighbour;
-                    ++captured; 
-                }
-
-                ++i;
             }
 
-            //int needMore = requiredCount - minCount;
-            //while (needMore > 0)
-            //{
-            //    needMore = requiredCount - minCount;
-            //}
-        } 
+            region.CaptureBy(player);
+
+            // Build territory around initial region, up to capture provided count 
+            int requiredCount = this.GameOptions.InitialTerritory - 1;
+            int captured = 0;
+            int maxLoops = 0;
+            Region? lastNeighbour = null;
+            while ((captured < requiredCount) && (maxLoops < 10))
+            {
+                int immediateNeighboursCount = region.NeighbourIds.Count;
+                for (int k = 0; k < immediateNeighboursCount; ++k)
+                {
+                    short neighbourId = region.NeighbourIds[k];
+                    Region neighbour = this.Map.Regions[neighbourId];
+                    if (!neighbour.IsOwned && neighbour.CanBeOwned)
+                    {
+                        neighbour.CaptureBy(player);
+                        lastNeighbour = neighbour;
+                        ++captured;
+                    }
+
+                    if (captured >= requiredCount)
+                    {
+                        break;
+                    }
+                }
+                
+                if (captured < requiredCount)
+                {
+                    if (lastNeighbour is not null)
+                    {
+                        region = this.FindCapturableRegionNear(lastNeighbour);
+                        region.CaptureBy(player);
+                        ++captured;
+                    }
+                }
+
+                ++maxLoops;
+            }
+        }
     }
 
-    private Region FindCapturableRegionNear( Region region )
+    private Region FindCapturableRegionNear(Region region)
     {
         Region? lastNeighbour = null;
         for (int i = 0; i < region.NeighbourIds.Count; ++i)
         {
             short neighbourId = region.NeighbourIds[i];
             Region neighbour = this.Map.Regions[neighbourId];
-            if (neighbour.CanBeOwned)
+            if (!neighbour.IsOwned && neighbour.CanBeOwned)
             {
                 return neighbour;
             }
@@ -193,7 +205,7 @@ public sealed class Game
         if (lastNeighbour is null)
         {
             throw new Exception("Cant figure out initial region.");
-        } 
+        }
         else
         {
             return this.FindCapturableRegionNear(lastNeighbour);
@@ -202,10 +214,10 @@ public sealed class Game
 
     private List<Coordinate> GenerateInitialPositions(int playerCount)
     {
-        List<Coordinate> initialPositions = new (playerCount);
+        List<Coordinate> initialPositions = new(playerCount);
         int width = this.GameOptions.PixelWidth;
         int height = this.GameOptions.PixelHeight;
-        if (playerCount == 2) 
+        if (playerCount == 2)
         {
             int x1 = width / 4 + this.Random.Next(-30, 10);
             int y1 = height / 2 + this.Random.Next(-50, 50);
