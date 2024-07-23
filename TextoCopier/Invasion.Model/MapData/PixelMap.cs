@@ -57,8 +57,6 @@ public sealed class PixelMap
     /// <remarks> there are hundred thousands of pixels. It's better to store the Id as short</remarks>
     public short[,] RegionIdsPerPixel { get; private set; }
 
-    public bool [,] IsBorderPixel { get; private set; }
-
 #pragma warning disable IDE0044 // Add readonly modifier. isTestBorderProblem can be manually set during debugging
     private bool isTestBorderProblem;
 #pragma warning restore IDE0044
@@ -81,7 +79,6 @@ public sealed class PixelMap
         this.Logger.Info("Creating pixel map, allocating... ");
 
         this.RegionIdsPerPixel = new short[this.XCount, this.YCount];
-        this.IsBorderPixel = new bool[this.XCount, this.YCount];
         this.coordinatesByRegion = new Coordinate[this.RegionCount];
         this.centersByRegion = new Coordinate[this.RegionCount];
         this.sizeByRegion = new int[this.RegionCount];
@@ -176,22 +173,20 @@ public sealed class PixelMap
     private void GenerateRegionCoordinates()
     {
         // Use the country coordinates as start pixel for map filling
-        var fillCoordinatesByCountry = new List<Coordinate>[this.RegionCount];
+        var foundCoordinatesByCountry = new List<Coordinate>[this.RegionCount];
         var borderPixelsByCountry = new HashSet<Coordinate>[this.RegionCount];
 
         // Create a list of fillCoordinates for every region, with the region's coordinate as start for every region
         for (int regionIndex = 0; regionIndex < this.RegionCount; ++regionIndex)
         {
-            var countryCoordinates = new List<Coordinate>(4096) { this.coordinatesByRegion[regionIndex] };
-            fillCoordinatesByCountry[regionIndex] = countryCoordinates;
-            borderPixelsByCountry[regionIndex] = new HashSet<Coordinate>(1024);
+            var countryCoordinates = new List<Coordinate>(128) { this.coordinatesByRegion[regionIndex] };
+            foundCoordinatesByCountry[regionIndex] = countryCoordinates;
+            borderPixelsByCountry[regionIndex] = new HashSet<Coordinate>(512);
         }
-
-        this.Logger.Info("Created fill and border Coordinates By Region");
 
         // Fill the map
         bool isIncomplete;
-        var workCoordinates = new List<Coordinate>(256);
+        var foundCoordinates = new List<Coordinate>(256);
         do
         {
             isIncomplete = false;
@@ -210,7 +205,7 @@ public sealed class PixelMap
                         {
                             // Empty pixel found
                             this.RegionIdsPerPixel[nextCoordinate.X, nextCoordinate.Y] = (short)regionIndex;
-                            workCoordinates.Add(nextCoordinate);
+                            foundCoordinates.Add(nextCoordinate);
                         }
                         else
                         {
@@ -226,8 +221,7 @@ public sealed class PixelMap
                     }
                 }
 
-                var countryCoordinates = fillCoordinatesByCountry[regionIndex];
-                foreach (var coordinate in countryCoordinates)
+                foreach (var coordinate in foundCoordinatesByCountry[regionIndex])
                 {
                     OccupyIfAvailable(coordinate, c => c.Left(this));
                     OccupyIfAvailable(coordinate, c => c.Up(this));
@@ -235,17 +229,13 @@ public sealed class PixelMap
                     OccupyIfAvailable(coordinate, c => c.Down(this));
                 }
 
-                if (workCoordinates.Count > 0)
+                if (foundCoordinates.Count > 0)
                 {
                     isIncomplete = true;
-                    fillCoordinatesByCountry[regionIndex].AddRange(workCoordinates);
-
-                    // reuse this list for next country instead creating each time a new list
-                    workCoordinates.Clear();
+                    foundCoordinatesByCountry[regionIndex] = foundCoordinates.ToList();
+                    foundCoordinates.Clear();
                 }
             }
-
-            this.Logger.Info("Region Grow Step");
 
         } while (isIncomplete);
     }
@@ -744,46 +734,13 @@ public sealed class PixelMap
                     hasFound = false;
                 }
 
-                this.IsBorderPixel[pixel.X, pixel.Y] = true;
                 borderCoordinates.Add(pixel);
 
-                if (borderCoordinates.Count > 10000)
+                if (borderCoordinates.Count > 50_000)
                 {
-//#if debugBorderCoordinates
-//                        string s;
-//                        if (coordinatesbyCountry.Length<92) {
-//                          s = ToPlainString(countryIdsPerPixel, pixel, 5);
-//                        }
-//#endif
                     throw new Exception("too many border points. Press \"New Game\" to create a new game.");
                 }
             } while (!pixel.Equals(startPixel));
-
-            if (this.isTestBorderProblem)
-            {
-                //    int firstPixelIndex;
-                //    var isLastPixelAtBottomBorder = false;
-                //    for (firstPixelIndex = 0; firstPixelIndex < borderCoordinates.Count; firstPixelIndex++)
-                //    {
-                //        var y = borderCoordinates[firstPixelIndex].Y;
-                //        if (isLastPixelAtBottomBorder)
-                //        {
-                //            if (y == 0)
-                //            {
-                //                //border of country as switched from bottom border of window to top border of window
-                //                //for testing for border problem, shift border pixels so that it starts with y=0
-                //                var borderCoordinatesCopy = new List<Coordinate>(borderCoordinates.Count);
-                //                for (var copyPixelIndex = 0; copyPixelIndex < borderCoordinates.Count; copyPixelIndex++)
-                //                {
-                //                    borderCoordinatesCopy.Add(borderCoordinates[(firstPixelIndex + copyPixelIndex) % borderCoordinates.Count]);
-                //                }
-                //                borderCoordinates = borderCoordinatesCopy;
-                //                break;
-                //            }
-                //        }
-                //        isLastPixelAtBottomBorder = y == YMax;
-                //    }
-            }
 
             borderCoordinatesByCountry[countryIndex] = borderCoordinates;
         }

@@ -26,7 +26,9 @@ public abstract class Player
 
     public abstract void Destroy();
 
-    internal List<Region> Territory { get; private set; }
+    public Region Capital { get; internal set; }
+
+    public List<Region> Territory { get; private set; }
 
     public Age Age { get; private set; }
 

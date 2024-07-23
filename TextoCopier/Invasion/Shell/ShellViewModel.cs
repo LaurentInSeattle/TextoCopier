@@ -122,13 +122,18 @@ public sealed class ShellViewModel : Bindable<ShellView>
                 continue;
             }
 
+            var fillBrush = region.IsCapital ? Brushes.Wheat : Brushes.Black;
+            fillBrush = region.IsOwned ? fillBrush : Brushes.Gray;
+            IBrush strokeBrush = region.IsOwned? this.playerBrushes[region.Owner!.Index] : Brushes.Gray;
+            int size = region.IsOwned ? 14 : 6;
+            size = region.IsCapital ? 16 : size;
             var center = region.AltCenter;
             var ellipse = new Ellipse
             {
-                Width = 12,
-                Height = 12,
-                Stroke = Brushes.Firebrick,
-                Fill = Brushes.Black,
+                Width = size,
+                Height = size,
+                Stroke = strokeBrush,
+                Fill = fillBrush,
                 StrokeThickness = 2.0,
             };
             canvas.Children.Add(ellipse);

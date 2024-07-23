@@ -52,6 +52,9 @@ public sealed class Region
 
     public Ecosystem Ecosystem { get; internal set; }
 
+    /// <summary> True if this region is a capital </summary>
+    public bool IsCapital { get; internal set; }
+
     /// <summary> Player who currently owns the region, or null </summary>
     public Player? Owner { get; private set; }
 

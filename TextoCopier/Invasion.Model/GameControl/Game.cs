@@ -20,8 +20,8 @@ public sealed class Game
             throw new ArgumentException("Invalid player count.");
         }
 
-        this.Random = new Random(666);
-        // this.Random = new Random(Environment.TickCount);
+        // this.Random = new Random(666);
+        this.Random = new Random(Environment.TickCount);
         this.Map = new Map(this, this.Messenger, this.Logger);
         this.Players = this.CreatePlayers();
         this.AllocateInitialRegions();
@@ -136,7 +136,7 @@ public sealed class Game
                 // if ( Debugger.IsAttached ) {  Debugger.Break(); }   
             }
 
-            // Initial capture 
+            // Initial capture becomes the player capital 
             Coordinate initialPosition = initialPositions[player.Index];
             short regionId = this.Map.PixelMap.RegionIdsPerPixel[initialPosition.X, initialPosition.Y];
             Region region = this.Map.Regions[regionId];
@@ -146,6 +146,8 @@ public sealed class Game
             }
 
             region.CaptureBy(player);
+            player.Capital = region;
+            region.IsCapital = true;
 
             // Build territory around initial region, up to capture provided count 
             int requiredCount = this.GameOptions.InitialTerritory - 1;
