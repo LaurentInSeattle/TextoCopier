@@ -1,4 +1,4 @@
-﻿namespace Lyt.Invasion.Model.Players;
+﻿namespace Lyt.Invasion.Model.Units;
 
 public enum Actor
 {

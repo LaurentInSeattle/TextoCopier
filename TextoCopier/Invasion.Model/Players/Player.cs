@@ -2,15 +2,30 @@
 
 public abstract class Player
 {
+    protected Player(int index, PlayerInfo playerInfo)
+    {
+        this.Index = index;
+        this.Avatar = playerInfo.Avatar;
+        this.Name = playerInfo.Name;
+        this.EmpireName = playerInfo.EmpireName;
+        this.Color = playerInfo.Color;
+    }
+
+    public abstract bool IsHuman { get; }
+
     public int Index { get; private set; }
 
     public string Name { get; set; } = string.Empty;
 
     public string EmpireName { get; set; } = string.Empty;
 
-    public abstract bool IsHuman { get; }
+    public string Avatar { get; set; } = string.Empty;
+
+    public string Color { get; set; } = string.Empty;
 
     public abstract void Destroy();
+
+    internal List<Region> Territory { get; set; }
 
     public Age Age { get; private set; }
 

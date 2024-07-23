@@ -72,8 +72,6 @@ public sealed class PixelMap
         this.map = map;
         this.Messenger = messenger;
         this.Logger = logger;
-        this.Random = new Random(666);
-        // this.Random = new Random(Environment.TickCount);
         this.RegionCount = this.gameOptions.RegionCount;
         this.XCount = this.gameOptions.PixelWidth;
         this.XMax = this.XCount - 1;
@@ -109,9 +107,6 @@ public sealed class PixelMap
 
     public IMessenger Messenger { get; private set; }
 
-    // Random number generator used during creation of PixelMap
-    public Random Random { get; private set; }
-
     /// <summary> Count of pixels the largest country occupies </summary>
     public double BiggestCountrySize { get; private set; }
 
@@ -134,6 +129,7 @@ public sealed class PixelMap
     private void GenerateRegionStartingPoints()
     {
         // Place for each region a random starting point on the map
+        Random random = this.game.Random;
         for (int regionIndex = 0; regionIndex < this.RegionCount; ++regionIndex)
         {
             bool isTooClose;
@@ -143,8 +139,8 @@ public sealed class PixelMap
             {
                 coordinate1 =
                     new Coordinate(
-                        this.Random.Next(padding, this.XMax - padding),
-                        this.Random.Next(padding, this.YMax - padding));
+                        random.Next(padding, this.XMax - padding),
+                        random.Next(padding, this.YMax - padding));
                 isTooClose = false;
                 for (int regionIndex2 = 0; regionIndex2 < regionIndex; ++regionIndex2)
                 {
@@ -195,7 +191,7 @@ public sealed class PixelMap
                   Coordinate originCoordinate,
                   Func<Coordinate, Coordinate> GetNeighbouringPixel)
                 {
-                    int pixelIndexMax = this.Random.Next(1, 4);
+                    int pixelIndexMax = this.game.Random.Next(1, 4);
                     for (int pixelIndex = 0; pixelIndex < pixelIndexMax; ++pixelIndex)
                     {
                         Coordinate nextCoordinate = GetNeighbouringPixel(originCoordinate);

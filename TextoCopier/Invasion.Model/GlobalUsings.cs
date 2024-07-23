@@ -25,5 +25,6 @@ global using Lyt.Avalonia.Persistence;
 global using Lyt.Invasion.Model.GameControl;
 global using Lyt.Invasion.Model.MapData;
 global using Lyt.Invasion.Model.Players;
+global using Lyt.Invasion.Model.Units;
 global using Lyt.Invasion.Model.Utilities;
 

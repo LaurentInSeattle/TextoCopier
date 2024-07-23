@@ -31,10 +31,10 @@ public sealed class ShellViewModel : Bindable<ShellView>
             MapSize = MapSize.Huge,
             Players =
             [
-                 new PlayerInfo { Name = "Laurent", IsHuman =true},
-                 new PlayerInfo { Name = "Annalisa", IsHuman =true},
-                 new PlayerInfo { Name = "Oksana"},
-                 new PlayerInfo { Name = "Irina"},
+                 new PlayerInfo { Name = "Laurent", IsHuman =true, Color = "Red"},
+                 new PlayerInfo { Name = "Annalisa", IsHuman =true, Color = "Blue"},
+                 new PlayerInfo { Name = "Oksana", Color = "Yellow"},
+                 new PlayerInfo { Name = "Irina", Color = "Magenta"},
             ],
         };
     }
@@ -184,8 +184,6 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         var map = game.Map;
         var pixelMap = map.PixelMap;
-        int regionCount = game.GameOptions.RegionCount;
-
         int width = game.GameOptions.PixelWidth;
         int height = game.GameOptions.PixelHeight;
         byte[] bgraPixelData = new byte[width * height * 4];
@@ -229,4 +227,21 @@ public sealed class ShellViewModel : Bindable<ShellView>
             Ecosystem.Coast => Colors.PaleTurquoise,
             _ => Colors.LightGray,
         };
+
+    private static Color PlayerToColor(Player player)
+    {
+        var type = typeof(Colors);
+        var colorProperty = type.GetProperty(player.Color, BindingFlags.Static);
+        if ( colorProperty is not null)
+        {
+            var getMethod = colorProperty.GetGetMethod();
+            object? colorObject = getMethod?.Invoke(null, null);
+            if (colorObject is Color color)
+            {
+                return color;
+            }
+        }
+
+        throw new Exception("Invalid player color");
+    }
 }

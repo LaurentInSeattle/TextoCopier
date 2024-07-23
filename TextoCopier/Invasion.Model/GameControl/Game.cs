@@ -1,4 +1,6 @@
-﻿namespace Lyt.Invasion.Model.GameControl;
+﻿
+
+namespace Lyt.Invasion.Model.GameControl;
 
 public sealed class Game
 {
@@ -6,18 +8,30 @@ public sealed class Game
 
     public readonly List<Player> Players;
 
+    // Random number generator used during creation of PixelMap
+    public readonly Random Random;
+
     public Game(GameOptions gameOptions, IMessenger messenger, ILogger logger)
     {
         this.Messenger = messenger;
         this.Logger = logger;
         this.GameOptions = gameOptions;
+        int playerCount = gameOptions.Players.Count;
+        if ((playerCount < 2) || (playerCount > 4) ) 
+        {
+            throw new ArgumentException("Invalid player count.");
+        }
+
+        this.Random = new Random(666);
+        // this.Random = new Random(Environment.TickCount);
         this.Map = new Map(this, this.Messenger, this.Logger);
-        this.Players = new(8);
+        this.Players = this.CreatePlayers();
+        this.AllocateInitialRegions(); 
     }
 
-    public ILogger Logger { get; private set; } 
+    public ILogger Logger { get; private set; }
 
-    public IMessenger Messenger { get; private set; } 
+    public IMessenger Messenger { get; private set; }
 
     public Map Map { get; private set; }
 
@@ -98,5 +112,102 @@ public sealed class Game
         {
             player.Destroy();
         }
+    }
+
+    private List<Player> CreatePlayers()
+    {
+        var list = new List<Player>();
+        int index = 0;
+        // TODO: Randomize the list 
+        foreach (var playerInfo in this.GameOptions.Players)
+        {
+            list.Add(playerInfo.IsHuman ? new HumanPlayer(index, playerInfo) : new AiPlayer(index, playerInfo));
+            ++index; 
+        }
+
+        return list;
+    }
+
+    private void AllocateInitialRegions()
+    {
+        List<Coordinate> initialPositions = this.GenerateInitialPositions(this.Players.Count);
+        foreach (Player player in this.Players)
+        {
+            // Initial capture 
+            Coordinate initialPosition = initialPositions[player.Index];
+            short regionId = this.Map.PixelMap.RegionIdsPerPixel[initialPosition.X, initialPosition.Y];
+            Region region = this.Map.Regions[regionId];
+            region.CaptureBy(player);
+
+            // Build territory around initial region, up to capture provided count 
+            int requiredCount = this.GameOptions.InitialTerritory;
+            int immediateNeighboursCount = region.NeighbourIds.Count; 
+            int minCount = Math.Min(requiredCount, immediateNeighboursCount);
+            Region lastNeighbour;
+            for (int i = 0; i < minCount; ++i)
+            {
+                short neighbourId = region.NeighbourIds[i];
+                Region neighbour = this.Map.Regions[neighbourId];
+                neighbour.CaptureBy(player);
+                lastNeighbour = neighbour;
+            }
+
+            int needMore = requiredCount - minCount;
+            while (needMore > 0)
+            {
+                needMore = requiredCount - minCount;
+            }
+        } 
+    }
+
+    private List<Coordinate> GenerateInitialPositions(int playerCount)
+    {
+        List<Coordinate> initialPositions = new (playerCount);
+        int width = this.GameOptions.PixelWidth;
+        int height = this.GameOptions.PixelHeight;
+        if (playerCount == 2) 
+        {
+            int x1 = width / 4 + this.Random.Next(-30, 10);
+            int y1 = height / 2 + this.Random.Next(-50, 50);
+            initialPositions.Add(new Coordinate(x1, y1));
+
+            int x2 = 3 * width / 4 + this.Random.Next(-10, 30); ;
+            int y2 = height / 2 + this.Random.Next(-50, 50);
+            initialPositions.Add(new Coordinate(x2, y2));
+        }
+        else if (playerCount == 3)
+        {
+            int x1 = width / 6 + this.Random.Next(-30, 10);
+            int y1 = height / 4 + this.Random.Next(-20, 20);
+            initialPositions.Add(new Coordinate(x1, y1));
+
+            int x2 = 3 * width / 6 + this.Random.Next(-10, 30); ;
+            int y2 = 3 * height / 4 + this.Random.Next(-20, 20);
+            initialPositions.Add(new Coordinate(x2, y2));
+
+            int x3 = 5 * width / 6 + this.Random.Next(-10, 30); ;
+            int y3 = height / 4 + this.Random.Next(-20, 20);
+            initialPositions.Add(new Coordinate(x3, y3));
+        }
+        else // playerCount == 4
+        {
+            int x1 = width / 4 + this.Random.Next(-30, 10);
+            int y1 = height / 4 + this.Random.Next(-20, 20);
+            initialPositions.Add(new Coordinate(x1, y1));
+
+            int x2 = width / 4 + this.Random.Next(-30, 10);
+            int y2 = 3 * height / 4 + this.Random.Next(-20, 20);
+            initialPositions.Add(new Coordinate(x2, y2));
+
+            int x3 = 3 * width / 4 + this.Random.Next(-10, 30); ;
+            int y3 = height / 4 + this.Random.Next(-20, 20);
+            initialPositions.Add(new Coordinate(x3, y3));
+
+            int x4 = 3 * width / 4 + this.Random.Next(-10, 30); ;
+            int y4 = 3 * height / 4 + this.Random.Next(-20, 20);
+            initialPositions.Add(new Coordinate(x4, y4));
+        }
+
+        return initialPositions;
     }
 }

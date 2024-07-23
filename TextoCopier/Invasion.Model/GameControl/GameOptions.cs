@@ -29,6 +29,17 @@ public sealed class GameOptions
 
     public GameDifficulty Difficulty { get; set; }
 
+    public int InitialTerritory
+        => this.Difficulty switch
+        {
+            GameDifficulty.Easy => 8,
+            GameDifficulty.Fair => 7,
+            GameDifficulty.Challenging => 6,
+            GameDifficulty.Hard => 5,
+            GameDifficulty.Insane => 4,
+            _ => 8, // Easy 
+        };
+
     public int PixelWidth =>    
         this.MapSize switch
         {
@@ -37,6 +48,7 @@ public sealed class GameOptions
             MapSize.Small => 800,
             MapSize.Medium => 1000,
             MapSize.Large => 1400,
+            MapSize.Huge => 1800,
             _ => 1800, // Huge
         };
 
@@ -50,6 +62,7 @@ public sealed class GameOptions
             MapSize.Small => 130,
             MapSize.Medium => 170,
             MapSize.Large => 210,
+            MapSize.Huge => 260,
             _ => 260, // Huge
         };
 }

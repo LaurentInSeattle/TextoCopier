@@ -31,8 +31,6 @@ public sealed class Region
     /// <summary> Simpliefied border paths. </summary>
     public readonly List<List<Vector2>> SimplifiedPaths;
 
-    public Ecosystem Ecosystem { get; internal set; }
-
     public Region(
         Game game, short id, Coordinate coordinate, Coordinate center, int size, List<Coordinate> borderCoordinates)
     {
@@ -52,11 +50,38 @@ public sealed class Region
         this.AltCenter = Region.CalculateCenter(paths);
     }
 
+    public Ecosystem Ecosystem { get; internal set; }
+
+    /// <summary> Player who currently owns the region, or null </summary>
+    public Player? Owner { get; private set; }
+
+    /// <summary> Player who owned the region previously, or null </summary>
+    public Player? PreviousOwner { get; private set; }
+
+    public bool IsOwned => this.Owner is not null;
+
     /// <summary>
     /// Used by PixelMap to add neighbours, since it is not possible to add the neighbours in the constructor, because
     /// the neighbour might not be constructed yet.
     /// </summary>
     internal void AddNeighbour(Region neighbour) => this.NeighbourIds.Add(neighbour.Id);
+
+    internal void CaptureBy(Player player)
+    {
+        if (this.PreviousOwner == player)
+        {
+            throw new InvalidOperationException("Cant capture your own territory.");
+        }
+
+        this.PreviousOwner = this.Owner;
+        if (this.PreviousOwner is not null)
+        {
+            this.PreviousOwner.Territory.Remove(this);
+        }
+
+        this.Owner = player;
+        player.Territory.Add(this);
+    }
 
     private static void ClearDuplicateBorderPoints(List<Coordinate> borderCoordinates)
     {
@@ -197,20 +222,12 @@ public sealed class Region
     /// <summary> Biggest army size the region can host </summary>
     public readonly double Capacity;
 
-    /// <summary> Player who currently owns the region, or null </summary>
-    public Player? Owner { get; private set; }
-
-    /// <summary> Player who owned the region previously, or null </summary>
-    public Player? PreviousOwner { get; private set; }
-
     // LATER 
     // public Dictionary<ResourceKind, int> Resources = new(10);
 
     // LATER 
     /// <summary> Size of the army within the region </summary>
     // public int ArmySize { get; set; } = 0;
-
-    public bool IsOwned => this.Owner is not null;
 
     /// <summary> Has this region a neighbouring region with a different owner ? </summary>
     public bool HasEnemies(Map map)
