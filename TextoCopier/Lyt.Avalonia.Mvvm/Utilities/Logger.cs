@@ -2,18 +2,29 @@
 
 public sealed class Logger : ILogger
 {
-    public void Debug(string message) => System.Diagnostics.Debug.WriteLine(message);
+    private static DateTime last = DateTime.Now;
 
-    public void Info(string message) => Trace.TraceInformation(message);
+    public void Debug(string message) => System.Diagnostics.Debug.WriteLine(ShortTimeString() + message);
 
-    public void Warning(string message) => Trace.TraceWarning(message);
+    public void Info(string message) => Trace.TraceInformation(ShortTimeString() + message);
 
-    public void Error(string message) => Trace.TraceError(message);
+    public void Warning(string message) => Trace.TraceWarning(ShortTimeString() + message);
+
+    public void Error(string message) => Trace.TraceError(ShortTimeString() + message);
 
     public void Fatal(string message)
     {
         Trace.TraceError(message);
         if (Debugger.IsAttached) { Debugger.Break(); }
         throw new Exception(message);
+    }
+
+    public static string ShortTimeString()
+    {
+        DateTime now = DateTime.Now;
+        int deltaMs = (int) (now - last).TotalMilliseconds;
+        string result =  string.Format("{0}:{1}::{2} ({3}ms) - ", now.Minute, now.Second, now.Millisecond, deltaMs); 
+        last = now;
+        return result;
     }
 }

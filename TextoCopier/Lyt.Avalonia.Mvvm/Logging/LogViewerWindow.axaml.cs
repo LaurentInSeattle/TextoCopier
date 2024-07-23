@@ -36,13 +36,24 @@ public partial class LogViewerWindow : Window, ILogger, INotifyPropertyChanged
         }
     }
 
-    public void Debug(string message) => this.Log(LogLevel.Debug, message);
+    private static DateTime last = DateTime.Now;
 
-    public void Info(string message) => this.Log(LogLevel.Info, message);
+    public static string ShortTimeString()
+    {
+        DateTime now = DateTime.Now;
+        int deltaMs = (int)(now - last).TotalMilliseconds;
+        string result = string.Format("{0}:{1}::{2} ({3}ms) - ", now.Minute, now.Second, now.Millisecond, deltaMs);
+        last = now;
+        return result;
+    }
 
-    public void Warning(string message) => this.Log(LogLevel.Warning, message);
+    public void Debug(string message) => this.Log(LogLevel.Debug, ShortTimeString() + message);
 
-    public void Error(string message) => this.Log(LogLevel.Error, message);
+    public void Info(string message) => this.Log(LogLevel.Info, ShortTimeString() + message);
+
+    public void Warning(string message) => this.Log(LogLevel.Warning, ShortTimeString() + message);
+
+    public void Error(string message) => this.Log(LogLevel.Error, ShortTimeString() + message);
 
     public void Fatal(string message)
     {

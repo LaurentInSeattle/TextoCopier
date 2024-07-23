@@ -77,29 +77,37 @@ public sealed class PixelMap
         this.XMax = this.XCount - 1;
         this.YCount = this.gameOptions.PixelHeight;
         this.YMax = this.YCount - 1;
+
+        this.Logger.Info("Creating pixel map, allocating... ");
+
         this.RegionIdsPerPixel = new short[this.XCount, this.YCount];
         this.IsBorderPixel = new bool[this.XCount, this.YCount];
-
         this.coordinatesByRegion = new Coordinate[this.RegionCount];
         this.centersByRegion = new Coordinate[this.RegionCount];
         this.sizeByRegion = new int[this.RegionCount];
         this.neighboursByRegion = new bool[this.RegionCount, this.RegionCount];
         this.borderCoordinatesByCountry = new List<Coordinate>[this.RegionCount];
         this.isTestBorderProblem = false;
-
         this.ClearMap();
+
+        this.Logger.Info("Generating Starting Points ");
         this.GenerateRegionStartingPoints();
+        this.Logger.Info("Generating Region Coordinates");
         this.GenerateRegionCoordinates();
 
         int retries = 5; 
         while (retries > 0 && this.VerifyNoSinglePixelAreas())
         {
+            this.Logger.Info("Removing Single Pixel Areas");
             this.RemoveSinglePixelAreas();
             -- retries;
         }
 
+        this.Logger.Info("Generating Region Borders, Size and Centers");
         this.GenerateRegionBordersSizeCenters();
+        this.Logger.Info("Creating Regions ");
         this.CreateRegions();
+        this.Logger.Info("Creating Region Neighbours ");
         this.GenerateRegionNeighbours(); 
     }
 
@@ -176,8 +184,10 @@ public sealed class PixelMap
         {
             var countryCoordinates = new List<Coordinate>(4096) { this.coordinatesByRegion[regionIndex] };
             fillCoordinatesByCountry[regionIndex] = countryCoordinates;
-            borderPixelsByCountry[regionIndex] = [];
+            borderPixelsByCountry[regionIndex] = new HashSet<Coordinate>(1024);
         }
+
+        this.Logger.Info("Created fill and border Coordinates By Region");
 
         // Fill the map
         bool isIncomplete;
@@ -234,6 +244,9 @@ public sealed class PixelMap
                     workCoordinates.Clear();
                 }
             }
+
+            this.Logger.Info("Region Grow Step");
+
         } while (isIncomplete);
     }
 

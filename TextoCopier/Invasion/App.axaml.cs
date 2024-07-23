@@ -26,11 +26,7 @@ public partial class App : ApplicationBase
         ],
         [
             // Services 
-#if DEBUG
-            new Tuple<Type, Type>(typeof(ILogger), typeof(LogViewerWindow)),
-#else
-            new Tuple<Type, Type>(typeof(ILogger), typeof(Logger)),
-#endif
+            App.LoggerService,
             new Tuple<Type, Type>(typeof(IDialogService), typeof(DialogService)),
             new Tuple<Type, Type>(typeof(IMessenger), typeof(Messenger)),
             new Tuple<Type, Type>(typeof(IProfiler), typeof(Profiler)),
@@ -40,6 +36,11 @@ public partial class App : ApplicationBase
     {
         // This should be empty, use the OnStartup override
     }
+
+    private static Tuple<Type, Type> LoggerService =>
+            Debugger.IsAttached ? 
+                new Tuple<Type, Type>(typeof(ILogger), typeof(LogViewerWindow)) : 
+                new Tuple<Type, Type>(typeof(ILogger), typeof(Logger));
 
     public bool RestartRequired { get; set; }
 

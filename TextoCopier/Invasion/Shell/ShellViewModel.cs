@@ -30,7 +30,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         this.gameOptions = new GameOptions
         {
-            MapSize = MapSize.Medium,
+            MapSize = MapSize.Huge,
             Difficulty = GameDifficulty.Fair,
             Players =
             [
@@ -91,6 +91,9 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.GenerateMapImage();
         this.GeneratePaths();
         this.GenerateCenters();
+
+        this.Logger.Info("Ui generated");
+        this.profiler.MemorySnapshot("Ui generated");
 
         //static void CreateAndBind<TViewModel, TControl>()
         //     where TViewModel : Bindable<TControl>
