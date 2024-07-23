@@ -3,7 +3,7 @@
 public sealed class Region
 {
     /// <summary> Factor used to set how much of simplification is needed for the border paths.</summary>
-    private const float simplificationTolerance = 0.4f;
+    private const float simplificationTolerance = 0.45f;
 
     /// <summary> Distance used to determine if a border path is "broken" by the wrapping of the map  </summary>
     private const int maxSquareDistance = 500;
@@ -57,6 +57,8 @@ public sealed class Region
 
     /// <summary> Player who owned the region previously, or null </summary>
     public Player? PreviousOwner { get; private set; }
+
+    public bool CanBeOwned => this.Ecosystem != Ecosystem.Ocean && this.Ecosystem != Ecosystem.Mountain;
 
     public bool IsOwned => this.Owner is not null;
 

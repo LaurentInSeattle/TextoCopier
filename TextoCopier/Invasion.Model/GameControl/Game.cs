@@ -137,27 +137,67 @@ public sealed class Game
             Coordinate initialPosition = initialPositions[player.Index];
             short regionId = this.Map.PixelMap.RegionIdsPerPixel[initialPosition.X, initialPosition.Y];
             Region region = this.Map.Regions[regionId];
-            region.CaptureBy(player);
+            if (region.CanBeOwned)
+            {
+                region.CaptureBy(player);
+            }
+            else
+            {
+                region = this.FindCapturableRegionNear(region);
+            } 
 
             // Build territory around initial region, up to capture provided count 
             int requiredCount = this.GameOptions.InitialTerritory;
             int immediateNeighboursCount = region.NeighbourIds.Count; 
             int minCount = Math.Min(requiredCount, immediateNeighboursCount);
             Region lastNeighbour;
-            for (int i = 0; i < minCount; ++i)
+            int captured = 0;
+            int i = 0;
+            while( (i < minCount) && ( i < region.NeighbourIds.Count))
             {
                 short neighbourId = region.NeighbourIds[i];
                 Region neighbour = this.Map.Regions[neighbourId];
-                neighbour.CaptureBy(player);
-                lastNeighbour = neighbour;
+                if (neighbour.CanBeOwned)
+                {
+                    neighbour.CaptureBy(player);
+                    lastNeighbour = neighbour;
+                    ++captured; 
+                }
+
+                ++i;
             }
 
-            int needMore = requiredCount - minCount;
-            while (needMore > 0)
-            {
-                needMore = requiredCount - minCount;
-            }
+            //int needMore = requiredCount - minCount;
+            //while (needMore > 0)
+            //{
+            //    needMore = requiredCount - minCount;
+            //}
         } 
+    }
+
+    private Region FindCapturableRegionNear( Region region )
+    {
+        Region? lastNeighbour = null;
+        for (int i = 0; i < region.NeighbourIds.Count; ++i)
+        {
+            short neighbourId = region.NeighbourIds[i];
+            Region neighbour = this.Map.Regions[neighbourId];
+            if (neighbour.CanBeOwned)
+            {
+                return neighbour;
+            }
+
+            lastNeighbour = neighbour;
+        }
+
+        if (lastNeighbour is null)
+        {
+            throw new Exception("Cant figure out initial region.");
+        } 
+        else
+        {
+            return this.FindCapturableRegionNear(lastNeighbour);
+        }
     }
 
     private List<Coordinate> GenerateInitialPositions(int playerCount)

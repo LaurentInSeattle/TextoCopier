@@ -9,6 +9,7 @@ public abstract class Player
         this.Name = playerInfo.Name;
         this.EmpireName = playerInfo.EmpireName;
         this.Color = playerInfo.Color;
+        this.Territory = new List<Region>(128);
     }
 
     public abstract bool IsHuman { get; }
@@ -25,7 +26,7 @@ public abstract class Player
 
     public abstract void Destroy();
 
-    internal List<Region> Territory { get; set; }
+    internal List<Region> Territory { get; private set; }
 
     public Age Age { get; private set; }
 

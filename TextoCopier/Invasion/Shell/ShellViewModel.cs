@@ -1,4 +1,6 @@
-﻿namespace Lyt.Invasion.Shell;
+﻿using Lyt.Invasion.Model.MapData;
+
+namespace Lyt.Invasion.Shell;
 
 public sealed class ShellViewModel : Bindable<ShellView>
 {
@@ -15,6 +17,8 @@ public sealed class ShellViewModel : Bindable<ShellView>
     private readonly InvasionModel invasionModel;
     private readonly GameOptions gameOptions;
 
+    private readonly SolidColorBrush[] playerBrushes;  
+
     public ShellViewModel(
         LocalizerModel localizer, InvasionModel invasionModel,
         IDialogService dialogService, IToaster toaster, IMessenger messenger, IProfiler profiler)
@@ -29,6 +33,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.gameOptions = new GameOptions
         {
             MapSize = MapSize.Huge,
+            Difficulty = GameDifficulty.Fair,
             Players =
             [
                  new PlayerInfo { Name = "Laurent", IsHuman =true, Color = "Red"},
@@ -37,6 +42,8 @@ public sealed class ShellViewModel : Bindable<ShellView>
                  new PlayerInfo { Name = "Irina", Color = "Magenta"},
             ],
         };
+
+        this.playerBrushes = new SolidColorBrush[8];
     }
 
     protected override void OnViewLoaded()
@@ -82,6 +89,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
     private void UpdateUi()
     {
+        this.GeneratePlayerBrushes();
         this.GenerateMapImage();
         this.GeneratePaths();
         this.GenerateCenters();
@@ -145,9 +153,33 @@ public sealed class ShellViewModel : Bindable<ShellView>
         int count = 0;
         var canvas = this.View.Canvas;
         var map = game.Map;
-        var strokeBrush = new SolidColorBrush(Color.FromRgb(red, blu, gre));
+        var unclaimedStrokeBrush = new SolidColorBrush(Color.FromRgb(red, blu, gre));
         foreach (var region in map.Regions)
         {
+            SolidColorBrush strokeBrush;
+            int zindex;
+            if ( !region.CanBeOwned)
+            {
+                // No borders for regions that cannot be conquered
+                // Use the ecosystem color to avoid pixel debris
+                var color = ShellViewModel.EcosystemToColor(region.Ecosystem);
+                strokeBrush = new SolidColorBrush ( color );
+                zindex = 0;
+            }
+            else
+            {
+                if (region.IsOwned)
+                {
+                    strokeBrush = this.playerBrushes[region.Owner!.Index];
+                    zindex = 200;
+                }
+                else
+                {
+                    strokeBrush = unclaimedStrokeBrush;
+                    zindex = 100;
+                }
+            }
+
             foreach (var path in region.SimplifiedPaths)
             {
                 var points = (from v in path select new Point(v.X, v.Y)).ToList();
@@ -159,6 +191,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
                     StrokeThickness = 3.0,
                     StrokeJoin = PenLineJoin.Round,
                     StrokeLineCap = PenLineCap.Round,
+                    ZIndex = zindex,
                 };
 
                 polyline.SetValue(Canvas.TopProperty, 0.0);
@@ -228,10 +261,25 @@ public sealed class ShellViewModel : Bindable<ShellView>
             _ => Colors.LightGray,
         };
 
+    private void GeneratePlayerBrushes ()
+    {
+        var game = this.invasionModel.Game;
+        if (game is null)
+        {
+            return;
+        }
+
+        for ( int i = 0; i < this.gameOptions.Players.Count; i++)
+        {
+            Color playerColor = PlayerToColor ( game.Players[i]);
+            this.playerBrushes[i] = new SolidColorBrush (playerColor);
+        }
+    }
+
     private static Color PlayerToColor(Player player)
     {
         var type = typeof(Colors);
-        var colorProperty = type.GetProperty(player.Color, BindingFlags.Static);
+        var colorProperty = type.GetProperty(player.Color, BindingFlags.Static|BindingFlags.Public);
         if ( colorProperty is not null)
         {
             var getMethod = colorProperty.GetGetMethod();
