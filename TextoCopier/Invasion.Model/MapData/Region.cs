@@ -79,11 +79,7 @@ public sealed class Region
         }
 
         this.PreviousOwner = this.Owner;
-        if (this.PreviousOwner is not null)
-        {
-            this.PreviousOwner.Territory.Remove(this);
-        }
-
+        this.PreviousOwner?.Territory.Remove(this);
         this.Owner = player;
         player.Territory.Add(this);
     }
@@ -101,7 +97,11 @@ public sealed class Region
             Debug.WriteLine("List: " + borderCoordinates.Count);
             Debug.WriteLine("Hash: " + hash.Count);
             borderCoordinates.Clear();
+#pragma warning disable IDE0305 
+            // Simplify collection initialization
+            // May change semantics 
             borderCoordinates.AddRange(hash.ToArray());
+#pragma warning restore IDE0305 
         }
     }
 

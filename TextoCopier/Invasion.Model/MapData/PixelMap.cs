@@ -57,10 +57,6 @@ public sealed class PixelMap
     /// <remarks> there are hundred thousands of pixels. It's better to store the Id as short</remarks>
     public short[,] RegionIdsPerPixel { get; private set; }
 
-#pragma warning disable IDE0044 // Add readonly modifier. isTestBorderProblem can be manually set during debugging
-    private bool isTestBorderProblem;
-#pragma warning restore IDE0044
-
     public PixelMap(Game game, Map map, IMessenger messenger, ILogger logger)
     {
         this.game = game;
@@ -84,7 +80,6 @@ public sealed class PixelMap
         this.sizeByRegion = new int[this.RegionCount];
         this.neighboursByRegion = new bool[this.RegionCount, this.RegionCount];
         this.borderCoordinatesByCountry = new List<Coordinate>[this.RegionCount];
-        this.isTestBorderProblem = false;
         this.ClearMap();
 
         this.Logger.Info("Generating Starting Points ");
@@ -232,7 +227,11 @@ public sealed class PixelMap
                 if (foundCoordinates.Count > 0)
                 {
                     isIncomplete = true;
+#pragma warning disable IDE0305 
+                    // Simplify collection initialization
+                    // Could change semantics
                     foundCoordinatesByCountry[regionIndex] = foundCoordinates.ToList();
+#pragma warning restore IDE0305 
                     foundCoordinates.Clear();
                 }
             }

@@ -2,7 +2,11 @@
 
 public abstract class Player
 {
+#pragma warning disable CS8618 
+    // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    // All players have a capital once the game is created, it is set later when building the map 
     protected Player(int index, PlayerInfo playerInfo)
+#pragma warning restore CS8618 
     {
         this.Index = index;
         this.Avatar = playerInfo.Avatar;
