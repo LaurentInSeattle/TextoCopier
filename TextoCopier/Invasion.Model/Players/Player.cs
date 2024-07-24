@@ -2,6 +2,10 @@
 
 public abstract class Player
 {
+    public readonly Dictionary<WealthKind, int> Wealth;
+
+    public readonly Dictionary<ActorKind, int> Population;
+
 #pragma warning disable CS8618 
     // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     // All players have a capital once the game is created, it is set later when building the map 
@@ -14,6 +18,8 @@ public abstract class Player
         this.EmpireName = playerInfo.EmpireName;
         this.Color = playerInfo.Color;
         this.Territory = new List<Region>(128);
+        this.Wealth = this.CreateInitialWealth();
+        this.Population = this.CreateInitialPopulation();
     }
 
     public abstract bool IsHuman { get; }
@@ -36,10 +42,6 @@ public abstract class Player
 
     public Age Age { get; private set; }
 
-    public Dictionary<WealthCriteria, int> Wealth = new(10);
-
-    public Dictionary<Actor, int> Population = new(10);
-
     public void DoCollect() { }
 
     public void DoDeploy() { }
@@ -53,4 +55,17 @@ public abstract class Player
     public void DoColonize() { }
     
     public void DoMove() { }
+
+    private Dictionary<WealthKind, int> CreateInitialWealth()
+    {
+        Dictionary<WealthKind, int> wealth = new();
+        return wealth;
+
+    }
+
+    private Dictionary<ActorKind, int> CreateInitialPopulation()
+    {
+        Dictionary<ActorKind, int> population = new();
+        return population;
+    }
 }

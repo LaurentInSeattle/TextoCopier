@@ -1,6 +1,6 @@
 ﻿namespace Lyt.Invasion.Model.Players;
 
-public enum WealthCriteria
+public enum WealthKind
 {
     Food,
     Wood,
@@ -8,7 +8,8 @@ public enum WealthCriteria
     Gold,
     Knowledge,
     Energy,
-    Image,
-    Pollution, 
+    Aura,
+
     Health,
+    Pollution,
 }

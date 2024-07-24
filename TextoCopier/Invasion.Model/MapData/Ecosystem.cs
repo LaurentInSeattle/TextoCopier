@@ -4,14 +4,20 @@ public enum Ecosystem
 {
     Unknown,
 
-    Forest,
-    Grassland,
-    Desert,
+    Forest,     // Farms    Game,     Fruit,  Timber High ,
 
-    Mountain, 
-    Hills,
+    Grassland,  // Farms    Game,     Fruit Low   Wind High , Sun Low 
 
-    Ocean,
-    Wetland,
-    Coast,
+    Desert,     // Oil High  Lithium  Sun High
+
+    Mountain,   // ---
+
+    Hills,      // Timber Low , Stone , Metal , Fruit Low , Sun 
+
+    Ocean,      // ---
+                
+    Wetland,    // Fish , Game , Oil Low  , Wind Low , Sun Low 
+
+    Coast,      // Fish  , Timber low , Wind , Sun 
 }
+

@@ -1,6 +1,6 @@
 ﻿namespace Lyt.Invasion.Model.Units;
 
-public enum Actor
+public enum ActorKind
 {
     Hunter, 
     Farmer,

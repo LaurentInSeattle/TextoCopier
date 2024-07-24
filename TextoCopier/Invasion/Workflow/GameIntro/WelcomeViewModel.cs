@@ -1,5 +1,7 @@
 ﻿namespace Lyt.Invasion.Workflow.GameIntro;
 
+using static ViewActivationMessage; 
+
 public sealed class WelcomeViewModel : Bindable<WelcomeView>
 {
     private readonly IDialogService dialogService;
@@ -19,6 +21,9 @@ public sealed class WelcomeViewModel : Bindable<WelcomeView>
         this.toaster = toaster;
         this.messenger = messenger;
         this.profiler = profiler;
+
+        this.PlayCommand = new Command(this.OnPlay);
+        this.ExitCommand = new Command(this.OnExit);
     }
 
     private void OnModelUpdated(ModelUpdateMessage message)
@@ -27,4 +32,12 @@ public sealed class WelcomeViewModel : Bindable<WelcomeView>
         string msgMethod = string.IsNullOrWhiteSpace(message.MethodName) ? "<unknown>" : message.MethodName;
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
     }
+
+    private void OnExit(object? _) { }
+
+    private void OnPlay(object? _)  => this.messenger.Publish(ActivatedView.Setup);
+
+    public ICommand PlayCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+
+    public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 }
