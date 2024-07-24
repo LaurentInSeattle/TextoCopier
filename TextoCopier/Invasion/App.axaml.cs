@@ -23,6 +23,10 @@ public partial class App : ApplicationBase
         [
            // Singletons
            typeof(ShellViewModel),
+           typeof(WelcomeViewModel),
+           typeof(GameOverViewModel),
+           typeof(GameViewModel),
+           typeof(SetupViewModel),
         ],
         [
             // Services 

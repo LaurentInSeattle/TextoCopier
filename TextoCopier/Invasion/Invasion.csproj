@@ -4,10 +4,18 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <RootNamespace>Lyt.Invasion</RootNamespace>
   </PropertyGroup>
   
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <AvaloniaXaml Remove="Assets\Languages\Lang_en-US.axaml" />
+    <AvaloniaXaml Remove="Assets\Languages\Lang_fr-FR.axaml" />
+    <AvaloniaXaml Remove="Assets\Languages\Lang_it-IT.axaml" />
+    <AvaloniaXaml Remove="Assets\Palette\DeepBluePalette.axaml" />
   </ItemGroup>
 
   <ItemGroup>

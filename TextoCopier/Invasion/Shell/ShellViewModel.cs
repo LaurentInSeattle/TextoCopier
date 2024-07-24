@@ -67,8 +67,9 @@ public sealed class ShellViewModel : Bindable<ShellView>
         canvas.Height = this.gameOptions.PixelHeight;
         canvas.InvalidateVisual();
 
-        Schedule.OnUiThread(500, this.SetupWorkflow, DispatcherPriority.Background);
+        ShellViewModel.SetupWorkflow();
 
+        Schedule.OnUiThread(500, this.UpdateUi, DispatcherPriority.Background);
         this.Logger.Debug("OnViewLoaded complete");
     }
 
@@ -79,14 +80,22 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
     }
 
-    private void SetupWorkflow()
+    private static void SetupWorkflow()
     {
-        this.invasionModel.NewGame(this.gameOptions);
-        Schedule.OnUiThread(500, this.UpdateUi, DispatcherPriority.Background);
+        static void CreateAndBind<TViewModel, TControl>()
+             where TViewModel : Bindable<TControl>
+             where TControl : Control, new()
+            => App.GetRequiredService<TViewModel>().CreateViewAndBind();
+
+        CreateAndBind<WelcomeViewModel, WelcomeView>();
+        CreateAndBind<SetupViewModel, SetupView>();
+        CreateAndBind<GameViewModel, GameView>();
+        CreateAndBind<GameOverViewModel, GameOverView>();
     }
 
     private void UpdateUi()
     {
+        this.invasionModel.NewGame(this.gameOptions);
         this.GeneratePlayerBrushes();
         this.GenerateMapImage();
         this.GeneratePaths();
@@ -94,14 +103,6 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         this.Logger.Info("Ui generated");
         this.profiler.MemorySnapshot("Ui generated");
-
-        //static void CreateAndBind<TViewModel, TControl>()
-        //     where TViewModel : Bindable<TControl>
-        //     where TControl : Control, new()
-        // {
-        //     var vm = App.GetRequiredService<TViewModel>();
-        //     vm.CreateViewAndBind();
-        // }
     }
 
     private void GenerateCenters()
