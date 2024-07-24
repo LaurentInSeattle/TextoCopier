@@ -40,7 +40,7 @@ public static class PathUtilities
         return sortedList.ToList();
     }
 
-    private static void SquaredPolar(Vector2 point, Vector2 center, out float angle, out float squaredRadius)
+    public static void SquaredPolar(Vector2 point, Vector2 center, out float angle, out float squaredRadius)
     {
         float dx = point.X - center.X;
         float dy = point.Y - center.Y;

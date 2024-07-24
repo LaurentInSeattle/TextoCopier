@@ -6,7 +6,7 @@ public sealed class Game
 
     public readonly List<Player> Players;
 
-    // Random number generator used during creation of PixelMap
+    // Random number generator used during creation of PixelMap and during the game 
     public readonly Random Random;
 
     public Game(GameOptions gameOptions, IMessenger messenger, ILogger logger)
@@ -114,6 +114,7 @@ public sealed class Game
 
     private List<Player> CreatePlayers()
     {
+        this.GameOptions.Players.Shuffle<PlayerInfo>(this.Random);
         var list = new List<Player>();
         int index = 0;
         // TODO: Randomize the list 
