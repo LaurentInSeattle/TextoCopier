@@ -7,28 +7,38 @@
     xmlns:vm="clr-namespace:Lyt.Invasion.Workflow.GameIntro"
     x:DataType="vm:WelcomeViewModel" 
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	Background="Transparent"
 	>
 	<Grid
 		Background="Transparent"
 		>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*"/>
-			<RowDefinition Height="80"/>
+			<RowDefinition Height="100"/>
 		</Grid.RowDefinitions>
 		<TextBlock
-			
+			Text="I n v a s i o n"
+			VerticalAlignment="Center" HorizontalAlignment="Center"
+			Margin="0 -80 0 0"
+			FontSize="200"
+			FontWeight="UltraLight"
+			Foreground="#FFfac8b2"
 			/>
 		<Button
+			Classes="Outline"
 			Grid.Row="1"
-			Width="120" Height="60" Margin="8"
+			Width="160" Height="60" Margin="32"
 			VerticalAlignment="Center" HorizontalAlignment="Left"
+			FontSize="28"
 			Content="Exit"
 			Command ="{Binding ExitCommand}"
 			/>
 		<Button
+			Classes="Outline"
 			Grid.Row="1"
-			Width="120" Height="60" Margin="8"
+			Width="160" Height="60" Margin="32"
 			VerticalAlignment="Center" HorizontalAlignment="Right"
+			FontSize="28"
 			Content="Play"
 			Command ="{Binding PlayCommand}"
 			/>

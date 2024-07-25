@@ -51,7 +51,7 @@
 			Text="{DynamicResource Shell.AppName}" 
 			HorizontalAlignment="Left" VerticalAlignment="Center"
 			Margin="8 0 0 0"
-			FontSize="24" 
+			FontSize="28" 
 			FontStyle="Italic"
 			Foreground="{StaticResource PastelOrchid_0_080}"
 			TextWrapping="Wrap"

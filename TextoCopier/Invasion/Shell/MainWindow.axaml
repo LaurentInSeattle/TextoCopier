@@ -7,8 +7,8 @@
     mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="800"
     Icon="/Assets/Images/invasion.ico"
     Title="Invasion"
-	Width="1024" Height="720"
-	MinWidth="512" MinHeight="360"
+	Width="1200" Height="840"
+	MinWidth="600" MinHeight="420"
 	SizeToContent="Manual"
 	>
 </Window>

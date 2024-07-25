@@ -25,6 +25,11 @@
 			<RowDefinition Height="*" />
 			<RowDefinition Height="2" MaxHeight="2" />
 		</Grid.RowDefinitions>
+		<Image
+            Stretch="UniformToFill"
+            Source="\Assets\Images\dark.jpg"
+            Grid.ColumnSpan="999" Grid.RowSpan="999"
+            />
 		<!-- Do not add rows and/or columns to the toaster host-->
 		<Grid
 			x:Name="ToasterHost"
