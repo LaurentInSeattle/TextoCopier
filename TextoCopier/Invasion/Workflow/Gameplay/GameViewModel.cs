@@ -14,21 +14,17 @@ public sealed class GameViewModel : Bindable<GameView>
 
     private readonly IDialogService dialogService;
     private readonly IToaster toaster;
-    private readonly IMessenger messenger;
-    private readonly IProfiler profiler;
     private readonly LocalizerModel localizer;
     private readonly InvasionModel invasionModel;
 
     public GameViewModel(
         LocalizerModel localizer, InvasionModel invasionModel,
-        IDialogService dialogService, IToaster toaster, IMessenger messenger, IProfiler profiler)
+        IDialogService dialogService, IToaster toaster)
     {
         this.localizer = localizer;
         this.invasionModel = invasionModel;
         this.dialogService = dialogService;
         this.toaster = toaster;
-        this.messenger = messenger;
-        this.profiler = profiler;
 
         this.ExitCommand = new Command(this.OnExit);
     }
@@ -58,20 +54,22 @@ public sealed class GameViewModel : Bindable<GameView>
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
     }
 
-    private void OnExit(object? _) => this.messenger.Publish(ActivatedView.Exit);
+    private void OnExit(object? _) => this.Messenger.Publish(ActivatedView.Exit);
 
     public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     private void UpdateUi()
     {
+        // TODO: Create the game model in a background thread 
         this.invasionModel.NewGame(this.gameOptions);
+
         this.GeneratePlayerBrushes();
         this.GenerateMapImage();
         this.GeneratePaths();
         this.GenerateCenters();
 
         this.Logger.Info("Ui generated");
-        this.profiler.MemorySnapshot("Ui generated");
+        this.Profiler.MemorySnapshot("Ui generated");
     }
 
     private void GenerateCenters()

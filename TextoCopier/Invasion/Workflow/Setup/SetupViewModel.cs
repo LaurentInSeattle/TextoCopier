@@ -6,8 +6,6 @@ public sealed class SetupViewModel : Bindable<SetupView>
 {
     private readonly IDialogService dialogService;
     private readonly IToaster toaster;
-    private readonly IMessenger messenger;
-    private readonly IProfiler profiler;
     private readonly LocalizerModel localizer;
     private readonly InvasionModel invasionModel;
 
@@ -15,21 +13,19 @@ public sealed class SetupViewModel : Bindable<SetupView>
 
     public SetupViewModel(
         LocalizerModel localizer, InvasionModel invasionModel,
-        IDialogService dialogService, IToaster toaster, IMessenger messenger, IProfiler profiler)
+        IDialogService dialogService, IToaster toaster)
     {
         this.localizer = localizer;
         this.invasionModel = invasionModel;
         this.dialogService = dialogService;
         this.toaster = toaster;
-        this.messenger = messenger;
-        this.profiler = profiler;
 
         this.PlayCommand = new Command(this.OnPlay);
         this.ExitCommand = new Command(this.OnExit);
 
         this.gameOptions = new GameOptions
         {
-            MapSize = MapSize.Medium,
+            MapSize = MapSize.Large,
             Difficulty = GameDifficulty.Fair,
             Players =
             [
@@ -48,9 +44,9 @@ public sealed class SetupViewModel : Bindable<SetupView>
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
     }
 
-    private void OnExit(object? _) => this.messenger.Publish(ActivatedView.Exit);
+    private void OnExit(object? _) => this.Messenger.Publish(ActivatedView.Exit);
 
-    private void OnPlay(object? _) => this.messenger.Publish(ActivatedView.Game, this.gameOptions);
+    private void OnPlay(object? _) => this.Messenger.Publish(ActivatedView.Game, this.gameOptions);
 
     public ICommand PlayCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 

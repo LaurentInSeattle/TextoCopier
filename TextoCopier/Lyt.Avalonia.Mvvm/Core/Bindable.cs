@@ -9,14 +9,26 @@ public class Bindable : NotifyPropertyChanged
 {
     public Bindable()
     {
-        this.Messenger = ApplicationBase.GetRequiredService<IMessenger>();
-        this.Logger = ApplicationBase.GetRequiredService<ILogger>();
+        try
+        {
+            this.Messenger = ApplicationBase.GetRequiredService<IMessenger>();
+            this.Logger = ApplicationBase.GetRequiredService<ILogger>();
+            this.Profiler = ApplicationBase.GetRequiredService<IProfiler>();
+        }
+        catch (Exception ex) 
+        {
+            Debug.WriteLine("Missing essential services \n" + ex.ToString()); 
+            throw;
+        }
+
         this.properties = [];
     }
 
     public ILogger Logger { get; private set; }
 
     public IMessenger Messenger { get; private set; }
+
+    public IProfiler Profiler { get; private set; }
 
     /// <summary> The bounds properties.</summary>
     protected readonly Dictionary<string, object?> properties;

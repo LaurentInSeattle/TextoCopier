@@ -2,7 +2,7 @@
 
 public sealed class HumanPlayer : Player
 {
-    public HumanPlayer(int index, PlayerInfo playerInfo) : base(index, playerInfo)
+    public HumanPlayer(int index, PlayerInfo playerInfo, Game game) : base(index, playerInfo, game)
     {
     }
 

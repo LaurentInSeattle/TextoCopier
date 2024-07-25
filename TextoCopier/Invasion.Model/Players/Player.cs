@@ -2,23 +2,27 @@
 
 public abstract class Player
 {
-    public readonly Dictionary<WealthKind, int> Wealth;
+    public readonly Game Game; 
+
+    public readonly Wealth Wealth;
 
     public readonly Dictionary<ActorKind, int> Population;
 
 #pragma warning disable CS8618 
     // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     // All players have a capital once the game is created, it is set later when building the map 
-    protected Player(int index, PlayerInfo playerInfo)
+    protected Player(int index, PlayerInfo playerInfo, Game game)
 #pragma warning restore CS8618 
     {
         this.Index = index;
+        this.Game = game;   
         this.Avatar = playerInfo.Avatar;
         this.Name = playerInfo.Name;
         this.EmpireName = playerInfo.EmpireName;
         this.Color = playerInfo.Color;
-        this.Territory = new List<Region>(128);
-        this.Wealth = this.CreateInitialWealth();
+        this.Territory = new List<Region>(this.Game.GameOptions.RegionCount);
+        this.Wealth = new Wealth(); 
+        this.Wealth.AllocateInitialWealth(this);
         this.Population = this.CreateInitialPopulation();
     }
 

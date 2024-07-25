@@ -2,7 +2,7 @@
 
 public sealed class AiPlayer : Player
 {
-    public AiPlayer(int index, PlayerInfo playerInfo) : base(index, playerInfo)
+    public AiPlayer(int index, PlayerInfo playerInfo, Game game) : base(index, playerInfo, game)
     {
     }
 

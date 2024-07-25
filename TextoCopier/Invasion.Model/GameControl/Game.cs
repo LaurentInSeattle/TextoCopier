@@ -2,6 +2,9 @@
 
 public sealed class Game
 {
+    public const int MinPlayerCount = 2;
+    public const int MaxPlayerCount = 4;
+
     public readonly GameOptions GameOptions;
 
     public readonly List<Player> Players;
@@ -15,9 +18,9 @@ public sealed class Game
         this.Logger = logger;
         this.GameOptions = gameOptions;
         int playerCount = gameOptions.Players.Count;
-        if ((playerCount < 2) || (playerCount > 4))
+        if ((playerCount < MinPlayerCount) || (playerCount > MaxPlayerCount))
         {
-            throw new ArgumentException("Invalid player count.");
+            throw new ArgumentException("Invalid player count: " + playerCount);
         }
 
         // this.Random = new Random(666);
@@ -114,13 +117,16 @@ public sealed class Game
 
     private List<Player> CreatePlayers()
     {
+        // Randomize the list of player info
         this.GameOptions.Players.Shuffle<PlayerInfo>(this.Random);
         var list = new List<Player>();
         int index = 0;
-        // TODO: Randomize the list 
         foreach (var playerInfo in this.GameOptions.Players)
         {
-            list.Add(playerInfo.IsHuman ? new HumanPlayer(index, playerInfo) : new AiPlayer(index, playerInfo));
+            list.Add(
+                playerInfo.IsHuman ?
+                    new HumanPlayer(index, playerInfo, this) :
+                    new AiPlayer(index, playerInfo, this));
             ++index;
         }
 
@@ -129,10 +135,11 @@ public sealed class Game
 
     private void AllocateInitialRegions()
     {
+        int addedTerritories = Game.MaxPlayerCount - this.Players.Count;
         List<Coordinate> initialPositions = this.GenerateInitialPositions(this.Players.Count);
         foreach (Player player in this.Players)
         {
-            if ( player.Color == "Red")
+            if (player.Color == "Red")
             {
                 // if ( Debugger.IsAttached ) {  Debugger.Break(); }   
             }
@@ -151,7 +158,7 @@ public sealed class Game
             region.IsCapital = true;
 
             // Build territory around initial region, up to capture provided count 
-            int requiredCount = this.GameOptions.InitialTerritory - 1;
+            int requiredCount = this.GameOptions.InitialTerritory + addedTerritories - 1;
             int captured = 0;
             int maxLoops = 0;
             Region? lastNeighbour = null;
@@ -174,7 +181,7 @@ public sealed class Game
                         break;
                     }
                 }
-                
+
                 if (captured < requiredCount)
                 {
                     if (lastNeighbour is not null)

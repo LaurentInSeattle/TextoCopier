@@ -6,10 +6,10 @@ public enum WealthKind
     Wood,
     Stone,
     Gold,
-    Knowledge,
     Energy,
-    Aura,
 
+    Knowledge,
+    Aura,
     Health,
     Pollution,
 }
