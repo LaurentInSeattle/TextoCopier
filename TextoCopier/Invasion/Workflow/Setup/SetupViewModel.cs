@@ -1,4 +1,6 @@
-﻿namespace Lyt.Invasion.Workflow.Setup; 
+﻿namespace Lyt.Invasion.Workflow.Setup;
+
+using static ViewActivationMessage;
 
 public sealed class SetupViewModel : Bindable<SetupView>
 {
@@ -8,6 +10,8 @@ public sealed class SetupViewModel : Bindable<SetupView>
     private readonly IProfiler profiler;
     private readonly LocalizerModel localizer;
     private readonly InvasionModel invasionModel;
+
+    private GameOptions gameOptions;
 
     public SetupViewModel(
         LocalizerModel localizer, InvasionModel invasionModel,
@@ -19,6 +23,22 @@ public sealed class SetupViewModel : Bindable<SetupView>
         this.toaster = toaster;
         this.messenger = messenger;
         this.profiler = profiler;
+
+        this.PlayCommand = new Command(this.OnPlay);
+        this.ExitCommand = new Command(this.OnExit);
+
+        this.gameOptions = new GameOptions
+        {
+            MapSize = MapSize.Medium,
+            Difficulty = GameDifficulty.Fair,
+            Players =
+            [
+                 new PlayerInfo { Name = "Laurent", IsHuman =true, Color = "Red"},
+                 new PlayerInfo { Name = "Annalisa", IsHuman =true, Color = "Blue"},
+                 // new PlayerInfo { Name = "Oksana", Color = "Yellow"},
+                 // new PlayerInfo { Name = "Irina", Color = "Magenta"},
+            ],
+        };
     }
 
     private void OnModelUpdated(ModelUpdateMessage message)
@@ -28,5 +48,12 @@ public sealed class SetupViewModel : Bindable<SetupView>
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
     }
 
+    private void OnExit(object? _) => this.messenger.Publish(ActivatedView.Exit);
+
+    private void OnPlay(object? _) => this.messenger.Publish(ActivatedView.Game, this.gameOptions);
+
+    public ICommand PlayCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+
+    public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 }
 

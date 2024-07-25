@@ -10,6 +10,7 @@ public sealed class ViewActivationMessage(ViewActivationMessage.ActivatedView vi
         GameOver,
 
         GoBack,
+        Exit,
     }
 
     public ActivatedView View { get; private set; } = view;

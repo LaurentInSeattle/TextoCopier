@@ -23,8 +23,10 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
 
     public bool IsEditing => this.EditedTemplate != null;
 
-    public override void Activate(object? activationParameter)
+    public override void Activate(object? activationParameters)
     {
+        base.Activate(activationParameters);
+
         if (this.templatesModel.SelectedGroup is null)
         {
             string message = TemplatesModel.NoSuchGroup;
@@ -37,7 +39,7 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
         }
 
         string groupName = this.SelectedGroup.Name;
-        if (activationParameter is Template template)
+        if (activationParameters is Template template)
         {
             this.EditedTemplate = template;
             this.Name = template.Name;
@@ -63,7 +65,11 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
         this.OnEditing();
     }
 
-    public override void Deactivate() => this.EditedTemplate = null;
+    public override void Deactivate()
+    {
+        base.Deactivate();
+        this.EditedTemplate = null;
+    }
 
     private void OnSave(object? _)
     {

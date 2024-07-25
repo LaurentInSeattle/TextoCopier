@@ -5,5 +5,39 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+    xmlns:vm="clr-namespace:Lyt.Invasion.Workflow.GameOver"
+    x:DataType="vm:GameOverViewModel" 
 	>
+	<Grid
+		Background="Transparent"
+		>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="100"/>
+		</Grid.RowDefinitions>
+		<TextBlock
+			Text="Game Over"
+			VerticalAlignment="Center" HorizontalAlignment="Center"
+			Margin="0 -80 0 0"
+			FontSize="120"
+			FontWeight="UltraLight"
+			Foreground="#FFfac8b2"
+			/>
+		<Button
+			Grid.Row="1"
+			Width="160" Height="60" Margin="32"
+			VerticalAlignment="Center" HorizontalAlignment="Left"
+			FontSize="28"
+			Content="Exit"
+			Command ="{Binding ExitCommand}"
+			/>
+		<Button
+			Grid.Row="1"
+			Width="160" Height="60" Margin="32"
+			VerticalAlignment="Center" HorizontalAlignment="Right"
+			FontSize="28"
+			Content="Play Again"
+			Command ="{Binding PlayCommand}"
+			/>
+	</Grid>
 </UserControl>

@@ -24,8 +24,6 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         this.invasionModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
         this.messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
-
-
     }
 
     protected override void OnViewLoaded()
@@ -63,6 +61,28 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
     }
 
+    private async void OnExit()
+    {
+        void Deactivate(Type type)
+        {
+            object? vm = App.GetRequiredService(type);
+            if (vm is Bindable bindable)
+            {
+                bindable.Deactivate();
+            }
+        }
+
+        Type[] types = [typeof(WelcomeViewModel), typeof(SetupViewModel), typeof(GameViewModel), typeof(GameOverViewModel)];
+
+        foreach (var type in types)
+        {
+            Deactivate(type);
+        }
+
+        var application = App.GetRequiredService<IApplicationBase>();
+        await application.Shutdown();
+    }
+
     private static void SetupWorkflow()
     {
         static void CreateAndBind<TViewModel, TControl>()
@@ -81,28 +101,35 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
     private void OnViewActivation(ActivatedView activatedView, object? parameter = null, bool isFirstActivation = false)
     {
+        if (activatedView == ActivatedView.Exit)
+        {
+            this.OnExit();
+            return;
+        }
+
         if (activatedView == ActivatedView.GoBack)
         {
             // Nothing for now
+            return;
         }
 
         switch (activatedView)
         {
             default:
             case ActivatedView.Welcome:
-                this.Activate<WelcomeViewModel, WelcomeView>(isFirstActivation, null);
+                this.Activate<WelcomeViewModel, WelcomeView>(isFirstActivation, parameter);
                 break;
 
             case ActivatedView.Setup:
-                this.Activate<SetupViewModel, SetupView>(isFirstActivation, null);
+                this.Activate<SetupViewModel, SetupView>(isFirstActivation, parameter);
                 break;
 
             case ActivatedView.Game:
-                this.Activate<GameViewModel, GameView>(isFirstActivation, null);
+                this.Activate<GameViewModel, GameView>(isFirstActivation, parameter);
                 break;
 
             case ActivatedView.GameOver:
-                this.Activate<GameOverViewModel, GameOverView>(isFirstActivation, null);
+                this.Activate<GameOverViewModel, GameOverView>(isFirstActivation, parameter);
                 break;
         }
     }
@@ -119,7 +146,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         if (this.dialogService.IsModal)
         {
             this.dialogService.Dismiss();
-        } 
+        }
 
         object? currentView = this.View.ShellViewContent.Content;
         if (currentView is Control control && control.DataContext is Bindable currentViewModel)
@@ -131,7 +158,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         newViewModel.Activate(activationParameters);
         this.View.ShellViewContent.Content = newViewModel.View;
 
-        if( ! isFirstActivation)
+        if (!isFirstActivation)
         {
             this.profiler.MemorySnapshot(newViewModel.View.GetType().Name + ":  Activated");
         }

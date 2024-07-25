@@ -1,5 +1,7 @@
 ﻿namespace Lyt.Invasion.Workflow.Gameplay;
 
+using static ViewActivationMessage;
+
 public sealed class GameViewModel : Bindable<GameView>
 {
     // Border paths color components
@@ -27,28 +29,26 @@ public sealed class GameViewModel : Bindable<GameView>
         this.toaster = toaster;
         this.messenger = messenger;
         this.profiler = profiler;
+
+        this.ExitCommand = new Command(this.OnExit);
     }
 
     public override void Activate(object? activationParameters)
     {
-        this.gameOptions = new GameOptions
+        base.Activate(activationParameters);
+        if (activationParameters is not GameOptions gameOptions)
         {
-            MapSize = MapSize.Medium,
-            Difficulty = GameDifficulty.Fair,
-            Players =
-            [
-                 new PlayerInfo { Name = "Laurent", IsHuman =true, Color = "Red"},
-                 new PlayerInfo { Name = "Annalisa", IsHuman =true, Color = "Blue"},
-                 new PlayerInfo { Name = "Oksana", Color = "Yellow"},
-                 new PlayerInfo { Name = "Irina", Color = "Magenta"},
-            ],
-        };
+            throw new ArgumentNullException(nameof(activationParameters));
+        }
 
+        this.gameOptions = gameOptions;
         this.playerBrushes = new SolidColorBrush[8];
         var canvas = this.View.Canvas;
         canvas.Width = this.gameOptions.PixelWidth;
         canvas.Height = this.gameOptions.PixelHeight;
         canvas.InvalidateVisual();
+
+        Dispatch.OnUiThread( () => { this.UpdateUi(); });
     }
 
     private void OnModelUpdated(ModelUpdateMessage message)
@@ -57,6 +57,10 @@ public sealed class GameViewModel : Bindable<GameView>
         string msgMethod = string.IsNullOrWhiteSpace(message.MethodName) ? "<unknown>" : message.MethodName;
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
     }
+
+    private void OnExit(object? _) => this.messenger.Publish(ActivatedView.Exit);
+
+    public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     private void UpdateUi()
     {

@@ -33,7 +33,7 @@ public sealed class WelcomeViewModel : Bindable<WelcomeView>
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
     }
 
-    private void OnExit(object? _) { }
+    private void OnExit(object? _) => this.messenger.Publish(ActivatedView.Exit);
 
     private void OnPlay(object? _)  => this.messenger.Publish(ActivatedView.Setup);
 

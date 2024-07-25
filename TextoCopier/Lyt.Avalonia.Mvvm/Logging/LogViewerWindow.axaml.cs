@@ -42,7 +42,7 @@ public partial class LogViewerWindow : Window, ILogger, INotifyPropertyChanged
     {
         DateTime now = DateTime.Now;
         int deltaMs = (int)(now - last).TotalMilliseconds;
-        string result = string.Format("{0}:{1}::{2} ({3}ms) - ", now.Minute, now.Second, now.Millisecond, deltaMs);
+        string result = string.Format("{0}::{1} ({2}ms) - ", now.Second, now.Millisecond, deltaMs);
         last = now;
         return result;
     }

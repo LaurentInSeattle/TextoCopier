@@ -34,6 +34,7 @@
 						Margin ="4 2 0 2"
 						Foreground="{Binding Brush}"
 						Text="{Binding Message}"
+						FontSize="12"
 						TextWrapping="Wrap"
 						/>
 				</DataTemplate>

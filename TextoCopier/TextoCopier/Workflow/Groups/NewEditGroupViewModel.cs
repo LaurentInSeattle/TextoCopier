@@ -19,9 +19,11 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
 
     public bool IsEditing => this.EditedGroup != null;
 
-    public override void Activate(object? activationParameter)
+    public override void Activate(object? activationParameters)
     {
-        if (activationParameter is Group group)
+        base.Activate(activationParameters);
+
+        if (activationParameters is Group group)
         {
             this.EditedGroup = group;
             this.Name = group.Name;
@@ -43,7 +45,11 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
         this.OnEditing();
     }
 
-    public override void Deactivate() => this.EditedGroup = null;
+    public override void Deactivate()
+    {
+        base.Deactivate();
+        this.EditedGroup = null;
+    } 
 
     private void OnSave(object? _)
     {

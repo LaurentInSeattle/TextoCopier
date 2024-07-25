@@ -17,7 +17,7 @@
 			<RowDefinition Height="100"/>
 		</Grid.RowDefinitions>
 		<TextBlock
-			Text="I n v a s i o n"
+			Text="I&#x2009;n&#x2009;v&#x2009;a&#x2009;s&#x2009;i&#x2009;o&#x2009;n"
 			VerticalAlignment="Center" HorizontalAlignment="Center"
 			Margin="0 -80 0 0"
 			FontSize="200"
@@ -25,7 +25,6 @@
 			Foreground="#FFfac8b2"
 			/>
 		<Button
-			Classes="Outline"
 			Grid.Row="1"
 			Width="160" Height="60" Margin="32"
 			VerticalAlignment="Center" HorizontalAlignment="Left"
@@ -34,7 +33,6 @@
 			Command ="{Binding ExitCommand}"
 			/>
 		<Button
-			Classes="Outline"
 			Grid.Row="1"
 			Width="160" Height="60" Margin="32"
 			VerticalAlignment="Center" HorizontalAlignment="Right"

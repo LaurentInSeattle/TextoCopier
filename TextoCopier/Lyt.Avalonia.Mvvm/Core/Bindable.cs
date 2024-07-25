@@ -86,11 +86,11 @@ public class Bindable : NotifyPropertyChanged
     protected virtual void OnViewLoaded() { }
 
     /// <summary> Usually invoked when this bindable is about to be shown, but could be used for other purposes. </summary>
-    public virtual void Activate (object? activationParameters) { }
+    public virtual void Activate (object? activationParameters) => this.LogActivation(activationParameters);
 
     /// <summary> Usually invoked when this bindable is about to be hidden, and same as above. </summary>
-    public virtual void Deactivate () { }
-
+    public virtual void Deactivate ()  => this.LogDeactivation();
+    
     /// <summary> Gets the value of a property </summary>
     protected T? Get<T>([CallerMemberName] string? name = null)
     {
@@ -141,8 +141,58 @@ public class Bindable : NotifyPropertyChanged
 
         this.properties.Clear();
     }
-    
+
     #region Debug Utilities 
+
+    /// <summary> Logs that a bindable is being activated. </summary>
+    [Conditional("DEBUG")]
+    private void LogDeactivation()
+    {
+        int frameIndex = 1;
+        string typeName;
+        do
+        {
+            ++frameIndex;
+            var frame = new StackFrame(frameIndex);
+            var frameMethod = frame.GetMethod();
+            if (frameMethod == null)
+            {
+                return;
+            }
+
+            typeName = frameMethod.DeclaringType!.Name;
+        }
+        while (typeName.StartsWith("Bindable"));
+
+        string message = string.Format("Deactivating {0}", typeName);
+        this.Logger.Info(message);
+    }
+
+    /// <summary> Logs that a bindable is being activated. </summary>
+    [Conditional("DEBUG")]
+    private void LogActivation(object? parameter)
+    {
+        string parameterString = 
+            parameter is null ? "<null>" : parameter.GetType().Name + " - " + parameter.ToString();
+        int frameIndex = 1;
+        string typeName;
+        do
+        {
+            ++frameIndex;
+            var frame = new StackFrame(frameIndex);
+            var frameMethod = frame.GetMethod();
+            if (frameMethod == null)
+            {
+                return;
+            }
+
+            typeName = frameMethod.DeclaringType!.Name;
+        }
+        while (typeName.StartsWith("Bindable"));
+
+        string message = string.Format("Activating {0} with {1}", typeName, parameterString);
+        this.Logger.Info(message);
+    }
 
     /// <summary> Logs that a property is changing. </summary>
     [Conditional("DEBUG")]    

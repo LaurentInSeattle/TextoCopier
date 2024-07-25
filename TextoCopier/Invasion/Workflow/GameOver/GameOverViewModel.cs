@@ -1,5 +1,7 @@
 ﻿namespace Lyt.Invasion.Workflow.GameOver;
 
+using static ViewActivationMessage;
+
 public sealed class GameOverViewModel : Bindable<GameOverView>
 {
     private readonly IDialogService dialogService;
@@ -19,6 +21,9 @@ public sealed class GameOverViewModel : Bindable<GameOverView>
         this.toaster = toaster;
         this.messenger = messenger;
         this.profiler = profiler;
+
+        this.PlayCommand = new Command(this.OnPlay);
+        this.ExitCommand = new Command(this.OnExit);
     }
 
     private void OnModelUpdated(ModelUpdateMessage message)
@@ -28,4 +33,11 @@ public sealed class GameOverViewModel : Bindable<GameOverView>
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
     }
 
+    private void OnExit(object? _) => this.messenger.Publish(ActivatedView.Exit);
+
+    private void OnPlay(object? _) => this.messenger.Publish(ActivatedView.Setup);
+
+    public ICommand PlayCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+
+    public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 }
