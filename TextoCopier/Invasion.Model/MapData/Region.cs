@@ -31,7 +31,10 @@ public sealed class Region
     /// <summary> Simplified border paths. </summary>
     public readonly List<List<Vector2>> SimplifiedPaths;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    // Resources property gets set a bit after construction, on map generation of ecosystems. 
     public Region(
+#pragma warning restore CS8618 
         Game game, short id, Coordinate coordinate, Coordinate center, int size, List<Coordinate> borderCoordinates)
     {
         this.Game = game;
@@ -56,6 +59,7 @@ public sealed class Region
     /// <summary> Resources available in the region. </summary>
     public Resources Resources { get; internal set; }
 
+    /// <summary> Ecosystem of the region. (or region kind)</summary>
     public Ecosystem Ecosystem { get; internal set; }
 
     /// <summary> True if this region is a capital </summary>
