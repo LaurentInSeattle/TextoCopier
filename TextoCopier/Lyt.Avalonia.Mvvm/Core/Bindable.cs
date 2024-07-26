@@ -15,13 +15,14 @@ public class Bindable : NotifyPropertyChanged
             this.Logger = ApplicationBase.GetRequiredService<ILogger>();
             this.Profiler = ApplicationBase.GetRequiredService<IProfiler>();
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
-            Debug.WriteLine("Missing essential services \n" + ex.ToString()); 
+            Debug.WriteLine("Missing essential services \n" + ex.ToString());
             throw;
         }
 
         this.properties = [];
+        this.actions = [];
     }
 
     public ILogger Logger { get; private set; }
@@ -32,6 +33,9 @@ public class Bindable : NotifyPropertyChanged
 
     /// <summary> The bounds properties.</summary>
     protected readonly Dictionary<string, object?> properties;
+
+    /// <summary> Actions to invoke for changing properties.</summary>
+    protected readonly Dictionary<string, MethodInfo> actions;
 
     /// <summary> The control, its Data Context is this instance. </summary>
     /// <remarks> Aka, the "View" </remarks>
@@ -84,7 +88,7 @@ public class Bindable : NotifyPropertyChanged
         {
             if (control.DataContext is Bindable bindable)
             {
-                bindable.Control = null; 
+                bindable.Control = null;
                 control.DataContext = null;
                 control.Loaded -= (s, e) => bindable.OnViewLoaded();
             }
@@ -98,18 +102,34 @@ public class Bindable : NotifyPropertyChanged
     protected virtual void OnViewLoaded() { }
 
     /// <summary> Usually invoked when this bindable is about to be shown, but could be used for other purposes. </summary>
-    public virtual void Activate (object? activationParameters) => this.LogActivation(activationParameters);
+    public virtual void Activate(object? activationParameters) => this.LogActivation(activationParameters);
 
     /// <summary> Usually invoked when this bindable is about to be hidden, and same as above. </summary>
-    public virtual void Deactivate ()  => this.LogDeactivation();
-    
+    public virtual void Deactivate() => this.LogDeactivation();
+
+    public void NotifyPropertyChanged(string propertyName)
+    {
+        string methodName = string.Format("On{0}Changed", propertyName);
+        var methodInfo =
+            this.GetType().GetMethod(
+                methodName,
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.InvokeMethod);
+        if (methodInfo is null)
+        {
+            this.Logger.Warning("Missing property changed handler: " + methodName);
+            return;
+        }
+
+        this.actions.Add(propertyName, methodInfo);
+    }
+
     /// <summary> Gets the value of a property </summary>
     protected T? Get<T>([CallerMemberName] string? name = null)
     {
         if (name is null)
         {
             // Bindable.Logger?.Fatal("Get property: no name");
-            throw new Exception("Get property: no name"); 
+            throw new Exception("Get property: no name");
         }
 
         return this.properties.TryGetValue(name, out object? value) ? value == null ? default : (T)value : default;
@@ -125,16 +145,22 @@ public class Bindable : NotifyPropertyChanged
             throw new Exception("Set property: no name");
         }
 
-        if (Equals(value, this.Get<T>(name)))
+        T? current = this.Get<T>(name);
+        if (Equals(value, current))
         {
             return false;
         }
 
         this.properties[name] = value;
         this.OnPropertyChanged(name);
-        if ( ! this.DisablePropertyChangedLogging)
+        if (!this.DisablePropertyChangedLogging)
         {
             this.LogPropertyChanged(name, value);
+        }
+
+        if (this.actions.TryGetValue(name, out MethodInfo? methodInfo) && (methodInfo is not null))
+        {
+            methodInfo.Invoke(this, [current, value]);
         }
 
         return true;
@@ -184,7 +210,7 @@ public class Bindable : NotifyPropertyChanged
     [Conditional("DEBUG")]
     private void LogActivation(object? parameter)
     {
-        string parameterString = 
+        string parameterString =
             parameter is null ? "<null>" : parameter.GetType().Name + " - " + parameter.ToString();
         int frameIndex = 1;
         string typeName;
@@ -207,7 +233,7 @@ public class Bindable : NotifyPropertyChanged
     }
 
     /// <summary> Logs that a property is changing. </summary>
-    [Conditional("DEBUG")]    
+    [Conditional("DEBUG")]
     private void LogPropertyChanged(string name, object? value)
     {
         int frameIndex = 1;
@@ -242,7 +268,7 @@ public class Bindable : NotifyPropertyChanged
         string message =
             string.Format(
                 "From {0} in {1}: Property {2} changed to:   {3}",
-                typeName, methodAboveName, name, value==null? "null": value.ToString());
+                typeName, methodAboveName, name, value == null ? "null" : value.ToString());
         this.Logger.Info(message);
     }
 

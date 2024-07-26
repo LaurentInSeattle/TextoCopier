@@ -2,10 +2,10 @@
 
 using static ViewActivationMessage;
 
-public enum PlayersSetup : int 
+public enum PlayersSetup : int
 {
-    Duel = 2 , 
-    Triad = 3, 
+    Duel = 2,
+    Triad = 3,
     Clash = 4,
 }
 
@@ -37,24 +37,14 @@ public sealed class SetupViewModel : Bindable<SetupView>
 
         this.PlayCommand = new Command(this.OnPlay);
         this.ExitCommand = new Command(this.OnExit);
+        this.NotifyPropertyChanged(nameof(this.PlayerCount));
 
         this.PlayerCount = PlayersSetup.Duel;
         this.AiPlayerCount = AiPlayersSetup.One;
         this.Size = MapSize.Medium;
         this.Difficulty = GameDifficulty.Fair;
-
-        this.gameOptions = new GameOptions
-        {
-            MapSize = MapSize.Large,
-            Difficulty = GameDifficulty.Fair,
-            Players =
-            [
-                 new PlayerInfo { Name = "Laurent", IsHuman =true, Color = "Crimson"},
-                 new PlayerInfo { Name = "Annalisa", IsHuman =true, Color = "DarkTurquoise"},
-                 new PlayerInfo { Name = "Oksana", Color = "DarkOrange"},
-                 new PlayerInfo { Name = "Irina", Color = "HotPink"},
-            ],
-        };
+        this.DebugVisible = Debugger.IsAttached;
+        this.gameOptions = new GameOptions();
     }
 
     private void OnModelUpdated(ModelUpdateMessage message)
@@ -64,13 +54,58 @@ public sealed class SetupViewModel : Bindable<SetupView>
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
     }
 
+    private void OnPlayerCountChanged(PlayersSetup _, PlayersSetup newPlayersSetup)
+    {
+        int newPlayersCount = (int)newPlayersSetup;
+        int maxAiPlayers = newPlayersCount - 1;
+        if ((int)this.AiPlayerCount > maxAiPlayers)
+        {
+            this.AiPlayerCount = (AiPlayersSetup)((int)this.AiPlayerCount - 1);
+        }
+
+        this.AiPlayerThree = maxAiPlayers == 3;
+        this.AiPlayerTwo = maxAiPlayers == 3 || maxAiPlayers == 2;
+        this.AiPlayerOne = maxAiPlayers == 3 || maxAiPlayers == 2 || maxAiPlayers == 1;
+        this.AiPlayerCount = AiPlayersSetup.None;
+    }
+
     private void OnExit(object? _) => this.Messenger.Publish(ActivatedView.Exit);
 
-    private void OnPlay(object? _) => this.Messenger.Publish(ActivatedView.Game, this.gameOptions);
+    private void OnPlay(object? _)
+    {
+        this.gameOptions.MapSize = this.Size;
+        this.gameOptions.Difficulty = this.Difficulty;
+        var players = this.gameOptions.Players;
+        int ais = (int)this.AiPlayerCount;
+        int humans = (int)this.PlayerCount - ais;
+        this.Logger.Info(string.Format("Humans: {0} - Computer AI's: {1}", humans, ais));
+
+        for (int i = 0; i < ais; i++)
+        {
+            players.Add(new PlayerInfo());
+        }
+
+        for (int i = 0; i < humans; i++)
+        {
+            players.Add(new PlayerInfo() { IsHuman = true });
+        }
+
+        this.Messenger.Publish(ActivatedView.Game, this.gameOptions);
+    }
+
+    public bool DebugVisible { get => this.Get<bool>(); set => this.Set(value); }
 
     public PlayersSetup PlayerCount { get => this.Get<PlayersSetup>(); set => this.Set(value); }
 
     public AiPlayersSetup AiPlayerCount { get => this.Get<AiPlayersSetup>(); set => this.Set(value); }
+
+    public bool AiPlayerZero { get => this.Get<bool>(); set => this.Set(value); }
+
+    public bool AiPlayerOne { get => this.Get<bool>(); set => this.Set(value); }
+
+    public bool AiPlayerTwo { get => this.Get<bool>(); set => this.Set(value); }
+
+    public bool AiPlayerThree { get => this.Get<bool>(); set => this.Set(value); }
 
     public MapSize Size { get => this.Get<MapSize>(); set => this.Set(value); }
 
@@ -80,4 +115,3 @@ public sealed class SetupViewModel : Bindable<SetupView>
 
     public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 }
-

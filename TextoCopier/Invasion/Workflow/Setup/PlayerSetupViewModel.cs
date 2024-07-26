@@ -2,6 +2,18 @@
 
 using static ViewActivationMessage;
 
+//{
+//    MapSize = MapSize.Large,
+//    Difficulty = GameDifficulty.Fair,
+//    Players =
+//    [
+//         new PlayerInfo { Name = "Laurent", IsHuman =true, Color = "Crimson"},
+//         new PlayerInfo { Name = "Annalisa", IsHuman =true, Color = "DarkTurquoise"},
+//         new PlayerInfo { Name = "Oksana", Color = "DarkOrange"},
+//         new PlayerInfo { Name = "Irina", Color = "HotPink"},
+//    ],
+//};
+
 public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
 {
     private readonly IDialogService dialogService;
