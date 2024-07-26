@@ -9,6 +9,10 @@ public sealed class Map
         this.Regions = new Region[game.GameOptions.RegionCount];
         this.PixelMap = new PixelMap(game, this, messenger, logger);
         this.GenerateLandscape();
+        foreach (Region region in this.Regions)
+        {
+            region.Resources = new Resources(region);
+        }
     }
 
     public ILogger Logger { get; private set; }

@@ -4,23 +4,16 @@ public enum PlayerSkill
 {
     None,
 
+    Leadership,
     Strategy, 
     Vision, 
-    Resilience, 
-    Charisma,
+    Resilience,
     
-    Thinking,
-    Empathy,
+    Charisma,
     Creativity, 
     Courage,
+    Perseverance,
     
-    Ambition,
-    Builder,
-    Glory, 
-    Leadership,
-    
-    Perseverance, 
+    Architect,    
     Knowledge,
-    Wisdom, 
-    Unity,
 }

@@ -40,7 +40,7 @@
         public Resources(Region region)
         {
             this.Values = new(10);
-            this.AllocateInitialResources(region);
+            this.AllocateInitialResources(region); 
         }
 
         public void Renew(Region region)

@@ -17,6 +17,7 @@ public enum GameDifficulty
     Challenging,
     Hard,
     Insane,
+    Debug,
 }
 
 public sealed class GameOptions
@@ -28,6 +29,17 @@ public sealed class GameOptions
     public Ecosystem DominantEcosystem { get; set; }
 
     public GameDifficulty Difficulty { get; set; }
+
+    public int InitialSkills // Out of 10 currently 
+        => this.Difficulty switch
+        {
+            GameDifficulty.Easy => 10,
+            GameDifficulty.Fair => 9,
+            GameDifficulty.Challenging => 8,
+            GameDifficulty.Hard => 7,
+            GameDifficulty.Insane => 6,
+            _ => 6, // Easy 
+        };
 
     public int InitialTerritory
         => this.Difficulty switch

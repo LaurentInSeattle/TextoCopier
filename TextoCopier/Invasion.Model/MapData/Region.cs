@@ -31,9 +31,6 @@ public sealed class Region
     /// <summary> Simplified border paths. </summary>
     public readonly List<List<Vector2>> SimplifiedPaths;
 
-    /// <summary> Resources available un the region. </summary>
-    public readonly Resources Resources;
-
     public Region(
         Game game, short id, Coordinate coordinate, Coordinate center, int size, List<Coordinate> borderCoordinates)
     {
@@ -51,8 +48,13 @@ public sealed class Region
         var paths = Region.CreateBorderPaths(borderCoordinates);
         this.SimplifiedPaths = Region.SimplifyBorderPaths(paths);
         this.AltCenter = Region.CalculateCenter(paths);
-        this.Resources = new Resources(this);
+
+        // Resources cannot be allocated here since 'landscaping' is not done yet
+        // this.Resources = .... 
     }
+
+    /// <summary> Resources available in the region. </summary>
+    public Resources Resources { get; internal set; }
 
     public Ecosystem Ecosystem { get; internal set; }
 

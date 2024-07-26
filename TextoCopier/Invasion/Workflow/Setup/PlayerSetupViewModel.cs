@@ -2,22 +2,7 @@
 
 using static ViewActivationMessage;
 
-public enum PlayersSetup : int 
-{
-    Duel = 2 , 
-    Triad = 3, 
-    Clash = 4,
-}
-
-public enum AiPlayersSetup : int
-{
-    None = 0,
-    One = 1,
-    Two = 2,
-    Three = 3,
-}
-
-public sealed class SetupViewModel : Bindable<SetupView>
+public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
 {
     private readonly IDialogService dialogService;
     private readonly IToaster toaster;
@@ -26,9 +11,13 @@ public sealed class SetupViewModel : Bindable<SetupView>
 
     private GameOptions gameOptions;
 
-    public SetupViewModel(
+#pragma warning disable CS8618 
+    // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    // Some non-nullable fields (ex: gameOptions)and properties get assigned when the view model is activated 
+    public PlayerSetupViewModel(
         LocalizerModel localizer, InvasionModel invasionModel,
         IDialogService dialogService, IToaster toaster)
+#pragma warning restore CS8618
     {
         this.localizer = localizer;
         this.invasionModel = invasionModel;
@@ -37,24 +26,17 @@ public sealed class SetupViewModel : Bindable<SetupView>
 
         this.PlayCommand = new Command(this.OnPlay);
         this.ExitCommand = new Command(this.OnExit);
+    }
 
-        this.PlayerCount = PlayersSetup.Duel;
-        this.AiPlayerCount = AiPlayersSetup.One;
-        this.Size = MapSize.Medium;
-        this.Difficulty = GameDifficulty.Fair;
-
-        this.gameOptions = new GameOptions
+    public override void Activate(object? activationParameters)
+    {
+        base.Activate(activationParameters);
+        if (activationParameters is not GameOptions gameOptions)
         {
-            MapSize = MapSize.Large,
-            Difficulty = GameDifficulty.Fair,
-            Players =
-            [
-                 new PlayerInfo { Name = "Laurent", IsHuman =true, Color = "Crimson"},
-                 new PlayerInfo { Name = "Annalisa", IsHuman =true, Color = "DarkTurquoise"},
-                 new PlayerInfo { Name = "Oksana", Color = "DarkOrange"},
-                 new PlayerInfo { Name = "Irina", Color = "HotPink"},
-            ],
-        };
+            throw new ArgumentNullException(nameof(activationParameters));
+        }
+
+        this.gameOptions = gameOptions;
     }
 
     private void OnModelUpdated(ModelUpdateMessage message)
@@ -68,16 +50,7 @@ public sealed class SetupViewModel : Bindable<SetupView>
 
     private void OnPlay(object? _) => this.Messenger.Publish(ActivatedView.Game, this.gameOptions);
 
-    public PlayersSetup PlayerCount { get => this.Get<PlayersSetup>(); set => this.Set(value); }
-
-    public AiPlayersSetup AiPlayerCount { get => this.Get<AiPlayersSetup>(); set => this.Set(value); }
-
-    public MapSize Size { get => this.Get<MapSize>(); set => this.Set(value); }
-
-    public GameDifficulty Difficulty { get => this.Get<GameDifficulty>(); set => this.Set(value); }
-
     public ICommand PlayCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 }
-

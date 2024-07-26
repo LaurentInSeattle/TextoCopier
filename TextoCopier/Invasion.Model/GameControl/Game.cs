@@ -9,10 +9,16 @@ public sealed class Game
 
     public readonly List<Player> Players;
 
-    // Random number generator used during creation of PixelMap and during the game 
+    /// <summary> Random number generator used during creation of PixelMap and during the game  </summary>
     public readonly Random Random;
 
+    private int recursionDepth;
+
+#pragma warning disable CS8618 
+    // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    // Map and Players gets created and are normally not null, unless we crash 
     public Game(GameOptions gameOptions, IMessenger messenger, ILogger logger)
+#pragma warning restore CS8618 
     {
         this.Messenger = messenger;
         this.Logger = logger;
@@ -23,11 +29,33 @@ public sealed class Game
             throw new ArgumentException("Invalid player count: " + playerCount);
         }
 
-        // this.Random = new Random(666);
-        this.Random = new Random(Environment.TickCount);
-        this.Map = new Map(this, this.Messenger, this.Logger);
-        this.Players = this.CreatePlayers();
-        this.AllocateInitialRegions();
+        int seed = Environment.TickCount; // 666
+        this.Random = new Random(seed);
+        this.Logger.Info("Game Seed: " + seed);
+
+        int retries = 5; 
+        bool constructed = false;
+        while (!constructed)
+        {
+            try
+            {
+                this.Map = new Map(this, this.Messenger, this.Logger);
+                this.Players = this.CreatePlayers();
+                this.recursionDepth = 0 ; 
+                this.AllocateInitialRegions();
+                constructed = true;
+            }
+            catch (Exception ex)
+            {
+                this.Logger.Error("Failed to create map: " + ex);
+                retries--;
+                if (retries == 0)
+                {
+                    // Crash :( 
+                    throw;
+                }
+            }
+        }
     }
 
     public ILogger Logger { get; private set; }
@@ -199,6 +227,7 @@ public sealed class Game
 
     private Region FindCapturableRegionNear(Region region)
     {
+        ++ this.recursionDepth;
         Region? lastNeighbour = null;
         for (int i = 0; i < region.NeighbourIds.Count; ++i)
         {
@@ -218,6 +247,11 @@ public sealed class Game
         }
         else
         {
+            if (this.recursionDepth > 250)
+            {
+                throw new Exception("Cant figure out initial region: possible cycle");
+            }
+
             return this.FindCapturableRegionNear(lastNeighbour);
         }
     }

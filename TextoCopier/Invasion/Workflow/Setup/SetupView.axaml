@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
     xmlns:vm="clr-namespace:Lyt.Invasion.Workflow.Setup"
     x:DataType="vm:SetupViewModel" 
 	>
@@ -12,15 +12,15 @@
 		Background="Transparent"
 		>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="240"/>
+			<RowDefinition Height="160"/>
 			<RowDefinition Height="*"/>
 			<RowDefinition Height="100"/>
-		</Grid.RowDefinitions>
+		</Grid.RowDefinitions>		
 		<TextBlock
-			Text="Game Setup"
+			Text="Start a new game"
 			VerticalAlignment="Center" HorizontalAlignment="Center"
 			Margin="0 0 0 0"
-			FontSize="120"
+			FontSize="80"
 			FontWeight="UltraLight"
 			Foreground="#FFfac8b2"
 			/>
@@ -40,5 +40,217 @@
 			Content="Play"
 			Command ="{Binding PlayCommand}"
 			/>
+		<Grid
+			Grid.Column="1" Grid.Row="1"
+			>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="800" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="600"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<Rectangle
+				Grid.Column="1" Grid.Row="1"
+				RadiusX="8"
+				RadiusY="8"
+				Fill="#40202020"
+				/>
+			<Border
+				Grid.Column="1" Grid.Row="1"
+				Background="Transparent"
+				BorderBrush="#FFfac8b2"
+				BorderThickness="1"
+				CornerRadius="8"
+				>
+				<Grid
+					>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="40"/>
+						<RowDefinition Height="60"/>
+						<RowDefinition Height="40"/>
+						<RowDefinition Height="60"/>
+						<RowDefinition Height="60"/>
+						<RowDefinition Height="40"/>
+						<RowDefinition Height="60"/>
+						<RowDefinition Height="60"/>
+						<RowDefinition Height="40"/>
+						<RowDefinition Height="60"/>
+						<RowDefinition Height="60"/>
+						<RowDefinition Height="*"/>
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="40" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<TextBlock
+						Grid.Column="0" Grid.ColumnSpan="999" Grid.Row="0"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						Margin="24 0 0 0"
+						Text="How many players?  (Total, both Human and Computer)"
+						/>					
+					<RadioButton
+						Grid.Column="1" Grid.Row="1"
+						Content="Duel: Two Players"
+						GroupName="PlayerCountGroup"	
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						IsChecked="{Binding Path=PlayerCount, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Duel}"
+						/>
+					<RadioButton
+						Grid.Column="2" Grid.Row="1"
+						Content="Triad: Three Players"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						GroupName="PlayerCountGroup"
+						IsChecked="{Binding Path=PlayerCount, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Triad}"
+						/>
+					<RadioButton
+						Grid.Column="3" Grid.Row="1"
+						Content="Clash: Four Players"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						GroupName="PlayerCountGroup"
+						IsChecked="{Binding Path=PlayerCount, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Clash}"
+						/>
+					
+					<TextBlock
+						Grid.Column="0" Grid.ColumnSpan="999" Grid.Row="2"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						Margin="24 0 0 0"
+						Text="How many AI players ? (Computer players)"
+						/>
+					<RadioButton
+						Grid.Column="1" Grid.Row="3"
+						Content="None"
+						GroupName="AiPlayerCountGroup"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						IsChecked="{Binding Path=AiPlayerCount, Converter={StaticResource enumBooleanConverter}, ConverterParameter=None}"
+						/>
+					<RadioButton
+						Grid.Column="1" Grid.Row="4"
+						Content="One"
+						GroupName="AiPlayerCountGroup"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						IsChecked="{Binding Path=AiPlayerCount, Converter={StaticResource enumBooleanConverter}, ConverterParameter=One}"
+						/>
+					<RadioButton
+						Grid.Column="2" Grid.Row="4"
+						Content="Two"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						GroupName="AiPlayerCountGroup"
+						IsChecked="{Binding Path=AiPlayerCount, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Two}"
+						/>
+					<RadioButton
+						Grid.Column="3" Grid.Row="4"
+						Content="Three"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						GroupName="AiPlayerCountGroup"
+						IsChecked="{Binding Path=AiPlayerCount, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Three}"
+						/>
+					<TextBlock
+						Grid.Column="0" Grid.ColumnSpan="999" Grid.Row="5"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						Margin="24 0 0 0"
+						Text="What should be the size of the map? "
+						/>
+					<RadioButton
+						Grid.Column="1" Grid.Row="6"
+						Content="Tiny"
+						GroupName="MapSizeGroup"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						IsChecked="{Binding Path=Size, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Tiny}"
+						/>
+					<RadioButton
+						Grid.Column="2" Grid.Row="6"
+						Content="Small"
+						GroupName="MapSizeGroup"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						IsChecked="{Binding Path=Size, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Small}"
+						/>
+					<RadioButton
+						Grid.Column="3" Grid.Row="6"
+						Content="Medium"
+						GroupName="MapSizeGroup"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						IsChecked="{Binding Path=Size, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Medium}"
+						/>
+					<RadioButton
+						Grid.Column="1" Grid.Row="7"
+						Content="Large"
+						GroupName="MapSizeGroup"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						IsChecked="{Binding Path=Size, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Large}"
+						/>
+					<RadioButton
+						Grid.Column="2" Grid.Row="7"
+						Content="Huge"
+						GroupName="MapSizeGroup"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						IsChecked="{Binding Path=Size, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Huge}"
+						/>
+					<RadioButton
+						Grid.Column="3" Grid.Row="7"
+						Content="Debug"
+						GroupName="MapSizeGroup"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						IsChecked="{Binding Path=Size, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Debug}"
+						/>
+
+
+
+					<TextBlock
+						Grid.Column="0" Grid.ColumnSpan="999" Grid.Row="8"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						Margin="24 0 0 0"
+						Text="How difficult the game will be? "
+						/>
+					<RadioButton
+						Grid.Column="1" Grid.Row="9"
+						Content="Easy"
+						GroupName="DifficultyGroup"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						IsChecked="{Binding Path=Difficulty, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Easy}"
+						/>
+					<RadioButton
+						Grid.Column="2" Grid.Row="9"
+						Content="Fair"
+						GroupName="DifficultyGroup"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						IsChecked="{Binding Path=Difficulty, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Fair}"
+						/>
+					<RadioButton
+						Grid.Column="3" Grid.Row="9"
+						Content="Challenging"
+						GroupName="DifficultyGroup"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						IsChecked="{Binding Path=Difficulty, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Challenging}"
+						/>
+					<RadioButton
+						Grid.Column="1" Grid.Row="10"
+						Content="Hard"
+						GroupName="DifficultyGroup"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						IsChecked="{Binding Path=Difficulty, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Hard}"
+						/>
+					<RadioButton
+						Grid.Column="2" Grid.Row="10"
+						Content="Insane"
+						GroupName="DifficultyGroup"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						IsChecked="{Binding Path=Difficulty, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Insane}"
+						/>
+					<RadioButton
+						Grid.Column="3" Grid.Row="10"
+						Content="Debug"
+						GroupName="DifficultyGroup"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						IsChecked="{Binding Path=Difficulty, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Debug}"
+						/>
+				</Grid>
+			</Border>
+		</Grid>
 	</Grid>
 </UserControl>

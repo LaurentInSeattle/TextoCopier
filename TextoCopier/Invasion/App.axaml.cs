@@ -27,6 +27,7 @@ public partial class App : ApplicationBase
            typeof(GameOverViewModel),
            typeof(GameViewModel),
            typeof(SetupViewModel),
+           typeof(PlayerSetupViewModel),
         ],
         [
             // Services 

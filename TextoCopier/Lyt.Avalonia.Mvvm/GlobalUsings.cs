@@ -2,6 +2,7 @@
 global using System.Collections;
 global using System.Collections.Concurrent;
 global using System.Collections.Generic;
+global using System.Globalization; 
 global using System.Collections.ObjectModel;
 global using System.ComponentModel;
 global using System.Diagnostics;
@@ -10,7 +11,6 @@ global using System.Reflection;
 global using System.Runtime.CompilerServices;
 global using System.Runtime.Versioning;
 global using System.Threading.Tasks;
-
 global using System.Windows.Input;
 
 global using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +19,7 @@ global using Microsoft.Extensions.Hosting;
 global using Avalonia;
 global using Avalonia.Controls;
 global using Avalonia.Controls.ApplicationLifetimes;
+global using Avalonia.Data.Converters;
 global using Avalonia.Data.Core.Plugins;
 global using Avalonia.Interactivity;
 global using Avalonia.Media;

@@ -17,7 +17,11 @@ public sealed class GameViewModel : Bindable<GameView>
     private readonly LocalizerModel localizer;
     private readonly InvasionModel invasionModel;
 
+#pragma warning disable CS8618 
+    // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    // Some non-nullable fields and properties get assigned when the view model is activated 
     public GameViewModel(
+#pragma warning restore CS8618 
         LocalizerModel localizer, InvasionModel invasionModel,
         IDialogService dialogService, IToaster toaster)
     {
