@@ -2,37 +2,43 @@
 
 public enum BuildingKind
 {
+    // Resources 
     Farm,
     Port,
     LumberCamp,
     Workshop, 
     Blacksmith,
     Factory, 
-    Quary, 
+    Quarry, 
     Mine, 
-    Temple, 
+
+    // Military
+    Fort,
+    Castle,
     Barracks, 
     Archery,
-    Fort, 
-    Castle, 
+    AirBase,
+    SpacePort,
+
+    // Clergy
+    Temple,
+    Church, 
+
+    // Education
     School, 
-    University, 
+    Library,
+    University,
+    ResearchCenter,
+
+    // Civics
+    TradingPost, // Market, 
     CityHall,
-    TradingPost,
     Clinic, 
     Hospital, 
-}
 
-/*
-    Hunter, 
-    Farmer,
-    Fisher,
-    Worker, 
-    Explorer,
-    Clergy, 
-    Military,
-    Research,
-    CivilServant,
-    Trader, 
- 
-*/
+    // Energy 
+    CoalPlant,
+    WindFarm,
+    SolarField,    
+    NuclearPLant
+}

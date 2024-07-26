@@ -29,10 +29,10 @@ public sealed class SetupViewModel : Bindable<SetupView>
             Difficulty = GameDifficulty.Fair,
             Players =
             [
-                 new PlayerInfo { Name = "Laurent", IsHuman =true, Color = "Red"},
-                 new PlayerInfo { Name = "Annalisa", IsHuman =true, Color = "Blue"},
-                 // new PlayerInfo { Name = "Oksana", Color = "Yellow"},
-                 // new PlayerInfo { Name = "Irina", Color = "Magenta"},
+                 new PlayerInfo { Name = "Laurent", IsHuman =true, Color = "Crimson"},
+                 new PlayerInfo { Name = "Annalisa", IsHuman =true, Color = "DarkTurquoise"},
+                 new PlayerInfo { Name = "Oksana", Color = "DarkOrange"},
+                 new PlayerInfo { Name = "Irina", Color = "HotPink"},
             ],
         };
     }

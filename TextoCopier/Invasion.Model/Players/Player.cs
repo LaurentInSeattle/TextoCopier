@@ -22,7 +22,7 @@ public abstract class Player
         this.Color = playerInfo.Color;
         this.Territory = new List<Region>(this.Game.GameOptions.RegionCount);
         this.Wealth = new Wealth(); 
-        this.Wealth.AllocateInitialWealth(this);
+        this.Wealth.AllocateInitialWealth( /* this */ );
         this.Population = this.CreateInitialPopulation();
     }
 
@@ -59,13 +59,6 @@ public abstract class Player
     public void DoColonize() { }
     
     public void DoMove() { }
-
-    private Dictionary<WealthKind, int> CreateInitialWealth()
-    {
-        Dictionary<WealthKind, int> wealth = new();
-        return wealth;
-
-    }
 
     private Dictionary<ActorKind, int> CreateInitialPopulation()
     {

@@ -8,7 +8,7 @@ public sealed class Region
     /// <summary> Distance used to determine if a border path is "broken" by the wrapping of the map  </summary>
     private const int maxSquareDistance = 500;
 
-    public readonly Game game;
+    public readonly Game Game;
 
     /// <summary> Unique ID number of this region  </summary>
     public readonly short Id;
@@ -28,13 +28,16 @@ public sealed class Region
     /// <summary> Ids of all other regions neighbouring this region. </summary>
     public readonly List<short> NeighbourIds;
 
-    /// <summary> Simpliefied border paths. </summary>
+    /// <summary> Simplified border paths. </summary>
     public readonly List<List<Vector2>> SimplifiedPaths;
+
+    /// <summary> Resources available un the region. </summary>
+    public readonly Resources Resources;
 
     public Region(
         Game game, short id, Coordinate coordinate, Coordinate center, int size, List<Coordinate> borderCoordinates)
     {
-        this.game = game;
+        this.Game = game;
         this.Id = id;
         this.Coordinate = coordinate;
         this.Center = center;
@@ -48,6 +51,7 @@ public sealed class Region
         var paths = Region.CreateBorderPaths(borderCoordinates);
         this.SimplifiedPaths = Region.SimplifyBorderPaths(paths);
         this.AltCenter = Region.CalculateCenter(paths);
+        this.Resources = new Resources(this);
     }
 
     public Ecosystem Ecosystem { get; internal set; }

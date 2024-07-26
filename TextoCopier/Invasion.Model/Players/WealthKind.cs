@@ -7,7 +7,6 @@ public enum WealthKind
     Stone,
     Gold,
     Energy,
-
     Knowledge,
     Aura,
     Health,
