@@ -3,14 +3,14 @@
     /// <summary> Resources for a region </summary>
     public sealed class Resources
     {
-        public sealed class ResourcesLimit
+        private sealed class ResourcesLimit
         {
-            public float Initial { get; set; }
-            public float Max { get; set; }
-            public float RenewRate { get; set; }
+            public float Initial { get; set; }      // Amount provided at game creation 
+            public float Max { get; set; }          // Maximum 
+            public float RenewRate { get; set; }    // Rate of renewal
         }
 
-        public static Dictionary<ResourceKind, ResourcesLimit> Limits = new(8)
+        private static readonly Dictionary<ResourceKind, ResourcesLimit> Limits = new(8)
         {
             // Fossil, never renew, min and max == 0.0f, useless
             { ResourceKind.Stone, new ResourcesLimit { Initial = 10_000.0f , RenewRate = 0.0f } },
@@ -23,23 +23,23 @@
             { ResourceKind.Sun, new ResourcesLimit { Initial = 2_000.0f, RenewRate = float.PositiveInfinity } },
 
             // Biological resources, renew slowly, limited by region size (use max), can go extinct.
-            { ResourceKind.Fish, new ResourcesLimit { Initial = 2_000.0f   , Max = 4_000.0f, RenewRate = 0.15f } },
-            { ResourceKind.Game, new ResourcesLimit { Initial = 100.0f    , Max = 500.0f, RenewRate = 0.07f } },
+            { ResourceKind.Fish, new ResourcesLimit { Initial = 2_000.0f   , Max = 4_000.0f, RenewRate = 0.12f } },
             { ResourceKind.Fruit, new ResourcesLimit { Initial = 500.0f   , Max = 2_000.0f, RenewRate = 0.10f } },
+            { ResourceKind.Game, new ResourcesLimit { Initial = 100.0f    , Max = 500.0f, RenewRate = 0.07f } },
             { ResourceKind.Timber, new ResourcesLimit { Initial = 20_000.0f, Max = 50_000.0f, RenewRate = 0.05f} },
         };
 
         public const float VeryHighMultiplier = 1.3f;
         public const float HighMultiplier = 1.15f;
         public const float NormalMultiplier = 1.0f;
-        public const float LowMultiplier = 0.85f;
-        public const float VeryLowMultiplier = 0.7f;
+        public const float LowMultiplier = 0.75f;
+        public const float VeryLowMultiplier = 0.5f;
 
-        public Dictionary<ResourceKind, float> resources { get; private set; }
+        public Dictionary<ResourceKind, float> Values { get; private set; }
 
         public Resources(Region region)
         {
-            this.resources = new Dictionary<ResourceKind, float>();
+            this.Values = new(10);
             this.AllocateInitialResources(region);
         }
 
@@ -58,29 +58,37 @@
                     break;
 
                 case Ecosystem.Forest:
-                    break;
                 case Ecosystem.Grassland:
-                    break;
                 case Ecosystem.Hills:
-                    break;
                 case Ecosystem.Wetland:
-                    break;
                 case Ecosystem.Coast:
+                    foreach (var kind in this.Values.Keys)
+                    {
+                        ResourcesLimit resourcesLimit = Resources.Limits[kind];
+                        float value = this.Values[kind];
+                        value *= 1.0f + resourcesLimit.RenewRate;
+                        if (value > resourcesLimit.Max)
+                        {
+                            value = resourcesLimit.Max;
+                        }
+
+                        this.Values[kind] = value;
+                    }
                     break;
             }
         }
 
-        public void AllocateInitialResources(Region region)
+        private void AllocateInitialResources(Region region)
         {
-            void AddInitialResource(ResourceKind kind, float multiplier = Resources.NormalMultiplier)
+            void AddInitialResource(ResourceKind kind, float multiplier = MapData.Resources.NormalMultiplier)
             {
                 // Varies from 0.95f to 1.05f => + or - 5% 
                 float randomize = 1.0f + ((region.Game.Random.NextSingle() - 0.5f) / 10.0f);
-                var limits = Resources.Limits[kind];
-                this.resources.Add(kind, limits.Initial * multiplier * randomize);
+                var limits = MapData.Resources.Limits[kind];
+                this.Values.Add(kind, limits.Initial * multiplier * randomize);
             }
 
-            this.resources.Clear();
+            this.Values.Clear();
             switch (region.Ecosystem)
             {
                 default:
@@ -110,7 +118,7 @@
                     break;
 
                 case Ecosystem.Desert:
-                    // Oil High  Lithium  Sun High
+                    // Metal  Oil High  Lithium  Sun High 
                     AddInitialResource(ResourceKind.Oil, Resources.VeryHighMultiplier);
                     AddInitialResource(ResourceKind.Sun, Resources.VeryHighMultiplier);
                     AddInitialResource(ResourceKind.Lithium, Resources.NormalMultiplier);
