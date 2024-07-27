@@ -7,7 +7,7 @@
     mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="800"
     Icon="/Assets/Images/invasion.ico"
     Title="Invasion"
-	Width="1240" Height="960"
+	Width="1440" Height="960"
 	MinWidth="600" MinHeight="420"
 	SizeToContent="Manual"
 	>

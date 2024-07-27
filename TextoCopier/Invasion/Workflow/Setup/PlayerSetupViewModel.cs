@@ -78,14 +78,23 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
 
         if (Enum.TryParse<PlayerColor>(this.currentPlayer.Color, out PlayerColor playerColor))
         {
-            this.PlayerColor = playerColor;
+            if (!this.availablePlayerColors.Contains(playerColor))
+            {
+                this.availablePlayerColors.Add(playerColor);
+            }
         }
         else
         {
-            this.PlayerColor = this.availablePlayerColors[0];
+            playerColor = this.availablePlayerColors[0];
         }
 
-        this.availablePlayerColors.Remove(this.PlayerColor);
+        // Needs to be done AFTER the color is restored as available 
+        this.IsCrimsonEnabled = this.availablePlayerColors.Contains(PlayerColor.Crimson);
+        this.IsHotPinkEnabled = this.availablePlayerColors.Contains(PlayerColor.HotPink);
+        this.IsDarkTurquoiseEnabled = this.availablePlayerColors.Contains(PlayerColor.DarkTurquoise);
+        this.IsDarkOrangeEnabled = this.availablePlayerColors.Contains(PlayerColor.DarkOrange);
+
+        this.PlayerColor = playerColor; 
 
         this.UpdateButton();
         this.IsValid = this.playerNameIsValid && this.playerAvatarIsValid && this.playerSkillSetIsValid;
@@ -134,7 +143,7 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
             return false;
         }
 
-       if (playerName.Length < 3)
+        if (playerName.Length < 3)
         {
             validationMessage = "Too short.";
             return false;
@@ -148,6 +157,25 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
 
         this.playerNameIsValid = true;
         return true;
+    }
+
+    private void CreateAiPlayers()
+    {
+        int playerRank = 1; 
+        foreach (PlayerInfo playerInfo in this.gameOptions.Players)
+        {
+            if (playerInfo.IsHuman)
+            {
+                continue;
+            }
+
+            // LATER 
+            // More fields: Avatar, Empire, Skills 
+            playerInfo.Name = string.Format("Computer_{0}", playerRank);
+            playerInfo.Color = this.availablePlayerColors[0].ToString();
+            ++ playerRank;
+            this.availablePlayerColors.RemoveAt(0);
+        }
     }
 
     #region Methods invoked by the Framework using reflection 
@@ -173,6 +201,8 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
     {
         if (this.currentPlayerIndex == 0)
         {
+            // Restore all colours and go back 
+            this.availablePlayerColors = [.. Enum.GetValues<PlayerColor>()];
             this.Messenger.Publish(ActivatedView.GoBack);
         }
         else
@@ -180,7 +210,7 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
             // Previous player 
             --this.currentPlayerIndex;
             this.currentPlayer = this.humanPlayers[this.currentPlayerIndex];
-            this.UpdateUi();
+            this.InitializeUi();
         }
     }
 
@@ -188,14 +218,19 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
     {
         if (this.currentPlayerIndex == this.humanPlayers.Count - 1)
         {
+            // Finish up creating players, and restore all colours in case we play a second game
+            this.CreateAiPlayers();
+            this.availablePlayerColors = [.. Enum.GetValues<PlayerColor>()];
+
             this.Messenger.Publish(ActivatedView.Game, this.gameOptions);
         }
         else
         {
             // Next player 
+            this.availablePlayerColors.Remove(Enum.Parse<PlayerColor>(this.currentPlayer.Color));
             ++this.currentPlayerIndex;
             this.currentPlayer = this.humanPlayers[this.currentPlayerIndex];
-            this.UpdateUi();
+            this.InitializeUi();
         }
     }
 #pragma warning restore IDE0051
@@ -208,6 +243,14 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
     public string? NextButtonText { get => this.Get<string?>(); set => this.Set(value); }
 
     public PlayerColor PlayerColor { get => this.Get<PlayerColor>(); set => this.Set(value); }
+
+    public bool IsHotPinkEnabled { get => this.Get<bool>(); set => this.Set(value); }
+
+    public bool IsCrimsonEnabled { get => this.Get<bool>(); set => this.Set(value); }
+
+    public bool IsDarkTurquoiseEnabled { get => this.Get<bool>(); set => this.Set(value); }
+
+    public bool IsDarkOrangeEnabled { get => this.Get<bool>(); set => this.Set(value); }
 
     public string? PlayerName { get => this.Get<string?>(); set => this.Set(value); }
 

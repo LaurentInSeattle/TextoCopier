@@ -130,16 +130,27 @@ public class Bindable : NotifyPropertyChanged
         return this.properties.TryGetValue(name, out object? value) ? value == null ? default : (T)value : default;
     }
 
+
+    /// <summary> The property currently being set. </summary>
+    private string setProperty; 
+
     /// <summary> Sets the value of a property </summary>
     /// <returns> True, if the value was changed, false otherwise. </returns>
     protected bool Set<T>(T? value, [CallerMemberName] string? name = null)
     {
-        if (name is null)
+        if (string.IsNullOrWhiteSpace(name))
         {
             // Bindable.Logger?.Fatal("Set property: no name");
             throw new Exception("Set property: no name");
         }
 
+        if ( this.setProperty == name )
+        {
+            this.setProperty = string.Empty;
+            return false; 
+        }
+
+        this.setProperty = name;
         T? current = this.Get<T>(name);
         if (Equals(value, current))
         {
@@ -158,6 +169,7 @@ public class Bindable : NotifyPropertyChanged
             methodInfo.Invoke(this, [current, value]);
         }
 
+        this.setProperty = string.Empty;
         return true;
     }
 

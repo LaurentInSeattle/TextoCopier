@@ -122,11 +122,13 @@
 							GroupName="PlayerColorGroup"
 							VerticalAlignment="Center" HorizontalAlignment="Left"
 							IsChecked="{Binding Path=PlayerColor, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Crimson}"
+							IsEnabled="{Binding IsCrimsonEnabled}"
 							>
 							<Rectangle
 								Margin="20 0 0 0"
-								Width="80" Height="28"
+								Width="80" Height="24"
 								Fill="Crimson"
+								IsEnabled="{Binding IsCrimsonEnabled}"
 								/>
 						</RadioButton>
 						<RadioButton
@@ -134,10 +136,11 @@
 							GroupName="PlayerColorGroup"
 							VerticalAlignment="Center" HorizontalAlignment="Left"
 							IsChecked="{Binding Path=PlayerColor, Converter={StaticResource enumBooleanConverter}, ConverterParameter=DarkTurquoise}"
+							IsEnabled="{Binding IsDarkTurquoiseEnabled}"
 							>
 							<Rectangle
 								Margin="20 0 0 0"
-								Width="80" Height="28"
+								Width="80" Height="24"
 								Fill="DarkTurquoise"
 								/>
 						</RadioButton>
@@ -146,10 +149,11 @@
 							GroupName="PlayerColorGroup"
 							VerticalAlignment="Center" HorizontalAlignment="Left"
 							IsChecked="{Binding Path=PlayerColor, Converter={StaticResource enumBooleanConverter}, ConverterParameter=DarkOrange}"
+							IsEnabled="{Binding IsDarkOrangeEnabled}"
 							>
 							<Rectangle
 								Margin="20 0 0 0"
-								Width="80" Height="28"
+								Width="80" Height="24"
 								Fill="DarkOrange"
 								/>
 						</RadioButton>
@@ -158,10 +162,11 @@
 							GroupName="PlayerColorGroup"
 							VerticalAlignment="Center" HorizontalAlignment="Left"
 							IsChecked="{Binding Path=PlayerColor, Converter={StaticResource enumBooleanConverter}, ConverterParameter=HotPink}"
+							IsEnabled="{Binding IsHotPinkEnabled}"
 							>
 							<Rectangle
 								Margin="20 0 0 0"
-								Width="80" Height="28"
+								Width="80" Height="24"
 								Fill="HotPink"
 								/>
 						</RadioButton>
