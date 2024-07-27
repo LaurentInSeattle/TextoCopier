@@ -63,7 +63,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
     private async void OnExit()
     {
-        void Deactivate(Type type)
+        static void Deactivate(Type type)
         {
             object? vm = App.GetRequiredService(type);
             if (vm is Bindable bindable)
@@ -73,7 +73,6 @@ public sealed class ShellViewModel : Bindable<ShellView>
         }
 
         Type[] types = [typeof(WelcomeViewModel), typeof(SetupViewModel), typeof(GameViewModel), typeof(GameOverViewModel)];
-
         foreach (var type in types)
         {
             Deactivate(type);

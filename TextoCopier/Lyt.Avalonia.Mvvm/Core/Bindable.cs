@@ -23,6 +23,7 @@ public class Bindable : NotifyPropertyChanged
 
         this.properties = [];
         this.actions = [];
+        this.CreateAndBindCommands();
     }
 
     public ILogger Logger { get; private set; }
@@ -107,6 +108,53 @@ public class Bindable : NotifyPropertyChanged
     /// <summary> Usually invoked when this bindable is about to be hidden, and same as above. </summary>
     public virtual void Deactivate() => this.LogDeactivation();
 
+    public void CreateAndBindCommands()
+    {
+        PropertyInfo[] propertyInfos =
+            this.GetType().GetProperties(
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.InvokeMethod);
+        if (propertyInfos is null || propertyInfos.Length == 0)
+        {
+            return;
+        }
+
+        foreach (PropertyInfo property in propertyInfos)
+        {
+            string propertyName = property.Name;
+            if (!propertyName.EndsWith("Command"))
+            {
+                continue;
+            }
+
+            if (property.PropertyType.Name != "ICommand")
+            {
+                continue;
+            }
+
+            if (this.properties.TryGetValue(propertyName, out object? value) && (value is not null))
+            {
+                continue;
+            }
+
+            string name = property.Name.Replace("Command", "");
+            string methodName = string.Format("On{0}", name);
+
+            MethodInfo? methodInfo =
+                this.GetType().GetMethod(
+                    methodName,
+                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.InvokeMethod);
+            if (methodInfo is null)
+            {
+                continue;
+            }
+
+            this.properties[propertyName] = new Command(methodInfo, this);
+            this.OnPropertyChanged(propertyName);
+            this.Logger.Info(
+                string.Format("{0}: Command {1} has been bound to {2}", this.GetType().Name, propertyName, methodName)); 
+        }
+    }
+
     public void NotifyPropertyChanged(string propertyName)
     {
         string methodName = string.Format("On{0}Changed", propertyName);
@@ -121,6 +169,8 @@ public class Bindable : NotifyPropertyChanged
         }
 
         this.actions.Add(propertyName, methodInfo);
+        this.Logger.Info(
+            string.Format("{0}: Changes of property {1} have been bound to {2}", this.GetType().Name, propertyName, methodName));
     }
 
     /// <summary> Gets the value of a property </summary>
@@ -182,26 +232,11 @@ public class Bindable : NotifyPropertyChanged
 
     #region Debug Utilities 
 
-    /// <summary> Logs that a bindable is being activated. </summary>
+    /// <summary> Logs that a bindable is being deactivated. </summary>
     [Conditional("DEBUG")]
     private void LogDeactivation()
     {
-        int frameIndex = 1;
-        string typeName;
-        do
-        {
-            ++frameIndex;
-            var frame = new StackFrame(frameIndex);
-            var frameMethod = frame.GetMethod();
-            if (frameMethod == null)
-            {
-                return;
-            }
-
-            typeName = frameMethod.DeclaringType!.Name;
-        }
-        while (typeName.StartsWith("Bindable"));
-
+        string typeName = this.GetType().Name;
         string message = string.Format("Deactivating {0}", typeName);
         this.Logger.Info(message);
     }
@@ -212,22 +247,7 @@ public class Bindable : NotifyPropertyChanged
     {
         string parameterString =
             parameter is null ? "<null>" : parameter.GetType().Name + " - " + parameter.ToString();
-        int frameIndex = 1;
-        string typeName;
-        do
-        {
-            ++frameIndex;
-            var frame = new StackFrame(frameIndex);
-            var frameMethod = frame.GetMethod();
-            if (frameMethod == null)
-            {
-                return;
-            }
-
-            typeName = frameMethod.DeclaringType!.Name;
-        }
-        while (typeName.StartsWith("Bindable"));
-
+        string typeName = this.GetType().Name;
         string message = string.Format("Activating {0} with {1}", typeName, parameterString);
         this.Logger.Info(message);
     }

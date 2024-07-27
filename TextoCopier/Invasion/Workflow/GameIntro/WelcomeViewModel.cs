@@ -17,9 +17,6 @@ public sealed class WelcomeViewModel : Bindable<WelcomeView>
         this.invasionModel = invasionModel;
         this.dialogService = dialogService;
         this.toaster = toaster;
-
-        this.PlayCommand = new Command(this.OnPlay);
-        this.ExitCommand = new Command(this.OnExit);
     }
 
     private void OnModelUpdated(ModelUpdateMessage message)

@@ -29,8 +29,6 @@ public sealed class GameViewModel : Bindable<GameView>
         this.invasionModel = invasionModel;
         this.dialogService = dialogService;
         this.toaster = toaster;
-
-        this.ExitCommand = new Command(this.OnExit);
     }
 
     public override void Activate(object? activationParameters)

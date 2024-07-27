@@ -24,7 +24,7 @@ public sealed class SetupViewModel : Bindable<SetupView>
     private readonly LocalizerModel localizer;
     private readonly InvasionModel invasionModel;
 
-    private GameOptions gameOptions;
+    private readonly GameOptions gameOptions;
 
     public SetupViewModel(
         LocalizerModel localizer, InvasionModel invasionModel,
@@ -35,8 +35,6 @@ public sealed class SetupViewModel : Bindable<SetupView>
         this.dialogService = dialogService;
         this.toaster = toaster;
 
-        this.NextCommand = new Command(this.OnNext);
-        this.ExitCommand = new Command(this.OnExit);
         this.NotifyPropertyChanged(nameof(this.PlayerCount));
 
         this.PlayerCount = PlayersSetup.Duel;

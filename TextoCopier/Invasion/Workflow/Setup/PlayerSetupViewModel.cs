@@ -46,9 +46,6 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
         this.invasionModel = invasionModel;
         this.dialogService = dialogService;
         this.toaster = toaster;
-
-        this.PlayCommand = new Command(this.OnPlay);
-        this.BackCommand = new Command(this.OnBack);
     }
 
     public override void Activate(object? activationParameters)
@@ -85,6 +82,9 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
     }
 
+    #region Methods invoked by the Framework using reflection 
+#pragma warning disable IDE0051 // Remove unused private members
+
     private void OnBack(object? _)
     {
         if (this.currentPlayerIndex == 0)
@@ -113,7 +113,9 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
             this.currentPlayer = this.humanPlayers[this.currentPlayerIndex];
             this.UpdateButton();
         }
-    } 
+    }
+#pragma warning restore IDE0051
+    #endregion Methods invoked by the Framework using reflection 
 
     public ICommand PlayCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
