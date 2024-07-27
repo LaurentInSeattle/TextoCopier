@@ -8,4 +8,120 @@
     xmlns:vm="clr-namespace:Lyt.Invasion.Workflow.Setup"
     x:DataType="vm:PlayerSetupViewModel" 
 	>
+	<Grid
+		Background="Transparent"
+		>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="160"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="100"/>
+		</Grid.RowDefinitions>
+		<TextBlock
+			Text="Your options and skills"
+			VerticalAlignment="Center" HorizontalAlignment="Center"
+			Margin="0 0 0 0"
+			FontSize="80"
+			FontWeight="UltraLight"
+			Foreground="#FFfac8b2"
+			/>
+		<Button
+			Grid.Row="2"
+			Width="160" Height="60" Margin="32"
+			VerticalAlignment="Center" HorizontalAlignment="Left"
+			FontSize="28"
+			Content="Back"
+			Command ="{Binding BackCommand}"
+			/>
+		<Button
+			Grid.Row="2"
+			Width="320" Height="60" Margin="32"
+			VerticalAlignment="Center" HorizontalAlignment="Right"
+			FontSize="28"
+			Content="{Binding NextButtonText}"
+			Command ="{Binding PlayCommand}"
+			/>
+		<Grid
+			Grid.Column="1" Grid.Row="1"
+			>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="800" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="600"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<Rectangle
+				Grid.Column="1" Grid.Row="1"
+				RadiusX="8"
+				RadiusY="8"
+				Fill="#40202020"
+				/>
+			<Border
+				Grid.Column="1" Grid.Row="1"
+				Background="Transparent"
+				BorderBrush="#FFfac8b2"
+				BorderThickness="1"
+				CornerRadius="8"
+				>
+				<Grid
+					>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="40"/>
+						<RowDefinition Height="60"/>
+						<RowDefinition Height="40"/>
+						<RowDefinition Height="60"/>
+						<RowDefinition Height="60"/>
+						<RowDefinition Height="40"/>
+						<RowDefinition Height="60"/>
+						<RowDefinition Height="60"/>
+						<RowDefinition Height="40"/>
+						<RowDefinition Height="60"/>
+						<RowDefinition Height="60"/>
+						<RowDefinition Height="*"/>
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="40" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<TextBlock
+						Grid.Column="0" Grid.ColumnSpan="999" Grid.Row="0"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						Margin="24 0 0 0"
+						Text="Your name"
+						/>
+					<TextBox
+						Grid.Column="1" Grid.Row="1"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						/>
+					<TextBlock
+						Grid.Column="0" Grid.ColumnSpan="999" Grid.Row="2"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						Margin="24 0 0 0"
+						Text="Your color"
+						/>
+					<RadioButton
+						Grid.Column="1" Grid.Row="3"
+						Content="Blue"
+						GroupName="PlayerColorGroup"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						IsChecked="{Binding Path=PlayerColor, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Blue}"
+						/>
+					<!-- Five more colours here -->
+
+					<TextBlock
+						Grid.Column="0" Grid.ColumnSpan="999" Grid.Row="5"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						Margin="24 0 0 0"
+						Text="Your skills"
+						/>
+					<!-- 10 more skill sliders here -->
+				</Grid>
+			</Border>
+		</Grid>
+	</Grid>
 </UserControl>

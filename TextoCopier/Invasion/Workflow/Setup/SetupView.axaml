@@ -37,8 +37,8 @@
 			Width="160" Height="60" Margin="32"
 			VerticalAlignment="Center" HorizontalAlignment="Right"
 			FontSize="28"
-			Content="Play"
-			Command ="{Binding PlayCommand}"
+			Content="Next"
+			Command ="{Binding NextCommand}"
 			/>
 		<Grid
 			Grid.Column="1" Grid.Row="1"

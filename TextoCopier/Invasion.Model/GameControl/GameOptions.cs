@@ -64,7 +64,7 @@ public sealed class GameOptions
             _ => 1800, // Huge
         };
 
-    public int PixelHeight => this.PixelWidth * 9 / 16;
+    public int PixelHeight => ( int ) (2.8 * this.PixelWidth / 4);
 
     public int RegionCount =>
         this.MapSize switch

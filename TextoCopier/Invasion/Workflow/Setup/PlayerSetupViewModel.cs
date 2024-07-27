@@ -14,6 +14,14 @@ using static ViewActivationMessage;
 //    ],
 //};
 
+public enum PlayerColor : int
+{
+    Red = 0, 
+    Blue = 1,
+    Orange = 2,
+    Magenta = 3,
+}
+
 public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
 {
     private readonly IDialogService dialogService;
@@ -22,10 +30,13 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
     private readonly InvasionModel invasionModel;
 
     private GameOptions gameOptions;
+    private List<PlayerInfo> humanPlayers;
+    private PlayerInfo currentPlayer;
+    private int currentPlayerIndex;
 
 #pragma warning disable CS8618 
     // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    // Some non-nullable fields (ex: gameOptions)and properties get assigned when the view model is activated 
+    // Some non-nullable fields (ex: gameOptions) and properties get assigned when the view model is activated 
     public PlayerSetupViewModel(
         LocalizerModel localizer, InvasionModel invasionModel,
         IDialogService dialogService, IToaster toaster)
@@ -37,7 +48,7 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
         this.toaster = toaster;
 
         this.PlayCommand = new Command(this.OnPlay);
-        this.ExitCommand = new Command(this.OnExit);
+        this.BackCommand = new Command(this.OnBack);
     }
 
     public override void Activate(object? activationParameters)
@@ -49,6 +60,22 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
         }
 
         this.gameOptions = gameOptions;
+        this.humanPlayers = (from player in this.gameOptions.Players where player.IsHuman select player).ToList();
+        this.currentPlayerIndex = 0;
+        this.currentPlayer = this.humanPlayers[this.currentPlayerIndex];
+        this.UpdateButton();
+    }
+
+    private void UpdateButton()
+    {
+        if (this.currentPlayerIndex == this.humanPlayers.Count - 1)
+        {
+            this.NextButtonText = "Start the Game!";
+        } 
+        else
+        {
+            this.NextButtonText = "Next Player";
+        }
     }
 
     private void OnModelUpdated(ModelUpdateMessage message)
@@ -58,11 +85,41 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
     }
 
-    private void OnExit(object? _) => this.Messenger.Publish(ActivatedView.Exit);
+    private void OnBack(object? _)
+    {
+        if (this.currentPlayerIndex == 0)
+        {
+            this.Messenger.Publish(ActivatedView.GoBack);
+        }
+        else
+        {
+            // Previous player 
+            -- this.currentPlayerIndex;
+            this.currentPlayer = this.humanPlayers[this.currentPlayerIndex];
+            this.UpdateButton();
+        }
+    }
 
-    private void OnPlay(object? _) => this.Messenger.Publish(ActivatedView.Game, this.gameOptions);
+    private void OnPlay(object? _)
+    {
+        if (this.currentPlayerIndex == this.humanPlayers.Count - 1 )
+        {
+            this.Messenger.Publish(ActivatedView.Game, this.gameOptions);
+        }
+        else
+        {
+            // Next player 
+            ++this.currentPlayerIndex;
+            this.currentPlayer = this.humanPlayers[this.currentPlayerIndex];
+            this.UpdateButton();
+        }
+    } 
 
     public ICommand PlayCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
-    public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+    public ICommand BackCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+
+    public string? NextButtonText { get => this.Get<string?>(); set => this.Set(value); }
+
+    public PlayerColor PlayerColor { get => this.Get<PlayerColor>(); set => this.Set(value); }
 }

@@ -92,6 +92,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         CreateAndBind<WelcomeViewModel, WelcomeView>();
         CreateAndBind<SetupViewModel, SetupView>();
+        CreateAndBind<PlayerSetupViewModel, PlayerSetupView>();
         CreateAndBind<GameViewModel, GameView>();
         CreateAndBind<GameOverViewModel, GameOverView>();
     }
@@ -110,6 +111,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         if (activatedView == ActivatedView.GoBack)
         {
             // Nothing for now
+            this.Activate<SetupViewModel, SetupView>(isFirstActivation, parameter);
             return;
         }
 
@@ -122,6 +124,10 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
             case ActivatedView.Setup:
                 this.Activate<SetupViewModel, SetupView>(isFirstActivation, parameter);
+                break;
+
+            case ActivatedView.PlayerSetup:
+                this.Activate<PlayerSetupViewModel, PlayerSetupView>(isFirstActivation, parameter);
                 break;
 
             case ActivatedView.Game:

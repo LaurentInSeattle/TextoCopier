@@ -35,7 +35,7 @@ public sealed class SetupViewModel : Bindable<SetupView>
         this.dialogService = dialogService;
         this.toaster = toaster;
 
-        this.PlayCommand = new Command(this.OnPlay);
+        this.NextCommand = new Command(this.OnNext);
         this.ExitCommand = new Command(this.OnExit);
         this.NotifyPropertyChanged(nameof(this.PlayerCount));
 
@@ -56,13 +56,7 @@ public sealed class SetupViewModel : Bindable<SetupView>
 
     private void OnPlayerCountChanged(PlayersSetup _, PlayersSetup newPlayersSetup)
     {
-        int newPlayersCount = (int)newPlayersSetup;
-        int maxAiPlayers = newPlayersCount - 1;
-        if ((int)this.AiPlayerCount > maxAiPlayers)
-        {
-            this.AiPlayerCount = (AiPlayersSetup)((int)this.AiPlayerCount - 1);
-        }
-
+        int maxAiPlayers = (int)newPlayersSetup - 1;
         this.AiPlayerThree = maxAiPlayers == 3;
         this.AiPlayerTwo = maxAiPlayers == 3 || maxAiPlayers == 2;
         this.AiPlayerOne = maxAiPlayers == 3 || maxAiPlayers == 2 || maxAiPlayers == 1;
@@ -71,11 +65,12 @@ public sealed class SetupViewModel : Bindable<SetupView>
 
     private void OnExit(object? _) => this.Messenger.Publish(ActivatedView.Exit);
 
-    private void OnPlay(object? _)
+    private void OnNext(object? _)
     {
         this.gameOptions.MapSize = this.Size;
         this.gameOptions.Difficulty = this.Difficulty;
         var players = this.gameOptions.Players;
+        players.Clear();
         int ais = (int)this.AiPlayerCount;
         int humans = (int)this.PlayerCount - ais;
         this.Logger.Info(string.Format("Humans: {0} - Computer AI's: {1}", humans, ais));
@@ -90,7 +85,7 @@ public sealed class SetupViewModel : Bindable<SetupView>
             players.Add(new PlayerInfo() { IsHuman = true });
         }
 
-        this.Messenger.Publish(ActivatedView.Game, this.gameOptions);
+        this.Messenger.Publish(ActivatedView.PlayerSetup, this.gameOptions);
     }
 
     public bool DebugVisible { get => this.Get<bool>(); set => this.Set(value); }
@@ -111,7 +106,7 @@ public sealed class SetupViewModel : Bindable<SetupView>
 
     public GameDifficulty Difficulty { get => this.Get<GameDifficulty>(); set => this.Set(value); }
 
-    public ICommand PlayCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+    public ICommand NextCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 }
