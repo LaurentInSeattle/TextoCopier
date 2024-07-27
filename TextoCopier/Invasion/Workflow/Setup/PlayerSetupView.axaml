@@ -38,6 +38,7 @@
 			VerticalAlignment="Center" HorizontalAlignment="Right"
 			FontSize="28"
 			Content="{Binding NextButtonText}"
+			IsEnabled="{Binding IsValid}"
 			Command ="{Binding PlayCommand}"
 			/>
 		<Grid
@@ -86,7 +87,6 @@
 						<ColumnDefinition Width="40" />
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
 					<TextBlock
 						Grid.Column="0" Grid.ColumnSpan="999" Grid.Row="0"
@@ -97,7 +97,15 @@
 					<TextBox
 						Grid.Column="1" Grid.Row="1"
 						VerticalAlignment="Center" HorizontalAlignment="Left"
-						Width="420"
+						Width="300"
+						Text="{Binding PlayerName}"
+						/>
+					<TextBlock
+						Grid.Column="2" Grid.ColumnSpan="999" Grid.Row="1"
+						VerticalAlignment="Center" HorizontalAlignment="Left"
+						Margin="0"
+						Foreground="{StaticResource HighlightBrush}"
+						Text="{Binding PlayerNameValidationMessage}"
 						/>
 					<TextBlock
 						Grid.Column="0" Grid.ColumnSpan="999" Grid.Row="2"
@@ -118,7 +126,7 @@
 							<Rectangle
 								Margin="20 0 0 0"
 								Width="80" Height="28"
-								Fill="{Binding Path=PlayerColor, Converter={StaticResource enumBrushConverter}}, ConverterParameter=Crimson"
+								Fill="Crimson"
 								/>
 						</RadioButton>
 						<RadioButton
@@ -130,7 +138,7 @@
 							<Rectangle
 								Margin="20 0 0 0"
 								Width="80" Height="28"
-								Fill="{Binding Path=PlayerColor, Converter={StaticResource enumBrushConverter}}"
+								Fill="DarkTurquoise"
 								/>
 						</RadioButton>
 						<RadioButton
@@ -142,7 +150,7 @@
 							<Rectangle
 								Margin="20 0 0 0"
 								Width="80" Height="28"
-								Fill="{Binding Path=PlayerColor, Converter={StaticResource enumBrushConverter}}"
+								Fill="DarkOrange"
 								/>
 						</RadioButton>
 						<RadioButton
@@ -154,7 +162,7 @@
 							<Rectangle
 								Margin="20 0 0 0"
 								Width="80" Height="28"
-								Fill="{Binding Path=PlayerColor, Converter={StaticResource enumBrushConverter}}"
+								Fill="HotPink"
 								/>
 						</RadioButton>
 					</StackPanel>

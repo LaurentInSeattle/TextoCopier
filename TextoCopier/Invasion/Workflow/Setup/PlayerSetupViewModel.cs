@@ -1,18 +1,7 @@
 ﻿namespace Lyt.Invasion.Workflow.Setup;
 
+using System.Collections.Generic;
 using static ViewActivationMessage;
-
-//{
-//    MapSize = MapSize.Large,
-//    Difficulty = GameDifficulty.Fair,
-//    Players =
-//    [
-//         new PlayerInfo { Name = "Laurent", IsHuman =true, Color = "Crimson"},
-//         new PlayerInfo { Name = "Annalisa", IsHuman =true, Color = "DarkTurquoise"},
-//         new PlayerInfo { Name = "Oksana", Color = "DarkOrange"},
-//         new PlayerInfo { Name = "Irina", Color = "HotPink"},
-//    ],
-//};
 
 public enum PlayerColor : int
 {
@@ -34,7 +23,12 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
     private PlayerInfo currentPlayer;
     private int currentPlayerIndex;
 
-#pragma warning disable CS8618 
+    private bool playerNameIsValid;
+    private bool playerAvatarIsValid;
+    private bool playerSkillSetIsValid;
+    private List<PlayerColor> availablePlayerColors;
+
+#pragma warning disable CS8618
     // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     // Some non-nullable fields (ex: gameOptions) and properties get assigned when the view model is activated 
     public PlayerSetupViewModel(
@@ -46,6 +40,7 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
         this.invasionModel = invasionModel;
         this.dialogService = dialogService;
         this.toaster = toaster;
+        this.availablePlayerColors = [.. Enum.GetValues<PlayerColor>()];
     }
 
     public override void Activate(object? activationParameters)
@@ -60,37 +55,58 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
         this.humanPlayers = (from player in this.gameOptions.Players where player.IsHuman select player).ToList();
         this.currentPlayerIndex = 0;
         this.currentPlayer = this.humanPlayers[this.currentPlayerIndex];
-        this.UpdateUi();
+
+        this.playerNameIsValid = false;
+        this.playerAvatarIsValid = true; // FOR NOW 
+        this.playerSkillSetIsValid = true; // FOR NOW 
+
+        this.InitializeUi();
+    }
+
+    private void InitializeUi()
+    {
+        if (this.ValidatePlayerName(this.currentPlayer.Name, out string validationMessage))
+        {
+            this.PlayerName = this.currentPlayer.Name.Trim();
+            this.PlayerNameValidationMessage = string.Empty;
+        }
+        else
+        {
+            this.PlayerName = string.Empty;
+            this.PlayerNameValidationMessage = validationMessage;
+        }
+
+        if (Enum.TryParse<PlayerColor>(this.currentPlayer.Color, out PlayerColor playerColor))
+        {
+            this.PlayerColor = playerColor;
+        }
+        else
+        {
+            this.PlayerColor = this.availablePlayerColors[0];
+        }
+
+        this.availablePlayerColors.Remove(this.PlayerColor);
+
+        this.UpdateButton();
+        this.IsValid = this.playerNameIsValid && this.playerAvatarIsValid && this.playerSkillSetIsValid;
+    }
+
+    private void UpdateButton()
+    {
+        if (this.currentPlayerIndex == this.humanPlayers.Count - 1)
+        {
+            this.NextButtonText = "Start the Game!";
+        }
+        else
+        {
+            this.NextButtonText = "Next Player";
+        }
     }
 
     private void UpdateUi()
     {
-        void UpdatePlayerColor()
-        {
-            if (Enum.TryParse<PlayerColor>(this.currentPlayer.Color, out PlayerColor playerColor))
-            {
-                this.PlayerColor = playerColor;
-            }
-            else
-            {
-                throw new Exception("Invalid player string color");
-            }
-        }
-
-        void UpdateButton()
-        {
-            if (this.currentPlayerIndex == this.humanPlayers.Count - 1)
-            {
-                this.NextButtonText = "Start the Game!";
-            }
-            else
-            {
-                this.NextButtonText = "Next Player";
-            }
-        }
-
-        UpdatePlayerColor();
-        UpdateButton();
+        this.UpdateButton();
+        this.IsValid = this.playerNameIsValid && this.playerSkillSetIsValid;
     }
 
 
@@ -101,10 +117,54 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
     }
 
+    private bool ValidatePlayerName(string? playerName, out string validationMessage)
+    {
+        this.playerNameIsValid = false;
+        validationMessage = string.Empty;
+        if (string.IsNullOrEmpty(playerName))
+        {
+            validationMessage = "Cannot be left empty.";
+            return false;
+        }
+
+        playerName = playerName.Trim();
+        if (string.IsNullOrWhiteSpace(playerName))
+        {
+            validationMessage = "Cannot be left empty.";
+            return false;
+        }
+
+       if (playerName.Length < 3)
+        {
+            validationMessage = "Too short.";
+            return false;
+        }
+
+        if (playerName.Length > 32)
+        {
+            validationMessage = "Too long.";
+            return false;
+        }
+
+        this.playerNameIsValid = true;
+        return true;
+    }
+
     #region Methods invoked by the Framework using reflection 
 #pragma warning disable IDE0051 // Remove unused private members
 
-    private void OnPlayerColorChanged (PlayerColor _ , PlayerColor playerColor)
+    private void OnPlayerNameChanged(string? _, string playerName)
+    {
+        if (this.ValidatePlayerName(playerName, out string validationMessage))
+        {
+            this.currentPlayer.Name = playerName.Trim();
+        }
+
+        this.PlayerNameValidationMessage = validationMessage;
+        this.UpdateUi();
+    }
+
+    private void OnPlayerColorChanged(PlayerColor _, PlayerColor playerColor)
     {
         this.currentPlayer.Color = playerColor.ToString();
     }
@@ -118,7 +178,7 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
         else
         {
             // Previous player 
-            -- this.currentPlayerIndex;
+            --this.currentPlayerIndex;
             this.currentPlayer = this.humanPlayers[this.currentPlayerIndex];
             this.UpdateUi();
         }
@@ -126,7 +186,7 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
 
     private void OnPlay(object? _)
     {
-        if (this.currentPlayerIndex == this.humanPlayers.Count - 1 )
+        if (this.currentPlayerIndex == this.humanPlayers.Count - 1)
         {
             this.Messenger.Publish(ActivatedView.Game, this.gameOptions);
         }
@@ -148,4 +208,10 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
     public string? NextButtonText { get => this.Get<string?>(); set => this.Set(value); }
 
     public PlayerColor PlayerColor { get => this.Get<PlayerColor>(); set => this.Set(value); }
+
+    public string? PlayerName { get => this.Get<string?>(); set => this.Set(value); }
+
+    public string? PlayerNameValidationMessage { get => this.Get<string?>(); set => this.Set(value); }
+
+    public bool IsValid { get => this.Get<bool>(); set => this.Set(value); }
 }

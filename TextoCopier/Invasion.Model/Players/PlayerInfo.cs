@@ -5,11 +5,11 @@ public sealed class PlayerInfo
 {
     public bool IsHuman { get; set; }
 
-    public string Name { get; set; }  = "<No Name>";
+    public string Name { get; set; }  = string.Empty;
 
-    public string EmpireName { get; set; } = "<No Empire Name>";
+    public string EmpireName { get; set; } = string.Empty;
 
     public string Avatar { get; set; } = string.Empty;
 
-    public string Color { get; set; } = "DarkTurquoise";
+    public string Color { get; set; } = string.Empty;
 }
