@@ -35,8 +35,6 @@ public sealed class SetupViewModel : Bindable<SetupView>
         this.dialogService = dialogService;
         this.toaster = toaster;
 
-        this.NotifyPropertyChanged(nameof(this.PlayerCount));
-
         this.PlayerCount = PlayersSetup.Duel;
         this.AiPlayerCount = AiPlayersSetup.One;
         this.Size = MapSize.Medium;
@@ -51,6 +49,9 @@ public sealed class SetupViewModel : Bindable<SetupView>
         string msgMethod = string.IsNullOrWhiteSpace(message.MethodName) ? "<unknown>" : message.MethodName;
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
     }
+
+    #region Methods invoked by the Framework using reflection 
+#pragma warning disable IDE0051 // Remove unused private members
 
     private void OnPlayerCountChanged(PlayersSetup _, PlayersSetup newPlayersSetup)
     {
@@ -85,6 +86,9 @@ public sealed class SetupViewModel : Bindable<SetupView>
 
         this.Messenger.Publish(ActivatedView.PlayerSetup, this.gameOptions);
     }
+
+#pragma warning restore IDE0051
+    #endregion Methods invoked by the Framework using reflection 
 
     public bool DebugVisible { get => this.Get<bool>(); set => this.Set(value); }
 

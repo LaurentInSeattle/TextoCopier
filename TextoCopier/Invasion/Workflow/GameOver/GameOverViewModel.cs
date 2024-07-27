@@ -26,9 +26,15 @@ public sealed class GameOverViewModel : Bindable<GameOverView>
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
     }
 
+    #region Methods invoked by the Framework using reflection 
+#pragma warning disable IDE0051 // Remove unused private members
+
     private void OnExit(object? _) => this.Messenger.Publish(ActivatedView.Exit);
 
     private void OnPlay(object? _) => this.Messenger.Publish(ActivatedView.Setup);
+
+#pragma warning restore IDE0051
+    #endregion Methods invoked by the Framework using reflection 
 
     public ICommand PlayCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 

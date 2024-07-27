@@ -11,8 +11,6 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
         this.messenger = messenger;
         this.localizer = localizer;
         this.templatesModel = templatesModel;
-        this.CloseCommand = new Command(this.OnClose);
-        this.SaveCommand = new Command(this.OnSave);
     }
 
     public Group? EditedGroup { get; private set; }

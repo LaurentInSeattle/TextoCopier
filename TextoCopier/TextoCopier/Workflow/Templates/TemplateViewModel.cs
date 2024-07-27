@@ -19,11 +19,6 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
         this.Name = template.Name;
         this.Value = template.Value;
         this.MaskedValue = template.ShouldHide ? "••••••••••" : this.Value;
-        this.CopyCommand = new Command(this.OnCopy);
-        this.EditCommand = new Command(this.OnEdit);
-        this.DeleteCommand = new Command(this.OnDelete);
-        this.LinkCommand = new Command(this.OnLink);
-        this.ViewCommand = new Command(this.OnView);
     }
 
     public bool ShowLink => this.template.IsLink;

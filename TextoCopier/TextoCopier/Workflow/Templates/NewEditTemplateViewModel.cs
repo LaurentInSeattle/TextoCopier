@@ -12,8 +12,6 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
         this.localizer = localizer;
         this.templatesModel = templatesModel;
 
-        this.CloseCommand = new Command(this.OnClose);
-        this.SaveCommand = new Command(this.OnSave);
         this.SelectedGroup = new();
     }
 

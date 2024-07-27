@@ -14,7 +14,6 @@ public class GroupIconViewModel : Bindable<GroupIconView>
         this.IconText = group.Name;
         this.SelectionGroup = selectionGroup;
         this.IsSelected = selected;
-        this.GroupCommand = new Command(this.OnGroup);
     }
 
     private void OnGroup(object? _)

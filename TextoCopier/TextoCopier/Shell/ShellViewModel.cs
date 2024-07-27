@@ -26,12 +26,6 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
 
         this.Groups = [];
-        this.SettingsCommand = new Command(this.OnSettings);
-        this.AboutCommand = new Command(this.OnAbout);
-        this.ExitCommand = new Command(this.OnExit);
-        this.NewGroupCommand = new Command(this.OnNewGroup);
-        this.EditGroupCommand = new Command(this.OnEditGroup);
-        this.DeleteGroupCommand = new Command(this.OnDeleteGroup);
     }
 
     protected override void OnViewLoaded()

@@ -21,8 +21,6 @@ public sealed class SettingsViewModel : Bindable<SettingsView>
         this.localizer = localizer;
         this.templatesModel = templatesModel;
 
-        this.CloseCommand = new Command(this.OnClose);
-        this.SaveCommand = new Command(this.OnSave);
         this.SelectedLanguage = this.LanguageToIndex(this.templatesModel.Language);
     }
 

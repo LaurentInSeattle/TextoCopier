@@ -14,7 +14,6 @@ public sealed class GroupViewModel : Bindable<GroupView>
 
         this.templatesModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
         this.Templates = [];
-        this.NewTemplateCommand = new Command(this.OnNewTemplate);
     }
 
     private void OnNewTemplate(object? _)

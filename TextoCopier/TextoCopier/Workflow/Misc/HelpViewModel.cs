@@ -10,7 +10,6 @@ public sealed class HelpViewModel : Bindable<HelpView>
         this.DisablePropertyChangedLogging = true; 
         this.messenger = messenger;
         this.localizerModel = localizerModel;
-        this.CloseCommand = new Command(this.OnClose);
     }
 
     protected override void OnViewLoaded()  => this.About = this.localizerModel.LookupResource("About");

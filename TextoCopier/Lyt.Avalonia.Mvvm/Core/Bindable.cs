@@ -1,4 +1,7 @@
-﻿namespace Lyt.Avalonia.Mvvm.Core;
+﻿using Avalonia.Data.Core;
+using System.Reflection;
+
+namespace Lyt.Avalonia.Mvvm.Core;
 
 [AttributeUsage(AttributeTargets.Property)]
 public class DoNotLogAttribute : Attribute { }
@@ -23,7 +26,17 @@ public class Bindable : NotifyPropertyChanged
 
         this.properties = [];
         this.actions = [];
-        this.CreateAndBindCommands();
+
+        try
+        {
+            this.CreateAndBindCommands();
+            this.CreateAndBindPropertyChangedActions();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("Failed to bind commands and property changed actions \n" + ex.ToString());
+            throw;
+        }
     }
 
     public ILogger Logger { get; private set; }
@@ -108,71 +121,6 @@ public class Bindable : NotifyPropertyChanged
     /// <summary> Usually invoked when this bindable is about to be hidden, and same as above. </summary>
     public virtual void Deactivate() => this.LogDeactivation();
 
-    public void CreateAndBindCommands()
-    {
-        PropertyInfo[] propertyInfos =
-            this.GetType().GetProperties(
-                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.InvokeMethod);
-        if (propertyInfos is null || propertyInfos.Length == 0)
-        {
-            return;
-        }
-
-        foreach (PropertyInfo property in propertyInfos)
-        {
-            string propertyName = property.Name;
-            if (!propertyName.EndsWith("Command"))
-            {
-                continue;
-            }
-
-            if (property.PropertyType.Name != "ICommand")
-            {
-                continue;
-            }
-
-            if (this.properties.TryGetValue(propertyName, out object? value) && (value is not null))
-            {
-                continue;
-            }
-
-            string name = property.Name.Replace("Command", "");
-            string methodName = string.Format("On{0}", name);
-
-            MethodInfo? methodInfo =
-                this.GetType().GetMethod(
-                    methodName,
-                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.InvokeMethod);
-            if (methodInfo is null)
-            {
-                continue;
-            }
-
-            this.properties[propertyName] = new Command(methodInfo, this);
-            this.OnPropertyChanged(propertyName);
-            this.Logger.Info(
-                string.Format("{0}: Command {1} has been bound to {2}", this.GetType().Name, propertyName, methodName)); 
-        }
-    }
-
-    public void NotifyPropertyChanged(string propertyName)
-    {
-        string methodName = string.Format("On{0}Changed", propertyName);
-        var methodInfo =
-            this.GetType().GetMethod(
-                methodName,
-                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.InvokeMethod);
-        if (methodInfo is null)
-        {
-            this.Logger.Warning("Missing property changed handler: " + methodName);
-            return;
-        }
-
-        this.actions.Add(propertyName, methodInfo);
-        this.Logger.Info(
-            string.Format("{0}: Changes of property {1} have been bound to {2}", this.GetType().Name, propertyName, methodName));
-    }
-
     /// <summary> Gets the value of a property </summary>
     protected T? Get<T>([CallerMemberName] string? name = null)
     {
@@ -228,6 +176,94 @@ public class Bindable : NotifyPropertyChanged
         }
 
         this.properties.Clear();
+    }
+
+    private void CreateAndBindCommands()
+    {
+        PropertyInfo[] propertyInfos =
+            this.GetType().GetProperties(
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.InvokeMethod);
+        if (propertyInfos is null || propertyInfos.Length == 0)
+        {
+            return;
+        }
+
+        foreach (PropertyInfo property in propertyInfos)
+        {
+            string propertyName = property.Name;
+            if (!propertyName.EndsWith("Command"))
+            {
+                continue;
+            }
+
+            if (property.PropertyType.Name != "ICommand")
+            {
+                continue;
+            }
+
+            if (this.properties.TryGetValue(propertyName, out object? value) && (value is not null))
+            {
+                continue;
+            }
+
+            string name = property.Name.Replace("Command", "");
+            string methodName = string.Format("On{0}", name);
+
+            MethodInfo? methodInfo =
+                this.GetType().GetMethod(
+                    methodName,
+                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.InvokeMethod);
+            if (methodInfo is null)
+            {
+                continue;
+            }
+
+            this.properties[propertyName] = new Command(methodInfo, this);
+            this.OnPropertyChanged(propertyName);
+            this.Logger.Info(
+                string.Format("{0}: Command {1} has been bound to {2}", this.GetType().Name, propertyName, methodName));
+        }
+    }
+
+    private void CreateAndBindPropertyChangedActions()
+    {
+        var type = this.GetType();
+        var methodInfos =
+            type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.InvokeMethod);
+        if (methodInfos is null || methodInfos.Length == 0)
+        {
+            this.Logger.Warning("Could not retreive instance methods for " + type.Name);
+            return;
+        }
+
+        foreach (MethodInfo methodInfo in methodInfos)
+        {
+            string methodName = methodInfo.Name;
+            if (!methodName.EndsWith("Changed"))
+            {
+                continue;
+            }
+
+            if (!methodName.StartsWith("On"))
+            {
+                continue;
+            }
+
+            string propertyName = methodInfo.Name.Replace("Changed", "");
+            propertyName = propertyName.Replace("On", "");
+            PropertyInfo? propertyInfo =
+                type.GetProperty(
+                    propertyName,
+                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.InvokeMethod);
+            if (propertyInfo is null)
+            {
+                continue;
+            }
+
+            this.actions.Add(propertyName, methodInfo);
+            this.Logger.Info(
+                string.Format("{0}: Changes of property {1} have been bound to {2}", type.Name, propertyName, methodName));
+        }
     }
 
     #region Debug Utilities 
