@@ -1,7 +1,4 @@
-﻿using Avalonia.Data.Core;
-using System.Reflection;
-
-namespace Lyt.Avalonia.Mvvm.Core;
+﻿namespace Lyt.Avalonia.Mvvm.Core;
 
 [AttributeUsage(AttributeTargets.Property)]
 public class DoNotLogAttribute : Attribute { }
@@ -180,8 +177,10 @@ public class Bindable : NotifyPropertyChanged
 
     private void CreateAndBindCommands()
     {
+        var type = this.GetType();
+        Debug.WriteLine("CreateAndBindCommands: " + type.Name);
         PropertyInfo[] propertyInfos =
-            this.GetType().GetProperties(
+            type.GetProperties(
                 BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.InvokeMethod);
         if (propertyInfos is null || propertyInfos.Length == 0)
         {
@@ -210,7 +209,7 @@ public class Bindable : NotifyPropertyChanged
             string methodName = string.Format("On{0}", name);
 
             MethodInfo? methodInfo =
-                this.GetType().GetMethod(
+                type.GetMethod(
                     methodName,
                     BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.InvokeMethod);
             if (methodInfo is null)
@@ -221,13 +220,14 @@ public class Bindable : NotifyPropertyChanged
             this.properties[propertyName] = new Command(methodInfo, this);
             this.OnPropertyChanged(propertyName);
             this.Logger.Info(
-                string.Format("{0}: Command {1} has been bound to {2}", this.GetType().Name, propertyName, methodName));
+                string.Format("{0}: Command {1} has been bound to {2}", type.Name, propertyName, methodName));
         }
     }
 
     private void CreateAndBindPropertyChangedActions()
     {
         var type = this.GetType();
+        Debug.WriteLine("CreateAndBindPropertyChangedActions: " + type.Name);
         var methodInfos =
             type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.InvokeMethod);
         if (methodInfos is null || methodInfos.Length == 0)

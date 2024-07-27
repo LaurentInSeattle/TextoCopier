@@ -259,20 +259,5 @@ public sealed class GameViewModel : Bindable<GameView>
         }
     }
 
-    private static Color PlayerToColor(Player player)
-    {
-        var type = typeof(Colors);
-        var colorProperty = type.GetProperty(player.Color, BindingFlags.Static | BindingFlags.Public);
-        if (colorProperty is not null)
-        {
-            var getMethod = colorProperty.GetGetMethod();
-            object? colorObject = getMethod?.Invoke(null, null);
-            if (colorObject is Color color)
-            {
-                return color;
-            }
-        }
-
-        throw new Exception("Invalid player color");
-    }
+    private static Color PlayerToColor(Player player) => player.Color.ColorNameToColor();
 }

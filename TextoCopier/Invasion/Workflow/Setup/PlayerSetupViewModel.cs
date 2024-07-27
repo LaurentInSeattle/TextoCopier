@@ -16,10 +16,10 @@ using static ViewActivationMessage;
 
 public enum PlayerColor : int
 {
-    Red = 0, 
-    Blue = 1,
-    Orange = 2,
-    Magenta = 3,
+    Crimson = 0,
+    DarkTurquoise = 1,
+    DarkOrange = 2,
+    HotPink = 3,
 }
 
 public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
@@ -60,7 +60,20 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
         this.humanPlayers = (from player in this.gameOptions.Players where player.IsHuman select player).ToList();
         this.currentPlayerIndex = 0;
         this.currentPlayer = this.humanPlayers[this.currentPlayerIndex];
+        this.UpdatePlayerColor();
         this.UpdateButton();
+    }
+
+    private void UpdatePlayerColor()
+    {
+        if (Enum.TryParse<PlayerColor>( this.currentPlayer.Color , out PlayerColor playerColor))
+        {
+            this.PlayerColor = playerColor;
+        }
+        else
+        {
+            throw new Exception("Invalid player string color");
+        }
     }
 
     private void UpdateButton()
@@ -84,6 +97,11 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
 
     #region Methods invoked by the Framework using reflection 
 #pragma warning disable IDE0051 // Remove unused private members
+
+    private void OnPlayerColorChanged (PlayerColor _ , PlayerColor playerColor)
+    {
+        this.currentPlayer.Color = playerColor.ToString();
+    }
 
     private void OnBack(object? _)
     {

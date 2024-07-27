@@ -17,7 +17,7 @@
 			<RowDefinition Height="100"/>
 		</Grid.RowDefinitions>
 		<TextBlock
-			Text="Your options and skills"
+			Text="Options and skills"
 			VerticalAlignment="Center" HorizontalAlignment="Center"
 			Margin="0 0 0 0"
 			FontSize="80"
@@ -97,6 +97,7 @@
 					<TextBox
 						Grid.Column="1" Grid.Row="1"
 						VerticalAlignment="Center" HorizontalAlignment="Left"
+						Width="420"
 						/>
 					<TextBlock
 						Grid.Column="0" Grid.ColumnSpan="999" Grid.Row="2"
@@ -104,14 +105,59 @@
 						Margin="24 0 0 0"
 						Text="Your color"
 						/>
-					<RadioButton
-						Grid.Column="1" Grid.Row="3"
-						Content="Blue"
-						GroupName="PlayerColorGroup"
-						VerticalAlignment="Center" HorizontalAlignment="Left"
-						IsChecked="{Binding Path=PlayerColor, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Blue}"
-						/>
-					<!-- Five more colours here -->
+					<StackPanel
+						Orientation="Horizontal"
+						Grid.Column="1"  Grid.ColumnSpan="3" Grid.Row="3"
+						>
+						<RadioButton
+							Width="180"
+							GroupName="PlayerColorGroup"
+							VerticalAlignment="Center" HorizontalAlignment="Left"
+							IsChecked="{Binding Path=PlayerColor, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Crimson}"
+							>
+							<Rectangle
+								Margin="20 0 0 0"
+								Width="80" Height="28"
+								Fill="{Binding Path=PlayerColor, Converter={StaticResource enumBrushConverter}}, ConverterParameter=Crimson"
+								/>
+						</RadioButton>
+						<RadioButton
+							Width="180"
+							GroupName="PlayerColorGroup"
+							VerticalAlignment="Center" HorizontalAlignment="Left"
+							IsChecked="{Binding Path=PlayerColor, Converter={StaticResource enumBooleanConverter}, ConverterParameter=DarkTurquoise}"
+							>
+							<Rectangle
+								Margin="20 0 0 0"
+								Width="80" Height="28"
+								Fill="{Binding Path=PlayerColor, Converter={StaticResource enumBrushConverter}}"
+								/>
+						</RadioButton>
+						<RadioButton
+							Width="180"
+							GroupName="PlayerColorGroup"
+							VerticalAlignment="Center" HorizontalAlignment="Left"
+							IsChecked="{Binding Path=PlayerColor, Converter={StaticResource enumBooleanConverter}, ConverterParameter=DarkOrange}"
+							>
+							<Rectangle
+								Margin="20 0 0 0"
+								Width="80" Height="28"
+								Fill="{Binding Path=PlayerColor, Converter={StaticResource enumBrushConverter}}"
+								/>
+						</RadioButton>
+						<RadioButton
+							Width="180"
+							GroupName="PlayerColorGroup"
+							VerticalAlignment="Center" HorizontalAlignment="Left"
+							IsChecked="{Binding Path=PlayerColor, Converter={StaticResource enumBooleanConverter}, ConverterParameter=HotPink}"
+							>
+							<Rectangle
+								Margin="20 0 0 0"
+								Width="80" Height="28"
+								Fill="{Binding Path=PlayerColor, Converter={StaticResource enumBrushConverter}}"
+								/>
+						</RadioButton>
+					</StackPanel>
 
 					<TextBlock
 						Grid.Column="0" Grid.ColumnSpan="999" Grid.Row="5"

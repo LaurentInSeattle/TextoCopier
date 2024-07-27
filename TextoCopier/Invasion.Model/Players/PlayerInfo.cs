@@ -11,5 +11,5 @@ public sealed class PlayerInfo
 
     public string Avatar { get; set; } = string.Empty;
 
-    public string Color { get; set; } = "DodgerBlue";
+    public string Color { get; set; } = "DarkTurquoise";
 }
