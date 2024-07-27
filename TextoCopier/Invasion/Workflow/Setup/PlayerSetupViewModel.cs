@@ -60,33 +60,39 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
         this.humanPlayers = (from player in this.gameOptions.Players where player.IsHuman select player).ToList();
         this.currentPlayerIndex = 0;
         this.currentPlayer = this.humanPlayers[this.currentPlayerIndex];
-        this.UpdatePlayerColor();
-        this.UpdateButton();
+        this.UpdateUi();
     }
 
-    private void UpdatePlayerColor()
+    private void UpdateUi()
     {
-        if (Enum.TryParse<PlayerColor>( this.currentPlayer.Color , out PlayerColor playerColor))
+        void UpdatePlayerColor()
         {
-            this.PlayerColor = playerColor;
+            if (Enum.TryParse<PlayerColor>(this.currentPlayer.Color, out PlayerColor playerColor))
+            {
+                this.PlayerColor = playerColor;
+            }
+            else
+            {
+                throw new Exception("Invalid player string color");
+            }
         }
-        else
+
+        void UpdateButton()
         {
-            throw new Exception("Invalid player string color");
+            if (this.currentPlayerIndex == this.humanPlayers.Count - 1)
+            {
+                this.NextButtonText = "Start the Game!";
+            }
+            else
+            {
+                this.NextButtonText = "Next Player";
+            }
         }
+
+        UpdatePlayerColor();
+        UpdateButton();
     }
 
-    private void UpdateButton()
-    {
-        if (this.currentPlayerIndex == this.humanPlayers.Count - 1)
-        {
-            this.NextButtonText = "Start the Game!";
-        } 
-        else
-        {
-            this.NextButtonText = "Next Player";
-        }
-    }
 
     private void OnModelUpdated(ModelUpdateMessage message)
     {
@@ -114,7 +120,7 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
             // Previous player 
             -- this.currentPlayerIndex;
             this.currentPlayer = this.humanPlayers[this.currentPlayerIndex];
-            this.UpdateButton();
+            this.UpdateUi();
         }
     }
 
@@ -129,7 +135,7 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
             // Next player 
             ++this.currentPlayerIndex;
             this.currentPlayer = this.humanPlayers[this.currentPlayerIndex];
-            this.UpdateButton();
+            this.UpdateUi();
         }
     }
 #pragma warning restore IDE0051
