@@ -5,9 +5,9 @@ public enum Age
     Stone, 
     Bronze, 
     Classical,
-    Medieval, 
-    Enlightenment,
+    Medieval,    
+    Discovery,
+    Industrial, 
     Modern,
-    Computer,
-    Space,
+    Information,
 }

@@ -77,6 +77,8 @@ global using Lyt.Invasion.Model.Players;
 global using Lyt.Invasion.Shell;
 global using Lyt.Invasion.Utilities;
 global using Lyt.Invasion.Workflow.Gameplay;
+global using Lyt.Invasion.Workflow.Gameplay.Regions;
+global using Lyt.Invasion.Workflow.Gameplay.Players;
 global using Lyt.Invasion.Workflow.GameOver;
 global using Lyt.Invasion.Workflow.Setup;
 global using Lyt.Invasion.Workflow.GameIntro;

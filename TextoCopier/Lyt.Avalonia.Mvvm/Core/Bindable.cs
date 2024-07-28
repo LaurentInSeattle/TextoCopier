@@ -7,6 +7,12 @@ public class DoNotLogAttribute : Attribute { }
 /// <remarks> All bound properties are held in a dictionary.</remarks>
 public class Bindable : NotifyPropertyChanged
 {
+    /// <summary> The property currently being set. </summary>
+    /// <remarks> 
+    /// Needed in some special cases to prevent spurious calls to Set from Avalonia controls, such as the radio button.
+    /// </remarks>
+    private string setPropertyName;
+
     public Bindable()
     {
         try
@@ -21,6 +27,7 @@ public class Bindable : NotifyPropertyChanged
             throw;
         }
 
+        this.setPropertyName = string.Empty;
         this.properties = [];
         this.actions = [];
 
@@ -130,10 +137,6 @@ public class Bindable : NotifyPropertyChanged
         return this.properties.TryGetValue(name, out object? value) ? value == null ? default : (T)value : default;
     }
 
-
-    /// <summary> The property currently being set. </summary>
-    private string setProperty; 
-
     /// <summary> Sets the value of a property </summary>
     /// <returns> True, if the value was changed, false otherwise. </returns>
     protected bool Set<T>(T? value, [CallerMemberName] string? name = null)
@@ -144,13 +147,13 @@ public class Bindable : NotifyPropertyChanged
             throw new Exception("Set property: no name");
         }
 
-        if ( this.setProperty == name )
+        if (this.setPropertyName == name)
         {
-            this.setProperty = string.Empty;
-            return false; 
+            this.setPropertyName = string.Empty;
+            return false;
         }
 
-        this.setProperty = name;
+        this.setPropertyName = name;
         T? current = this.Get<T>(name);
         if (Equals(value, current))
         {
@@ -169,7 +172,7 @@ public class Bindable : NotifyPropertyChanged
             methodInfo.Invoke(this, [current, value]);
         }
 
-        this.setProperty = string.Empty;
+        this.setPropertyName = string.Empty;
         return true;
     }
 

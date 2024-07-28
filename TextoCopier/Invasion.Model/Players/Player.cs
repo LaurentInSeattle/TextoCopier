@@ -62,7 +62,7 @@ public abstract class Player
 
     private Dictionary<ActorKind, int> CreateInitialPopulation()
     {
-        Dictionary<ActorKind, int> population = new();
+        Dictionary<ActorKind, int> population = [];
         return population;
     }
 }
