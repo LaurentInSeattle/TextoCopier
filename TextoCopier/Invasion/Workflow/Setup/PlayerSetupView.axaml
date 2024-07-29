@@ -95,6 +95,7 @@
 						Text="Your name"
 						/>
 					<TextBox
+						x:Name="NameTextBox"
 						Grid.Column="1" Grid.Row="1"
 						VerticalAlignment="Center" HorizontalAlignment="Left"
 						Width="300"

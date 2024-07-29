@@ -21,6 +21,7 @@ public sealed class RegionViewModel : Bindable<RegionView>
         this.invasionModel = invasionModel;
         this.dialogService = dialogService;
         this.toaster = toaster;
+        this.Messenger.Subscribe<RegionSelectMessage>(this.OnRegionSelect); 
     }
 
     public override void Activate(object? activationParameters)
@@ -32,8 +33,13 @@ public sealed class RegionViewModel : Bindable<RegionView>
         }
 
         this.region = region;
+        Dispatch.OnUiThread(() => { this.UpdateUi(); });
+    }
 
-        //Dispatch.OnUiThread(() => { this.UpdateUi(); });
+    private void OnRegionSelect(RegionSelectMessage message)
+    {
+        this.region = message.Region;
+        this.UpdateUi();
     }
 
     private void UpdateUi()

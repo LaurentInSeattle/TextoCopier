@@ -264,11 +264,11 @@ public sealed class Game
         if (playerCount == 2)
         {
             int x1 = width / 4 + this.Random.Next(-30, 10);
-            int y1 = height / 2 + this.Random.Next(-50, 50);
+            int y1 = height / 2 + this.Random.Next(-50, 50) - height / 6;
             initialPositions.Add(new Coordinate(x1, y1));
 
             int x2 = 3 * width / 4 + this.Random.Next(-10, 30); ;
-            int y2 = height / 2 + this.Random.Next(-50, 50);
+            int y2 = height / 2 + this.Random.Next(-50, 50) + height / 6;
             initialPositions.Add(new Coordinate(x2, y2));
         }
         else if (playerCount == 3)

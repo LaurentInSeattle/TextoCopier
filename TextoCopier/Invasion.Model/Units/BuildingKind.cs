@@ -1,44 +1,80 @@
 ﻿namespace Lyt.Invasion.Model.Units;
 
+public enum BuildingCategories
+{
+    Resources,
+    Military,
+    Clergy,
+    Education,
+    Civics,
+    Energy,
+}
+
 public enum BuildingKind
 {
     // Resources 
     Farm,
     Port,
     LumberCamp,
-    Workshop, 
+    Workshop,
     Blacksmith,
-    Factory, 
-    Quarry, 
-    Mine, 
+    Factory,
+    Quarry,
+    Mine,
+    OilRigs,
 
     // Military
+    Camp,
     Fort,
     Castle,
-    Barracks, 
+    Barracks,
     Archery,
     AirBase,
     SpacePort,
+    MissileSilo,
 
     // Clergy
+    StoneCircle,
     Temple,
-    Church, 
+    Cathedral,
+    Church,
+    Mosque,
+    ShintoShrine,
+    ChinSweeTower,
+    Mausoleum,
 
     // Education
-    School, 
     Library,
+    Daycare,
+    School,
+    College,
     University,
+    TechnologyCampus, 
     ResearchCenter,
+    ScienceAcademy,
 
     // Civics
-    TradingPost, // Market, 
+    TradingPost,
+    Market,
     CityHall,
-    Clinic, 
-    Hospital, 
+    Clinic,
+    Hospital,
+    Museum,
+    Stadium,
+    SportComplex,
+    BusinessPark,
+    Landfill,
+    WaterTreatment,
+    RecyclingCenter,
+    ShoppingMall,
 
     // Energy 
+    HydropowerDam,
     CoalPlant,
     WindFarm,
-    SolarField,    
-    NuclearPLant
+    SolarField,
+    NuclearPlant,
+    Refinery,
+    GeothermalPlant,
+    QuantumFluxGenerator,
 }

@@ -1,5 +1,6 @@
 ﻿namespace Lyt.Invasion.Workflow.Gameplay;
 
+using Lyt.Invasion.Model.GameControl;
 using static ViewActivationMessage;
 
 public sealed class GameViewModel : Bindable<GameView>
@@ -17,7 +18,9 @@ public sealed class GameViewModel : Bindable<GameView>
     private readonly LocalizerModel localizer;
     private readonly InvasionModel invasionModel;
 
-#pragma warning disable CS8618 
+    private Region? hoveredRegion;
+
+#pragma warning disable CS8618
     // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     // Some non-nullable fields and properties get assigned when the view model is activated 
     public GameViewModel(
@@ -29,6 +32,17 @@ public sealed class GameViewModel : Bindable<GameView>
         this.invasionModel = invasionModel;
         this.dialogService = dialogService;
         this.toaster = toaster;
+    }
+
+    protected override void OnViewLoaded()
+    {
+        base.OnViewLoaded();
+
+        // Create and bind child views 
+        var regionVm = App.GetRequiredService<RegionViewModel>();
+        regionVm.Bind(this.View.RegionView);
+        var playerVm = App.GetRequiredService<PlayerViewModel>();
+        playerVm.Bind(this.View.PlayerView);
     }
 
     public override void Activate(object? activationParameters)
@@ -260,4 +274,36 @@ public sealed class GameViewModel : Bindable<GameView>
     }
 
     private static Color PlayerToColor(Player player) => player.Color.ColorNameToColor();
+
+    public void OnPointerPressedOnMap(Point point, KeyModifiers keyModifiers)
+    {
+        var game = this.invasionModel.Game;
+        if (game is null)
+        {
+            return;
+        }
+
+        var map = game.Map;
+        int regionIndex = map.PixelMap.RegionAt((int)point.X, (int)point.Y);
+        var region = map.Regions[regionIndex];
+        this.Messenger.Publish(new RegionSelectMessage(region, PointerAction.Clicked, keyModifiers));
+    }
+
+    public void OnPointerMovedOnMap(Point point, KeyModifiers keyModifiers)
+    {
+        var game = this.invasionModel.Game;
+        if (game is null)
+        {
+            return;
+        }
+
+        var map = game.Map;
+        int regionIndex = map.PixelMap.RegionAt((int) point.X, (int)point.Y);
+        var region = map.Regions[regionIndex];
+        if ((this.hoveredRegion is null) || (this.hoveredRegion != region))
+        {
+            this.Messenger.Publish(new RegionSelectMessage(region, PointerAction.Hovered, keyModifiers));
+            this.hoveredRegion = region;
+        }
+    }
 }

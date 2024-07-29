@@ -8,4 +8,8 @@
     xmlns:vm="clr-namespace:Lyt.Invasion.Workflow.Gameplay.Regions"
     x:DataType="vm:RegionViewModel" 
     >
+	<Grid
+		Background="#40604080"
+		>		
+	</Grid>
 </UserControl>

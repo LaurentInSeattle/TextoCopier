@@ -8,4 +8,8 @@
     xmlns:vm="clr-namespace:Lyt.Invasion.Workflow.Gameplay.Players"
     x:DataType="vm:PlayerViewModel" 
 	>
- </UserControl>
+	<Grid
+		Background="#404020F0"
+		>
+	</Grid>
+</UserControl>

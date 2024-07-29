@@ -94,7 +94,8 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
         this.IsDarkTurquoiseEnabled = this.availablePlayerColors.Contains(PlayerColor.DarkTurquoise);
         this.IsDarkOrangeEnabled = this.availablePlayerColors.Contains(PlayerColor.DarkOrange);
 
-        this.PlayerColor = playerColor; 
+        this.PlayerColor = playerColor;
+        this.currentPlayer.Color = playerColor.ToString();
 
         this.UpdateButton();
         this.IsValid = this.playerNameIsValid && this.playerAvatarIsValid && this.playerSkillSetIsValid;
@@ -161,7 +162,7 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
 
     private void CreateAiPlayers()
     {
-        int playerRank = 1; 
+        int playerRank = 1;
         foreach (PlayerInfo playerInfo in this.gameOptions.Players)
         {
             if (playerInfo.IsHuman)
@@ -173,7 +174,7 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
             // More fields: Avatar, Empire, Skills 
             playerInfo.Name = string.Format("Computer_{0}", playerRank);
             playerInfo.Color = this.availablePlayerColors[0].ToString();
-            ++ playerRank;
+            ++playerRank;
             this.availablePlayerColors.RemoveAt(0);
         }
     }
@@ -218,6 +219,13 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
     {
         if (this.currentPlayerIndex == this.humanPlayers.Count - 1)
         {
+            // Update colors available for AI players 
+            this.availablePlayerColors = [.. Enum.GetValues<PlayerColor>()];
+            foreach (var human in humanPlayers)
+            {
+                this.availablePlayerColors.Remove(Enum.Parse<PlayerColor>(human.Color));
+            }
+
             // Finish up creating players, and restore all colours in case we play a second game
             this.CreateAiPlayers();
             this.availablePlayerColors = [.. Enum.GetValues<PlayerColor>()];
