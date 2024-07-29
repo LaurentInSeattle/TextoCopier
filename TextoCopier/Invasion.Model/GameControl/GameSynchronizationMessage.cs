@@ -4,6 +4,9 @@ public enum MessageKind
 {
     None = 0,
     Abort,
+    GameOver, 
+
+    Test,
 }
 
 public sealed class GameSynchronizationRequest(MessageKind message, object? gameData = null)

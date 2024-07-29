@@ -221,7 +221,7 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
         {
             // Update colors available for AI players 
             this.availablePlayerColors = [.. Enum.GetValues<PlayerColor>()];
-            foreach (var human in humanPlayers)
+            foreach (var human in this.humanPlayers)
             {
                 this.availablePlayerColors.Remove(Enum.Parse<PlayerColor>(human.Color));
             }

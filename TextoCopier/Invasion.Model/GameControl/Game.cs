@@ -99,7 +99,7 @@ public sealed class Game
         await Task.Delay(200);
         if (this.IsTerminated)
         {
-            return; 
+            return;
         }
 
         this.OnGameSynchronizationResponse(new GameSynchronizationResponse(MessageKind.Abort));
@@ -122,20 +122,19 @@ public sealed class Game
         }
 
         // Uh Oh ...
-        throw new Exception("Failed to terminate the game thread"); 
+        throw new Exception("Failed to terminate the game thread");
     }
 
     public void Start()
     {
         this.cancellationTokenSource = new CancellationTokenSource();
         this.cancellationToken = this.cancellationTokenSource.Token;
-        this.blockingQueue = new BlockingCollection<GameSynchronizationResponse>();
+        this.blockingQueue = new BlockingCollection<GameSynchronizationResponse>(16);
         this.Messenger.Subscribe<GameSynchronizationResponse>(this.OnGameSynchronizationResponse);
 
         // Launch the game thread 
         //     Creates and starts a task for the specified action delegate, state, cancellation
-        //     token, creation options and task scheduler.
-        //
+        //     token, creation options and the default task scheduler.
         this.gameTask = Task.Factory.StartNew(
             this.GameThread, new object(), this.cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
     }
@@ -149,20 +148,24 @@ public sealed class Game
         }
     }
 
-    private void GameThread(object? _)
+    private async void GameThread(object? _)
     {
+        bool aborted = false;
         try
         {
-            this.GameLoop(this.cancellationToken);
+            // Wait a bit so that the UI has time to load the map and the rest of the UI widgets
+            await Task.Delay(250);
+            await this.GameLoop(this.cancellationToken);
         }
         catch (Exception ex)
         {
+            aborted = true;
             this.Logger.Warning(ex.Message);
             Debug.WriteLine(ex);
         }
 
         this.IsTerminated = true;
-        if (this.blockingQueue is not null )
+        if (this.blockingQueue is not null)
         {
             this.blockingQueue.CompleteAdding();
             this.blockingQueue.Dispose();
@@ -173,18 +176,29 @@ public sealed class Game
             this.cancellationTokenSource.Dispose();
             this.cancellationTokenSource = null;
         }
+
+        if (aborted)
+        {
+            this.Notify(MessageKind.Abort);
+        }
     }
 
-    private void GameLoop(CancellationToken cancellationToken)
+    private async Task GameLoop(CancellationToken cancellationToken)
     {
         this.Turn = 0;
         this.CurrentPhase = (Phase)0;
         while (!this.IsGameOver)
         {
+            ++this.Turn;
             this.PlayerIndex = 0;
             foreach (Player player in this.Players)
             {
-                this.CurrentPlayer.Turn();
+                bool abort = await this.CurrentPlayer.Turn(cancellationToken);
+                if (abort)
+                {
+                    throw new Exception("Cancellation Requested");
+                }
+
                 ++this.PlayerIndex;
                 this.IsGameOver = this.CheckGameOver();
                 if (this.IsGameOver)
@@ -202,18 +216,22 @@ public sealed class Game
                     throw new Exception("Cancellation Requested");
                 }
             }
+        }
 
-            if (this.IsGameOver)
-            {
-                break;
-            }
+        if (this.IsGameOver)
+        {
+            this.Notify(MessageKind.GameOver);
         }
     }
 
-    public bool Synchronize(MessageKind request, out GameSynchronizationResponse? response)
-        => this.Synchronize(new GameSynchronizationRequest(request), out response);
+    public void Notify(MessageKind messageKind) => this.Messenger.Publish(new GameSynchronizationRequest(messageKind));
 
-    public bool Synchronize(GameSynchronizationRequest request, out GameSynchronizationResponse? response)
+    public bool Synchronize(
+        MessageKind request, out GameSynchronizationResponse? response, CancellationToken cancellationToken)
+        => this.Synchronize(new GameSynchronizationRequest(request), out response, cancellationToken);
+
+    public bool Synchronize(
+        GameSynchronizationRequest request, out GameSynchronizationResponse? response, CancellationToken cancellationToken)
     {
         // 1 - Publish a request message 
         this.Messenger.Publish(request);
@@ -223,8 +241,8 @@ public sealed class Game
         // A bunch of tricky exceptions here, that are not really exceptional...
         try
         {
-            response = this.blockingQueue.Take();
-            if ( response.Message == MessageKind.Abort )
+            response = this.blockingQueue.Take(cancellationToken);
+            if (response.Message == MessageKind.Abort)
             {
                 return false;
             }
@@ -253,6 +271,12 @@ public sealed class Game
             this.Logger.Info("Game Synchronization Queue: First chance exception: " + ioc.Message);
             Debug.WriteLine(ioc);
             return false;
+        }
+        catch (Exception e)
+        {
+            this.Logger.Info("Game Synchronization Queue: Unexpected exception: " + e.Message);
+            Debug.WriteLine(e);
+            throw;
         }
     }
 

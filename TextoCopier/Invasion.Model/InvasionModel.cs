@@ -71,6 +71,5 @@ public sealed class InvasionModel : ModelBase
     public void NewGame(GameOptions gameOptions)
     {
         this.Game = new Game(gameOptions, this.Messenger, this.Logger);
-        this.Game.Start();
     }
 }

@@ -35,7 +35,7 @@ public abstract class Player
 
     public abstract bool IsHuman { get; }
 
-    public abstract void Turn(); 
+    public abstract Task<bool> Turn(CancellationToken cancellationToken); 
 
     public int Index { get; private set; }
 

@@ -8,9 +8,11 @@ public sealed class AiPlayer : Player
 
     public override bool IsHuman => false;
 
-    public override void Turn()
+    public override async Task<bool> Turn(CancellationToken cancellationToken)
     {
-
+        Debug.WriteLine("Ai Player: " + this.Index.ToString());
+        await Task.Delay(500, cancellationToken);
+        return cancellationToken.IsCancellationRequested;
     }
 
     public override void Destroy()

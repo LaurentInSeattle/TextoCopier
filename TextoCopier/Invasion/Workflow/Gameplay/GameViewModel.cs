@@ -60,7 +60,25 @@ public sealed class GameViewModel : Bindable<GameView>
         canvas.Height = this.gameOptions.PixelHeight;
         canvas.InvalidateVisual();
 
+        this.Messenger.Subscribe<GameSynchronizationRequest>(this.OnGameSynchronizationRequest, withUiDispatch: true);
         Dispatch.OnUiThread( () => { this.UpdateUi(); });
+    }
+
+    private bool sendTestResponseOnMapClick; 
+    private void OnGameSynchronizationRequest(GameSynchronizationRequest request)
+    {
+        if (request.Message == MessageKind.GameOver)
+        {
+            this.Messenger.Publish(ActivatedView.GameOver);
+        }
+        else if (request.Message == MessageKind.Abort)
+        {
+            this.Messenger.Publish(ActivatedView.GameOver);
+        }
+        else if (request.Message == MessageKind.Test)
+        {
+            this.sendTestResponseOnMapClick = true;
+        } 
     }
 
     private void OnModelUpdated(ModelUpdateMessage message)
@@ -85,6 +103,10 @@ public sealed class GameViewModel : Bindable<GameView>
     {
         // TODO: Create the game model in a background thread 
         this.invasionModel.NewGame(this.gameOptions);
+        if ( this.invasionModel.Game is null )
+        {
+            throw new Exception("Failed to create a new game");
+        }
 
         this.GeneratePlayerBrushes();
         this.GenerateMapImage();
@@ -93,6 +115,8 @@ public sealed class GameViewModel : Bindable<GameView>
 
         this.Logger.Info("Ui generated");
         this.Profiler.MemorySnapshot("Ui generated");
+
+        this.invasionModel.Game.Start();
     }
 
     private void GenerateCenters()
@@ -287,6 +311,19 @@ public sealed class GameViewModel : Bindable<GameView>
         int regionIndex = map.PixelMap.RegionAt((int)point.X, (int)point.Y);
         var region = map.Regions[regionIndex];
         this.Messenger.Publish(new RegionSelectMessage(region, PointerAction.Clicked, keyModifiers));
+
+        if (this.sendTestResponseOnMapClick)
+        {
+            this.sendTestResponseOnMapClick = false;
+            if ( keyModifiers == KeyModifiers.Shift)
+            {
+                this.Messenger.Publish(new GameSynchronizationResponse(MessageKind.Abort));
+            }
+            else
+            {
+                this.Messenger.Publish(new GameSynchronizationResponse(MessageKind.Test));
+            }
+        } 
     }
 
     public void OnPointerMovedOnMap(Point point, KeyModifiers keyModifiers)
