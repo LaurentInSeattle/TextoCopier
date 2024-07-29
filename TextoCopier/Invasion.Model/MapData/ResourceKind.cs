@@ -6,7 +6,7 @@ public enum ResourceKind
     Stone,
     Metal,
     Oil,
-    Lithium,
+    RareEarths,
 
     // Bio, renew slowly, limited by region size
     Fish, 

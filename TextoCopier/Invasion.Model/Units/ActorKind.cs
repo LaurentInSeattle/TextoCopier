@@ -2,14 +2,39 @@
 
 public enum ActorKind
 {
-    Hunter, 
+    // Economy 
+    Hunter,
     Farmer,
     Fisher,
-    Worker, 
+    Worker,
+    Trader,
+
+    // Military
     Explorer,
-    Clergy, 
+    Fighter,
+    Soldier,
+    Archer,
     Military,
-    Research,
+
+    // Clergy
+    Shaman, 
+    Priest, 
+    Monk,
+    Guru,
+    Pope,
+
+    // Education
+    Librarian, 
+    Teacher,
+    Master,
+    Researcher,
+
+    // Civics
+    Physician,
+    Mayor,
     CivilServant,
-    Trader, 
+
+    // Energy 
+    Engineer,
+    Scientist,
 }

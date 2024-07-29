@@ -16,7 +16,7 @@
             { ResourceKind.Stone, new ResourcesLimit { Initial = 10_000.0f , RenewRate = 0.0f } },
             { ResourceKind.Metal, new ResourcesLimit { Initial = 5_000.0f  , RenewRate = 0.0f } },
             { ResourceKind.Oil, new ResourcesLimit { Initial = 2_000.0f    , RenewRate = 0.0f } },
-            { ResourceKind.Lithium, new ResourcesLimit { Initial = 1_000.0f, RenewRate = 0.0f } },
+            { ResourceKind.RareEarths, new ResourcesLimit { Initial = 1_000.0f, RenewRate = 0.0f } },
 
             // Natural, infinite, never renew 
             { ResourceKind.Wind, new ResourcesLimit { Initial = 2_000.0f , RenewRate = float.PositiveInfinity } },
@@ -121,7 +121,7 @@
                     // Metal  Oil High  Lithium  Sun High 
                     AddInitialResource(ResourceKind.Oil, Resources.VeryHighMultiplier);
                     AddInitialResource(ResourceKind.Sun, Resources.VeryHighMultiplier);
-                    AddInitialResource(ResourceKind.Lithium, Resources.NormalMultiplier);
+                    AddInitialResource(ResourceKind.RareEarths, Resources.NormalMultiplier);
                     AddInitialResource(ResourceKind.Stone, Resources.LowMultiplier);
                     AddInitialResource(ResourceKind.Metal, Resources.LowMultiplier);
                     break;

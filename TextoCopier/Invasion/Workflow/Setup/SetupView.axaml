@@ -34,10 +34,10 @@
 			/>
 		<Button
 			Grid.Row="2"
-			Width="160" Height="60" Margin="32"
+			Width="320" Height="60" Margin="32"
 			VerticalAlignment="Center" HorizontalAlignment="Right"
 			FontSize="28"
-			Content="Next"
+			Content="Next to Players"
 			Command ="{Binding NextCommand}"
 			/>
 		<Grid

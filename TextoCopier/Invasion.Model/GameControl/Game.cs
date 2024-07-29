@@ -110,11 +110,7 @@ public sealed class Game
             return;
         }
 
-        if (this.cancellationTokenSource is not null)
-        {
-            this.cancellationTokenSource.Cancel();
-        }
-
+        this.cancellationTokenSource?.Cancel();
         await Task.Delay(200);
         if (this.IsTerminated)
         {

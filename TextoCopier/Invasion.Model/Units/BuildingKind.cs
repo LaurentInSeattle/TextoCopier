@@ -1,8 +1,8 @@
 ﻿namespace Lyt.Invasion.Model.Units;
 
-public enum BuildingCategories
+public enum CivilisationTrait
 {
-    Resources,
+    Economy,
     Military,
     Clergy,
     Education,
@@ -12,7 +12,7 @@ public enum BuildingCategories
 
 public enum BuildingKind
 {
-    // Resources 
+    // Economy 
     Farm,
     Port,
     LumberCamp,
@@ -21,7 +21,10 @@ public enum BuildingKind
     Factory,
     Quarry,
     Mine,
+    CoalField,
     OilRigs,
+    TradingPost,
+    Market,
 
     // Military
     Camp,
@@ -42,6 +45,7 @@ public enum BuildingKind
     ShintoShrine,
     ChinSweeTower,
     Mausoleum,
+    ScientololyArcology,
 
     // Education
     Library,
@@ -54,8 +58,6 @@ public enum BuildingKind
     ScienceAcademy,
 
     // Civics
-    TradingPost,
-    Market,
     CityHall,
     Clinic,
     Hospital,
