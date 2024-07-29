@@ -8,6 +8,11 @@ public sealed class AiPlayer : Player
 
     public override bool IsHuman => false;
 
+    public override void Turn()
+    {
+
+    }
+
     public override void Destroy()
     {
     }

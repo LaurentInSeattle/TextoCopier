@@ -8,6 +8,11 @@ public sealed class HumanPlayer : Player
 
     public override bool IsHuman => true;
 
+    public override void Turn ()
+    {
+
+    }
+
     public override void Destroy()
     {
     }

@@ -12,6 +12,7 @@ public sealed class Game
     /// <summary> Random number generator used during creation of PixelMap and during the game  </summary>
     public readonly Random Random;
 
+    private Task? gameTask;
     private int recursionDepth;
 
 #pragma warning disable CS8618 
@@ -23,6 +24,8 @@ public sealed class Game
         this.Messenger = messenger;
         this.Logger = logger;
         this.GameOptions = gameOptions;
+        this.blockingQueue = new BlockingCollection<GameSynchronizationResponse>(8);
+
         int playerCount = gameOptions.Players.Count;
         if ((playerCount < MinPlayerCount) || (playerCount > MaxPlayerCount))
         {
@@ -33,7 +36,7 @@ public sealed class Game
         this.Random = new Random(seed);
         this.Logger.Info("Game Seed: " + seed);
 
-        int retries = 5; 
+        int retries = 5;
         bool constructed = false;
         while (!constructed)
         {
@@ -41,7 +44,7 @@ public sealed class Game
             {
                 this.Map = new Map(this, this.Messenger, this.Logger);
                 this.Players = this.CreatePlayers();
-                this.recursionDepth = 0 ; 
+                this.recursionDepth = 0;
                 this.AllocateInitialRegions();
                 constructed = true;
             }
@@ -64,25 +67,215 @@ public sealed class Game
 
     public Map Map { get; private set; }
 
+    public bool IsGameRunning => this.gameTask is not null;
+
     /// <summary> Indicates if the game is over. </summary>
     public bool IsGameOver { get; private set; }
+
+    /// <summary> Indicates if the game is has been terminated. </summary>
+    public bool IsTerminated { get; private set; }
+
+    /// <summary> Indicates if the game should end abruptly. </summary>
+    public bool ShouldAbort { get; private set; }
 
     public Player? Winner { get; private set; }
 
     public int PlayerIndex { get; private set; }
 
+    public int Turn { get; private set; }
+
     public Phase CurrentPhase { get; private set; }
 
     public Player CurrentPlayer => this.Players[this.PlayerIndex];
 
-    public void Start()
+    // Cancellation source and token for the game thread.
+    private CancellationTokenSource? cancellationTokenSource;
+    private CancellationToken cancellationToken;
+    private BlockingCollection<GameSynchronizationResponse> blockingQueue;
+
+    public async void Abort()
     {
-        this.PlayerIndex = 0;
-        this.CurrentPhase = (Phase)0;
+        this.ShouldAbort = true;
+        await Task.Delay(200);
+        if (this.IsTerminated)
+        {
+            return; 
+        }
+
+        this.OnGameSynchronizationResponse(new GameSynchronizationResponse(MessageKind.Abort));
+        this.blockingQueue.CompleteAdding();
+        await Task.Delay(200);
+        if (this.IsTerminated)
+        {
+            return;
+        }
+
+        if (this.cancellationTokenSource is not null)
+        {
+            this.cancellationTokenSource.Cancel();
+        }
+
+        await Task.Delay(200);
+        if (this.IsTerminated)
+        {
+            return;
+        }
+
+        // Uh Oh ...
+        throw new Exception("Failed to terminate the game thread"); 
     }
 
-    public void Next()
+    public void Start()
     {
+        this.cancellationTokenSource = new CancellationTokenSource();
+        this.cancellationToken = this.cancellationTokenSource.Token;
+        this.blockingQueue = new BlockingCollection<GameSynchronizationResponse>();
+        this.Messenger.Subscribe<GameSynchronizationResponse>(this.OnGameSynchronizationResponse);
+
+        // Launch the game thread 
+        //     Creates and starts a task for the specified action delegate, state, cancellation
+        //     token, creation options and task scheduler.
+        //
+        this.gameTask = Task.Factory.StartNew(
+            this.GameThread, new object(), this.cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+    }
+
+    private void OnGameSynchronizationResponse(GameSynchronizationResponse response)
+    {
+        if (this.IsGameRunning && !this.IsTerminated &&
+            this.blockingQueue is not null && !this.blockingQueue.IsAddingCompleted)
+        {
+            this.blockingQueue.Add(response);
+        }
+    }
+
+    private void GameThread(object? _)
+    {
+        try
+        {
+            this.GameLoop(this.cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            this.Logger.Warning(ex.Message);
+            Debug.WriteLine(ex);
+        }
+
+        this.IsTerminated = true;
+        if (this.blockingQueue is not null )
+        {
+            this.blockingQueue.CompleteAdding();
+            this.blockingQueue.Dispose();
+        }
+
+        if (this.cancellationTokenSource is not null)
+        {
+            this.cancellationTokenSource.Dispose();
+            this.cancellationTokenSource = null;
+        }
+    }
+
+    private void GameLoop(CancellationToken cancellationToken)
+    {
+        this.Turn = 0;
+        this.CurrentPhase = (Phase)0;
+        while (!this.IsGameOver)
+        {
+            this.PlayerIndex = 0;
+            foreach (Player player in this.Players)
+            {
+                this.CurrentPlayer.Turn();
+                ++this.PlayerIndex;
+                this.IsGameOver = this.CheckGameOver();
+                if (this.IsGameOver)
+                {
+                    break;
+                }
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    throw new Exception("Cancellation Requested");
+                }
+
+                if (this.ShouldAbort)
+                {
+                    throw new Exception("Cancellation Requested");
+                }
+            }
+
+            if (this.IsGameOver)
+            {
+                break;
+            }
+        }
+    }
+
+    public bool Synchronize(MessageKind request, out GameSynchronizationResponse? response)
+        => this.Synchronize(new GameSynchronizationRequest(request), out response);
+
+    public bool Synchronize(GameSynchronizationRequest request, out GameSynchronizationResponse? response)
+    {
+        // 1 - Publish a request message 
+        this.Messenger.Publish(request);
+
+        // 2 - Wait for a response or a cancel request
+        response = null;
+        // A bunch of tricky exceptions here, that are not really exceptional...
+        try
+        {
+            response = this.blockingQueue.Take();
+            if ( response.Message == MessageKind.Abort )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        catch (OperationCanceledException oce)
+        {
+            // The CancellationToken is canceled. => Abort the loop, this is a normal situation
+            this.Logger.Info("Game Synchronization Queue: First chance exception: " + oce.Message);
+            Debug.WriteLine(oce);
+            return false;
+        }
+        catch (ObjectDisposedException ode)
+        {
+            // The BlockingCollection has been disposed. => Abort the loop, this is a normal situation
+            this.Logger.Info("Game Synchronization Queue: First chance exception: " + ode.Message);
+            Debug.WriteLine(ode);
+            return false;
+        }
+        catch (InvalidOperationException ioc)
+        {
+            // The underlying collection was modified outside of this BlockingCollection<T> instance,
+            // or the BlockingCollection<T> is empty and has been marked as complete with regards to additions.
+            // =>> Swallow and it will eventually break the loop at the next iteration, this is a normal situation. 
+            this.Logger.Info("Game Synchronization Queue: First chance exception: " + ioc.Message);
+            Debug.WriteLine(ioc);
+            return false;
+        }
+    }
+
+    /// <summary> Checks if the Game is Over:  Either: There is a winner OR  All Humans have lost. </summary>
+    private bool CheckGameOver()
+    {
+        bool hasWinner = false;
+        bool allHumansHaveLost = true;
+        foreach (Player player in this.Players)
+        {
+            hasWinner = player.Status == Player.StatusKind.Won;
+            if (hasWinner)
+            {
+                this.Winner = player;
+            }
+
+            if (player.Status != Player.StatusKind.Lost)
+            {
+                allHumansHaveLost = false;
+            }
+        }
+
+        return hasWinner || allHumansHaveLost;
     }
 
     public void AiPlayerPhase()
@@ -227,7 +420,7 @@ public sealed class Game
 
     private Region FindCapturableRegionNear(Region region)
     {
-        ++ this.recursionDepth;
+        ++this.recursionDepth;
         Region? lastNeighbour = null;
         for (int i = 0; i < region.NeighbourIds.Count; ++i)
         {
