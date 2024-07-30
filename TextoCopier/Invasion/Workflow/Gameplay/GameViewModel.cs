@@ -1,6 +1,5 @@
 ﻿namespace Lyt.Invasion.Workflow.Gameplay;
 
-using Lyt.Invasion.Model.GameControl;
 using static ViewActivationMessage;
 
 public sealed class GameViewModel : Bindable<GameView>
@@ -10,15 +9,15 @@ public sealed class GameViewModel : Bindable<GameView>
     private const byte blu = 0x20;
     private const byte gre = 0x10;
 
-    private SolidColorBrush[] playerBrushes;
-    private GameOptions gameOptions;
-
     private readonly IDialogService dialogService;
     private readonly IToaster toaster;
     private readonly LocalizerModel localizer;
     private readonly InvasionModel invasionModel;
+    private readonly SolidColorBrush[] playerBrushes;
 
+    private Image? mapImage;
     private Region? hoveredRegion;
+    private GameOptions gameOptions;
 
 #pragma warning disable CS8618
     // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -32,6 +31,8 @@ public sealed class GameViewModel : Bindable<GameView>
         this.invasionModel = invasionModel;
         this.dialogService = dialogService;
         this.toaster = toaster;
+
+        this.playerBrushes = new SolidColorBrush[8];
     }
 
     protected override void OnViewLoaded()
@@ -54,17 +55,31 @@ public sealed class GameViewModel : Bindable<GameView>
         }
 
         this.gameOptions = gameOptions;
-        this.playerBrushes = new SolidColorBrush[8];
+
+        if (this.mapImage is not null)
+        {
+            this.mapImage.PointerMoved -= this.OnPointerMoved;
+            this.mapImage.PointerPressed -= this.OnPointerPressed;
+            this.mapImage.Source = null;
+            this.mapImage = null;
+        }
+
+        // Resize and clear the canvas (needed when starting a second game)
         var canvas = this.View.Canvas;
+        canvas.Children.Clear();
         canvas.Width = this.gameOptions.PixelWidth;
         canvas.Height = this.gameOptions.PixelHeight;
         canvas.InvalidateVisual();
 
         this.Messenger.Subscribe<GameSynchronizationRequest>(this.OnGameSynchronizationRequest, withUiDispatch: true);
-        Dispatch.OnUiThread( () => { this.UpdateUi(); });
+        Dispatch.OnUiThread(() => { this.UpdateUi(); });
     }
 
-    private bool sendTestResponseOnMapClick; 
+    public override void Deactivate()
+    {
+    } 
+
+    private bool sendTestResponseOnMapClick;
     private void OnGameSynchronizationRequest(GameSynchronizationRequest request)
     {
         if (request.Message == MessageKind.GameOver)
@@ -78,7 +93,7 @@ public sealed class GameViewModel : Bindable<GameView>
         else if (request.Message == MessageKind.Test)
         {
             this.sendTestResponseOnMapClick = true;
-        } 
+        }
     }
 
     private void OnModelUpdated(ModelUpdateMessage message)
@@ -103,7 +118,7 @@ public sealed class GameViewModel : Bindable<GameView>
     {
         // TODO: Create the game model in a background thread 
         this.invasionModel.NewGame(this.gameOptions);
-        if ( this.invasionModel.Game is null )
+        if (this.invasionModel.Game is null)
         {
             throw new Exception("Failed to create a new game");
         }
@@ -236,6 +251,11 @@ public sealed class GameViewModel : Bindable<GameView>
             return;
         }
 
+        var canvas = this.View.Canvas;
+        var image = new Image { Stretch = Stretch.Uniform };
+        RenderOptions.SetBitmapInterpolationMode(image, BitmapInterpolationMode.LowQuality);
+        canvas.Children.Add(image);
+
         var map = game.Map;
         var pixelMap = map.PixelMap;
         int width = game.GameOptions.PixelWidth;
@@ -263,10 +283,11 @@ public sealed class GameViewModel : Bindable<GameView>
             Marshal.Copy(bgraPixelData, 0, frameBuffer.Address, bgraPixelData.Length);
         }
 
-        this.MapImage = bitmap;
+        image.Source = bitmap;
+        this.mapImage = image;
+        this.mapImage.PointerMoved += this.OnPointerMoved;
+        this.mapImage.PointerPressed += this.OnPointerPressed;
     }
-
-    public Bitmap? MapImage { get => this.Get<Bitmap?>(); set => this.Set(value); }
 
     private static Color EcosystemToColor(Ecosystem ecosystem)
         => ecosystem switch
@@ -299,7 +320,31 @@ public sealed class GameViewModel : Bindable<GameView>
 
     private static Color PlayerToColor(Player player) => player.Color.ColorNameToColor();
 
-    public void OnPointerPressedOnMap(Point point, KeyModifiers keyModifiers)
+    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (sender is not Image)
+        {
+            return;
+        }
+
+        // Send pixel position on the map to view model
+        this.OnPointerPressedOnMap(e.GetPosition(this.mapImage), e.KeyModifiers);
+        e.Handled = true;
+    }
+
+    private void OnPointerMoved(object? sender, PointerEventArgs e)
+    {
+        if (sender is not Image)
+        {
+            return;
+        }
+
+        // Send pixel position on the map to view model
+        this.OnPointerMovedOnMap(e.GetPosition(this.mapImage), e.KeyModifiers);
+        e.Handled = true;
+    }
+
+    private void OnPointerPressedOnMap(Point point, KeyModifiers keyModifiers)
     {
         var game = this.invasionModel.Game;
         if (game is null)
@@ -315,7 +360,7 @@ public sealed class GameViewModel : Bindable<GameView>
         if (this.sendTestResponseOnMapClick)
         {
             this.sendTestResponseOnMapClick = false;
-            if ( keyModifiers == KeyModifiers.Shift)
+            if (keyModifiers == KeyModifiers.Shift)
             {
                 this.Messenger.Publish(new GameSynchronizationResponse(MessageKind.Abort));
             }
@@ -323,10 +368,10 @@ public sealed class GameViewModel : Bindable<GameView>
             {
                 this.Messenger.Publish(new GameSynchronizationResponse(MessageKind.Test));
             }
-        } 
+        }
     }
 
-    public void OnPointerMovedOnMap(Point point, KeyModifiers keyModifiers)
+    private void OnPointerMovedOnMap(Point point, KeyModifiers keyModifiers)
     {
         var game = this.invasionModel.Game;
         if (game is null)
@@ -335,7 +380,7 @@ public sealed class GameViewModel : Bindable<GameView>
         }
 
         var map = game.Map;
-        int regionIndex = map.PixelMap.RegionAt((int) point.X, (int)point.Y);
+        int regionIndex = map.PixelMap.RegionAt((int)point.X, (int)point.Y);
         var region = map.Regions[regionIndex];
         if ((this.hoveredRegion is null) || (this.hoveredRegion != region))
         {

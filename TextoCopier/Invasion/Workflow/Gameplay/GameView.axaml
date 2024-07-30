@@ -47,12 +47,6 @@
 				RenderOptions.BitmapInterpolationMode="LowQuality"
 				Background="AliceBlue"
 				>
-				<Image
-					x:Name="Map"
-					Source="{Binding MapImage}"
-					RenderOptions.BitmapInterpolationMode="LowQuality"
-					Stretch="Uniform"
-				/>
 			</Canvas>
 		</Viewbox>
 		<Grid

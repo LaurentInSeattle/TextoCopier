@@ -37,7 +37,7 @@
 			Width="320" Height="60" Margin="32"
 			VerticalAlignment="Center" HorizontalAlignment="Right"
 			FontSize="28"
-			Content="Next to Players"
+			Content="Next: To Players"
 			Command ="{Binding NextCommand}"
 			/>
 		<Grid
