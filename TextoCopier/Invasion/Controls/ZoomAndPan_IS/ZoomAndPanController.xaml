@@ -1,0 +1,115 @@
+﻿<UserControl x:Class="ISC.Melody.Controls.ZoomAndPanController"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:ISC.Melody.Controls"
+             xmlns:converters="clr-namespace:ISC.Melody.Converters"
+             mc:Ignorable="d"  d:DesignHeight="26" d:DesignWidth="400">
+    <UserControl.Resources>
+
+        <!-- UI commands. -->
+        <RoutedUICommand x:Key="Commands.ZoomOut" />
+        <RoutedUICommand x:Key="Commands.ZoomIn" />
+        <RoutedUICommand x:Key="Commands.JumpBackToPrevZoom" />
+        <RoutedUICommand x:Key="Commands.Fill" />
+        <RoutedUICommand x:Key="Commands.OneHundredPercent" />
+
+        <!--  This converts from a scale value to a percentage value.
+        It is used to convert the value of 'ContentScale' to the percentage zoom level that is displayed in the UI. -->
+        <converters:ScaleToPercentConverter x:Key="scaleToPercentConverter"  />
+
+    </UserControl.Resources>
+
+    <UserControl.InputBindings>
+        <!-- Bind keys to commands. -->
+        <KeyBinding
+			Key="Minus"
+			Command="{StaticResource Commands.ZoomOut}" />
+        <KeyBinding
+			Key="Plus"
+			Command="{StaticResource Commands.ZoomIn}" />
+        <KeyBinding
+			Key="Backspace"
+			Command="{StaticResource Commands.JumpBackToPrevZoom}" />
+    </UserControl.InputBindings>
+
+    <UserControl.CommandBindings>
+        <!-- Bind commands to event handlers. -->
+        <CommandBinding  Command="{StaticResource Commands.ZoomOut}"  Executed="ZoomOut_Executed" />
+        <CommandBinding  Command="{StaticResource Commands.ZoomIn}"  Executed="ZoomIn_Executed" />
+        <CommandBinding 
+            Command="{StaticResource Commands.JumpBackToPrevZoom}" 
+            Executed="JumpBackToPrevZoom_Executed" 
+            CanExecute="JumpBackToPrevZoom_CanExecuted" />
+        <CommandBinding  Command="{StaticResource Commands.Fill}"  Executed="Fill_Executed"  />
+        <CommandBinding  Command="{StaticResource Commands.OneHundredPercent}"  Executed="OneHundredPercent_Executed"  />
+    </UserControl.CommandBindings>
+
+    <Grid Margin="2" >
+        <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0" />
+                <!-- empty space -->
+                <ColumnDefinition Width="40" />
+                <!-- the fill button -->
+                <ColumnDefinition Width="5" />
+                <!-- spacer -->
+                <ColumnDefinition Width="40" />
+                <!-- the 100% button -->
+                <ColumnDefinition Width="5" />
+                <!-- spacer -->
+                <ColumnDefinition Width="25" />
+                <!-- the zoom percentage label -->
+                <ColumnDefinition Width="15" />
+                <!-- the % symbol -->
+                <ColumnDefinition Width="5" />
+                <!-- spacer -->
+                <ColumnDefinition Width="20" />
+                <!-- the zoom out button -->
+                <ColumnDefinition Width="5" />
+                <!-- spacer -->
+                <ColumnDefinition Width="*" />
+                <!-- the zoom slider -->
+                <ColumnDefinition Width="5" />
+                <!-- spacer -->
+                <ColumnDefinition Width="20" />
+                <!-- the zoom in button -->
+            </Grid.ColumnDefinitions>
+
+        <!--  The fill button.  Causes the content to be scaled so that it fits in the viewport. -->
+        <Button Grid.Column="1"  Command="{StaticResource Commands.Fill}"  >Fill</Button>
+        <!--  The 100% button.  Causes the content to be scaled to 100 percent. -->
+        <Button Grid.Column="3" Command="{StaticResource Commands.OneHundredPercent}" >100%</Button>
+        <!-- This is the label that shows what the current zoom level is while zooming in and out. -->
+        <TextBlock
+            Grid.Column="5"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Right"
+            Text="{Binding Path=ZoomAndPanControl.ContentScale, Converter={StaticResource scaleToPercentConverter}}" />
+        <TextBlock
+            Grid.Column="6"
+            VerticalAlignment="Center"
+            Text="%" />
+        <!-- Button to zoom out. -->
+        <RepeatButton Grid.Column="8" Command="{StaticResource Commands.ZoomOut}" >-</RepeatButton>
+        <!-- Slider to change the current zoom level. -->
+        <Slider
+            Grid.Column="10"
+            Minimum="10" 
+            LargeChange="20" 
+            TickFrequency="100" 
+            Maximum="800" 
+            SmallChange="10" 
+            TickPlacement="TopLeft"
+            Margin="0 4 0 0 "
+            Value="{Binding Path=ZoomAndPanControl.ContentScale, Converter={StaticResource scaleToPercentConverter}}" > 
+            <Slider.RenderTransform > 
+                <ScaleTransform ScaleX="1" ScaleY="0.7" />
+            </Slider.RenderTransform>
+        </Slider>
+
+        <!-- Button to zoom in. -->
+        <RepeatButton  Grid.Column="12" Command="{StaticResource Commands.ZoomIn}" >+</RepeatButton >
+    </Grid>
+
+</UserControl>

@@ -9,6 +9,7 @@
     x:DataType="vm:GameViewModel" 
     xmlns:regions="clr-namespace:Lyt.Invasion.Workflow.Gameplay.Regions"
     xmlns:players="clr-namespace:Lyt.Invasion.Workflow.Gameplay.Players"
+	xmlns:paz="using:Avalonia.Controls.PanAndZoom"
 	>
 	<Grid
 		x:Name="InnerGrid"
@@ -36,26 +37,51 @@
 				VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 				/>
 		</Grid>
+		<!--
 		<Viewbox
 			Grid.Column="1" Grid.Row="1"
 			VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 			RenderOptions.BitmapInterpolationMode="LowQuality"
 			>
-			<Canvas
-				x:Name="Canvas"
-				Grid.Column="1" Grid.Row="1"
-				RenderOptions.BitmapInterpolationMode="LowQuality"
-				Background="AliceBlue"
-				>
-			</Canvas>
+		-->
+		<ScrollViewer
+			VerticalScrollBarVisibility="Auto"
+			HorizontalScrollBarVisibility="Auto"
+			Grid.Column="1" Grid.Row="1"
+			>
+			<paz:ZoomBorder
+				x:Name="ZoomBorder"
+                Stretch="Uniform"
+                ZoomSpeed="0.5"
+				MinZoomX="1.0"
+				MinZoomY="1.0"
+				MaxZoomX="2.0"
+				MaxZoomY="2.0"
+				EnablePan="True"
+                EnableConstrains="True"
+                Background="DarkSlateBlue" 
+				ClipToBounds="True" 
+				Focusable="True"
+                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+				>				
+				<Canvas
+					x:Name="Canvas"
+					RenderOptions.BitmapInterpolationMode="LowQuality"
+					Background="AliceBlue"
+					>
+				</Canvas>
+			</paz:ZoomBorder>
+		</ScrollViewer>
+		<!--
 		</Viewbox>
+		-->
 		<Grid
 			x:Name="SideBar"
 			Grid.Column="2" Grid.Row="1" Grid.RowSpan="999"			
 			>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="*" />
-				<RowDefinition Height="4" />  <!-- Splitter ? -->
+				<RowDefinition Height="6" />  <!-- Splitter ? -->
 				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
 			<regions:RegionView
