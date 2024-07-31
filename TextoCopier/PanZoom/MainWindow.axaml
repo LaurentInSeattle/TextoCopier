@@ -28,7 +28,7 @@
 </Window>
 
 <!--
-				MinimumZoomType="FitScreen"
-				UseAnimations="{Binding ElementName=AnimationsCheckBox, Path=IsChecked}"
-				ZoomAndPanInitialPosition="FillScreen"
+	MinimumZoomType="FitScreen"
+	UseAnimations="{Binding ElementName=AnimationsCheckBox, Path=IsChecked}"
+	ZoomAndPanInitialPosition="FillScreen"
 -->

@@ -39,6 +39,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Control\PanZoomControl.IScrollInfo.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Control\PanZoomControl.Properties.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
     <Compile Update="Control\PanZoomControl.axaml.cs">
       <DependentUpon>PanZoomControl.axaml</DependentUpon>
     </Compile>
