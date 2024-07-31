@@ -3,27 +3,11 @@ namespace Lyt.Avalonia.PanZoom;
 public partial class PanZoomControl : UserControl
 {
     // Definitions for dependency properties.
-    //
+
     /// <summary>
     /// This allows the same property name be used for direct and indirect access to this control.
     /// </summary>
     public PanZoomControl ZoomAndPanContent => this;
-
-    ///// <summary> <name> Styled Property </summary>
-    //public static readonly StyledProperty<type> <name>Property =
-    //    AvaloniaProperty.Register<PanZoomControl, <type>>(nameof(<name>), defaultValue: false);
-
-    ///// <summary> Gets or sets the <name> property.</summary>
-    //public <type> <name>
-    //{
-    //    get => this.GetValue(<name>Property);
-    //    set
-    //    {
-    //        this.SetValue(<name>Property, value);
-    //    }
-    //}
-
-
 
     /// <summary>
     /// AnimationDuration Styled Property 
@@ -58,50 +42,49 @@ public partial class PanZoomControl : UserControl
         }
     }
 
+    /// <summary> ContentOffsetX Styled Property  Get/set the X offset (in content coordinates) of the view on the content. </summary>
+    public static readonly StyledProperty<double> ContentOffsetXProperty =
+        AvaloniaProperty.Register<PanZoomControl, double>(nameof(ContentOffsetX), defaultValue: 0.0);
 
-    /// <summary> Get/set the X offset (in content coordinates) of the view on the content. </summary>
+    /// <summary> Gets or sets the ContentOffsetX property.</summary>
     public double ContentOffsetX
     {
-        get { return (double)GetValue(ContentOffsetXProperty); }
-        set { SetValue(ContentOffsetXProperty, value); }
-    }
-    public static readonly DependencyProperty ContentOffsetXProperty = DependencyProperty.Register("ContentOffsetX",
-        typeof(double), typeof(ZoomAndPanControl), 
-        new FrameworkPropertyMetadata(0.0, ContentOffsetX_PropertyChanged, ContentOffsetX_Coerce));
-
-    /// <summary>
-    /// Event raised when the 'ContentOffsetX' property has changed value.
-    /// </summary>
-    private static void ContentOffsetX_PropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
-    {
-        var c = (ZoomAndPanControl)o;
-
-        c.UpdateTranslationX();
-
-        if (!c._disableContentFocusSync)
-            //
-            // Normally want to automatically update content focus when content offset changes.
-            // Although this is disabled using 'disableContentFocusSync' when content offset changes due to in-progress zooming.
-            //
-            c.UpdateContentZoomFocusX();
-        //
-        // Raise an event to let users of the control know that the content offset has changed.
-        //
-        c.ContentOffsetXChanged?.Invoke(c, EventArgs.Empty);
-
-        if (!c._disableScrollOffsetSync)
-            //
-            // Notify the owning ScrollViewer that the scrollbar offsets should be updated.
-            //
-            c.ScrollOwner?.InvalidateScrollInfo();
+        get => this.GetValue(ContentOffsetXProperty);
+        set
+        {
+            this.SetValue(ContentOffsetXProperty, value);
+        }
     }
 
-    /// <summary>
-    /// Method called to clamp the 'ContentOffsetX' value to its valid range.
-    /// </summary>
-    private static object ContentOffsetX_Coerce(DependencyObject d, object baseValue)
+    /// <summary> Event raised when the 'ContentOffsetX' property has changed value. </summary>
+    private void ContentOffsetX_PropertyChanged()
     {
-        var c = (ZoomAndPanControl)d;
+        var c = this;
+        // TODO 
+        //c.UpdateTranslationX();
+
+        //if (!c._disableContentFocusSync)
+        //{
+        //    // Normally want to automatically update content focus when content offset changes.
+        //    // Although this is disabled using 'disableContentFocusSync' when content offset changes due to in-progress zooming.
+        //    //
+        //    c.UpdateContentZoomFocusX();
+        //} 
+
+        //// Raise an event to let users of the control know that the content offset has changed.
+        //c.ContentOffsetXChanged?.Invoke(c, EventArgs.Empty);
+
+        //if (!c._disableScrollOffsetSync)
+        //{
+        //    // Notify the owning ScrollViewer that the scrollbar offsets should be updated.
+        //    c.ScrollOwner?.InvalidateScrollInfo();
+        //} 
+    }
+
+    /// <summary> Method called to clamp the 'ContentOffsetX' value to its valid range. </summary>
+    private object ContentOffsetX_Coerce(object baseValue)
+    {
+        var c = this;
         var value = (double)baseValue;
         var minOffsetX = 0.0;
         var maxOffsetX = Math.Max(0.0, c._unScaledExtent.Width - c._constrainedContentViewportWidth);
@@ -109,181 +92,258 @@ public partial class PanZoomControl : UserControl
         return value;
     }
 
-    /// <summary> Get/set the Y offset (in content coordinates) of the view on the content. </summary>
+    /// <summary> ContentOffsetY Styled Property  Get/set the Y offset (in content coordinates) of the view on the content. </summary>
+    public static readonly StyledProperty<double> ContentOffsetYProperty =
+        AvaloniaProperty.Register<PanZoomControl, double>(nameof(ContentOffsetY), defaultValue: 0.0);
+
+    /// <summary> Gets or sets the ContentOffsetY property.</summary>
     public double ContentOffsetY
     {
-        get { return (double)GetValue(ContentOffsetYProperty); }
-        set { SetValue(ContentOffsetYProperty, value); }
-    }
-    public static readonly DependencyProperty ContentOffsetYProperty = DependencyProperty.Register("ContentOffsetY",
-        typeof(double), typeof(ZoomAndPanControl), new FrameworkPropertyMetadata(0.0, ContentOffsetY_PropertyChanged, ContentOffsetY_Coerce));
-
-    /// <summary>
-    /// Event raised when the 'ContentOffsetY' property has changed value.
-    /// </summary>
-    private static void ContentOffsetY_PropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
-    {
-        var c = (ZoomAndPanControl)o;
-
-        c.UpdateTranslationY();
-
-        if (!c._disableContentFocusSync)
-            //
-            // Normally want to automatically update content focus when content offset changes.
-            // Although this is disabled using 'disableContentFocusSync' when content offset changes due to in-progress zooming.
-            //
-            c.UpdateContentZoomFocusY();
-        if (!c._disableScrollOffsetSync)
-            //
-            // Notify the owning ScrollViewer that the scrollbar offsets should be updated.
-            //
-            c.ScrollOwner?.InvalidateScrollInfo();
-        //
-        // Raise an event to let users of the control know that the content offset has changed.
-        //
-        c.ContentOffsetYChanged?.Invoke(c, EventArgs.Empty);
+        get => this.GetValue(ContentOffsetXProperty);
+        set
+        {
+            this.SetValue(ContentOffsetXProperty, value);
+        }
     }
 
-    /// <summary>
-    /// Method called to clamp the 'ContentOffsetY' value to its valid range.
-    /// </summary>
-    private static object ContentOffsetY_Coerce(DependencyObject d, object baseValue)
+    /// <summary> Event raised when the 'ContentOffsetY' property has changed value. </summary>
+    private void ContentOffsetY_PropertyChanged()
     {
-        var c = (ZoomAndPanControl)d;
+        var c = this;
+        // TODO 
+        //c.UpdateTranslationY();
+
+        //if (!c._disableContentFocusSync)
+        //{
+        //    // Normally want to automatically update content focus when content offset changes.
+        //    // Although this is disabled using 'disableContentFocusSync' when content offset changes due to in-progress zooming.
+        //    //
+        //    c.UpdateContentZoomFocusY();
+        //}
+
+        //// Raise an event to let users of the control know that the content offset has changed.
+        //c.ContentOffsetYChanged?.Invoke(c, EventArgs.Empty);
+
+        //if (!c._disableScrollOffsetSync)
+        //{
+        //    // Notify the owning ScrollViewer that the scrollbar offsets should be updated.
+        //    c.ScrollOwner?.InvalidateScrollInfo();
+        //}
+    }
+
+    /// <summary> Method called to clamp the 'ContentOffsetX' value to its valid range. </summary>
+    private object ContentOffsetY_Coerce(object baseValue)
+    {
+        var c = this;
         var value = (double)baseValue;
         var minOffsetY = 0.0;
-        var maxOffsetY = Math.Max(0.0, c._unScaledExtent.Height - c._constrainedContentViewportHeight);
+        var maxOffsetY = Math.Max(0.0, c._unScaledExtent.Width - c._constrainedContentViewportWidth);
         value = Math.Min(Math.Max(value, minOffsetY), maxOffsetY);
         return value;
     }
 
-    /// <summary> Get the viewport height, in content coordinates. </summary>
+    /// <summary> ContentViewportHeight Styled Property: Get the viewport height, in content coordinates. </summary>
+    public static readonly StyledProperty<double> ContentViewportHeightProperty =
+        AvaloniaProperty.Register<PanZoomControl, double>(nameof(ContentViewportHeight), defaultValue: 0.0);
+
+    /// <summary> Gets or sets the ContentViewportHeight property.</summary>
     public double ContentViewportHeight
     {
-        get { return (double)GetValue(ContentViewportHeightProperty); }
-        set { SetValue(ContentViewportHeightProperty, value); }
+        get => this.GetValue(ContentViewportHeightProperty);
+        set
+        {
+            this.SetValue(ContentViewportHeightProperty, value);
+        }
     }
-    public static readonly DependencyProperty ContentViewportHeightProperty = DependencyProperty.Register("ContentViewportHeight",
-         typeof(double), typeof(ZoomAndPanControl), new FrameworkPropertyMetadata(0.0));
 
-    /// <summary> Get the viewport width, in content coordinates. </summary>
+    /// <summary> ContentViewportWidth Styled Property: Get the viewport Width, in content coordinates. </summary>
+    public static readonly StyledProperty<double> ContentViewportWidthProperty =
+        AvaloniaProperty.Register<PanZoomControl, double>(nameof(ContentViewportWidth), defaultValue: 0.0);
+
+    /// <summary> Gets or sets the ContentViewportWidth property.</summary>
     public double ContentViewportWidth
     {
-        get { return (double)GetValue(ContentViewportWidthProperty); }
-        set { SetValue(ContentViewportWidthProperty, value); }
+        get => this.GetValue(ContentViewportWidthProperty);
+        set
+        {
+            this.SetValue(ContentViewportWidthProperty, value);
+        }
     }
-    public static readonly DependencyProperty ContentViewportWidthProperty = DependencyProperty.Register("ContentViewportWidth",
-        typeof(double), typeof(ZoomAndPanControl), new FrameworkPropertyMetadata(0.0));
 
-    /// <summary> The X coordinate of the content focus, this is the point that we are focusing on when zooming. </summary>
+    /// <summary> 
+    /// ContentZoomFocusX Styled Property 
+    /// The X coordinate of the content focus, this is the point that we are focusing on when zooming. 
+    ///</summary>
+    public static readonly StyledProperty<double> ContentZoomFocusXProperty =
+        AvaloniaProperty.Register<PanZoomControl, double>(nameof(ContentZoomFocusX), defaultValue: 0.0);
+
+    /// <summary> Gets or sets the ContentZoomFocusX property.</summary>
     public double ContentZoomFocusX
     {
-        get { return (double)GetValue(ContentZoomFocusXProperty); }
-        set { SetValue(ContentZoomFocusXProperty, value); }
+        get => this.GetValue(ContentZoomFocusXProperty);
+        set
+        {
+            this.SetValue(ContentZoomFocusXProperty, value);
+        }
     }
-    public static readonly DependencyProperty ContentZoomFocusXProperty = DependencyProperty.Register("ContentZoomFocusX",
-        typeof(double), typeof(ZoomAndPanControl), new FrameworkPropertyMetadata(0.0));
 
-    /// <summary> The Y coordinate of the content focus, this is the point that we are focusing on when zooming. </summary>
+    /// <summary> 
+    /// ContentZoomFocusY Styled Property 
+    /// The Y coordinate of the content focus, this is the point that we are focusing on when zooming. 
+    ///</summary>
+    public static readonly StyledProperty<double> ContentZoomFocusYProperty =
+        AvaloniaProperty.Register<PanZoomControl, double>(nameof(ContentZoomFocusY), defaultValue: 0.0);
+
+    /// <summary> Gets or sets the ContentZoomFocusY property.</summary>
     public double ContentZoomFocusY
     {
-        get { return (double)GetValue(ContentZoomFocusYProperty); }
-        set { SetValue(ContentZoomFocusYProperty, value); }
+        get => this.GetValue(ContentZoomFocusYProperty);
+        set
+        {
+            this.SetValue(ContentZoomFocusYProperty, value);
+        }
     }
-    public static readonly DependencyProperty ContentZoomFocusYProperty = DependencyProperty.Register("ContentZoomFocusY",
-        typeof(double), typeof(ZoomAndPanControl), new FrameworkPropertyMetadata(0.0));
 
-    /// <summary> Set to 'true' to enable the mouse wheel to scroll the zoom and pan control. This is set to 'false' by default. </summary>
-    public bool IsMouseWheelScrollingEnabled
-    {
-        get { return (bool)GetValue(IsMouseWheelScrollingEnabledProperty); }
-        set { SetValue(IsMouseWheelScrollingEnabledProperty, value); }
-    }
-    public static readonly DependencyProperty IsMouseWheelScrollingEnabledProperty = DependencyProperty.Register("IsMouseWheelScrollingEnabled",
-        typeof(bool), typeof(ZoomAndPanControl), new FrameworkPropertyMetadata(false));
+    /// <summary> MaximumZoomStyled Property: Get/set the maximum value for 'ViewportZoom'. </summary>
+    public static readonly StyledProperty<double> MaximumZoomProperty =
+        AvaloniaProperty.Register<PanZoomControl, double>(nameof(MaximumZoom), defaultValue: 10.0);
 
-    /// <summary> Get/set the maximum value for 'ViewportZoom'. </summary>
+    /// <summary> Gets or sets the MaximumZoom property.</summary>
     public double MaximumZoom
     {
-        get { return (double)GetValue(MaximumZoomProperty); }
-        set { SetValue(MaximumZoomProperty, value); }
+        get => this.GetValue(MaximumZoomProperty);
+        set
+        {
+            this.SetValue(MaximumZoomProperty, value);
+            // => MinimumOrMaximumZoom_PropertyChanged
+        }
     }
-    public static readonly DependencyProperty MaximumZoomProperty = DependencyProperty.Register("MaximumZoom",
-        typeof(double), typeof(ZoomAndPanControl), new FrameworkPropertyMetadata(10.0, MinimumOrMaximumZoom_PropertyChanged));
 
-    /// <summary> Get/set the MinimumZoomType </summary>
-    public MinimumZoomTypeEnum MinimumZoomType
-    {
-        get { return (MinimumZoomTypeEnum)GetValue(MinimumZoomTypeProperty); }
-        set { SetValue(MinimumZoomTypeProperty, value); }
-    }
-    public static readonly DependencyProperty MinimumZoomTypeProperty = DependencyProperty.Register("MinimumZoomType",
-        typeof(MinimumZoomTypeEnum), typeof(ZoomAndPanControl), new FrameworkPropertyMetadata(MinimumZoomTypeEnum.MinimumZoom));
+    /// <summary> MinimumZoom Styled Property: Get/set the MinimumZoom value for 'ViewportZoom'. </summary>
+    public static readonly StyledProperty<double> MinimumZoomProperty =
+        AvaloniaProperty.Register<PanZoomControl, double>(nameof(MinimumZoom), defaultValue: 0.1);
 
-    /// <summary> Get/set the MinimumZoom value for 'ViewportZoom'. </summary>
+    /// <summary> Gets or sets the MinimumZoom property.</summary>
     public double MinimumZoom
     {
-        get { return (double)GetValue(MinimumZoomProperty); }
-        set { SetValue(MinimumZoomProperty, value); }
+        get => this.GetValue(MinimumZoomProperty);
+        set
+        {
+            this.SetValue(MinimumZoomProperty, value);
+            // => MinimumOrMaximumZoom_PropertyChanged
+        }
     }
-    public static readonly DependencyProperty MinimumZoomProperty = DependencyProperty.Register("MinimumZoom",
-        typeof(double), typeof(ZoomAndPanControl), new FrameworkPropertyMetadata(0.1, MinimumOrMaximumZoom_PropertyChanged));
 
-    /// <summary> Get/set the MousePosition. </summary>
+    /// <summary> MinimumZoomType Styled Property:  Get/set the MinimumZoomType </summary>
+    public static readonly StyledProperty<MinimumZoomTypeEnum> MinimumZoomTypeProperty =
+        AvaloniaProperty.Register<PanZoomControl, MinimumZoomTypeEnum>(nameof(MinimumZoomType), defaultValue: MinimumZoomTypeEnum.MinimumZoom);
+
+    /// <summary> Gets or sets the MinimumZoomType property.</summary>
+    public MinimumZoomTypeEnum MinimumZoomType
+    {
+        get => this.GetValue(MinimumZoomTypeProperty);
+        set
+        {
+            this.SetValue(MinimumZoomTypeProperty, value);
+        }
+    }
+
+    /// <summary>  
+    /// IsMouseWheelScrollingEnabled Styled Property: Set to 'true' to enable the mouse wheel to scroll the 
+    /// zoom and pan control. This is set to 'false' by default. 
+    /// </summary>
+    public static readonly StyledProperty<bool> IsMouseWheelScrollingEnabledProperty =
+        AvaloniaProperty.Register<PanZoomControl, bool>(nameof(IsMouseWheelScrollingEnabled), defaultValue: false);
+
+    /// <summary> Gets or sets the IsMouseWheelScrollingEnabled property.</summary>
+    public bool IsMouseWheelScrollingEnabled
+    {
+        get => this.GetValue(IsMouseWheelScrollingEnabledProperty);
+        set
+        {
+            this.SetValue(IsMouseWheelScrollingEnabledProperty, value);
+        }
+    }
+
+    /// <summary> MousePosition Styled Property: Get/set the MousePosition. </summary>
+    public static readonly StyledProperty<Point?> MousePositionProperty =
+        AvaloniaProperty.Register<PanZoomControl, Point?>(nameof(MousePosition), defaultValue: null);
+
+    /// <summary> Gets or sets the MousePosition property.</summary>
     public Point? MousePosition
     {
-        get { return (Point?)GetValue(MousePositionProperty); }
-        set { SetValue(MousePositionProperty, value); }
+        get => this.GetValue(MousePositionProperty);
+        set
+        {
+            this.SetValue(MousePositionProperty, value);
+            // => MinimumOrMaximumZoom_PropertyChanged 
+        }
     }
-    public static readonly DependencyProperty MousePositionProperty = DependencyProperty.Register("MousePosition",
-        typeof(Point?), typeof(ZoomAndPanControl), new FrameworkPropertyMetadata(null, MinimumOrMaximumZoom_PropertyChanged));
 
-    /// <summary>
-    /// This is used for binding a slider to control the zoom. Cannot use the InternalUseAnimations because of all the 
-    /// assumptions in when the this property is changed. THIS IS NOT USED FOR THE ANIMATIONS
-    /// </summary>
+    /// <summary> </summary>
+    public static readonly StyledProperty<bool> UseAnimationsProperty =
+        AvaloniaProperty.Register<PanZoomControl, bool>(nameof(UseAnimations), defaultValue: false);
+
+    /// <summary> Gets or sets the UseAnimations property.</summary>
     public bool UseAnimations
     {
-        get { return (bool)GetValue(UseAnimationsProperty); }
-        set { SetValue(UseAnimationsProperty, value); }
+        get => this.GetValue(UseAnimationsProperty);
+        set
+        {
+            this.SetValue(UseAnimationsProperty, value);
+        }
     }
-    public static readonly DependencyProperty
-        UseAnimationsProperty = DependencyProperty.Register("UseAnimations",
-        typeof(bool), typeof(ZoomAndPanControl), new FrameworkPropertyMetadata(true));
 
     /// <summary>
+    /// ViewportZoom Styled Property: 
     /// This is used for binding a slider to control the zoom. Cannot use the InternalViewportZoom because of all the 
     /// assumptions in when the this property is changed. THIS IS NOT USED FOR THE ANIMATIONS
     /// </summary>
+    public static readonly StyledProperty<double> ViewportZoomProperty =
+        AvaloniaProperty.Register<PanZoomControl, double>(nameof(ViewportZoom), defaultValue: 1.0);
+
+    /// <summary> Gets or sets the ViewportZoom property.</summary>
     public double ViewportZoom
     {
-        get { return (double)GetValue(ViewportZoomProperty); }
-        set { SetValue(ViewportZoomProperty, value); }
+        get => this.GetValue(ViewportZoomProperty);
+        set
+        {
+            this.SetValue(ViewportZoomProperty, value);
+            // => ViewportZoom_PropertyChanged 
+        }
     }
-    public static readonly DependencyProperty ViewportZoomProperty = DependencyProperty.Register("ViewportZoom",
-        typeof(double), typeof(ZoomAndPanControl), new FrameworkPropertyMetadata(1.0, ViewportZoom_PropertyChanged));
 
     /// <summary>
-    /// The X coordinate of the viewport focus, this is the point in the viewport (in viewport coordinates) 
+    /// ViewportZoomFocusX Styled Property: The X coordinate of the viewport focus, this is the point in the viewport (in viewport coordinates) 
     /// that the content focus point is locked to while zooming in.
     /// </summary>
+    public static readonly StyledProperty<double> ViewportZoomFocusXProperty =
+        AvaloniaProperty.Register<PanZoomControl, double>(nameof(ViewportZoomFocusX), defaultValue: 0.0);
+
+    /// <summary> Gets or sets the ViewportZoomFocusX property.</summary>
     public double ViewportZoomFocusX
     {
-        get { return (double)GetValue(ViewportZoomFocusXProperty); }
-        set { SetValue(ViewportZoomFocusXProperty, value); }
+        get => this.GetValue(ViewportZoomFocusXProperty);
+        set
+        {
+            this.SetValue(ViewportZoomFocusXProperty, value);
+        }
     }
-    public static readonly DependencyProperty ViewportZoomFocusXProperty = DependencyProperty.Register("ViewportZoomFocusX",
-        typeof(double), typeof(ZoomAndPanControl), new FrameworkPropertyMetadata(0.0));
 
     /// <summary>
-    /// The Y coordinate of the viewport focus, this is the point in the viewport (in viewport coordinates) 
+    /// ViewportZoomFocusY Styled Property: The Y coordinate of the viewport focus, this is the point in the viewport (in viewport coordinates) 
     /// that the content focus point is locked to while zooming in.
     /// </summary>
+    public static readonly StyledProperty<double> ViewportZoomFocusYProperty =
+        AvaloniaProperty.Register<PanZoomControl, double>(nameof(ViewportZoomFocusY), defaultValue: 0.0);
+
+    /// <summary> Gets or sets the ViewportZoomFocusY property.</summary>
     public double ViewportZoomFocusY
     {
-        get { return (double)GetValue(ViewportZoomFocusYProperty); }
-        set { SetValue(ViewportZoomFocusYProperty, value); }
+        get => this.GetValue(ViewportZoomFocusYProperty);
+        set
+        {
+            this.SetValue(ViewportZoomFocusYProperty, value);
+        }
     }
-    public static readonly DependencyProperty ViewportZoomFocusYProperty = DependencyProperty.Register("ViewportZoomFocusY",
-        typeof(double), typeof(ZoomAndPanControl), new FrameworkPropertyMetadata(0.0));
 }

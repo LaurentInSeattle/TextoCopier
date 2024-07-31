@@ -63,8 +63,8 @@ public partial class PanZoomControl
         var newX = contentPoint.X - (this.ContentViewportWidth / 2);
         var newY = contentPoint.Y - (this.ContentViewportHeight / 2);
 
-        AnimationHelper.StartAnimation(this, ContentOffsetXProperty, newX, AnimationDuration, UseAnimations);
-        AnimationHelper.StartAnimation(this, ContentOffsetYProperty, newY, AnimationDuration, UseAnimations);
+        AnimationHelper.StartAnimation(this, ContentOffsetXProperty, newX, AnimationDuration, null, UseAnimations);
+        AnimationHelper.StartAnimation(this, ContentOffsetYProperty, newY, AnimationDuration, null, UseAnimations);
     }
 
     /// <summary>
@@ -190,8 +190,8 @@ public partial class PanZoomControl
                 callback?.Invoke(this, EventArgs.Empty);
             }, UseAnimations);
 
-        AnimationHelper.StartAnimation(this, ViewportZoomFocusXProperty, ViewportWidth / 2, AnimationDuration, UseAnimations);
-        AnimationHelper.StartAnimation(this, ViewportZoomFocusYProperty, ViewportHeight / 2, AnimationDuration, UseAnimations);
+        AnimationHelper.StartAnimation(this, ViewportZoomFocusXProperty, ViewportWidth / 2, AnimationDuration,  null, UseAnimations);
+        AnimationHelper.StartAnimation(this, ViewportZoomFocusYProperty, ViewportHeight / 2, AnimationDuration, null, UseAnimations);
     }
 
     /// <summary> Zoom to the specified scale and move the specified focus point to the center of the viewport. </summary>
