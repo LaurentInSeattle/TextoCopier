@@ -1,0 +1,34 @@
+<Window 
+	xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+    x:Class="PanZoom.MainWindow"
+    Title="Pan and Zoom"
+	xmlns:panzoom="clr-namespace:Lyt.Avalonia.PanZoom"
+    >
+	<ScrollViewer 
+		x:Name="scroller"
+		HorizontalScrollBarVisibility="Visible"
+		VerticalScrollBarVisibility="Visible"
+		Background="Black"
+		>
+			<panzoom:PanZoomControl
+				x:Name="PanAndZoom"
+				Background="#AACCCCCC"
+				Margin="4"
+				>
+				<Image
+					Stretch="UniformToFill"
+					Source="\Assets\Images\dark.jpg"
+		            />
+			</panzoom:PanZoomControl>
+		</ScrollViewer>
+</Window>
+
+<!--
+				MinimumZoomType="FitScreen"
+				UseAnimations="{Binding ElementName=AnimationsCheckBox, Path=IsChecked}"
+				ZoomAndPanInitialPosition="FillScreen"
+-->
