@@ -13,6 +13,7 @@ global using System.Threading.Tasks;
 global using System.Windows.Input;
 
 global using Avalonia;
+global using Avalonia.Animation;
 global using Avalonia.Controls;
 global using Avalonia.Controls.ApplicationLifetimes;
 global using Avalonia.Controls.Presenters;
