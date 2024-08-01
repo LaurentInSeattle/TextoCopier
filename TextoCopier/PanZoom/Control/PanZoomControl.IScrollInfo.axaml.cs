@@ -79,7 +79,9 @@ public partial class PanZoomControl : UserControl // Scroll
         {
             _disableScrollOffsetSync = true;
             ContentOffsetX = offset / InternalViewportZoom;
-            DelayedSaveZoom750Miliseconds();
+
+            // Undo / Redo 
+            // DelayedSaveZoom750Miliseconds();
         }
         finally
         {
@@ -98,7 +100,9 @@ public partial class PanZoomControl : UserControl // Scroll
         {
             _disableScrollOffsetSync = true;
             ContentOffsetY = offset / InternalViewportZoom;
-            DelayedSaveZoom750Miliseconds();
+
+            // Undo / Redo 
+            // DelayedSaveZoom750Miliseconds();
         }
         finally
         {
@@ -111,7 +115,9 @@ public partial class PanZoomControl : UserControl // Scroll
     /// </summary>
     public void LineUp()
     {
-        DelayedSaveZoom750Miliseconds();
+        // Undo / Redo 
+        // DelayedSaveZoom750Miliseconds();
+
         ContentOffsetY -= (ContentViewportHeight / 10);
     }
 
@@ -120,7 +126,9 @@ public partial class PanZoomControl : UserControl // Scroll
     /// </summary>
     public void LineDown()
     {
-        DelayedSaveZoom750Miliseconds();
+        // Undo / Redo 
+        // DelayedSaveZoom750Miliseconds();
+        
         ContentOffsetY += (ContentViewportHeight / 10);
     }
 
@@ -129,7 +137,9 @@ public partial class PanZoomControl : UserControl // Scroll
     /// </summary>
     public void LineLeft()
     {
-        DelayedSaveZoom750Miliseconds();
+        // Undo / Redo 
+        // DelayedSaveZoom750Miliseconds();
+
         ContentOffsetX -= (ContentViewportWidth / 10);
     }
 
@@ -138,7 +148,8 @@ public partial class PanZoomControl : UserControl // Scroll
     /// </summary>
     public void LineRight()
     {
-        DelayedSaveZoom750Miliseconds();
+        // Undo / Redo 
+        // DelayedSaveZoom750Miliseconds();
         ContentOffsetX += (ContentViewportWidth / 10);
     }
 
@@ -147,7 +158,8 @@ public partial class PanZoomControl : UserControl // Scroll
     /// </summary>
     public void PageUp()
     {
-        DelayedSaveZoom1500Miliseconds();
+        // Undo / Redo 
+        // DelayedSaveZoom1500Miliseconds();
         ContentOffsetY -= ContentViewportHeight;
     }
 
@@ -156,7 +168,8 @@ public partial class PanZoomControl : UserControl // Scroll
     /// </summary>
     public void PageDown()
     {
-        DelayedSaveZoom1500Miliseconds();
+        // Undo / Redo 
+        // DelayedSaveZoom1500Miliseconds();
         ContentOffsetY += ContentViewportHeight;
     }
 
@@ -165,7 +178,8 @@ public partial class PanZoomControl : UserControl // Scroll
     /// </summary>
     public void PageLeft()
     {
-        DelayedSaveZoom1500Miliseconds();
+        // Undo / Redo 
+        // DelayedSaveZoom1500Miliseconds();
         ContentOffsetX -= ContentViewportWidth;
     }
 
@@ -174,7 +188,8 @@ public partial class PanZoomControl : UserControl // Scroll
     /// </summary>
     public void PageRight()
     {
-        DelayedSaveZoom1500Miliseconds();
+        // Undo / Redo 
+        // DelayedSaveZoom1500Miliseconds();
         ContentOffsetX += ContentViewportWidth;
     }
 
@@ -226,14 +241,21 @@ public partial class PanZoomControl : UserControl // Scroll
         }
     }
 
-    /// <summary>
-    /// Bring the specified rectangle to view.
-    /// </summary>
+    /// <summary> Bring the specified rectangle to view. </summary>
     public Rect MakeVisible(Visual visual, Rect rectangle)
     {
-        if (_content.IsAncestorOf(visual))
+        // TODO: Broken ---  In use ??? 
+        // 
+        if (_content.IsVisualAncestorOf(visual))
         {
-            var transformedRect = visual.TransformToAncestor(_content).TransformBounds(rectangle);
+            // Transforms the specified bounding box and returns an axis-aligned bounding box that is
+            // exactly large enough to contain it.
+            // var transformedRect = visual.TransformToAncestor(_content).TransformBounds(rectangle);
+
+            //var matrix = visual.TransformToVisual(_content);
+            //var transformedBounds = matrix.                // new TransformedBounds( rectangle , )
+            var transformedRect = rectangle;
+
             var viewportRect = new Rect(ContentOffsetX, ContentOffsetY, ContentViewportWidth, ContentViewportHeight);
             if (!transformedRect.Contains(viewportRect))
             {
@@ -242,37 +264,30 @@ public partial class PanZoomControl : UserControl // Scroll
 
                 if (transformedRect.Left < viewportRect.Left)
                 {
-                    //
                     // Want to move viewport left.
-                    //
                     horizOffset = transformedRect.Left - viewportRect.Left;
                 }
                 else if (transformedRect.Right > viewportRect.Right)
                 {
-                    //
                     // Want to move viewport right.
-                    //
                     horizOffset = transformedRect.Right - viewportRect.Right;
                 }
 
                 if (transformedRect.Top < viewportRect.Top)
                 {
-                    //
                     // Want to move viewport up.
-                    //
                     vertOffset = transformedRect.Top - viewportRect.Top;
                 }
                 else if (transformedRect.Bottom > viewportRect.Bottom)
                 {
-                    //
                     // Want to move viewport down.
-                    //
                     vertOffset = transformedRect.Bottom - viewportRect.Bottom;
                 }
 
                 SnapContentOffsetTo(new Point(ContentOffsetX + horizOffset, ContentOffsetY + vertOffset));
             }
         }
+
         return rectangle;
     }
 }

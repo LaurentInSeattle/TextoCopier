@@ -3,7 +3,7 @@ namespace Lyt.Avalonia.PanZoom;
 public partial class PanZoomControl : UserControl
 {
     /// <summary> Reference to the underlying content, which is named PART_Content in the template. </summary>
-    private Control? _content = null;
+    private Control _content ;
 
     /// <summary>The transform that is applied to the content to scale it by 'ViewportZoom'. </summary>
     private ScaleTransform? _contentZoomTransform = null;
@@ -42,9 +42,10 @@ public partial class PanZoomControl : UserControl
         // DefaultStyleKeyProperty.OverrideMetadata(typeof(ZoomAndPanControl), new FrameworkPropertyMetadata(typeof(ZoomAndPanControl)));
     }
 
-    public PanZoomControl() 
-    {    
+    public PanZoomControl()
+    {
         this.InitializeComponent();
+        this._content = this.PART_Content;
         this.SizeChanged += this.OnSizeChanged;
     }
 
@@ -116,7 +117,9 @@ public partial class PanZoomControl : UserControl
         {
             // Use the size of the child as the un-scaled extent content.
             _unScaledExtent = childSize;
-            ScrollOwner?.InvalidateScrollInfo();
+
+            // TODO ???
+            // ScrollOwner?.InvalidateScrollInfo();
         }
 
         // Update the size of the viewport onto the content based on the passed in 'constraint'.
@@ -138,7 +141,9 @@ public partial class PanZoomControl : UserControl
         {
             // Use the size of the child as the un-scaled extent content.
             _unScaledExtent = _content.DesiredSize;
-            ScrollOwner?.InvalidateScrollInfo();
+
+            // TODO ???
+            // ScrollOwner?.InvalidateScrollInfo();
         }
 
         // Update the size of the viewport onto the content based on the passed in 'arrangeBounds'.
@@ -164,113 +169,14 @@ public partial class PanZoomControl : UserControl
     public event EventHandler ContentZoomChanged;
     #endregion
 
-    #region Event Handlers
-
-    /// <summary>
-    /// This is required for the animations, but has issues if set by something like a slider.
-    /// </summary>
-    private double InternalViewportZoom
-    {
-        get { return (double)GetValue(InternalViewportZoomProperty); }
-        set { SetValue(InternalViewportZoomProperty, value); }
-    }
-    private static readonly DependencyProperty InternalViewportZoomProperty = DependencyProperty.Register("InternalViewportZoom",
-        typeof(double), typeof(ZoomAndPanControl), new FrameworkPropertyMetadata(1.0, InternalViewportZoom_PropertyChanged, InternalViewportZoom_Coerce));
-
-    /// <summary>
-    /// Event raised when the 'ViewportZoom' property has changed value.
-    /// </summary>
-    private static void InternalViewportZoom_PropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
-    {
-        var c = (ZoomAndPanControl)dependencyObject;
-
-        if (c._contentZoomTransform != null)
-        {
-            //
-            // Update the content scale transform whenever 'ViewportZoom' changes.
-            //
-            c._contentZoomTransform.ScaleX = c.InternalViewportZoom;
-            c._contentZoomTransform.ScaleY = c.InternalViewportZoom;
-        }
-
-        //
-        // Update the size of the viewport in content coordinates.
-        //
-        c.UpdateContentViewportSize();
-
-        if (c._enableContentOffsetUpdateFromScale)
-        {
-            try
-            {
-                // 
-                // Disable content focus syncronization.  We are about to update content offset whilst zooming
-                // to ensure that the viewport is focused on our desired content focus point.  Setting this
-                // to 'true' stops the automatic update of the content focus when content offset changes.
-                //
-                c._disableContentFocusSync = true;
-
-                //
-                // Whilst zooming in or out keep the content offset up-to-date so that the viewport is always
-                // focused on the content focus point (and also so that the content focus is locked to the 
-                // viewport focus point - this is how the google maps style zooming works).
-                //
-                var viewportOffsetX = c.ViewportZoomFocusX - (c.ViewportWidth / 2);
-                var viewportOffsetY = c.ViewportZoomFocusY - (c.ViewportHeight / 2);
-                var contentOffsetX = viewportOffsetX / c.InternalViewportZoom;
-                var contentOffsetY = viewportOffsetY / c.InternalViewportZoom;
-                c.ContentOffsetX = (c.ContentZoomFocusX - (c.ContentViewportWidth / 2)) - contentOffsetX;
-                c.ContentOffsetY = (c.ContentZoomFocusY - (c.ContentViewportHeight / 2)) - contentOffsetY;
-            }
-            finally
-            {
-                c._disableContentFocusSync = false;
-            }
-        }
-        c.ContentZoomChanged?.Invoke(c, EventArgs.Empty);
-        c.ViewportZoom = c.InternalViewportZoom;
-        c.OnPropertyChanged(new DependencyPropertyChangedEventArgs(ViewportZoomProperty, c.ViewportZoom, c.InternalViewportZoom));
-        c.ScrollOwner?.InvalidateScrollInfo();
-        c.SetCurrentZoomTypeEnum();
-        c.RaiseCanExecuteChanged();
-    }
-
-    /// <summary>
-    /// Method called to clamp the 'ViewportZoom' value to its valid range.
-    /// </summary>
-    private static object InternalViewportZoom_Coerce(DependencyObject dependencyObject, object baseValue)
-    {
-        var c = (ZoomAndPanControl)dependencyObject;
-        var value = Math.Max((double)baseValue, c.MinimumZoomClamped);
-        switch (c.MinimumZoomType)
-        {
-            case MinimumZoomTypeEnum.FitScreen:
-                value = Math.Min(Math.Max(value, c.FitZoomValue), c.MaximumZoom);
-                break;
-            case MinimumZoomTypeEnum.FillScreen:
-                value = Math.Min(Math.Max(value, c.FillZoomValue), c.MaximumZoom);
-                break;
-            case MinimumZoomTypeEnum.MinimumZoom:
-                value = Math.Min(Math.Max(value, c.MinimumZoom), c.MaximumZoom);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-        return value;
-    }
-    #endregion
-
-    /// <summary>
-    /// Reset the viewport zoom focus to the center of the viewport.
-    /// </summary>
+    /// <summary> Reset the viewport zoom focus to the center of the viewport. </summary>
     private void ResetViewportZoomFocus()
     {
         ViewportZoomFocusX = ViewportWidth / 2;
         ViewportZoomFocusY = ViewportHeight / 2;
     }
 
-    /// <summary>
-    /// Update the viewport size from the specified size.
-    /// </summary>
+    /// <summary> Update the viewport size from the specified size. </summary>
     private void UpdateViewportSize(Size newSize)
     {
         if (_viewport == newSize)
@@ -278,38 +184,27 @@ public partial class PanZoomControl : UserControl
 
         _viewport = newSize;
 
-        //
         // Update the viewport size in content coordiates.
-        //
         UpdateContentViewportSize();
 
-        //
         // Initialise the content zoom focus point.
-        //
         UpdateContentZoomFocusX();
         UpdateContentZoomFocusY();
 
-        //
         // Reset the viewport zoom focus to the center of the viewport.
-        //
         ResetViewportZoomFocus();
 
-        //
         // Update content offset from itself when the size of the viewport changes.
         // This ensures that the content offset remains properly clamped to its valid range.
-        //
         this.ContentOffsetX = this.ContentOffsetX;
         this.ContentOffsetY = this.ContentOffsetY;
 
-        //
         // Tell that owning ScrollViewer that scrollbar data has changed.
-        //
-        ScrollOwner?.InvalidateScrollInfo();
+        // TODO ???
+        // ScrollOwner?.InvalidateScrollInfo();
     }
 
-    /// <summary>
-    /// Update the size of the viewport in content coordinates after the viewport size or 'ViewportZoom' has changed.
-    /// </summary>
+    /// <summary> Update the size of the viewport in content coordinates after the viewport size or 'ViewportZoom' has changed.  </summary>
     private void UpdateContentViewportSize()
     {
         ContentViewportWidth = ViewportWidth / InternalViewportZoom;
@@ -322,63 +217,71 @@ public partial class PanZoomControl : UserControl
         UpdateTranslationY();
     }
 
-    /// <summary>
-    /// Update the X coordinate of the translation transformation.
-    /// </summary>
+    /// <summary> Update the X coordinate of the translation transformation. </summary>
     private void UpdateTranslationX()
     {
         if (this._contentOffsetTransform != null)
         {
             var scaledContentWidth = this._unScaledExtent.Width * this.InternalViewportZoom;
             if (scaledContentWidth < this.ViewportWidth)
-                //
+            {
                 // When the content can fit entirely within the viewport, center it.
-                //
                 this._contentOffsetTransform.X = (this.ContentViewportWidth - this._unScaledExtent.Width) / 2;
+            }
             else
+            {
                 this._contentOffsetTransform.X = -this.ContentOffsetX;
+            }
         }
     }
 
-    /// <summary>
-    /// Update the Y coordinate of the translation transformation.
-    /// </summary>
+    /// <summary> Update the Y coordinate of the translation transformation. </summary>
     private void UpdateTranslationY()
     {
         if (this._contentOffsetTransform != null)
         {
             var scaledContentHeight = this._unScaledExtent.Height * this.InternalViewportZoom;
             if (scaledContentHeight < this.ViewportHeight)
-                //
+            {
                 // When the content can fit entirely within the viewport, center it.
-                //
                 this._contentOffsetTransform.Y = (this.ContentViewportHeight - this._unScaledExtent.Height) / 2;
+            }
             else
+            {
                 this._contentOffsetTransform.Y = -this.ContentOffsetY;
+            }
         }
     }
 
-    /// <summary>
-    /// Update the X coordinate of the zoom focus point in content coordinates.
-    /// </summary>
+    /// <summary> Update the X coordinate of the zoom focus point in content coordinates. </summary>
     private void UpdateContentZoomFocusX()
     {
         ContentZoomFocusX = ContentOffsetX + (_constrainedContentViewportWidth / 2);
     }
 
-    /// <summary>
-    /// Update the Y coordinate of the zoom focus point in content coordinates.
-    /// </summary>
+    /// <summary> Update the Y coordinate of the zoom focus point in content coordinates. </summary>
     private void UpdateContentZoomFocusY()
     {
         ContentZoomFocusY = ContentOffsetY + (_constrainedContentViewportHeight / 2);
     }
 
-    public double FitZoomValue => ViewportHelpers.FitZoom(ActualWidth, ActualHeight, _content?.ActualWidth, _content?.ActualHeight);
-    public double FillZoomValue => ViewportHelpers.FillZoom(ActualWidth, ActualHeight, _content?.ActualWidth, _content?.ActualHeight);
-    public double MinimumZoomClamped => ((MinimumZoomType == MinimumZoomTypeEnum.FillScreen) ? FillZoomValue
-                                  : (MinimumZoomType == MinimumZoomTypeEnum.FitScreen) ? FitZoomValue
-                                  : MinimumZoom).ToRealNumber();
+    public double FitZoomValue
+        => ViewportHelpers.FitZoom( 
+            this.Bounds.Width, this.Bounds.Height, this._content.Bounds.Width, this._content.Bounds.Height);
+
+    public double FillZoomValue 
+        => ViewportHelpers.FillZoom(
+            this.Bounds.Width, this.Bounds.Height, this._content.Bounds.Width, this._content.Bounds.Height);
+
+    public double MinimumZoomClamped 
+        // TODO
+        // use switch expression 
+        => ((MinimumZoomType == MinimumZoomTypeEnum.FillScreen) ? 
+                FillZoomValue : 
+               (MinimumZoomType == MinimumZoomTypeEnum.FitScreen) ? 
+                    FitZoomValue : 
+                    MinimumZoom)
+            .ToRealNumber();
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -387,17 +290,28 @@ public partial class PanZoomControl : UserControl
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    private enum CurrentZoomTypeEnum { Fill, Fit, Other }
+    private enum CurrentZoomTypeEnum 
+    { 
+        Fill, 
+        Fit, 
+        Other, 
+    }
 
     private CurrentZoomTypeEnum _currentZoomTypeEnum;
 
     private void SetCurrentZoomTypeEnum()
     {
         if (ViewportZoom.IsWithinOnePercent(FitZoomValue))
+        {
             _currentZoomTypeEnum = CurrentZoomTypeEnum.Fit;
+        }
         else if (ViewportZoom.IsWithinOnePercent(FillZoomValue))
+        {
             _currentZoomTypeEnum = CurrentZoomTypeEnum.Fill;
+        }
         else
+        {
             _currentZoomTypeEnum = CurrentZoomTypeEnum.Other;
+        }
     }
 }

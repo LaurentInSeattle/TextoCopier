@@ -32,3 +32,6 @@ global using Avalonia.Media.Immutable;
 global using Avalonia.Remote.Protocol.Input;
 global using Avalonia.Styling;
 global using Avalonia.Threading;
+global using Avalonia.VisualTree;
+
+

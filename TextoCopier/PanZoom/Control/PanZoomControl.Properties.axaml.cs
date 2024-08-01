@@ -346,4 +346,102 @@ public partial class PanZoomControl : UserControl
             this.SetValue(ViewportZoomFocusYProperty, value);
         }
     }
+
+    /// <summary>
+    /// This is required for the animations, but has issues if set by something like a slider.
+    /// ViewportZoom Styled Property: 
+    /// This is used for binding a slider to control the zoom. Cannot use the InternalViewportZoom because of all the 
+    /// assumptions in when the this property is changed. THIS IS NOT USED FOR THE ANIMATIONS
+    /// </summary>
+    public static readonly StyledProperty<double> InternalViewportZoomProperty =
+        AvaloniaProperty.Register<PanZoomControl, double>(nameof(InternalViewportZoom), defaultValue: 1.0);
+
+    /// <summary> Gets or sets the InternalViewportZoom property.</summary>
+    public double InternalViewportZoom
+    {
+        get => this.GetValue(InternalViewportZoomProperty);
+        set
+        {
+            this.SetValue(InternalViewportZoomProperty, value);
+            // => InternalViewportZoom_PropertyChanged 
+            // InternalViewportZoom_PropertyChanged, InternalViewportZoom_Coerce
+        }
+    }
+
+    /// <summary> Event raised when the 'ViewportZoom' property has changed value. </summary>
+    private void InternalViewportZoom_PropertyChanged()
+    {
+        var c = this;
+
+        if (c._contentZoomTransform != null)
+        {
+            //
+            // Update the content scale transform whenever 'ViewportZoom' changes.
+            //
+            c._contentZoomTransform.ScaleX = c.InternalViewportZoom;
+            c._contentZoomTransform.ScaleY = c.InternalViewportZoom;
+        }
+
+        //
+        // Update the size of the viewport in content coordinates.
+        //
+        c.UpdateContentViewportSize();
+
+        if (c._enableContentOffsetUpdateFromScale)
+        {
+            try
+            {
+                // 
+                // Disable content focus syncronization.  We are about to update content offset whilst zooming
+                // to ensure that the viewport is focused on our desired content focus point.  Setting this
+                // to 'true' stops the automatic update of the content focus when content offset changes.
+                //
+                c._disableContentFocusSync = true;
+
+                //
+                // Whilst zooming in or out keep the content offset up-to-date so that the viewport is always
+                // focused on the content focus point (and also so that the content focus is locked to the 
+                // viewport focus point - this is how the google maps style zooming works).
+                //
+                var viewportOffsetX = c.ViewportZoomFocusX - (c.ViewportWidth / 2);
+                var viewportOffsetY = c.ViewportZoomFocusY - (c.ViewportHeight / 2);
+                var contentOffsetX = viewportOffsetX / c.InternalViewportZoom;
+                var contentOffsetY = viewportOffsetY / c.InternalViewportZoom;
+                c.ContentOffsetX = (c.ContentZoomFocusX - (c.ContentViewportWidth / 2)) - contentOffsetX;
+                c.ContentOffsetY = (c.ContentZoomFocusY - (c.ContentViewportHeight / 2)) - contentOffsetY;
+            }
+            finally
+            {
+                c._disableContentFocusSync = false;
+            }
+        }
+        c.ContentZoomChanged?.Invoke(c, EventArgs.Empty);
+        c.ViewportZoom = c.InternalViewportZoom;
+        //c.OnPropertyChanged(new DependencyPropertyChangedEventArgs(ViewportZoomProperty, c.ViewportZoom, c.InternalViewportZoom));
+        //c.ScrollOwner?.InvalidateScrollInfo();
+        //c.SetCurrentZoomTypeEnum();
+        //c.RaiseCanExecuteChanged();
+    }
+
+    /// <summary> Method called to clamp the 'InternalViewportZoom' value to its valid range. </summary>
+    private object InternalViewportZoom_Coerce(object baseValue)
+    {
+        var c = this;
+        var value = Math.Max((double)baseValue, c.MinimumZoomClamped);
+        switch (c.MinimumZoomType)
+        {
+            case MinimumZoomTypeEnum.FitScreen:
+                value = Math.Min(Math.Max(value, c.FitZoomValue), c.MaximumZoom);
+                break;
+            case MinimumZoomTypeEnum.FillScreen:
+                value = Math.Min(Math.Max(value, c.FillZoomValue), c.MaximumZoom);
+                break;
+            case MinimumZoomTypeEnum.MinimumZoom:
+                value = Math.Min(Math.Max(value, c.MinimumZoom), c.MaximumZoom);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+        return value;
+    }
 }

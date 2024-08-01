@@ -118,24 +118,28 @@ public partial class PanZoomControl
         this.InternalViewportZoom = newContentZoom;
         this.ContentOffsetX = newContentOffsetX;
         this.ContentOffsetY = newContentOffsetY;
-        RaiseCanExecuteChanged();
+
+        // TODO ??? 
+        // RaiseCanExecuteChanged();
     }
 
     /// <summary> Zoom in/out centered on the viewport center. </summary>
     public void AnimatedZoomTo(double viewportZoom)
     {
-        var xadjust = (ContentViewportWidth - _content.ActualWidth) * InternalViewportZoom / 2;
-        var yadjust = (ContentViewportHeight - _content.ActualHeight) * InternalViewportZoom / 2;
+        Rect contentBounds = this._content.Bounds;
+        var xadjust = (ContentViewportWidth - contentBounds.Width) * InternalViewportZoom / 2;
+        var yadjust = (ContentViewportHeight - contentBounds.Height) * InternalViewportZoom / 2;
         var zoomCenter = (InternalViewportZoom >= FillZoomValue)
             ? new Point(ContentOffsetX + (ContentViewportWidth / 2), ContentOffsetY + (ContentViewportHeight / 2))
-            : new Point(_content.ActualWidth / 2 - xadjust, _content.ActualHeight / 2 + yadjust);
+            : new Point(contentBounds.Width / 2 - xadjust, contentBounds.Height / 2 + yadjust);
         AnimatedZoomAboutPoint(viewportZoom, zoomCenter);
     }
 
     /// <summary> Zoom in/out centered on the viewport center. </summary>
     public void AnimatedZoomToCentered(double viewportZoom)
     {
-        var zoomCenter = new Point(_content.ActualWidth / 2, _content.ActualHeight / 2); ;
+        Rect contentBounds = this._content.Bounds;
+        var zoomCenter = new Point(contentBounds.Width / 2, contentBounds.Height / 2); ;
         AnimatedZoomAboutPoint(viewportZoom, zoomCenter);
     }
 
@@ -150,18 +154,26 @@ public partial class PanZoomControl
     public void AnimatedScaleToFit()
     {
         if (_content == null)
+        {
             throw new ApplicationException("PART_Content was not found in the ZoomAndPanControl visual template!");
+        }
+
         ZoomTo(FillZoomValue);
-        //AnimatedZoomTo(new Rect(0, 0, _content.ActualWidth, _content.ActualHeight));
+        Rect contentBounds = this._content.Bounds;
+        AnimatedZoomTo(new Rect(0, 0, contentBounds.Width, contentBounds.Height));
     }
 
     /// <summary> Instantly scale the content so that it fits completely in the control. </summary>
     public void ScaleToFit()
     {
         if (_content == null)
+        {
             throw new ApplicationException("PART_Content was not found in the ZoomAndPanControl visual template!");
+        }
+
+        Rect contentBounds = this._content.Bounds;
         ZoomTo(FitZoomValue);
-        //ZoomTo(new Rect(0, 0, _content.ActualWidth, _content.ActualHeight));
+        ZoomTo(new Rect(0, 0, contentBounds.Width, contentBounds.Height));
     }
 
     /// <summary> Zoom to the specified scale and move the specified focus point to the center of the viewport. </summary>
@@ -190,7 +202,7 @@ public partial class PanZoomControl
                 callback?.Invoke(this, EventArgs.Empty);
             }, UseAnimations);
 
-        AnimationHelper.StartAnimation(this, ViewportZoomFocusXProperty, ViewportWidth / 2, AnimationDuration,  null, UseAnimations);
+        AnimationHelper.StartAnimation(this, ViewportZoomFocusXProperty, ViewportWidth / 2, AnimationDuration, null, UseAnimations);
         AnimationHelper.StartAnimation(this, ViewportZoomFocusYProperty, ViewportHeight / 2, AnimationDuration, null, UseAnimations);
     }
 
