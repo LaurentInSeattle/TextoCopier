@@ -1,9 +1,14 @@
+using Avalonia.Controls;
+
 namespace Lyt.Avalonia.PanZoom;
 
 public partial class PanZoomControl : UserControl
 {
     /// <summary> Reference to the underlying content, which is named PART_Content in the template. </summary>
     private Control _content ;
+
+    /// <summary> Reference to the underlying content, which is named PART_Content in the template. </summary>
+    private Control _oldContent;
 
     /// <summary>The transform that is applied to the content to scale it by 'ViewportZoom'. </summary>
     private ScaleTransform? _contentZoomTransform = null;
@@ -45,8 +50,38 @@ public partial class PanZoomControl : UserControl
     public PanZoomControl()
     {
         this.InitializeComponent();
+        this._oldContent = this.PART_Content;
         this._content = this.PART_Content;
+        this._oldContent = this._content;
+        this._partDragZoomBorder = this.PART_DragZoomBorder;
+        this._partDragZoomCanvas = this.PART_DragZoomCanvas;
         this.SizeChanged += this.OnSizeChanged;
+        this.Loaded += this.OnLoaded;
+        this.PropertyChanged += this.OnPropertyChanged;
+
+    }
+
+    private void OnLoaded(object? _, RoutedEventArgs e)
+    {
+        //    // Setup the transform on the content so that we can scale it by 'ViewportZoom'.
+        //    //
+        //    this._contentZoomTransform = new ScaleTransform(this.InternalViewportZoom, this.InternalViewportZoom);
+
+        //    //
+        //    // Setup the transform on the content so that we can translate it by 'ContentOffsetX' and 'ContentOffsetY'.
+        //    //
+        //    this._contentOffsetTransform = new TranslateTransform();
+        //    UpdateTranslationX();
+        //    UpdateTranslationY();
+
+        //    //
+        //    // Setup a transform group to contain the translation and scale transforms, and then
+        //    // assign this to the content's 'RenderTransform'.
+        //    //
+        //    var transformGroup = new TransformGroup();
+        //    transformGroup.Children.Add(this._contentOffsetTransform);
+        //    transformGroup.Children.Add(this._contentZoomTransform);
+        //    _content.RenderTransform = transformGroup;
     }
 
     /// <summary> Need to update zoom values if size changes, and update ViewportZoom if too low </summary>
@@ -75,38 +110,54 @@ public partial class PanZoomControl : UserControl
         //OnPropertyChanged(nameof(FitZoomValue));
     }
 
-    ///// <summary> Called when a template has been applied to the control. </summary>
-    public void OnApplyTemplate()
+    private void OnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
     {
-        //base.OnApplyTemplate();
-
-        //_content = this.Template.FindName("PART_Content", this) as FrameworkElement;
-        //if (_content != null)
-        //{
-        //    //
-        //    // Setup the transform on the content so that we can scale it by 'ViewportZoom'.
-        //    //
-        //    this._contentZoomTransform = new ScaleTransform(this.InternalViewportZoom, this.InternalViewportZoom);
-
-        //    //
-        //    // Setup the transform on the content so that we can translate it by 'ContentOffsetX' and 'ContentOffsetY'.
-        //    //
-        //    this._contentOffsetTransform = new TranslateTransform();
-        //    UpdateTranslationX();
-        //    UpdateTranslationY();
-
-        //    //
-        //    // Setup a transform group to contain the translation and scale transforms, and then
-        //    // assign this to the content's 'RenderTransform'.
-        //    //
-        //    var transformGroup = new TransformGroup();
-        //    transformGroup.Children.Add(this._contentOffsetTransform);
-        //    transformGroup.Children.Add(this._contentZoomTransform);
-        //    _content.RenderTransform = transformGroup;
-        //    ZoomAndPanControl_EventHandlers_OnApplyTemplate();
-        //}
+        if (e.Property == ContentControl.ContentProperty)
+        {
+            this.OnContentChanged();
+            return;
+        }
     }
 
+    /// <summary> When content is renewed, set event to set the initial position as specified. </summary>
+    protected void OnContentChanged()
+    {
+        if (this._oldContent is not null)
+        {
+            this._oldContent.SizeChanged -= SetZoomAndPanInitialPosition;
+        }
+
+        this._oldContent = this._content;
+        this._content.SizeChanged += SetZoomAndPanInitialPosition;
+    }
+
+    /// <summary> When content is renewed, set the initial position as specified </summary>
+    private void SetZoomAndPanInitialPosition(object? sender, SizeChangedEventArgs e)
+    {
+        Rect bounds = this._content.Bounds;
+        switch (ZoomAndPanInitialPosition)
+        {
+            default:
+            case InitialPositionEnum.Default:
+                break;
+
+            case InitialPositionEnum.FitScreen:
+                InternalViewportZoom = FitZoomValue;
+                break;
+
+            case InitialPositionEnum.FillScreen:
+                InternalViewportZoom = FillZoomValue;
+                ContentOffsetX = (bounds.Width - ViewportWidth / InternalViewportZoom) / 2;
+                ContentOffsetY = (bounds.Height - ViewportHeight / InternalViewportZoom) / 2;
+                break;
+
+            case InitialPositionEnum.OneHundredPercentCentered:
+                InternalViewportZoom = 1.0;
+                ContentOffsetX = (bounds.Width - ViewportWidth) / 2;
+                ContentOffsetY = (bounds.Height - ViewportHeight) / 2;
+                break;
+        }
+    }
     /// <summary> Measure the control and its children. </summary>
     protected override Size MeasureOverride(Size constraint)
     {
@@ -282,13 +333,6 @@ public partial class PanZoomControl : UserControl
                     FitZoomValue : 
                     MinimumZoom)
             .ToRealNumber();
-
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
 
     private enum CurrentZoomTypeEnum 
     { 
