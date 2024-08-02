@@ -59,6 +59,23 @@ public partial class PanZoomControl : UserControl
         this.Loaded += this.OnLoaded;
         this.PropertyChanged += this.OnPropertyChanged;
 
+        this.PointerPressed += this.OnPointerPressed;
+        this.PointerReleased += this.OnPointerReleased;
+        this.PointerMoved += this.OnPointerMoved;
+        this.PointerWheelChanged += this.OnPointerWheelChanged;
+        this.DoubleTapped += this.OnDoubleTapped;
+    }
+
+    ~PanZoomControl()
+    {
+        this.PointerPressed -= this.OnPointerPressed;
+        this.PointerReleased -= this.OnPointerReleased;
+        this.PointerMoved -= this.OnPointerMoved;
+        this.PointerWheelChanged -= this.OnPointerWheelChanged;
+        this.DoubleTapped += this.OnDoubleTapped;
+        this.SizeChanged -= this.OnSizeChanged;
+        this.Loaded -= this.OnLoaded;
+        this.PropertyChanged -= this.OnPropertyChanged;
     }
 
     private void OnLoaded(object? _, RoutedEventArgs e)

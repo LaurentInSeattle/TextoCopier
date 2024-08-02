@@ -20,22 +20,19 @@ public partial class PanZoomControl  // Pointer events
     /// <summary> Records which mouse button clicked during mouse dragging. </summary>
     private MouseButton _mouseButtonDown;
 
-    /// <summary> Event raised on mouse down in the ZoomAndPanControl. </summary>
-    protected override void OnMouseDown(MouseButtonEventArgs e)
+    private void OnPointerPressed(object? sender, PointerPressedEventArgs args)
     {
-        base.OnMouseDown(e);
-
-        // SaveZoom();
         _content.Focus();
-        Keyboard.Focus(_content);
 
-        _mouseButtonDown = e.ChangedButton;
-        _origZoomAndPanControlMouseDownPoint = e.GetPosition(this);
-        _origContentMouseDownPoint = e.GetPosition(_content);
+        PointerPoint pointerPointControl = args.GetCurrentPoint(this);
+        _mouseButtonDown = pointerPointControl.MouseButtonFromPointerPoint();
+        _origZoomAndPanControlMouseDownPoint = pointerPointControl.Position;
 
-        if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0 &&
-            (e.ChangedButton == MouseButton.Left ||
-             e.ChangedButton == MouseButton.Right))
+        PointerPoint pointerPointContent = args.GetCurrentPoint(this._content);
+        _origContentMouseDownPoint = pointerPointContent.Position;
+
+        if ((args.KeyModifiers & KeyModifiers.Shift) != 0 &&
+            (_mouseButtonDown == MouseButton.Left || _mouseButtonDown == MouseButton.Right))
         {
             // Shift + left- or right-down initiates zooming mode.
             _mouseHandlingMode = MouseHandlingModeEnum.Zooming;
@@ -49,51 +46,54 @@ public partial class PanZoomControl  // Pointer events
         if (_mouseHandlingMode != MouseHandlingModeEnum.None)
         {
             // Capture the mouse so that we eventually receive the mouse up event.
-            this.CaptureMouse();
+            args.Pointer.Capture(this);
         }
     }
 
-    /// <summary> Event raised on mouse up in the ZoomAndPanControl. </summary>
-    protected override void OnMouseUp(MouseButtonEventArgs e)
+    private void OnPointerReleased(object? sender, PointerReleasedEventArgs args)
     {
-        base.OnMouseUp(e);
-
         if (_mouseHandlingMode != MouseHandlingModeEnum.None)
         {
             if (_mouseHandlingMode == MouseHandlingModeEnum.Zooming)
             {
                 if (_mouseButtonDown == MouseButton.Left)
                 {
-                    // Shift + left-click zooms in on the content.
+                    // Shift + left-click zooms IN on the content.
                     ZoomIn(_origContentMouseDownPoint);
                 }
                 else if (_mouseButtonDown == MouseButton.Right)
                 {
-                    // Shift + left-click zooms out from the content.
+                    // Shift + left-click zooms OUT from the content.
                     ZoomOut(_origContentMouseDownPoint);
                 }
             }
             else if (_mouseHandlingMode == MouseHandlingModeEnum.DragZooming)
             {
-                var finalContentMousePoint = e.GetPosition(_content);
+                PointerPoint pointerPointContent = args.GetCurrentPoint(this._content);
+                Point finalContentMousePoint = pointerPointContent.Position;
+                
                 // When drag-zooming has finished we zoom in on the rectangle that was highlighted by the user.
                 ApplyDragZoomRect(finalContentMousePoint);
             }
 
-            this.ReleaseMouseCapture();
+            args.Pointer.Capture(null);
             _mouseHandlingMode = MouseHandlingModeEnum.None;
         }
     }
 
-    /// <summary> Event raised on mouse move in the ZoomAndPanControl. </summary>
-    protected override void OnMouseMove(MouseEventArgs e)
+    private void OnPointerMoved(object? sender, PointerEventArgs args)
     {
-        base.OnMouseMove(e);
         var oldContentMousePoint = MousePosition;
-        var curContentMousePoint = e.GetPosition(_content);
-        MousePosition = curContentMousePoint.FilterClamp(_content.ActualWidth - 1, _content.ActualHeight - 1);
-        OnPropertyChanged(new DependencyPropertyChangedEventArgs(MousePositionProperty, oldContentMousePoint,
-            curContentMousePoint));
+        PointerPoint pointerPointContent = args.GetCurrentPoint(this._content);
+        Point curContentMousePoint = pointerPointContent.Position;
+
+        Rect bounds = this._content.Bounds;
+        MousePosition = curContentMousePoint.FilterClamp(bounds.Width - 1.0, bounds.Height - 1.0);
+
+        // TODO ??? 
+        //
+        //OnPropertyChanged(new DependencyPropertyChangedEventArgs(MousePositionProperty, oldContentMousePoint,
+        //    curContentMousePoint));
 
         if (_mouseHandlingMode == MouseHandlingModeEnum.Panning)
         {
@@ -102,81 +102,76 @@ public partial class PanZoomControl  // Pointer events
             this.ContentOffsetX -= dragOffset.X;
             this.ContentOffsetY -= dragOffset.Y;
 
-            e.Handled = true;
+            args.Handled = true;
         }
         else if (_mouseHandlingMode == MouseHandlingModeEnum.Zooming)
         {
-            var curZoomAndPanControlMousePoint = e.GetPosition(this);
+            PointerPoint pointerPointControl = args.GetCurrentPoint(this);
+            Point curZoomAndPanControlMousePoint = pointerPointControl.Position;
+
             var dragOffset = curZoomAndPanControlMousePoint - _origZoomAndPanControlMouseDownPoint;
             double dragThreshold = 10;
-            if (_mouseButtonDown == MouseButton.Left &&
-                (Math.Abs(dragOffset.X) > dragThreshold ||
-                 Math.Abs(dragOffset.Y) > dragThreshold))
+            if (_mouseButtonDown == MouseButton.Left && 
+                (Math.Abs(dragOffset.X) > dragThreshold || Math.Abs(dragOffset.Y) > dragThreshold))
             {
                 // When Shift + left-down zooming mode and the user drags beyond the drag threshold,
-                // initiate drag zooming mode where the user can drag out a rectangle to select the area
-                // to zoom in on.
+                // initiate drag zooming mode where the user can drag out a rectangle to select the area to zoom in on.
                 _mouseHandlingMode = MouseHandlingModeEnum.DragZooming;
                 InitDragZoomRect(_origContentMouseDownPoint, curContentMousePoint);
             }
         }
         else if (_mouseHandlingMode == MouseHandlingModeEnum.DragZooming)
         {
-            // When in drag zooming mode continously update the position of the rectangle
-            // that the user is dragging out.
-            curContentMousePoint = e.GetPosition(this);
+            // When in drag zooming mode continously update the position of the rectangle that the user is dragging out.
+            
+            // TODO - Needed ? Same as code at the top ?? 
+            PointerPoint pointerPointControl = args.GetCurrentPoint(this);
+            curContentMousePoint = pointerPointControl.Position;
+
             SetDragZoomRect(_origZoomAndPanControlMouseDownPoint, curContentMousePoint);
         }
     }
 
-    /// <summary> Event raised on mouse wheel moved in the ZoomAndPanControl. </summary>
-    protected override void OnMouseWheel(MouseWheelEventArgs e)
+    private void OnPointerWheelChanged(object? sender, PointerWheelEventArgs args)
     {
-        base.OnMouseWheel(e);
-
-        DelayedSaveZoom750Miliseconds();
-        e.Handled = true;
-
-        if (e.Delta > 0)
-            ZoomIn(e.GetPosition(_content));
-        else if (e.Delta < 0)
-            ZoomOut(e.GetPosition(_content));
+        args.Handled = true;
+        PointerPoint pointerPointContent = args.GetCurrentPoint(this._content);
+        Point curContentMousePoint = pointerPointContent.Position;
+        double delta = args.Delta.Y;
+        if (delta > 0.000_1)
+        {
+            ZoomIn(curContentMousePoint);
+        }
+        else if (delta < -0.000_1)
+        {
+            ZoomOut(curContentMousePoint);
+        } 
+        // else ~= 0.0: do nothing 
     }
 
-    /// <summary> Event raised with the double click command </summary>
-    protected override void OnMouseDoubleClick(MouseButtonEventArgs e)
+    private void OnDoubleTapped(object? sender, TappedEventArgs args)
     {
-        base.OnMouseDoubleClick(e);
-
-        if ((Keyboard.Modifiers & ModifierKeys.Shift) == 0)
+        Point curContentMousePoint = args.GetPosition(this._content);
+        if ((args.KeyModifiers & KeyModifiers.Shift) == 0)
         {
-            // SaveZoom();
-            this.AnimatedSnapTo(e.GetPosition(_content));
+            this.AnimatedSnapTo(curContentMousePoint);
+            args.Handled = true;
         }
     }
 
-    /// <summary>
-    /// Zoom the viewport out, centering on the specified point (in content coordinates).
-    /// </summary>
+    /// <summary> Zoom the viewport out, centering on the specified point (in content coordinates). </summary>
     private void ZoomOut(Point contentZoomCenter)
-    {
-        this.ZoomAboutPoint(this.InternalViewportZoom * 0.90909090909, contentZoomCenter);
-    }
+        => this.ZoomAboutPoint(this.InternalViewportZoom * 0.90909090909, contentZoomCenter);
 
-    /// <summary>
-    /// Zoom the viewport in, centering on the specified point (in content coordinates).
-    /// </summary>
+    /// <summary> Zoom the viewport in, centering on the specified point (in content coordinates). </summary>
     private void ZoomIn(Point contentZoomCenter)
-    {
-        this.ZoomAboutPoint(this.InternalViewportZoom * 1.1, contentZoomCenter);
-    }
+        => this.ZoomAboutPoint(this.InternalViewportZoom * 1.1, contentZoomCenter);
 
-    /// <summary>
-    /// Initialise the rectangle that the use is dragging out.
-    /// </summary>
+
+    /// <summary> Initialise the rectangle that the use is dragging out. </summary>
     private void InitDragZoomRect(Point pt1, Point pt2)
     {
-        _partDragZoomCanvas.Visibility = Visibility.Visible;
+        _partDragZoomCanvas.IsVisible = true;
         _partDragZoomBorder.Opacity = 1;
         SetDragZoomRect(pt1, pt2);
     }
@@ -184,22 +179,22 @@ public partial class PanZoomControl  // Pointer events
     /// <summary> Update the position and size of the rectangle that user is dragging out. </summary>
     private void SetDragZoomRect(Point pt1, Point pt2)
     {
-        //
         // Update the coordinates of the rectangle that is being dragged out by the user.
-        // The we offset and rescale to convert from content coordinates.
-        //
-        var rect = ViewportHelpers.Clip(pt1, pt2, new Point(0, 0),
-            new Point(_partDragZoomCanvas.ActualWidth, _partDragZoomCanvas.ActualHeight));
+        // ???? offset and rescale to convert from content coordinates.
+        Rect bounds = _partDragZoomCanvas.Bounds;
+        var rect = ViewportHelpers.Clip(pt1, pt2, new Point(0, 0), new Point(bounds.Width, bounds.Height));
         ViewportHelpers.PositionBorderOnCanvas(_partDragZoomBorder, rect);
     }
 
     /// <summary> When the user has finished dragging out the rectangle the zoom operation is applied. </summary>
     private void ApplyDragZoomRect(Point finalContentMousePoint)
     {
-        var rect = ViewportHelpers.Clip(finalContentMousePoint, _origContentMouseDownPoint, new Point(0, 0),
-            new Point(_partDragZoomCanvas.ActualWidth, _partDragZoomCanvas.ActualHeight));
+        Rect bounds = _partDragZoomCanvas.Bounds;
+        var rect = 
+            ViewportHelpers.Clip(
+                finalContentMousePoint, _origContentMouseDownPoint, 
+                new Point(0, 0), new Point(bounds.Width, bounds.Height));
         this.AnimatedZoomTo(rect);
-        // new Rect(contentX, contentY, contentWidth, contentHeight));
         FadeOutDragZoomRect();
     }
 
@@ -207,7 +202,7 @@ public partial class PanZoomControl  // Pointer events
     private void FadeOutDragZoomRect()
     {
         AnimationHelper.StartAnimation(_partDragZoomBorder, OpacityProperty, 0.0, 0.1,
-            delegate { _partDragZoomCanvas.Visibility = Visibility.Collapsed; }, UseAnimations);
+            delegate { _partDragZoomCanvas.IsVisible = false; }, UseAnimations);
     }
 
     #region Commands -- Commented out 

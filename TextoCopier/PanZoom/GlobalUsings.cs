@@ -33,4 +33,8 @@ global using Avalonia.Styling;
 global using Avalonia.Threading;
 global using Avalonia.VisualTree;
 
-
+global using Lyt.Avalonia.Mvvm;
+global using Lyt.Avalonia.Mvvm.Core;
+global using Lyt.Avalonia.Mvvm.Dialogs;
+global using Lyt.Avalonia.Mvvm.Messenger;
+global using Lyt.Avalonia.Mvvm.Utilities;

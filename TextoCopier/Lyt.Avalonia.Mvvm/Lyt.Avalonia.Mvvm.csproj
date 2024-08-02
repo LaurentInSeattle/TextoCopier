@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Lyt.Avalonia.Controls\Lyt.Avalonia.Controls.csproj" />
     <ProjectReference Include="..\Lyt.Avalonia.Interfaces\Lyt.Avalonia.Interfaces.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Animations\" />
+  </ItemGroup>
 </Project>
