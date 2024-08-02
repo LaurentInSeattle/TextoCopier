@@ -1,24 +1,88 @@
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Markup.Xaml;
+namespace PanZoom;
 
-namespace PanZoom
+public partial class App : ApplicationBase
 {
-    public partial class App : Application
+    public const string Organization = "Lyt";
+    public const string Application = "PanZoom";
+    public const string RootNamespace = "PanZoom";
+    public const string AssemblyName = "PanZoom";
+    public const string AssetsFolder = "Assets";
+
+    public App() : base(
+        App.Organization,
+        App.Application,
+        App.RootNamespace,
+        typeof(MainWindow),
+        typeof(ApplicationModelBase), // Top level model 
+        [
+            // Models 
+        ],
+        [
+           // Singletons
+        ],
+        [
+            // Services 
+            App.LoggerService,
+            new Tuple<Type, Type>(typeof(IDialogService), typeof(DialogService)),
+            new Tuple<Type, Type>(typeof(IMessenger), typeof(Messenger)),
+            new Tuple<Type, Type>(typeof(IProfiler), typeof(Profiler)),
+            new Tuple<Type, Type>(typeof(IToaster), typeof(Toaster)),
+        ],
+        singleInstanceRequested: true)
     {
-        public override void Initialize()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
-
-        public override void OnFrameworkInitializationCompleted()
-        {
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                desktop.MainWindow = new MainWindow();
-            }
-
-            base.OnFrameworkInitializationCompleted();
-        }
+        // This should be empty, use the OnStartup override
     }
+
+    private static Tuple<Type, Type> LoggerService =>
+            Debugger.IsAttached ?
+                new Tuple<Type, Type>(typeof(ILogger), typeof(LogViewerWindow)) :
+                new Tuple<Type, Type>(typeof(ILogger), typeof(Logger));
+
+    public bool RestartRequired { get; set; }
+
+    protected override Task OnStartupBegin()
+    {
+        var logger = App.GetRequiredService<ILogger>();
+        logger.Debug("OnStartupBegin begins");
+
+        // This needs to complete before all models are initialized.
+        //var fileManager = App.GetRequiredService<FileManagerModel>();
+        //await fileManager.Configure(
+        //    new FileManagerConfiguration(
+        //        App.Organization, App.Application, App.RootNamespace, App.AssemblyName, App.AssetsFolder));
+
+        // The localizer needs the File Manager, do not change the order.
+        //var localizer = App.GetRequiredService<LocalizerModel>();
+        //await localizer.Configure(
+        //    new LocalizerConfiguration
+        //    {
+        //        AssemblyName = App.AssemblyName,
+        //        Languages = ["en-US", "fr-FR", "it-IT"],
+        //        // Use default for all other config parameters 
+        //    });
+
+        logger.Debug("OnStartupBegin complete");
+        return Task.CompletedTask;
+    }
+
+    protected override Task OnShutdownComplete()
+    {
+        var logger = App.GetRequiredService<ILogger>();
+        logger.Debug("On Shutdown Complete");
+
+        if (this.RestartRequired)
+        {
+            logger.Debug("On Shutdown Complete: Restart Required");
+            var process = Process.GetCurrentProcess();
+            if ((process is not null) && (process.MainModule is not null))
+            {
+                Process.Start(process.MainModule.FileName);
+            }
+        }
+
+        return Task.CompletedTask;
+    }
+
+    // Why does it need to be there ??? 
+    public override void Initialize() => AvaloniaXamlLoader.Load(this);
 }

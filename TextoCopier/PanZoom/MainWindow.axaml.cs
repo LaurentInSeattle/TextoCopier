@@ -1,7 +1,10 @@
-namespace PanZoom
+namespace PanZoom;
+
+public partial class MainWindow : Window
 {
-    public partial class MainWindow : Window
-    {
-        public MainWindow() => this.InitializeComponent();
-        }
+    public MainWindow() 
+    { 
+        this.InitializeComponent();
+        new MainWindowViewModel().Bind(this);
+    }
 }

@@ -80,45 +80,48 @@ public partial class PanZoomControl : UserControl
 
     private void OnLoaded(object? _, RoutedEventArgs e)
     {
-        //    // Setup the transform on the content so that we can scale it by 'ViewportZoom'.
-        //    //
-        //    this._contentZoomTransform = new ScaleTransform(this.InternalViewportZoom, this.InternalViewportZoom);
+        // Setup the transform on the content so that we can scale it by 'ViewportZoom'.
+        this._contentZoomTransform = new ScaleTransform(this.InternalViewportZoom, this.InternalViewportZoom);
 
-        //    //
-        //    // Setup the transform on the content so that we can translate it by 'ContentOffsetX' and 'ContentOffsetY'.
-        //    //
-        //    this._contentOffsetTransform = new TranslateTransform();
-        //    UpdateTranslationX();
-        //    UpdateTranslationY();
+        // Setup the transform on the content so that we can translate it by 'ContentOffsetX' and 'ContentOffsetY'.
+        this._contentOffsetTransform = new TranslateTransform();
+        UpdateTranslationX();
+        UpdateTranslationY();
 
-        //    //
-        //    // Setup a transform group to contain the translation and scale transforms, and then
-        //    // assign this to the content's 'RenderTransform'.
-        //    //
-        //    var transformGroup = new TransformGroup();
-        //    transformGroup.Children.Add(this._contentOffsetTransform);
-        //    transformGroup.Children.Add(this._contentZoomTransform);
-        //    _content.RenderTransform = transformGroup;
+        // Setup a transform group to contain the translation and scale transforms, and then
+        // assign this to the content's 'RenderTransform'.
+        var transformGroup = new TransformGroup();
+        transformGroup.Children.Add(this._contentOffsetTransform);
+        transformGroup.Children.Add(this._contentZoomTransform);
+        _content.RenderTransform = transformGroup;
     }
 
     /// <summary> Need to update zoom values if size changes, and update ViewportZoom if too low </summary>
-    // protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
     private void OnSizeChanged(object? sender, SizeChangedEventArgs e)
     {
-        //base.OnRenderSizeChanged(sizeInfo);
-        //if (sizeInfo.NewSize.Width <= 1 || sizeInfo.NewSize.Height <= 1) return;
-        //switch (_currentZoomTypeEnum)
-        //{
-        //    case CurrentZoomTypeEnum.Fit:
-        //        InternalViewportZoom = ViewportHelpers.FitZoom(sizeInfo.NewSize.Width, sizeInfo.NewSize.Height,
-        //            _content?.ActualWidth, _content?.ActualHeight);
-        //        break;
-        //    case CurrentZoomTypeEnum.Fill:
-        //        InternalViewportZoom = ViewportHelpers.FillZoom(sizeInfo.NewSize.Width, sizeInfo.NewSize.Height,
-        //            _content?.ActualWidth, _content?.ActualHeight);
-        //        break;
-        //}
-        //if (InternalViewportZoom < MinimumZoomClamped) InternalViewportZoom = MinimumZoomClamped;
+        e.Handled = true;
+        var newSize = e.NewSize;
+        if (newSize.Width <= 1 || newSize.Height <= 1)
+        {
+            return;
+        } 
+
+        Rect bounds = this._content.Bounds;
+        switch (_currentZoomTypeEnum)
+        {
+            case CurrentZoomTypeEnum.Fit:
+                InternalViewportZoom = 
+                    ViewportHelpers.FitZoom(newSize.Width, newSize.Height, bounds.Width, bounds.Height);
+                break;
+            case CurrentZoomTypeEnum.Fill:
+                InternalViewportZoom = 
+                    ViewportHelpers.FillZoom(newSize.Width, newSize.Height, bounds.Width, bounds.Height);
+                break;
+        }
+        if (InternalViewportZoom < MinimumZoomClamped)
+        {
+            InternalViewportZoom = MinimumZoomClamped;
+        } 
 
         //// INotifyPropertyChanged property update
         ////
