@@ -19,6 +19,7 @@ public partial class App : ApplicationBase
         ],
         [
            // Singletons
+           typeof(ShellViewModel),
         ],
         [
             // Services 

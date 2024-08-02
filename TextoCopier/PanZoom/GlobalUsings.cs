@@ -55,4 +55,8 @@ global using Lyt.Avalonia.Mvvm.Utilities;
 
 global using Lyt.Avalonia.Model;
 
+
 #endregion Framework 
+
+global using Lyt.Avalonia.PanZoom;
+
