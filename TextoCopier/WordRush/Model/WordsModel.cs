@@ -36,7 +36,6 @@ public sealed partial class WordsModel : ModelBase
             
             void DictionaryParse(WordTranslator translator)
             {
-                Debugger.Break();
                 foreach (string key in translator.Keys)
                 {
                     foreach (Word word in translator[key])

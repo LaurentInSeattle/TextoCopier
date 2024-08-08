@@ -1,9 +1,8 @@
-﻿
-namespace Lyt.WordRush.Model.History;
+﻿namespace Lyt.WordRush.Model.History;
 
 public sealed class History : ModelBase
 {
-    private static readonly string FileName5 = "wordrush_history.xml";
+    private static readonly string FileName = "wordrush_history.xml";
 
     public History(FileManagerModel fileManager, IMessenger messenger, ILogger logger) : base(messenger, logger)
         => this.GameEntries = [];

@@ -1,5 +1,7 @@
 ﻿namespace Lyt.WordRush.Shell;
 
+using static Lyt.WordRush.Messaging.ViewActivationMessage;
+
 public sealed class ShellViewModel : Bindable<ShellView>
 {
     private readonly IDialogService dialogService;
@@ -19,7 +21,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.profiler = profiler;
 
         // this.templatesModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
-        // this.messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
+        this.messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
     }
 
     protected override void OnViewLoaded()
@@ -46,7 +48,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         this.Logger.Debug("OnViewLoaded BindGroupIcons complete");
 
-        // this.OnViewActivation(ActivatedView.Group, parameter: null, isFirstActivation: true);
+        this.OnViewActivation(ActivatedView.Setup, parameter: null, isFirstActivation: true);
         this.Logger.Debug("OnViewLoaded OnViewActivation complete");
 
         // Ready 
@@ -64,9 +66,12 @@ public sealed class ShellViewModel : Bindable<ShellView>
         //        10_000, InformationLevel.Warning);
         //}
 
-        this.Logger.Debug("OnViewLoaded SetupAvailableIcons begins");
-        this.Logger.Debug("OnViewLoaded SetupAvailableIcons complete");
+        //this.Logger.Debug("OnViewLoaded SetupAvailableIcons begins");
+        //this.Logger.Debug("OnViewLoaded SetupAvailableIcons complete");
         this.Logger.Debug("OnViewLoaded complete");
+
+        Schedule.OnUiThread(
+            5000, () => { this.Messenger.Publish(ActivatedView.Game); }, DispatcherPriority.Background);
     }
 
 
@@ -81,49 +86,29 @@ public sealed class ShellViewModel : Bindable<ShellView>
         //}
     }
 
-    //private void OnViewActivation(ViewActivationMessage message)
-    //    => this.OnViewActivation(message.View, message.ActivationParameter, false);
+    private void OnViewActivation(ViewActivationMessage message)
+        => this.OnViewActivation(message.View, message.ActivationParameter, false);
 
-    //private void OnViewActivation(ActivatedView activatedView, object? parameter = null, bool isFirstActivation = false)
-    //{
-    //    if (activatedView == ActivatedView.GoBack)
-    //    {
-    //        // We always go back to the Group View 
-    //        activatedView = ActivatedView.Group;
-    //    }
+    private void OnViewActivation(ActivatedView activatedView, object? parameter = null, bool isFirstActivation = false)
+    {
+        if (activatedView == ActivatedView.GoBack)
+        {
+            // We always go back to the Setup View 
+            activatedView = ActivatedView.Setup;
+        }
 
-    //    this.DeleteGroupIsVisible = activatedView == ActivatedView.Group;
-    //    this.NewGroupIsVisible = activatedView != ActivatedView.NewGroup;
+        switch (activatedView)
+        {
+            default:
+            case ActivatedView.Setup:
+                this.Activate<SetupViewModel, SetupView>(isFirstActivation, null);
+                break;
 
-    //    switch (activatedView)
-    //    {
-    //        default:
-    //        case ActivatedView.Group:
-    //            this.Activate<GroupViewModel, GroupView>(isFirstActivation, null);
-    //            break;
-
-    //        case ActivatedView.NewGroup:
-    //            this.Activate<NewEditGroupViewModel, NewEditGroupView>(isFirstActivation, null);
-    //            break;
-
-    //        case ActivatedView.EditGroup:
-    //            this.Activate<NewEditGroupViewModel, NewEditGroupView>(isFirstActivation, this.templatesModel.SelectedGroup);
-    //            break;
-
-    //        case ActivatedView.Help:
-    //            this.Activate<HelpViewModel, HelpView>(isFirstActivation, null);
-    //            break;
-
-    //        case ActivatedView.Settings:
-    //            this.Activate<SettingsViewModel, SettingsView>(isFirstActivation, null);
-    //            break;
-
-    //        case ActivatedView.EditTemplate:
-    //        case ActivatedView.NewTemplate:
-    //            this.Activate<NewEditTemplateViewModel, NewEditTemplateView>(isFirstActivation, parameter);
-    //            break;
-    //    }
-    //}
+            case ActivatedView.Game:
+                this.Activate<GameViewModel, GameView>(isFirstActivation, null);
+                break;
+        }
+    }
 
     //private void OnSettings(object? _) => this.OnViewActivation(ActivatedView.Settings);
 
@@ -167,15 +152,16 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
     private static void SetupWorkflow()
     {
-       //static void CreateAndBind<TViewModel, TControl>()
-       //     where TViewModel : Bindable<TControl>
-       //     where TControl : Control, new()
-       // {
-       //     var vm = App.GetRequiredService<TViewModel>();
-       //     vm.CreateViewAndBind();
-       // }
+        static void CreateAndBind<TViewModel, TControl>()
+             where TViewModel : Bindable<TControl>
+             where TControl : Control, new()
+        {
+            var vm = App.GetRequiredService<TViewModel>();
+            vm.CreateViewAndBind();
+        }
 
-        //CreateAndBind<GroupViewModel, GroupView>();
+        CreateAndBind<SetupViewModel, SetupView>();
+        CreateAndBind<GameViewModel, GameView>();
     }
 
     public ICommand SettingsCommand { get => this.Get<ICommand>()!; set => this.Set(value); }

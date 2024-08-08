@@ -18,7 +18,7 @@ public partial class MainWindow : Window
     {
         var vm = App.GetRequiredService<ShellViewModel>();
         vm.CreateViewAndBind();
-        this.Content = vm.View;
+        this.viewbox.Child = vm.View;
     }
     
     private void OnMainWindowClosing(object? sender, CancelEventArgs e)
