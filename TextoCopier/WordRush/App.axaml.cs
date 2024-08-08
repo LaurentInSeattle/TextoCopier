@@ -19,6 +19,7 @@ public partial class App : ApplicationBase
             typeof(LocalizerModel),
             typeof(FileManagerModel),
             typeof(WordsModel),
+        ],
         [
            // Singletons
            typeof(ShellViewModel),

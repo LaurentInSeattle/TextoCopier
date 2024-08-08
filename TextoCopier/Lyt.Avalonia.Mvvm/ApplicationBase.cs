@@ -40,7 +40,7 @@ public class ApplicationBase(
     private readonly List<Type> singletonTypes = singletonTypes;
     private readonly List<Tuple<Type, Type>> servicesInterfaceAndType = servicesInterfaceAndType;
     private readonly List<Type> validatedModelTypes = [];
-    private readonly bool singleInstanceRequested = singleInstanceRequested;
+    private readonly bool isSingleInstanceRequested = singleInstanceRequested;
 
     private IClassicDesktopStyleApplicationLifetime? desktop;
 
@@ -56,7 +56,7 @@ public class ApplicationBase(
         }
 
         // Enforce single instance if requested 
-        if (this.singleInstanceRequested && this.IsAlreadyRunning() && (this.desktop is not null))
+        if (this.isSingleInstanceRequested && this.IsAlreadyRunning() && (this.desktop is not null))
         {
             this.ForceShutdown();
             return;

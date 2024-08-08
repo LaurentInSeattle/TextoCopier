@@ -8,6 +8,7 @@ global using System.Collections.Generic;
 global using System.ComponentModel;
 global using System.Diagnostics;
 global using System.Globalization;
+global using System.IO;
 global using System.Linq;
 global using System.Reflection;
 global using System.Runtime.CompilerServices;
@@ -72,6 +73,8 @@ global using Lyt.WordRush;
 //global using Lyt.WordRush.Converters;
 //global using Lyt.WordRush.Messaging;
 global using Lyt.WordRush.Model;
+global using Lyt.WordRush.Model.Parsers;
+
 //global using Lyt.WordRush.Model.GameControl;
 //global using Lyt.WordRush.Model.MapData;
 //global using Lyt.WordRush.Model.Players;

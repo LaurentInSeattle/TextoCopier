@@ -38,16 +38,6 @@
 	  <None Remove="Assets\Dictionaries\Uddl\english-spanish.txt" />
 	  <None Remove="Assets\Images\parole.ico" />
 	  <None Remove="Assets\Palette\dark.jpg" />
-	  <None Remove="Assets\Words\comuni5.txt" />
-	  <None Remove="Assets\Words\comuni6.txt" />
-	  <None Remove="Assets\Words\parole50.txt" />
-	  <None Remove="Assets\Words\parole51.txt" />
-	  <None Remove="Assets\Words\parole52.txt" />
-	  <None Remove="Assets\Words\parole53.txt" />
-	  <None Remove="Assets\Words\parole54.txt" />
-	  <None Remove="Assets\Words\Parole55.txt" />
-	  <None Remove="Assets\Words\Parole60.txt" />
-	  <None Remove="Assets\Words\Parole61.txt" />
 	</ItemGroup>
 
 	<ItemGroup>
