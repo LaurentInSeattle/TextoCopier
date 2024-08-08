@@ -5,10 +5,10 @@ namespace Lyt.Avalonia.PanZoom;
 public partial class PanZoomControl : UserControl
 {
     /// <summary> Reference to the underlying content, which is named PART_Content in the template. </summary>
-    private Control _content ;
+    private ContentPresenter _content ;
 
     /// <summary> Reference to the underlying content, which is named PART_Content in the template. </summary>
-    private Control _oldContent;
+    private ContentPresenter _oldContent;
 
     /// <summary>The transform that is applied to the content to scale it by 'ViewportZoom'. </summary>
     private ScaleTransform? _contentZoomTransform = null;
@@ -50,9 +50,9 @@ public partial class PanZoomControl : UserControl
     public PanZoomControl()
     {
         this.InitializeComponent();
-        this._oldContent = this.PART_Content;
+
         this._content = this.PART_Content;
-        this._oldContent = this._content;
+
         this._partDragZoomBorder = this.PART_DragZoomBorder;
         this._partDragZoomCanvas = this.PART_DragZoomCanvas;
         this.SizeChanged += this.OnSizeChanged;
@@ -80,6 +80,10 @@ public partial class PanZoomControl : UserControl
 
     private void OnLoaded(object? _, RoutedEventArgs e)
     {
+        this._content.Content = this.ZoomableContent;
+
+        this._oldContent = this._content;
+
         // Setup the transform on the content so that we can scale it by 'ViewportZoom'.
         this._contentZoomTransform = new ScaleTransform(this.InternalViewportZoom, this.InternalViewportZoom);
 
@@ -94,6 +98,8 @@ public partial class PanZoomControl : UserControl
         transformGroup.Children.Add(this._contentOffsetTransform);
         transformGroup.Children.Add(this._contentZoomTransform);
         _content.RenderTransform = transformGroup;
+
+        this.ScaleToFit();
     }
 
     /// <summary> Need to update zoom values if size changes, and update ViewportZoom if too low </summary>

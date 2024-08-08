@@ -26,12 +26,8 @@
 				x:Name="PanAndZoom"
 				Background="#AACCCCCC"
 				Margin="4"
-				>
-				<Image
-					Stretch="UniformToFill"
-					Source="\Assets\Images\dark.jpg"
-					/>
-			</panzoom:PanZoomControl>
+				ZoomableContent="{Binding ZoomableContent}"
+				/>
 		</ScrollViewer>
 		<Grid
 			Grid.Column="1"

@@ -7,13 +7,6 @@
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	>
 	<Grid>
-		<Border
-			x:Name="PART_Border"
-			>
-			<ContentPresenter
-				x:Name="PART_Content"
-				/>
-		</Border>
 		<Canvas 
 			x:Name="PART_DragZoomCanvas"
 			HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
@@ -23,6 +16,14 @@
 				x:Name="PART_DragZoomBorder"
 				/>
 		</Canvas>
-
+		<Border
+			x:Name="PART_Border"
+			>
+			<ContentPresenter
+				x:Name="PART_Content"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+				/>
+		</Border>
 	</Grid>
 </UserControl>

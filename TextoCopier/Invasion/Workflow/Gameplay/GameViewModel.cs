@@ -69,6 +69,8 @@ public sealed class GameViewModel : Bindable<GameView>
         canvas.Children.Clear();
         canvas.Width = this.gameOptions.PixelWidth;
         canvas.Height = this.gameOptions.PixelHeight;
+        this.MaxOffsetX = this.gameOptions.PixelWidth;
+        this.MaxOffsetY = this.gameOptions.PixelHeight;
         canvas.InvalidateVisual();
 
         this.Messenger.Subscribe<GameSynchronizationRequest>(this.OnGameSynchronizationRequest, withUiDispatch: true);
@@ -113,6 +115,10 @@ public sealed class GameViewModel : Bindable<GameView>
     #endregion Methods invoked by the Framework using reflection 
 
     public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+
+    public double MaxOffsetX { get => this.Get<double>(); set => this.Set(value); }
+
+    public double MaxOffsetY { get => this.Get<double>(); set => this.Set(value); }
 
     private void UpdateUi()
     {
@@ -329,7 +335,7 @@ public sealed class GameViewModel : Bindable<GameView>
 
         // Send pixel position on the map to view model
         this.OnPointerPressedOnMap(e.GetPosition(this.mapImage), e.KeyModifiers);
-        e.Handled = true;
+        // e.Handled = true;
     }
 
     private void OnPointerMoved(object? sender, PointerEventArgs e)
@@ -341,7 +347,7 @@ public sealed class GameViewModel : Bindable<GameView>
 
         // Send pixel position on the map to view model
         this.OnPointerMovedOnMap(e.GetPosition(this.mapImage), e.KeyModifiers);
-        e.Handled = true;
+        // e.Handled = true;
     }
 
     private void OnPointerPressedOnMap(Point point, KeyModifiers keyModifiers)
@@ -353,6 +359,11 @@ public sealed class GameViewModel : Bindable<GameView>
         }
 
         var map = game.Map;
+        if (!map.PixelMap.IsValidCoordinate((int)point.X, (int)point.Y))
+        {
+            return;
+        }
+
         int regionIndex = map.PixelMap.RegionAt((int)point.X, (int)point.Y);
         var region = map.Regions[regionIndex];
         this.Messenger.Publish(new RegionSelectMessage(region, PointerAction.Clicked, keyModifiers));
@@ -380,6 +391,11 @@ public sealed class GameViewModel : Bindable<GameView>
         }
 
         var map = game.Map;
+        if ( ! map.PixelMap.IsValidCoordinate((int)point.X, (int)point.Y))
+        {
+            return; 
+        }
+    
         int regionIndex = map.PixelMap.RegionAt((int)point.X, (int)point.Y);
         var region = map.Regions[regionIndex];
         if ((this.hoveredRegion is null) || (this.hoveredRegion != region))

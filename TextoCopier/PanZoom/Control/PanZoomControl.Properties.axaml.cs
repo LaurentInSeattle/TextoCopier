@@ -9,6 +9,20 @@ public partial class PanZoomControl : UserControl
     /// </summary>
     public PanZoomControl ZoomAndPanContent => this;
 
+    /// <summary> Zoomable content  </summary>
+    public static readonly StyledProperty<Control?> ZoomableContentProperty =
+    AvaloniaProperty.Register<PanZoomControl, Control?>(nameof(ZoomableContent), defaultValue: null);
+
+    /// <summary> Gets or sets the ZoomableContent property.</summary>
+    public Control? ZoomableContent
+    {
+        get => this.GetValue(ZoomableContentProperty);
+        set
+        {
+            this.SetValue(ZoomableContentProperty, value);
+        }
+    }
+
     /// <summary>
     /// AnimationDuration Styled Property 
     /// The duration of the animations (in seconds) started by calling AnimatedZoomTo and the other animation methods.

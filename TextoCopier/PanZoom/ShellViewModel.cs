@@ -1,8 +1,11 @@
-﻿namespace PanZoom;
+﻿using Avalonia.Media.Imaging;
+using Avalonia.Platform;
+
+namespace PanZoom;
 
 public class ShellViewModel : Bindable<ShellView>
 {
-    PanZoomControl panZoom; 
+    PanZoomControl panZoom;
 
     private readonly IDialogService dialogService;
     private readonly IToaster toaster;
@@ -19,9 +22,16 @@ public class ShellViewModel : Bindable<ShellView>
     }
 
     protected override void OnViewLoaded()
-    { 
+    {
         base.OnViewLoaded();
-        this.panZoom = this.View.PanAndZoom; 
+        this.panZoom = this.View.PanAndZoom;
+        var bitmap = new Bitmap(AssetLoader.Open(new Uri("avares://PanZoom/Assets/Images/dark.jpg")));
+        var image = new Image
+        {
+            Stretch = Stretch.UniformToFill,
+            Source = bitmap,
+        };
+        this.ZoomableContent = image;
     }
 
     private void OnZoomIn(object? _)
@@ -33,8 +43,9 @@ public class ShellViewModel : Bindable<ShellView>
     {
     }
 
+    public Control ZoomableContent { get => this.Get<Control>()!; set => this.Set(value); }
+
     public ICommand ZoomInCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     public ICommand ZoomOutCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
 }

@@ -1,0 +1,87 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <RootNamespace>Lyt.WordRush</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Label="Avalonia">
+    <AvaloniaXamlVerboseExceptions>True</AvaloniaXamlVerboseExceptions>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<AvaloniaResource Include="Assets\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <AvaloniaXaml Remove="Assets\Icons\FluentSvgResourceDictionary.axaml" />
+	  <AvaloniaXaml Remove="Assets\Palette\DeepBluePalette.axaml" />
+	  <AvaloniaXaml Remove="Assets\Theme\Buttons.axaml" />
+	  <AvaloniaXaml Remove="Assets\Theme\Toggles.axaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Assets\Dictionaries\DictCC\dictcc-en-de.txt" />
+	  <None Remove="Assets\Dictionaries\DictCC\dictcc-en-fr.txt" />
+	  <None Remove="Assets\Dictionaries\DictCC\dictcc-en-it.txt" />
+	  <None Remove="Assets\Dictionaries\DictCC\dictcc-en-sp.txt" />
+	  <None Remove="Assets\Dictionaries\Idp\FRENCH.TXT" />
+	  <None Remove="Assets\Dictionaries\Idp\GERMAN.TXT" />
+	  <None Remove="Assets\Dictionaries\Idp\ITALIAN.TXT" />
+	  <None Remove="Assets\Dictionaries\Idp\SPANISH.TXT" />
+	  <None Remove="Assets\Dictionaries\Uddl\english-french.txt" />
+	  <None Remove="Assets\Dictionaries\Uddl\english-german.txt" />
+	  <None Remove="Assets\Dictionaries\Uddl\english-italian.txt" />
+	  <None Remove="Assets\Dictionaries\Uddl\english-spanish.txt" />
+	  <None Remove="Assets\Images\parole.ico" />
+	  <None Remove="Assets\Palette\dark.jpg" />
+	  <None Remove="Assets\Words\comuni5.txt" />
+	  <None Remove="Assets\Words\comuni6.txt" />
+	  <None Remove="Assets\Words\parole50.txt" />
+	  <None Remove="Assets\Words\parole51.txt" />
+	  <None Remove="Assets\Words\parole52.txt" />
+	  <None Remove="Assets\Words\parole53.txt" />
+	  <None Remove="Assets\Words\parole54.txt" />
+	  <None Remove="Assets\Words\Parole55.txt" />
+	  <None Remove="Assets\Words\Parole60.txt" />
+	  <None Remove="Assets\Words\Parole61.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.1.1" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.1.1" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.1.1" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.1.1" />
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Workflow\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Lyt.Avalonia.Controls\Lyt.Avalonia.Controls.csproj" />
+    <ProjectReference Include="..\Lyt.Avalonia.Interfaces\Lyt.Avalonia.Interfaces.csproj" />
+    <ProjectReference Include="..\Lyt.Avalonia.Localizer\Lyt.Avalonia.Localizer.csproj" />
+    <ProjectReference Include="..\Lyt.Avalonia.Model\Lyt.Avalonia.Model.csproj" />
+    <ProjectReference Include="..\Lyt.Avalonia.Mvvm\Lyt.Avalonia.Mvvm.csproj" />
+    <ProjectReference Include="..\Lyt.Avalonia.Persistence\Lyt.Avalonia.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="App.axaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Shell\MainWindow.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Shell\ShellView.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+</Project>

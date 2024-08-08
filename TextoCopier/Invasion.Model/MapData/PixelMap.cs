@@ -110,6 +110,14 @@ public sealed class PixelMap
     /// <summary> Count of pixels the largest country occupies </summary>
     public double BiggestCountrySize { get; private set; }
 
+    public bool IsValidCoordinate(Coordinate coordinate) =>
+        coordinate.X >= 0 && coordinate.Y >= 0 &&
+        coordinate.X <= this.XMax && coordinate.Y <= this.YMax;
+
+    public bool IsValidCoordinate(int coordinateX, int coordinateY) =>
+        coordinateX >= 0 && coordinateY >= 0 &&
+        coordinateX <= this.XMax && coordinateY <= this.YMax;
+
     /// <summary> Indexer, returns the Id of the region owning that pixel </summary>
     public short this[Coordinate coordinate] => this.RegionIdsPerPixel[coordinate.X, coordinate.Y];
 

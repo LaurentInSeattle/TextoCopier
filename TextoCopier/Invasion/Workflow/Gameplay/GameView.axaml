@@ -45,20 +45,26 @@
 			>
 		-->
 		<ScrollViewer
+			Grid.Column="1" Grid.Row="1"
 			VerticalScrollBarVisibility="Auto"
 			HorizontalScrollBarVisibility="Auto"
-			Grid.Column="1" Grid.Row="1"
 			>
 			<paz:ZoomBorder
 				x:Name="ZoomBorder"
                 Stretch="Uniform"
-                ZoomSpeed="0.5"
-				MinZoomX="1.0"
-				MinZoomY="1.0"
+                ZoomSpeed="1.1"
+				MinOffsetX="0.0"
+				MinOffsetY="0.0"
+				MaxOffsetX="{Binding MaxOffsetX}"
+				MaxOffsetY="{Binding MaxOffsetY}"
+				MinZoomX="0.5"
+				MinZoomY="0.5"
 				MaxZoomX="2.0"
 				MaxZoomY="2.0"
+				EnableZoom="True"
 				EnablePan="True"
-                EnableConstrains="True"
+				PanButton="Right"
+                EnableConstrains="False"
                 Background="DarkSlateBlue" 
 				ClipToBounds="True" 
 				Focusable="True"
@@ -68,6 +74,7 @@
 					x:Name="Canvas"
 					RenderOptions.BitmapInterpolationMode="LowQuality"
 					Background="AliceBlue"
+					VerticalAlignment="Top" HorizontalAlignment="Left"
 					>
 				</Canvas>
 			</paz:ZoomBorder>

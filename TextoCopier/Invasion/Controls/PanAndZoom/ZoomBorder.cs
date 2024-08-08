@@ -9,7 +9,7 @@ namespace Avalonia.Controls.PanAndZoom;
 public partial class ZoomBorder : Border
 {
     [Conditional("DEBUG")]
-    private static void Log(string message) { } // => Debug.WriteLine(message);
+    private static void Log(string message) => Debug.WriteLine(message);
 
     private static double ClampValue(double value, double minimum, double maximum)
     {
