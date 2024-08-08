@@ -1,4 +1,6 @@
-﻿namespace Lyt.WordRush;
+﻿using Lyt.WordRush.Model.History;
+
+namespace Lyt.WordRush;
 
 public partial class App : ApplicationBase
 {
@@ -19,6 +21,7 @@ public partial class App : ApplicationBase
             typeof(LocalizerModel),
             typeof(FileManagerModel),
             typeof(WordsModel),
+            typeof(History),
         ],
         [
            // Singletons
