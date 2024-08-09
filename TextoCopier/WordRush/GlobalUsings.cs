@@ -51,6 +51,7 @@ global using Lyt.Avalonia.Interfaces.Logger;
 global using Lyt.Avalonia.Interfaces.Messenger;
 global using Lyt.Avalonia.Interfaces.Model;
 global using Lyt.Avalonia.Interfaces.Profiler;
+global using Lyt.Avalonia.Interfaces.Random;
 global using Lyt.Avalonia.Interfaces.UserInterface;
 
 global using Lyt.Avalonia.Controls;
@@ -74,8 +75,7 @@ global using Lyt.WordRush;
 global using Lyt.WordRush.Messaging;
 global using Lyt.WordRush.Model;
 global using Lyt.WordRush.Model.Parsers;
-
 global using Lyt.WordRush.Shell;
-//global using Lyt.WordRush.Utilities;
+global using Lyt.WordRush.Utilities;
 global using Lyt.WordRush.Workflow.Game;
 global using Lyt.WordRush.Workflow.Setup;

@@ -10,7 +10,6 @@
 	Background="Transparent"
 	>
 	<Border
-		Margin="12"
 		HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
 		BorderThickness="1"
 		BorderBrush="Aquamarine"

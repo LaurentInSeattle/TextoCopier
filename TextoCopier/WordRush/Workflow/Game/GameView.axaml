@@ -10,19 +10,22 @@
 	Background="Transparent"
 	>
 	<Grid
-		ShowGridLines="True"
 		>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="70" />
 			<RowDefinition Height="*" />
 			<RowDefinition Height="80" />
+			<RowDefinition Height="12" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="200" />
 		</Grid.ColumnDefinitions>
 		<vm:CountDownBarControl 
-			Margin="20"
+			Margin="12"
+			BarHeight="12"
+			BackgroundBrush="LightSeaGreen"
+			ForegroundBrush="CadetBlue"
 			/>
 		<TextBlock
 			Grid.Column="1" Grid.Row="0"
@@ -47,13 +50,6 @@
 			FontSize="26" FontWeight="DemiBold"
 			Foreground="DarkOrange"
 			/>
-		<!-- 
-		Dunque Potente Strabiliante Stupefacente, Ben Fatto, Bene, grande, imponente, maestoso, Eccezionale, 		
-		Stupendo assordante bello grandioso spaventoso 
-		
-		Merda Cazzo Cazzata Accidenti Maledizione Errore Sbaglio mancanza Fallo Pecca deficiente Stupido Cretino SCemo 
-		ottuso terribile 
-		-->		
 		<TextBlock
 			Grid.Column="1" Grid.Row="1"
 			Text="Stupefacente!"
@@ -65,7 +61,6 @@
 
 		<Grid
 			x:Name="DifficultGrid"
-			ShowGridLines="True"
 			Grid.Row="1" Grid.RowSpan="2"
 			IsVisible="False"
 			>
@@ -92,7 +87,6 @@
 		</Grid>
 		<Grid
 			x:Name="MediumGrid"
-			ShowGridLines="True"
 			Grid.Row="1" Grid.RowSpan="2"
 			IsVisible="True"
 			>
@@ -108,17 +102,18 @@
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
 			<vm:WordBlockView
+				Margin="12"
 				Grid.Column="0" Grid.Row="0"
 				>
 			</vm:WordBlockView>
 			<vm:WordBlockView
+				Margin="12"
 				Grid.Column="1" Grid.Row="5"
 				>
 			</vm:WordBlockView>
 		</Grid>
 		<Grid
 			x:Name="EasyGrid"
-			ShowGridLines="True"
 			Grid.Row="1" Grid.RowSpan="2"
 			IsVisible="False"
 			>
