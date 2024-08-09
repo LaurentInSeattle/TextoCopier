@@ -18,6 +18,12 @@ public sealed class PixelMap
     private const int padding = 15;
     private const short noCountry = short.MaxValue;
 
+    public readonly ILogger Logger;
+
+    public readonly IMessenger Messenger; 
+
+    public readonly IRandomizer Randomizer;
+
     /// <summary> 
     /// Coordinates of each region, which is the starting point for the algorithm assigning pixels to a region.
     /// </summary>
@@ -57,15 +63,17 @@ public sealed class PixelMap
     /// <remarks> there are hundred thousands of pixels. It's better to store the Id as short</remarks>
     public short[,] RegionIdsPerPixel { get; private set; }
 
-    public PixelMap(Game game, Map map, IMessenger messenger, ILogger logger)
+    public PixelMap(Game game, Map map, IMessenger messenger, ILogger logger, IRandomizer randomizer)
     {
         this.game = game;
         this.gameOptions = game.GameOptions;
+        this.Messenger = messenger;
+        this.Logger = logger;
+        this.Randomizer = randomizer;
 
         // Map is not fully constructed yet. Field in Game is still null so we need to pass the map object 
         this.map = map;
-        this.Messenger = messenger;
-        this.Logger = logger;
+
         this.RegionCount = this.gameOptions.RegionCount;
         this.XCount = this.gameOptions.PixelWidth;
         this.XMax = this.XCount - 1;
@@ -103,10 +111,6 @@ public sealed class PixelMap
         this.GenerateRegionNeighbours(); 
     }
 
-    public ILogger Logger { get; private set; }
-
-    public IMessenger Messenger { get; private set; }
-
     /// <summary> Count of pixels the largest country occupies </summary>
     public double BiggestCountrySize { get; private set; }
 
@@ -137,7 +141,6 @@ public sealed class PixelMap
     private void GenerateRegionStartingPoints()
     {
         // Place for each region a random starting point on the map
-        Random random = this.game.Random;
         for (int regionIndex = 0; regionIndex < this.RegionCount; ++regionIndex)
         {
             bool isTooClose;
@@ -147,8 +150,8 @@ public sealed class PixelMap
             {
                 coordinate1 =
                     new Coordinate(
-                        random.Next(padding, this.XMax - padding),
-                        random.Next(padding, this.YMax - padding));
+                        this.Randomizer.Next(padding, this.XMax - padding),
+                        this.Randomizer.Next(padding, this.YMax - padding));
                 isTooClose = false;
                 for (int regionIndex2 = 0; regionIndex2 < regionIndex; ++regionIndex2)
                 {
@@ -199,7 +202,7 @@ public sealed class PixelMap
                   Coordinate originCoordinate,
                   Func<Coordinate, Coordinate> GetNeighbouringPixel)
                 {
-                    int pixelIndexMax = this.game.Random.Next(1, 4);
+                    int pixelIndexMax = this.game.Randomizer.Next(1, 4);
                     for (int pixelIndex = 0; pixelIndex < pixelIndexMax; ++pixelIndex)
                     {
                         Coordinate nextCoordinate = GetNeighbouringPixel(originCoordinate);

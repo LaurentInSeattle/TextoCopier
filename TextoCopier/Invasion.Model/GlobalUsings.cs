@@ -17,10 +17,10 @@ global using System.Threading.Tasks;
 global using Lyt.Avalonia.Interfaces.Logger;
 global using Lyt.Avalonia.Interfaces.Model;
 global using Lyt.Avalonia.Interfaces.Messenger;
+global using Lyt.Avalonia.Interfaces.Random;
 
 global using Lyt.Avalonia.Model;
 global using Lyt.Avalonia.Persistence;
-
 
 global using Lyt.Invasion.Model.GameControl;
 global using Lyt.Invasion.Model.MapData;

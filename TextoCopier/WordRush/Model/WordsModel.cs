@@ -1,5 +1,6 @@
 ﻿namespace Lyt.WordRush.Model;
 
+using Lyt.Avalonia.Interfaces.Random;
 using Mod = Lyt.WordRush.Model;
 
 public sealed partial class WordsModel : ModelBase
@@ -9,15 +10,16 @@ public sealed partial class WordsModel : ModelBase
     private readonly FileManagerModel fileManager;
     private readonly HashSet<string> italian;
     private readonly Dictionary<string, string> italianToEnglish;
-    private readonly Random random;
+    private readonly IRandomizer randomizer;
 
-    public WordsModel(FileManagerModel fileManager, IMessenger messenger, ILogger logger) : base(messenger, logger)
+    public WordsModel(
+        FileManagerModel fileManager, IMessenger messenger, ILogger logger, IRandomizer randomizer) : base(messenger, logger)
     {
         this.fileManager = fileManager;
         this.ShouldAutoSave = true;
         this.italian = new(2048, StringComparer.InvariantCultureIgnoreCase);
         this.italianToEnglish = new(2048);
-        this.random = new Random(Environment.TickCount);
+        this.randomizer = randomizer;
     }
 
     public bool IsReady {  get; private set; }  
@@ -70,7 +72,7 @@ public sealed partial class WordsModel : ModelBase
         int retries = 10 * ( 5 + exclude.Count );
         while (!found)
         {
-            int choice = this.random.Next(source.Length);
+            int choice = this.randomizer.Next(source.Length);
             string word = source[choice];
             if (!exclude.Contains(word) && !alreadyFound.Contains(word))
             {

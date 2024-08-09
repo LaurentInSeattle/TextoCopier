@@ -10,7 +10,7 @@ public sealed class Game
     public readonly List<Player> Players;
 
     /// <summary> Random number generator used during creation of PixelMap and during the game  </summary>
-    public readonly Random Random;
+    public readonly IRandomizer Randomizer;
 
     private Task? gameTask;
     private int recursionDepth;
@@ -18,11 +18,13 @@ public sealed class Game
 #pragma warning disable CS8618 
     // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     // Map and Players gets created and are normally not null, unless we crash 
-    public Game(GameOptions gameOptions, IMessenger messenger, ILogger logger)
+    public Game(GameOptions gameOptions, IMessenger messenger, ILogger logger, IRandomizer randomizer)
 #pragma warning restore CS8618 
     {
         this.Messenger = messenger;
         this.Logger = logger;
+        this.Randomizer = randomizer;
+
         this.GameOptions = gameOptions;
         this.blockingQueue = new BlockingCollection<GameSynchronizationResponse>(8);
 
@@ -32,17 +34,13 @@ public sealed class Game
             throw new ArgumentException("Invalid player count: " + playerCount);
         }
 
-        int seed = Environment.TickCount; // 666
-        this.Random = new Random(seed);
-        this.Logger.Info("Game Seed: " + seed);
-
         int retries = 5;
         bool constructed = false;
         while (!constructed)
         {
             try
             {
-                this.Map = new Map(this, this.Messenger, this.Logger);
+                this.Map = new Map(this, this.Messenger, this.Logger, randomizer);
                 this.Players = this.CreatePlayers();
                 this.recursionDepth = 0;
                 this.AllocateInitialRegions();
@@ -359,7 +357,7 @@ public sealed class Game
     private List<Player> CreatePlayers()
     {
         // Randomize the list of player info
-        this.GameOptions.Players.Shuffle<PlayerInfo>(this.Random);
+        this.Randomizer.Shuffle<PlayerInfo>(this.GameOptions.Players);
         var list = new List<Player>();
         int index = 0;
         foreach (var playerInfo in this.GameOptions.Players)
@@ -476,44 +474,44 @@ public sealed class Game
         int height = this.GameOptions.PixelHeight;
         if (playerCount == 2)
         {
-            int x1 = width / 4 + this.Random.Next(-30, 10);
-            int y1 = height / 2 + this.Random.Next(-50, 50) - height / 6;
+            int x1 = width / 4 + this.Randomizer.Next(-30, 10);
+            int y1 = height / 2 + this.Randomizer.Next(-50, 50) - height / 6;
             initialPositions.Add(new Coordinate(x1, y1));
 
-            int x2 = 3 * width / 4 + this.Random.Next(-10, 30); ;
-            int y2 = height / 2 + this.Random.Next(-50, 50) + height / 6;
+            int x2 = 3 * width / 4 + this.Randomizer.Next(-10, 30); ;
+            int y2 = height / 2 + this.Randomizer.Next(-50, 50) + height / 6;
             initialPositions.Add(new Coordinate(x2, y2));
         }
         else if (playerCount == 3)
         {
-            int x1 = width / 6 + this.Random.Next(-30, 10);
-            int y1 = height / 4 + this.Random.Next(-20, 20);
+            int x1 = width / 6 + this.Randomizer.Next(-30, 10);
+            int y1 = height / 4 + this.Randomizer.Next(-20, 20);
             initialPositions.Add(new Coordinate(x1, y1));
 
-            int x2 = 3 * width / 6 + this.Random.Next(-10, 30); ;
-            int y2 = 3 * height / 4 + this.Random.Next(-20, 20);
+            int x2 = 3 * width / 6 + this.Randomizer.Next(-10, 30); ;
+            int y2 = 3 * height / 4 + this.Randomizer.Next(-20, 20);
             initialPositions.Add(new Coordinate(x2, y2));
 
-            int x3 = 5 * width / 6 + this.Random.Next(-10, 30); ;
-            int y3 = height / 4 + this.Random.Next(-20, 20);
+            int x3 = 5 * width / 6 + this.Randomizer.Next(-10, 30); ;
+            int y3 = height / 4 + this.Randomizer.Next(-20, 20);
             initialPositions.Add(new Coordinate(x3, y3));
         }
         else // playerCount == 4
         {
-            int x1 = width / 4 + this.Random.Next(-30, 10);
-            int y1 = height / 4 + this.Random.Next(-20, 20);
+            int x1 = width / 4 + this.Randomizer.Next(-30, 10);
+            int y1 = height / 4 + this.Randomizer.Next(-20, 20);
             initialPositions.Add(new Coordinate(x1, y1));
 
-            int x2 = width / 4 + this.Random.Next(-30, 10);
-            int y2 = 3 * height / 4 + this.Random.Next(-20, 20);
+            int x2 = width / 4 + this.Randomizer.Next(-30, 10);
+            int y2 = 3 * height / 4 + this.Randomizer.Next(-20, 20);
             initialPositions.Add(new Coordinate(x2, y2));
 
-            int x3 = 3 * width / 4 + this.Random.Next(-10, 30); ;
-            int y3 = height / 4 + this.Random.Next(-20, 20);
+            int x3 = 3 * width / 4 + this.Randomizer.Next(-10, 30); ;
+            int y3 = height / 4 + this.Randomizer.Next(-20, 20);
             initialPositions.Add(new Coordinate(x3, y3));
 
-            int x4 = 3 * width / 4 + this.Random.Next(-10, 30); ;
-            int y4 = 3 * height / 4 + this.Random.Next(-20, 20);
+            int x4 = 3 * width / 4 + this.Randomizer.Next(-10, 30); ;
+            int y4 = 3 * height / 4 + this.Randomizer.Next(-20, 20);
             initialPositions.Add(new Coordinate(x4, y4));
         }
 

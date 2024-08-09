@@ -83,7 +83,7 @@
             void AddInitialResource(ResourceKind kind, float multiplier = MapData.Resources.NormalMultiplier)
             {
                 // Varies from 0.95f to 1.05f => + or - 5% 
-                float randomize = 1.0f + ((region.Game.Random.NextSingle() - 0.5f) / 10.0f);
+                float randomize = 1.0f + ((region.Game.Randomizer.NextSingle() - 0.5f) / 10.0f);
                 var limits = MapData.Resources.Limits[kind];
                 this.Values.Add(kind, limits.Initial * multiplier * randomize);
             }

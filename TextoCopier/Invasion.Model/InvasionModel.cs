@@ -8,6 +8,8 @@ public sealed class InvasionModel : ModelBase
 
     private readonly FileManagerModel fileManager;
 
+    private readonly IRandomizer randomizer;
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 #pragma warning disable IDE0021 // Use expression body for constructor 
@@ -21,10 +23,12 @@ public sealed class InvasionModel : ModelBase
 #pragma warning restore CS8625 
 #pragma warning restore CS8618
 
-    public InvasionModel(FileManagerModel fileManager, IMessenger messenger, ILogger logger) : base(messenger, logger)
+    public InvasionModel(
+        FileManagerModel fileManager, IMessenger messenger, ILogger logger, IRandomizer randomizer) : base(messenger, logger)
     {
         this.fileManager = fileManager;
         this.ShouldAutoSave = true;
+        this.randomizer = randomizer;   
     }
 
     [JsonIgnore]
@@ -70,6 +74,6 @@ public sealed class InvasionModel : ModelBase
 
     public void NewGame(GameOptions gameOptions)
     {
-        this.Game = new Game(gameOptions, this.Messenger, this.Logger);
+        this.Game = new Game(gameOptions, this.Messenger, this.Logger, this.randomizer);
     }
 }

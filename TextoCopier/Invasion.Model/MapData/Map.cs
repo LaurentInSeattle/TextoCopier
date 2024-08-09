@@ -2,22 +2,26 @@
 
 public sealed class Map
 {
-    public Map(Game game, IMessenger messenger, ILogger logger)
+    public readonly ILogger Logger;
+
+    public readonly IMessenger Messenger;
+
+    public readonly IRandomizer Randomizer;
+
+    public Map(Game game, IMessenger messenger, ILogger logger, IRandomizer randomizer)
     {
         this.Messenger = messenger;
         this.Logger = logger;
+        this.Randomizer = randomizer;
+
         this.Regions = new Region[game.GameOptions.RegionCount];
-        this.PixelMap = new PixelMap(game, this, messenger, logger);
+        this.PixelMap = new PixelMap(game, this, messenger, logger, randomizer);
         this.GenerateLandscape();
         foreach (Region region in this.Regions)
         {
             region.Resources = new Resources(region);
         }
     }
-
-    public ILogger Logger { get; private set; }
-
-    public IMessenger Messenger { get; private set; }
 
     public Region[] Regions { get; private set; }
 
