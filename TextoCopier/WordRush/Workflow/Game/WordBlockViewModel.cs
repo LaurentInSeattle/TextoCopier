@@ -1,12 +1,12 @@
 ﻿namespace Lyt.WordRush.Workflow.Game;
 
-public sealed class GameViewModel : Bindable<GameView>
+public sealed class WordBlockViewModel : Bindable<GameView>
 {
     private readonly IDialogService dialogService;
     private readonly IToaster toaster;
     private readonly LocalizerModel localizer;
 
-    public GameViewModel(LocalizerModel localizer, IDialogService dialogService, IToaster toaster)
+    public WordBlockViewModel( LocalizerModel localizer, IDialogService dialogService, IToaster toaster)
     {
         this.localizer = localizer;
         this.dialogService = dialogService;
@@ -15,7 +15,7 @@ public sealed class GameViewModel : Bindable<GameView>
 
     protected override void OnViewLoaded()
     {
-        this.Logger.Debug("GameViewModel: OnViewLoaded begins");
+        this.Logger.Debug("WordBlockViewModel: OnViewLoaded begins");
 
         base.OnViewLoaded();
         if (this.View is null)
@@ -23,6 +23,6 @@ public sealed class GameViewModel : Bindable<GameView>
             throw new Exception("Failed to startup...");
         }
 
-        this.Logger.Debug("GameViewModel: OnViewLoaded complete");
+        this.Logger.Debug("WordBlockViewModel: OnViewLoaded complete");
     }
 }

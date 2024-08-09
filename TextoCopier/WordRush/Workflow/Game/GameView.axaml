@@ -4,10 +4,142 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+    mc:Ignorable="d" d:DesignWidth="840" d:DesignHeight="600" 
     xmlns:vm="clr-namespace:Lyt.WordRush.Workflow.Game"
     x:DataType="vm:GameViewModel" 
 	Background="Transparent"
 	>
+	<Grid
+		ShowGridLines="True"
+		>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="70" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="80" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="200" />
+		</Grid.ColumnDefinitions>
+		<vm:CountDownBarControl 
+			Margin="20"
+			/>
+		<TextBlock
+			Grid.Column="1" Grid.Row="0"
+			Text="2:45"
+			HorizontalAlignment="Center" VerticalAlignment="Center"
+			FontSize="60" FontWeight="Bold"
+			Foreground="DarkOrange"
+			/>
+		<TextBlock
+			Grid.Column="1" Grid.Row="2"
+			Text="7/20"
+			HorizontalAlignment="Center" VerticalAlignment="Center"
+			FontSize="60" FontWeight="Bold"
+			Foreground="DarkOrange"
+			/>
+		<!-- Pena:-->
+		<TextBlock
+			Grid.Column="1" Grid.Row="1"
+			Text="Premio: +1s" 
+			HorizontalAlignment="Center" VerticalAlignment="Top"
+			Margin="0 12 0 0"
+			FontSize="26" FontWeight="DemiBold"
+			Foreground="DarkOrange"
+			/>
+		<!-- 
+		Dunque Potente Strabiliante Stupefacente, Ben Fatto, Bene, grande, imponente, maestoso, Eccezionale, 		
+		Stupendo assordante bello grandioso spaventoso 
+		
+		Merda Cazzo Cazzata Accidenti Maledizione Errore Sbaglio mancanza Fallo Pecca deficiente Stupido Cretino SCemo 
+		ottuso terribile 
+		-->		
+		<TextBlock
+			Grid.Column="1" Grid.Row="1"
+			Text="Stupefacente!"
+			HorizontalAlignment="Center" VerticalAlignment="Bottom"
+			Margin="0 0 0 12"
+			FontSize="24" FontWeight="DemiBold"
+			Foreground="DarkOrange"
+			/>
 
+		<Grid
+			x:Name="DifficultGrid"
+			ShowGridLines="True"
+			Grid.Row="1" Grid.RowSpan="2"
+			IsVisible="False"
+			>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*" />
+				<RowDefinition Height="*" />
+				<RowDefinition Height="*" />
+				<RowDefinition Height="*" />
+				<RowDefinition Height="*" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<vm:WordBlockView
+				Grid.Column="0" Grid.Row="0"
+				>
+			</vm:WordBlockView>
+			<vm:WordBlockView
+				Grid.Column="1" Grid.Row="5"
+				>
+			</vm:WordBlockView>
+		</Grid>
+		<Grid
+			x:Name="MediumGrid"
+			ShowGridLines="True"
+			Grid.Row="1" Grid.RowSpan="2"
+			IsVisible="True"
+			>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*" />
+				<RowDefinition Height="*" />
+				<RowDefinition Height="*" />
+				<RowDefinition Height="*" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<vm:WordBlockView
+				Grid.Column="0" Grid.Row="0"
+				>
+			</vm:WordBlockView>
+			<vm:WordBlockView
+				Grid.Column="1" Grid.Row="5"
+				>
+			</vm:WordBlockView>
+		</Grid>
+		<Grid
+			x:Name="EasyGrid"
+			ShowGridLines="True"
+			Grid.Row="1" Grid.RowSpan="2"
+			IsVisible="False"
+			>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*" />
+				<RowDefinition Height="*" />
+				<RowDefinition Height="*" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<vm:WordBlockView
+				Grid.Column="0" Grid.Row="0"
+				>
+			</vm:WordBlockView>
+			<vm:WordBlockView
+				Grid.Column="1" Grid.Row="3"
+				>
+			</vm:WordBlockView>
+		</Grid>
+	</Grid>
 </UserControl>

@@ -11,7 +11,7 @@
     x:DataType="vm:ShellViewModel" 
     xmlns:theme="clr-namespace:Lyt.WordRush"
     Background="Transparent"
-	Width="820" Height="560"
+	Width="840" Height="600"
     >
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -24,7 +24,7 @@
         Background="Transparent"
         >
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="80" MaxWidth="80" />
+			<ColumnDefinition Width="0" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>

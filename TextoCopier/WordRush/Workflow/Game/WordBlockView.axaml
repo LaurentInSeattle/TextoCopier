@@ -1,0 +1,27 @@
+<UserControl 
+    x:Class="Lyt.WordRush.Workflow.Game.WordBlockView"
+	xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+    xmlns:vm="clr-namespace:Lyt.WordRush.Workflow.Game"
+    x:DataType="vm:WordBlockViewModel" 
+	Background="Transparent"
+	>
+	<Border
+		Margin="12"
+		HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+		BorderThickness="1"
+		BorderBrush="Aquamarine"
+		Background="DarkGray"
+		CornerRadius="8"
+				>
+		<TextBlock
+			Text="Strabiliante"
+			HorizontalAlignment="Center" VerticalAlignment="Center"
+			FontSize="32" FontWeight="DemiBold"
+			Foreground="DarkOrange"
+					/>
+	</Border>
+</UserControl>
