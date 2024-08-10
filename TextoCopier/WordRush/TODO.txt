@@ -1,0 +1,5 @@
+﻿Must Haves 
+- Animation Service
+- Add 'to' to english verbs if missing
+
+Nice to Have 

@@ -8,10 +8,12 @@ global using System.Collections.Generic;
 global using System.ComponentModel;
 global using System.Diagnostics;
 global using System.Globalization;
+global using System.IO;
 global using System.Linq;
 global using System.Reflection;
 global using System.Runtime.CompilerServices;
 global using System.Runtime.InteropServices;
+global using System.Threading;
 global using System.Threading.Tasks;
 global using System.Windows.Input;
 
@@ -60,6 +62,7 @@ global using Lyt.Avalonia.Controls.Toasting;
 global using Lyt.Avalonia.Mvvm;
 global using Lyt.Avalonia.Mvvm.Core;
 global using Lyt.Avalonia.Mvvm.Dialogs;
+global using Lyt.Avalonia.Mvvm.Extensions;
 global using Lyt.Avalonia.Mvvm.Messenger;
 global using Lyt.Avalonia.Mvvm.Utilities;
 

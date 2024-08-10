@@ -76,14 +76,6 @@
 				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
-			<vm:WordBlockView
-				Grid.Column="0" Grid.Row="0"
-				>
-			</vm:WordBlockView>
-			<vm:WordBlockView
-				Grid.Column="1" Grid.Row="5"
-				>
-			</vm:WordBlockView>
 		</Grid>
 		<Grid
 			x:Name="MediumGrid"
@@ -101,16 +93,6 @@
 				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
-			<vm:WordBlockView
-				Margin="12"
-				Grid.Column="0" Grid.Row="0"
-				>
-			</vm:WordBlockView>
-			<vm:WordBlockView
-				Margin="12"
-				Grid.Column="1" Grid.Row="5"
-				>
-			</vm:WordBlockView>
 		</Grid>
 		<Grid
 			x:Name="EasyGrid"
@@ -127,14 +109,6 @@
 				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
-			<vm:WordBlockView
-				Grid.Column="0" Grid.Row="0"
-				>
-			</vm:WordBlockView>
-			<vm:WordBlockView
-				Grid.Column="1" Grid.Row="3"
-				>
-			</vm:WordBlockView>
 		</Grid>
 	</Grid>
 </UserControl>

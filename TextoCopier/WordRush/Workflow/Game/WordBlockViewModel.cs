@@ -2,17 +2,14 @@
 
 public sealed class WordBlockViewModel : Bindable<WordBlockView>
 {
-    private readonly IDialogService dialogService;
-    private readonly IToaster toaster;
-    private readonly LocalizerModel localizer;
+    private Language language;
 
-    private Language language; 
-
-    public WordBlockViewModel( LocalizerModel localizer, IDialogService dialogService, IToaster toaster)
+    public WordBlockViewModel()
     {
-        this.localizer = localizer;
-        this.dialogService = dialogService;
-        this.toaster = toaster;
+        this.DisablePropertyChangedLogging = true;
+        this.OriginalWord = string.Empty;
+        this.Word = string.Empty;
+        this.IsAvailable = true;
     }
 
     protected override void OnViewLoaded()
@@ -25,7 +22,6 @@ public sealed class WordBlockViewModel : Bindable<WordBlockView>
             throw new Exception("Failed to startup...");
         }
 
-        this.Word = " ? ? ? ";
         this.ForegroundBrush = ColorTheme.Text;
         this.BackgroundBrush = ColorTheme.BoxAbsent;
         this.BorderBrush = ColorTheme.BoxBorder;
@@ -33,26 +29,52 @@ public sealed class WordBlockViewModel : Bindable<WordBlockView>
         this.Logger.Debug("WordBlockViewModel: OnViewLoaded complete");
     }
 
-    public void OnClick ( ) => this.Messenger.Publish(new WordClickMessage(this.Word, this.language));
-    
+    public string OriginalWord { get; private set; }
+
+    public bool IsAvailable { get; set; }
+
+    public void OnClick()
+    {
+        if (this.language != Language.English)
+        {
+            return ;
+        }
+
+        this.Messenger.Publish(new WordClickMessage(this.Word, this.language));
+        this.Logger.Debug("WordBlockViewModel: Click");
+    }
+
 
     public void OnEnter()
     {
         // TODO: Adjust colors
+        //this.Logger.Debug("WordBlockViewModel: Enter");
+        if (this.language != Language.English)
+        {
+            this.ForegroundBrush = ColorTheme.TextAbsent;
+        }
+        else
+        {
+            this.ForegroundBrush = ColorTheme.UiText;
+        } 
     }
 
     public void OnLeave()
     {
         // TODO: Adjust colors
+        // this.Logger.Debug("WordBlockViewModel: Leave");
+        this.ForegroundBrush = ColorTheme.Text;
     }
 
     public void Setup(string word, Language language)
     {
-        this.Word = word;
+        this.IsAvailable = false;
+        this.OriginalWord = word;
+        this.Word = word.ToTitleCase();
         this.language = language;
     }
 
-    public void Show ( bool show) => this.View.IsVisible = show; 
+    public void Show(bool show) => this.View.IsVisible = show;
 
     public void FadeIn()
     {

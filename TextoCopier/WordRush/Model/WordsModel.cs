@@ -130,7 +130,7 @@ public sealed partial class WordsModel : ModelBase
             WordTranslator udd = UddlParser.Load(this.fileManager, Mod.Language.Italian, "english-italian");
             WordTranslator dcc = DictCcParser.Load(this.fileManager, Mod.Language.Italian, "dictcc-en-it");
 
-            static bool DictionaryLookup(string italianWord, WordTranslator translator, out string translated)
+            bool DictionaryLookup(string italianWord, WordTranslator translator, out string translated)
             {
                 translated = string.Empty;
                 foreach (string englishWord in translator.Keys)
@@ -143,6 +143,13 @@ public sealed partial class WordsModel : ModelBase
                             if (translation.Trim().ToLower() == italianWord.Trim().ToLower())
                             {
                                 translated = englishWord;
+                                if ((word.Grammar == Grammar.Verb) &&
+                                    (!translated.StartsWith("to", StringComparison.InvariantCultureIgnoreCase)))
+                                {
+                                    // this.Logger.Warning("Verb: " + englishWord );
+                                    translated = string.Concat("to ", translated);
+                                }
+
                                 return true;
                             }
                         }
@@ -171,7 +178,7 @@ public sealed partial class WordsModel : ModelBase
 
                 if (found)
                 {
-                    this.italianToEnglish.Add(italianWord, translated);
+                    this.italianToEnglish.Add(italianWord.Trim().ToLower(), translated.Trim().ToLower());
                     // Debug.WriteLine(italianWord + " : " + translated);
                 }
                 else

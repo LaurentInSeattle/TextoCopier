@@ -1,4 +1,6 @@
-﻿namespace Lyt.WordRush.Workflow.Game;
+﻿using Lyt.Avalonia.Mvvm.Extensions;
+
+namespace Lyt.WordRush.Workflow.Game;
 
 public sealed class GameViewModel : Bindable<GameView>
 {
@@ -49,6 +51,11 @@ public sealed class GameViewModel : Bindable<GameView>
 
     private DispatcherTimer dispatcherTimer;
 
+    private Grid? selectedGrid ;
+    private Queue<Tuple<string,string>>? wordQueue ;
+    private List<WordBlockViewModel>? leftColumn;
+    private List<WordBlockViewModel>? rightColumn;
+
     public GameViewModel(
         WordsModel wordsModel, LocalizerModel localizer, 
         IDialogService dialogService, IToaster toaster, IRandomizer randomizer)
@@ -97,6 +104,7 @@ public sealed class GameViewModel : Bindable<GameView>
 
     public void Start()
     {
+        this.wordQueue = new(this.WordCount);
         var words = this.wordsModel.RandomPicks(this.WordCount, []);
         foreach (var word in words)
         {
@@ -104,8 +112,10 @@ public sealed class GameViewModel : Bindable<GameView>
             translated = translated.Trim();
             string trimmedWord = word.Trim();
             Debug.WriteLine(trimmedWord + "  -  " + translated);
+            this.wordQueue.Enqueue(new Tuple<string, string>(trimmedWord, translated));
         }
 
+        this.PopulateGrid();
         this.dispatcherTimer.IsEnabled = true;
         this.dispatcherTimer.Start();
         this.State = GameState.Running;
@@ -130,6 +140,55 @@ public sealed class GameViewModel : Bindable<GameView>
         this.Logger.Debug("GameViewModel: OnViewLoaded complete");
     }
 
+    private void PopulateGrid ()
+    {
+        int wordCount = this.WordCount;
+        int rowCount = this.RowCount;
+        this.selectedGrid = this.GameGrid;
+
+        if ((this.wordQueue is null) || (this.selectedGrid is null))
+        {
+            this.Logger.Fatal("No words...");
+            throw new Exception("No words...");
+        }
+
+        var rightColumnIndices = new List<int>(rowCount);
+        for (int i = 0; i < rowCount; ++i)
+        {
+            rightColumnIndices.Add(i);
+        }
+        this.randomizer.Shuffle(rightColumnIndices); 
+
+        this.selectedGrid.Children.Clear();
+        this.leftColumn = new(rowCount);
+        this.rightColumn = new(rowCount);
+        for (int i = 0; i < rowCount; ++i)
+        {
+            var pair = this.wordQueue.Dequeue();
+            WordBlockViewModel CreateWordBlock(int col, int row)
+            {
+                var vm = new WordBlockViewModel();
+                vm.CreateViewAndBind();
+                WordBlockView view = vm.View;
+                this.selectedGrid.Children.Add(view);
+                view.SetValue(Grid.ColumnProperty, col);
+                view.SetValue(Grid.RowProperty, row);
+                view.SetValue(Grid.MarginProperty, new Thickness(20, 12, 20, 12));
+                return vm;
+            }
+
+            var leftVm = CreateWordBlock(0, i );
+            this.leftColumn.Add(leftVm);
+            string italian = pair.Item1; 
+            leftVm.Setup(italian, Language.Italian);
+
+            var rightVm = CreateWordBlock(1, rightColumnIndices [i]);
+            this.rightColumn.Add(rightVm);
+            string english = pair.Item2;
+            rightVm.Setup(english, Language.English);
+        }
+    }
+
     private int BonusSeconds
         => this.Difficulty switch
         {
@@ -144,6 +203,14 @@ public sealed class GameViewModel : Bindable<GameView>
             GameDifficulty.Medium => -5,
             GameDifficulty.Hard => -7,
             _ => -3, // Easy 
+        };
+
+    private Grid GameGrid
+        => this.Difficulty switch
+        {
+            GameDifficulty.Medium => this.View.MediumGrid,
+            GameDifficulty.Hard => this.View.DifficultGrid,
+            _ => this.View.EasyGrid, // Easy 
         };
 
     private int RowCount
