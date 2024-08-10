@@ -16,10 +16,16 @@ public partial class CountDownBarControl : UserControl
         this.AdjustForegroundSize();
     }
 
-    private void AdjustForegroundSize()
+    public void AdjustForegroundSize()
     {
+        if ((this.Total < 0.000_1f) || (this.Value < 0.000_1f))
+        {
+            this.foregroundRectangle.IsVisible = false;
+            return;
+        }
+
         float ratio = this.Value / this.Total;
-        if (ratio < 0.005)
+        if (ratio < 0.005f)
         {
             this.foregroundRectangle.IsVisible = false;
         }
@@ -55,7 +61,7 @@ public partial class CountDownBarControl : UserControl
         {
             this.SetValue(ForegroundBrushProperty, value);
             this.foregroundRectangle.Fill = value;
-        } 
+        }
     }
 
     /// <summary> BackgroundBrush Styled Property </summary>
@@ -75,7 +81,15 @@ public partial class CountDownBarControl : UserControl
 
     /// <summary> BarHeight Styled Property </summary>
     public static readonly StyledProperty<float> BarHeightProperty =
-        AvaloniaProperty.Register<CountDownBarControl, float>(nameof(BarHeight), defaultValue: 0.5f);
+        AvaloniaProperty.Register<CountDownBarControl, float>(
+            nameof(BarHeight),
+            defaultValue: 16.0f,
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: CoerceBarHeight,
+            enableDataValidation: false);
+
 
     /// <summary> Gets or sets the BarHeight property.</summary>
     public float BarHeight
@@ -93,9 +107,33 @@ public partial class CountDownBarControl : UserControl
         }
     }
 
+    /// <summary> Coerces the BarHeight value. </summary>
+    private static float CoerceBarHeight(AvaloniaObject sender, float value)
+    {
+        if (sender is not CountDownBarControl control)
+        {
+            return value;
+        }
+
+        if ((value < 0.0f) || (value > 10_000.0f))
+        {
+            value = 16.0f;
+        }
+
+        control.AdjustSizes();
+        return value;
+    }
+
     /// <summary> Value Styled Property </summary>
     public static readonly StyledProperty<float> ValueProperty =
-        AvaloniaProperty.Register<CountDownBarControl, float>(nameof(Value), defaultValue: 0.5f);
+        AvaloniaProperty.Register<CountDownBarControl, float>(
+            nameof(Value),
+            defaultValue: 0.5f,
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: CoerceValue,
+            enableDataValidation: false);
 
     /// <summary> Gets or sets the Value property.</summary>
     public float Value
@@ -103,7 +141,7 @@ public partial class CountDownBarControl : UserControl
         get => this.GetValue(ValueProperty);
         set
         {
-            if ( value < 0.0f)
+            if (value < 0.0f)
             {
                 value = 0.0f;
             }
@@ -118,9 +156,39 @@ public partial class CountDownBarControl : UserControl
         }
     }
 
+    /// <summary> Coerces the Value value. </summary>
+    private static float CoerceValue(AvaloniaObject sender, float value)
+    {
+        if (sender is not CountDownBarControl control)
+        {
+            return value;
+        }
+
+        if (value < 0.0f)
+        {
+            value = 0.0f;
+        }
+
+        if (value > control.Total)
+        {
+            value = control.Total;
+        }
+
+        control.AdjustForegroundSize();
+        return value;
+    }
+
     /// <summary> Total Styled Property </summary>
     public static readonly StyledProperty<float> TotalProperty =
-        AvaloniaProperty.Register<CountDownBarControl, float>(nameof(Total), defaultValue: 1.0f);
+        AvaloniaProperty.Register<CountDownBarControl, float>(
+            nameof(Total),
+            defaultValue: 1.0f,
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: CoerceTotal,
+            enableDataValidation: false);
+
 
     /// <summary> Gets or sets the Total property.</summary>
     public float Total
@@ -136,5 +204,22 @@ public partial class CountDownBarControl : UserControl
             this.SetValue(TotalProperty, value);
             this.AdjustForegroundSize();
         }
+    }
+
+    /// <summary> Coerces the Total value. </summary>
+    private static float CoerceTotal(AvaloniaObject sender, float value)
+    {
+        if (sender is not CountDownBarControl control)
+        {
+            return value;
+        }
+
+        if (value < 0.0f)
+        {
+            value = 0.0f;
+        }
+
+        control.AdjustForegroundSize();
+        return value;
     }
 }

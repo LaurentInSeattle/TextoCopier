@@ -106,7 +106,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
             case ActivatedView.Game:
                 var parameters = 
-                    new GameViewModel.Parameters { Difficulty = GameViewModel.GameDifficulty.Medium };
+                    new GameViewModel.Parameters { Difficulty = GameViewModel.GameDifficulty.Hard };
                 this.Activate<GameViewModel, GameView>(isFirstActivation, parameters);
                 break;
         }

@@ -1,6 +1,6 @@
 ﻿namespace Lyt.Avalonia.Mvvm.Core;
 
-[AttributeUsage(AttributeTargets.Property)]
+[AttributeUsage(AttributeTargets.All)]
 public class DoNotLogAttribute : Attribute { }
 
 /// <summary> Bindable class, aka a View Model.  </summary>
@@ -315,6 +315,12 @@ public class Bindable : NotifyPropertyChanged
             var frame = new StackFrame(frameIndex);
             var frameMethod = frame.GetMethod();
             if (frameMethod == null)
+            {
+                return;
+            }
+
+            var logAttribute = frameMethod.GetCustomAttribute<DoNotLogAttribute>();
+            if (logAttribute is not null)
             {
                 return;
             }

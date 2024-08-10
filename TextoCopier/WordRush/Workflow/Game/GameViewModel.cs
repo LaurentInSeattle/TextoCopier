@@ -1,6 +1,4 @@
-﻿using Lyt.Avalonia.Mvvm.Extensions;
-
-namespace Lyt.WordRush.Workflow.Game;
+﻿namespace Lyt.WordRush.Workflow.Game;
 
 public sealed class GameViewModel : Bindable<GameView>
 {
@@ -50,14 +48,17 @@ public sealed class GameViewModel : Bindable<GameView>
     private readonly Chooser<string> beMean;
 
     private DispatcherTimer dispatcherTimer;
+    private DateTime gameStart;
+    private int bonusMilliseconds;
+    private int malusMilliseconds;
 
-    private Grid? selectedGrid ;
-    private Queue<Tuple<string,string>>? wordQueue ;
+    private Grid? selectedGrid;
+    private Queue<Tuple<string, string>>? wordQueue;
     private List<WordBlockViewModel>? leftColumn;
     private List<WordBlockViewModel>? rightColumn;
 
     public GameViewModel(
-        WordsModel wordsModel, LocalizerModel localizer, 
+        WordsModel wordsModel, LocalizerModel localizer,
         IDialogService dialogService, IToaster toaster, IRandomizer randomizer)
     {
         this.wordsModel = wordsModel;
@@ -69,7 +70,7 @@ public sealed class GameViewModel : Bindable<GameView>
         this.beMean = new Chooser<string>(this.randomizer, GameViewModel.beingMean);
         this.Messenger.Subscribe<WordClickMessage>(this.OnWordClick);
         this.State = GameState.Idle;
-        this.dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(200), IsEnabled = false };
+        this.dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(120), IsEnabled = false };
         this.dispatcherTimer.Tick += this.OnDispatcherTimerTick;
     }
 
@@ -83,6 +84,8 @@ public sealed class GameViewModel : Bindable<GameView>
         {
             return;
         }
+
+        this.UpdateTimeLeft();
     }
 
     public override void Deactivate()
@@ -104,6 +107,10 @@ public sealed class GameViewModel : Bindable<GameView>
 
     public void Start()
     {
+        this.gameStart = DateTime.Now;
+        this.bonusMilliseconds = 0;
+        this.malusMilliseconds = 0;
+
         this.wordQueue = new(this.WordCount);
         var words = this.wordsModel.RandomPicks(this.WordCount, []);
         foreach (var word in words)
@@ -121,7 +128,16 @@ public sealed class GameViewModel : Bindable<GameView>
         this.State = GameState.Running;
     }
 
-    public void GameOver() => this.Messenger.Publish(ViewActivationMessage.ActivatedView.Setup);
+    public void GameOver()
+    {
+        this.dispatcherTimer.Stop();
+        this.dispatcherTimer.IsEnabled = false;
+        this.CountDownValue = 0.0f;
+        this.View.CountDownBarControl.AdjustForegroundSize(); 
+        this.TimeLeft = "Fine dei Giochi";
+
+        // this.Messenger.Publish(ViewActivationMessage.ActivatedView.Setup);
+    }
 
     private void OnWordClick(WordClickMessage message)
     {
@@ -137,14 +153,34 @@ public sealed class GameViewModel : Bindable<GameView>
             throw new Exception("Failed to startup...");
         }
 
+        // Why do I need to do that ??? 
+        this.View.CountDownBarControl.DataContext = this;
+
         this.Logger.Debug("GameViewModel: OnViewLoaded complete");
     }
 
-    private void PopulateGrid ()
+    private void UpdateTimeLeft()
     {
-        int wordCount = this.WordCount;
+        int duration = this.DurationMilliseconds + this.bonusMilliseconds - this.malusMilliseconds;
+        int elapsed = (int)((DateTime.Now - this.gameStart).TotalMilliseconds);
+        int left = duration - elapsed;
+        this.CountDownTotal = (float)duration;
+        this.CountDownValue = (float)left;
+        var timeLeft = TimeSpan.FromMilliseconds(left);
+        this.TimeLeft = string.Format("{0}:{1:D2}", timeLeft.Minutes, timeLeft.Seconds);
+        if ((timeLeft.Minutes == 0) && (timeLeft.Seconds == 0))
+        {
+            this.GameOver();
+        }
+    }
+
+    private void PopulateGrid()
+    {
         int rowCount = this.RowCount;
         this.selectedGrid = this.GameGrid;
+        this.View.EasyGrid.IsVisible = this.Difficulty == GameDifficulty.Easy;
+        this.View.MediumGrid.IsVisible = this.Difficulty == GameDifficulty.Medium;
+        this.View.DifficultGrid.IsVisible = this.Difficulty == GameDifficulty.Hard;
 
         if ((this.wordQueue is null) || (this.selectedGrid is null))
         {
@@ -157,7 +193,7 @@ public sealed class GameViewModel : Bindable<GameView>
         {
             rightColumnIndices.Add(i);
         }
-        this.randomizer.Shuffle(rightColumnIndices); 
+        this.randomizer.Shuffle(rightColumnIndices);
 
         this.selectedGrid.Children.Clear();
         this.leftColumn = new(rowCount);
@@ -177,32 +213,32 @@ public sealed class GameViewModel : Bindable<GameView>
                 return vm;
             }
 
-            var leftVm = CreateWordBlock(0, i );
+            var leftVm = CreateWordBlock(0, i);
             this.leftColumn.Add(leftVm);
-            string italian = pair.Item1; 
+            string italian = pair.Item1;
             leftVm.Setup(italian, Language.Italian);
 
-            var rightVm = CreateWordBlock(1, rightColumnIndices [i]);
+            var rightVm = CreateWordBlock(1, rightColumnIndices[i]);
             this.rightColumn.Add(rightVm);
             string english = pair.Item2;
             rightVm.Setup(english, Language.English);
         }
     }
 
-    private int BonusSeconds
+    private int BonusMilliseconds
         => this.Difficulty switch
         {
-            GameDifficulty.Medium => 2,
-            GameDifficulty.Hard => 1,
-            _ => 5, // Easy 
+            GameDifficulty.Medium => 2_000,
+            GameDifficulty.Hard => 1_000,
+            _ => 5_000, // Easy 
         };
 
-    private int MalusSeconds
+    private int MalusMilliseconds
         => this.Difficulty switch
         {
-            GameDifficulty.Medium => -5,
-            GameDifficulty.Hard => -7,
-            _ => -3, // Easy 
+            GameDifficulty.Medium => 5_000,
+            GameDifficulty.Hard => 7_000,
+            _ => 3_000, // Easy 
         };
 
     private Grid GameGrid
@@ -236,4 +272,30 @@ public sealed class GameViewModel : Bindable<GameView>
             GameDifficulty.Hard => 180_000, // 3 minutes 
             _ => 120_000, // Easy : 2 minutes 
         };
+
+    public string TimeLeft 
+    { 
+        get => this.Get<string>()!;
+        [DoNotLog]
+        set => this.Set(value); 
+    }
+
+    public string WordsDiscovered { get => this.Get<string>()!; set => this.Set(value); }
+
+    public string Bonus { get => this.Get<string>()!; set => this.Set(value); }
+
+    public Brush BonusColor { get => this.Get<Brush>()!; set => this.Set(value); }
+
+    public string Comment { get => this.Get<string>()!; set => this.Set(value); }
+
+    public Brush CommentColor { get => this.Get<Brush>()!; set => this.Set(value); }
+
+    public float CountDownTotal { get => this.Get<float>(); set => this.Set(value); }
+
+    public float CountDownValue 
+    { 
+        get => this.Get<float>();
+        [DoNotLog]
+        set => this.Set(value); 
+    }
 }

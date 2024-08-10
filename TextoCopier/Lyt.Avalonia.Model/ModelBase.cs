@@ -1,7 +1,7 @@
 ﻿namespace Lyt.Avalonia.Model;
 
 [AttributeUsage(AttributeTargets.Property)]
-public class DoNotLogAttribute : Attribute { }
+public class ModelDoNotLogAttribute : Attribute { }
 
 public abstract class ModelBase(IMessenger messenger, ILogger logger) : IModel
 {
@@ -165,7 +165,7 @@ public abstract class ModelBase(IMessenger messenger, ILogger logger) : IModel
         var methodAbove = frameAbove.GetMethod();
         if (methodAbove is not null)
         {
-            var logAttribute = methodAbove.GetCustomAttribute<DoNotLogAttribute>();
+            var logAttribute = methodAbove.GetCustomAttribute<ModelDoNotLogAttribute>();
             if (logAttribute is not null)
             {
                 return;

@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="840" d:DesignHeight="600" 
+    xmlns:theme="clr-namespace:Lyt.WordRush"
     xmlns:vm="clr-namespace:Lyt.WordRush.Workflow.Game"
     x:DataType="vm:GameViewModel" 
 	Background="Transparent"
@@ -12,7 +13,7 @@
 	<Grid
 		>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="70" />
+			<RowDefinition Height="60" />
 			<RowDefinition Height="*" />
 			<RowDefinition Height="80" />
 			<RowDefinition Height="12" />
@@ -22,43 +23,47 @@
 			<ColumnDefinition Width="200" />
 		</Grid.ColumnDefinitions>
 		<vm:CountDownBarControl 
-			Margin="12"
+			x:Name="CountDownBarControl"
+			Margin="18 16 18 12"
 			BarHeight="12"
 			BackgroundBrush="LightSeaGreen"
 			ForegroundBrush="CadetBlue"
+			Total="{Binding CountDownTotal}"
+			Value="{Binding CountDownValue}"
 			/>
 		<TextBlock
-			Grid.Column="1" Grid.Row="0"
-			Text="2:45"
-			HorizontalAlignment="Center" VerticalAlignment="Center"
+			Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
+			Text="{Binding TimeLeft}"
+			HorizontalAlignment="Center" VerticalAlignment="Top"
+			Margin="0 -4 0 0"
 			FontSize="60" FontWeight="Bold"
-			Foreground="DarkOrange"
+			TextWrapping="Wrap"
+			Foreground="{x:Static theme:ColorTheme.UiText}"
 			/>
 		<TextBlock
 			Grid.Column="1" Grid.Row="2"
-			Text="7/20"
+			Text="{Binding WordsDiscovered}"
 			HorizontalAlignment="Center" VerticalAlignment="Center"
 			FontSize="60" FontWeight="Bold"
-			Foreground="DarkOrange"
+			Foreground="{x:Static theme:ColorTheme.UiText}"
 			/>
 		<!-- Pena:-->
 		<TextBlock
 			Grid.Column="1" Grid.Row="1"
-			Text="Premio: +1s" 
+			Text="{Binding Bonus}"
+			Foreground="{Binding BonusColor}"
 			HorizontalAlignment="Center" VerticalAlignment="Top"
 			Margin="0 12 0 0"
 			FontSize="26" FontWeight="DemiBold"
-			Foreground="DarkOrange"
 			/>
 		<TextBlock
 			Grid.Column="1" Grid.Row="1"
-			Text="Stupefacente!"
+			Text="{Binding Comment}"
+			Foreground="{Binding CommentColor}"
 			HorizontalAlignment="Center" VerticalAlignment="Bottom"
 			Margin="0 0 0 12"
 			FontSize="24" FontWeight="DemiBold"
-			Foreground="DarkOrange"
 			/>
-
 		<Grid
 			x:Name="DifficultGrid"
 			Grid.Row="1" Grid.RowSpan="2"

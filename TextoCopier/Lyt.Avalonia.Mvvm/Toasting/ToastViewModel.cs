@@ -69,14 +69,14 @@ public sealed class ToastViewModel(IToaster toaster) : Bindable<ToastView>
     public ICommand DismissCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     /// <summary> Gets or sets the ColorLevel bound property.</summary>
-    public SolidColorBrush ColorLevel { get => this.Get<SolidColorBrush>()!; set => _ = this.Set(value); }
+    public SolidColorBrush ColorLevel { get => this.Get<SolidColorBrush>()!; [DoNotLog] set => _ = this.Set(value); }
 
     /// <summary> Gets or sets the IconName bound property.</summary>
-    public string IconName { get => this.Get<string>()!; set => _ = this.Set(value); }
+    public string IconName { get => this.Get<string>()!; [DoNotLog] set => _ = this.Set(value); }
 
     /// <summary> Gets or sets the Title bound property.</summary>
-    public string? Title { get => this.Get<string>(); set => _ = this.Set(value); }
+    public string? Title { get => this.Get<string>(); [DoNotLog] set => _ = this.Set(value); }
 
     /// <summary> Gets or sets the Message bound property.</summary>
-    public string? Message { get => this.Get<string>(); set => _ = this.Set(value); }
+    public string? Message { get => this.Get<string>(); [DoNotLog] set => _ = this.Set(value); }
 }

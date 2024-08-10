@@ -40,7 +40,7 @@ public sealed class WordBlockViewModel : Bindable<WordBlockView>
             return ;
         }
 
-        this.Messenger.Publish(new WordClickMessage(this.Word, this.language));
+        this.Messenger.Publish(new WordClickMessage(this.OriginalWord, this.language));
         this.Logger.Debug("WordBlockViewModel: Click");
     }
 

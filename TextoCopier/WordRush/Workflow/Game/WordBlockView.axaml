@@ -19,7 +19,7 @@
 		<TextBlock
 			Text="{Binding Word}"
 			HorizontalAlignment="Center" VerticalAlignment="Center"
-			FontSize="32" FontWeight="DemiBold"
+			FontSize="34" FontWeight="DemiBold"
 			Foreground="{Binding ForegroundBrush}"
 			/>
 	</Border>

@@ -143,8 +143,10 @@ public sealed partial class WordsModel : ModelBase
                             if (translation.Trim().ToLower() == italianWord.Trim().ToLower())
                             {
                                 translated = englishWord;
-                                if ((word.Grammar == Grammar.Verb) &&
-                                    (!translated.StartsWith("to", StringComparison.InvariantCultureIgnoreCase)))
+                                if (IsPossibleItalianVerb(italianWord) &&
+                                    (word.Grammar == Grammar.Verb) &&
+                                    (!translated.StartsWith("to", StringComparison.InvariantCultureIgnoreCase)) &&
+                                    (!translated.EndsWith("ing", StringComparison.InvariantCultureIgnoreCase)))
                                 {
                                     // this.Logger.Warning("Verb: " + englishWord );
                                     translated = string.Concat("to ", translated);
@@ -217,7 +219,11 @@ public sealed partial class WordsModel : ModelBase
                     continue;
                 }
 
-                _ = this.italian.Add(token.Trim().ToLower());
+                string word = token.Trim().ToLower();
+                if (word.Length > 1)
+                {
+                    _ = this.italian.Add(word);
+                }
             }
 
             Debug.WriteLine("Common Word count: " + this.italian.Count);
@@ -249,6 +255,19 @@ public sealed partial class WordsModel : ModelBase
 
         Debug.WriteLine("To Remove: " + toRemove.Count);
         Debug.WriteLine("Left: " + this.italian.Count);
+    }
+
+    private static bool IsPossibleItalianVerb(string italianWord)
+    {
+        string word = italianWord.Trim(); 
+        if (word.EndsWith("are", StringComparison.InvariantCultureIgnoreCase) ||
+            word.EndsWith("ire", StringComparison.InvariantCultureIgnoreCase) ||
+            word.EndsWith("ere", StringComparison.InvariantCultureIgnoreCase))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private static bool HasNonItalianOrSpecialCharacters(string word)
