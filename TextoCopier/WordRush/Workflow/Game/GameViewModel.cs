@@ -2,21 +2,40 @@
 
 public sealed class GameViewModel : Bindable<GameView>
 {
+    public enum GameDifficulty
+    {
+        Easy,
+        Medium,
+        Hard,
+    }
+
+    public enum GameState
+    {
+        Idle,
+        Running,
+        Over,
+    }
+
+    public sealed class Parameters
+    {
+        public GameDifficulty Difficulty { get; set; }
+    }
+
     // TODO: Add more !
     private static readonly string[] beingNice =
     [
-        "Che Bello!" , "Dunque!",  "Potente!" , "Strabiliante!" , "Stupefacente!", 
-        "Ben Fatto" , "Bene Bene.." , "Grande" , "Imponente", "Maestoso", 
-        "Eccezionale", "Stupendo!" , "Assordante" , "Bello..." , "Grandioso" ,  
+        "Che Bello!" , "Dunque!",  "Potente!" , "Strabiliante!" , "Stupefacente!",
+        "Ben Fatto" , "Bene Bene.." , "Grande" , "Imponente", "Maestoso",
+        "Eccezionale", "Stupendo!" , "Assordante" , "Bello..." , "Grandioso" ,
         "Spaventoso!" , "Forza!"
     ];
 
     // TODO: Add more !
     private static readonly string[] beingMean =
     [
-        "Merda!",  "Cazzo!" , "Cazzata!" , "Accidenti!", "Maledizione" , 
-        "Errore" , "Sbaglio" , "Mancanza", "Fallo", "Pecca", 
-        "Deficiente!" , "Stupido!" , "Cretino!" , "Scemo" ,  "Ottuso...", 
+        "Merda!",  "Cazzo!" , "Cazzata!" , "Accidenti!", "Maledizione" ,
+        "Errore" , "Sbaglio" , "Mancanza", "Fallo", "Pecca",
+        "Deficiente!" , "Stupido!" , "Cretino!" , "Scemo" ,  "Ottuso...",
         "Terribile"
     ];
 
@@ -24,18 +43,78 @@ public sealed class GameViewModel : Bindable<GameView>
     private readonly IToaster toaster;
     private readonly IRandomizer randomizer;
     private readonly LocalizerModel localizer;
+    private readonly WordsModel wordsModel;
     private readonly Chooser<string> beNice;
     private readonly Chooser<string> beMean;
 
+    private DispatcherTimer dispatcherTimer;
+
     public GameViewModel(
-        LocalizerModel localizer, IDialogService dialogService, IToaster toaster, IRandomizer randomizer)
+        WordsModel wordsModel, LocalizerModel localizer, 
+        IDialogService dialogService, IToaster toaster, IRandomizer randomizer)
     {
+        this.wordsModel = wordsModel;
         this.localizer = localizer;
         this.dialogService = dialogService;
         this.toaster = toaster;
         this.randomizer = randomizer;
         this.beNice = new Chooser<string>(this.randomizer, GameViewModel.beingNice);
         this.beMean = new Chooser<string>(this.randomizer, GameViewModel.beingMean);
+        this.Messenger.Subscribe<WordClickMessage>(this.OnWordClick);
+        this.State = GameState.Idle;
+        this.dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(200), IsEnabled = false };
+        this.dispatcherTimer.Tick += this.OnDispatcherTimerTick;
+    }
+
+    public GameState State { get; private set; }
+
+    public GameDifficulty Difficulty { get; private set; }
+
+    private void OnDispatcherTimerTick(object? sender, EventArgs e)
+    {
+        if (this.State != GameState.Running)
+        {
+            return;
+        }
+    }
+
+    public override void Deactivate()
+    {
+        base.Deactivate();
+    }
+
+    public override void Activate(object? activationParameters)
+    {
+        base.Activate(activationParameters);
+        if (activationParameters is not Parameters parameters)
+        {
+            throw new ArgumentException("Invalid activation parameters.");
+        }
+
+        this.Difficulty = parameters.Difficulty;
+        this.Start();
+    }
+
+    public void Start()
+    {
+        var words = this.wordsModel.RandomPicks(this.WordCount, []);
+        foreach (var word in words)
+        {
+            string translated = this.wordsModel.TranslateToEnglish(word);
+            translated = translated.Trim();
+            string trimmedWord = word.Trim();
+            Debug.WriteLine(trimmedWord + "  -  " + translated);
+        }
+
+        this.dispatcherTimer.IsEnabled = true;
+        this.dispatcherTimer.Start();
+        this.State = GameState.Running;
+    }
+
+    public void GameOver() => this.Messenger.Publish(ViewActivationMessage.ActivatedView.Setup);
+
+    private void OnWordClick(WordClickMessage message)
+    {
     }
 
     protected override void OnViewLoaded()
@@ -50,4 +129,44 @@ public sealed class GameViewModel : Bindable<GameView>
 
         this.Logger.Debug("GameViewModel: OnViewLoaded complete");
     }
+
+    private int BonusSeconds
+        => this.Difficulty switch
+        {
+            GameDifficulty.Medium => 2,
+            GameDifficulty.Hard => 1,
+            _ => 5, // Easy 
+        };
+
+    private int MalusSeconds
+        => this.Difficulty switch
+        {
+            GameDifficulty.Medium => -5,
+            GameDifficulty.Hard => -7,
+            _ => -3, // Easy 
+        };
+
+    private int RowCount
+        => this.Difficulty switch
+        {
+            GameDifficulty.Medium => 5,
+            GameDifficulty.Hard => 6,
+            _ => 4, // Easy 
+        };
+
+    private int WordCount
+        => this.Difficulty switch
+        {
+            GameDifficulty.Medium => 30,
+            GameDifficulty.Hard => 40,
+            _ => 20, // Easy 
+        };
+
+    private int DurationMilliseconds
+        => this.Difficulty switch
+        {
+            GameDifficulty.Medium => 150_000, // 2 minutes 30 sec
+            GameDifficulty.Hard => 180_000, // 3 minutes 
+            _ => 120_000, // Easy : 2 minutes 
+        };
 }

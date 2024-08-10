@@ -1,6 +1,5 @@
 ﻿namespace Lyt.WordRush.Model;
 
-using Lyt.Avalonia.Interfaces.Random;
 using Mod = Lyt.WordRush.Model;
 
 public sealed partial class WordsModel : ModelBase
@@ -22,7 +21,7 @@ public sealed partial class WordsModel : ModelBase
         this.randomizer = randomizer;
     }
 
-    public bool IsReady {  get; private set; }  
+    public bool IsReady { get; private set; }
 
     public override Task Initialize()
     {
@@ -48,8 +47,6 @@ public sealed partial class WordsModel : ModelBase
             picks.Add(word);
         }
 
-        Debugger.Break();
-
         while (needed > 0)
         {
             string word = this.RandomPick(source, [], alreadyFound);
@@ -66,10 +63,23 @@ public sealed partial class WordsModel : ModelBase
         return picks;
     }
 
+    public string TranslateToEnglish(string italianWord)
+    {
+        if (this.italianToEnglish.TryGetValue(italianWord, out string? translated))
+        {
+            if (!string.IsNullOrWhiteSpace(translated))
+            {
+                return translated;
+            }
+        }
+
+        throw new Exception("Failed to translate");
+    }
+
     private string RandomPick(string[] source, HashSet<string> exclude, HashSet<string> alreadyFound)
     {
         bool found = false;
-        int retries = 10 * ( 5 + exclude.Count );
+        int retries = 10 * (5 + exclude.Count);
         while (!found)
         {
             int choice = this.randomizer.Next(source.Length);
@@ -94,7 +104,7 @@ public sealed partial class WordsModel : ModelBase
         try
         {
             // Wait a bit so that the UI has time to load 
-            Thread.CurrentThread.Priority = ThreadPriority.BelowNormal; 
+            Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
             await Task.Delay(200);
             this.LoadCommonWords();
             this.LoadDictionaries();

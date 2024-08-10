@@ -81,7 +81,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         string msgMethod = string.IsNullOrWhiteSpace(message.MethodName) ? "<unknown>" : message.MethodName;
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
 
-        //if (message.PropertyName != nameof(this.templatesModel.SelectedGroup))
+        //if (message.PropertyName != nameof( < some model property > ))
         //{
         //}
     }
@@ -105,7 +105,9 @@ public sealed class ShellViewModel : Bindable<ShellView>
                 break;
 
             case ActivatedView.Game:
-                this.Activate<GameViewModel, GameView>(isFirstActivation, null);
+                var parameters = 
+                    new GameViewModel.Parameters { Difficulty = GameViewModel.GameDifficulty.Medium };
+                this.Activate<GameViewModel, GameView>(isFirstActivation, parameters);
                 break;
         }
     }

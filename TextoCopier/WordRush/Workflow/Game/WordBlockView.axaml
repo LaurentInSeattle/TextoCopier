@@ -12,15 +12,15 @@
 	<Border
 		HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
 		BorderThickness="1"
-		BorderBrush="Aquamarine"
-		Background="DarkGray"
+		BorderBrush="{Binding BorderBrush}"
+		Background="{Binding BackgroundBrush}"
 		CornerRadius="8"
 				>
 		<TextBlock
-			Text="Strabiliante"
+			Text="{Binding Word}"
 			HorizontalAlignment="Center" VerticalAlignment="Center"
 			FontSize="32" FontWeight="DemiBold"
-			Foreground="DarkOrange"
-					/>
+			Foreground="{Binding ForegroundBrush}"
+			/>
 	</Border>
 </UserControl>
