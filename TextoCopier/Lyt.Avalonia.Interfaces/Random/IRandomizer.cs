@@ -6,6 +6,8 @@ public interface IRandomizer
 
     int Next(int max);
 
+    bool NextBool();
+
     float NextSingle ();
 
     void Shuffle<T> (IList<T> list);

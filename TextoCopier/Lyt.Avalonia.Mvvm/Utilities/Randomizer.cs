@@ -12,6 +12,8 @@ public sealed class Randomizer : IRandomizer
 
     public int Next(int max) => this.random.Next(max);
 
+    public bool NextBool() => this.random.NextSingle() > 0.5f;
+
     /// <summary>Shuffles the specified list using the Fisher Yates algorithm.</summary>
     public void Shuffle<T>(IList<T> list)
     {

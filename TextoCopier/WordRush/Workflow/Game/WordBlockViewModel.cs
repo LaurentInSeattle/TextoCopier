@@ -2,8 +2,6 @@
 
 public sealed class WordBlockViewModel : Bindable<WordBlockView>
 {
-    private Language language;
-
     public WordBlockViewModel()
     {
         this.DisablePropertyChangedLogging = true;
@@ -29,49 +27,40 @@ public sealed class WordBlockViewModel : Bindable<WordBlockView>
         this.Logger.Debug("WordBlockViewModel: OnViewLoaded complete");
     }
 
+    public Language Language { get; private set; }
+
     public string OriginalWord { get; private set; }
+
+    public string MatchWord { get; private set; }
 
     public bool IsAvailable { get; set; }
 
+    public void Select(bool select = true)
+        => this.BackgroundBrush = select ? ColorTheme.BoxPresent : ColorTheme.BoxAbsent;
+
     public void OnClick()
     {
-        if (this.language != Language.English)
-        {
-            return ;
-        }
-
-        this.Messenger.Publish(new WordClickMessage(this.OriginalWord, this.language));
+        this.Messenger.Publish(new WordClickMessage(this, this.OriginalWord, this.Language));
         this.Logger.Debug("WordBlockViewModel: Click");
     }
 
-
     public void OnEnter()
     {
-        // TODO: Adjust colors
-        //this.Logger.Debug("WordBlockViewModel: Enter");
-        if (this.language != Language.English)
-        {
-            this.ForegroundBrush = ColorTheme.TextAbsent;
-        }
-        else
-        {
-            this.ForegroundBrush = ColorTheme.UiText;
-        } 
+        this.ForegroundBrush = ColorTheme.UiText;
     }
 
     public void OnLeave()
     {
-        // TODO: Adjust colors
-        // this.Logger.Debug("WordBlockViewModel: Leave");
         this.ForegroundBrush = ColorTheme.Text;
     }
 
-    public void Setup(string word, Language language)
+    public void Setup(string word, string matchWord, Language language)
     {
         this.IsAvailable = false;
         this.OriginalWord = word;
+        this.MatchWord = matchWord;
         this.Word = word.ToTitleCase();
-        this.language = language;
+        this.Language = language;
     }
 
     public void Show(bool show) => this.View.IsVisible = show;
