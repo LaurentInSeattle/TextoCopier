@@ -42,6 +42,7 @@ public sealed class GameViewModel : Bindable<GameView>
     private readonly IDialogService dialogService;
     private readonly IToaster toaster;
     private readonly IRandomizer randomizer;
+    private readonly IAnimationService animationService; 
     private readonly LocalizerModel localizer;
     private readonly WordsModel wordsModel;
     private readonly Chooser<string> beNice;
@@ -61,13 +62,14 @@ public sealed class GameViewModel : Bindable<GameView>
 
     public GameViewModel(
         WordsModel wordsModel, LocalizerModel localizer,
-        IDialogService dialogService, IToaster toaster, IRandomizer randomizer)
+        IDialogService dialogService, IToaster toaster, IRandomizer randomizer, IAnimationService animationService)
     {
         this.wordsModel = wordsModel;
         this.localizer = localizer;
         this.dialogService = dialogService;
         this.toaster = toaster;
         this.randomizer = randomizer;
+        this.animationService = animationService;
         this.beNice = new Chooser<string>(this.randomizer, GameViewModel.beingNice);
         this.beMean = new Chooser<string>(this.randomizer, GameViewModel.beingMean);
         this.Messenger.Subscribe<WordClickMessage>(this.OnWordClick);
@@ -300,7 +302,7 @@ public sealed class GameViewModel : Bindable<GameView>
             var pair = this.wordQueue.Dequeue();
             WordBlockViewModel CreateWordBlock(int col, int row)
             {
-                var vm = new WordBlockViewModel();
+                var vm = new WordBlockViewModel(this.animationService);
                 vm.CreateViewAndBind();
                 WordBlockView view = vm.View;
                 this.selectedGrid.Children.Add(view);

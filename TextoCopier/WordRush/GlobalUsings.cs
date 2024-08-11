@@ -60,9 +60,11 @@ global using Lyt.Avalonia.Controls.Logging;
 global using Lyt.Avalonia.Controls.Toasting;
 
 global using Lyt.Avalonia.Mvvm;
+global using Lyt.Avalonia.Mvvm.Animations;
 global using Lyt.Avalonia.Mvvm.Core;
 global using Lyt.Avalonia.Mvvm.Dialogs;
 global using Lyt.Avalonia.Mvvm.Extensions;
+global using Lyt.Avalonia.Mvvm.Interfaces.Animations;
 global using Lyt.Avalonia.Mvvm.Messenger;
 global using Lyt.Avalonia.Mvvm.Utilities;
 
@@ -75,6 +77,7 @@ global using Lyt.Avalonia.Persistence;
 global using Lyt.WordRush;
 global using Lyt.WordRush.Messaging;
 global using Lyt.WordRush.Model;
+global using Lyt.WordRush.Model.History;
 global using Lyt.WordRush.Model.Parsers;
 global using Lyt.WordRush.Shell;
 global using Lyt.WordRush.Utilities;

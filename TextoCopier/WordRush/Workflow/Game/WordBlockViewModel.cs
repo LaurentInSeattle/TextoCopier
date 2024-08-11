@@ -2,11 +2,15 @@
 
 public sealed class WordBlockViewModel : Bindable<WordBlockView>
 {
-    public WordBlockViewModel()
+    private readonly IAnimationService animationService; 
+    
+    public WordBlockViewModel(IAnimationService animationService)
     {
+        this.animationService = animationService;
         this.DisablePropertyChangedLogging = true;
         this.OriginalWord = string.Empty;
         this.Word = string.Empty;
+        this.MatchWord = string.Empty;
         this.IsAvailable = true;
     }
 
@@ -72,7 +76,7 @@ public sealed class WordBlockViewModel : Bindable<WordBlockView>
 
     public void Fadeout()
     {
-
+        this.animationService.FadeOut(this.View); 
     }
 
     public string Word { get => this.Get<string>()!; set => this.Set(value); }
