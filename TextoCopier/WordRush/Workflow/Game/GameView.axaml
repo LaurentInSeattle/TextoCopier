@@ -32,6 +32,14 @@
 			Value="{Binding CountDownValue}"
 			/>
 		<TextBlock
+			Grid.Column="0" Grid.Row="0"
+			Text="{Binding Comment}"
+			Foreground="{Binding CommentColor}"
+			HorizontalAlignment="Center" VerticalAlignment="Center"
+			Margin="0"
+			FontSize="48" FontWeight="Bold"
+			/>
+		<TextBlock
 			Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
 			Text="{Binding TimeLeft}"
 			HorizontalAlignment="Center" VerticalAlignment="Top"
@@ -55,14 +63,6 @@
 			HorizontalAlignment="Center" VerticalAlignment="Top"
 			Margin="0 12 0 0"
 			FontSize="26" FontWeight="DemiBold"
-			/>
-		<TextBlock
-			Grid.Column="1" Grid.Row="1"
-			Text="{Binding Comment}"
-			Foreground="{Binding CommentColor}"
-			HorizontalAlignment="Center" VerticalAlignment="Bottom"
-			Margin="0 0 0 12"
-			FontSize="24" FontWeight="DemiBold"
 			/>
 		<Grid
 			x:Name="DifficultGrid"

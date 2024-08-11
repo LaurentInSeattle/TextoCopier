@@ -10,5 +10,9 @@ public interface IRandomizer
 
     float NextSingle ();
 
+    double NextDouble(double min, double max);
+
+    double NextDouble();
+
     void Shuffle<T> (IList<T> list);
 }

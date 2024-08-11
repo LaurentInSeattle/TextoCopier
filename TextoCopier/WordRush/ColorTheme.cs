@@ -10,6 +10,7 @@ public static class ColorTheme
 
     public static Brush Background { get; private set; }
     public static Brush UiText { get; private set; }
+    public static Brush ValidUiText { get; private set; }
     public static Brush Text { get; private set; }
     public static Brush TextAbsent { get; private set; }
     public static Brush BoxBorder { get; private set; }
@@ -38,6 +39,7 @@ public static class ColorTheme
                 BoxPresent = (Brush)Brushes.DarkOrange;
                 BoxAbsent = (Brush)Brushes.DarkSlateGray;
                 BoxExact = (Brush)Brushes.MediumSeaGreen;
+                ValidUiText = (Brush)Brushes.MediumSeaGreen;
                 break;
 
             case Style.Translucent:
@@ -50,6 +52,7 @@ public static class ColorTheme
                 BoxPresent = new SolidColorBrush(Color.FromArgb(0xD0, 0xFF, 0xB0, 0x10));
                 BoxAbsent = new SolidColorBrush(Color.FromArgb(0xC0, 0x20, 0x30, 0x50));// Brushes.DarkSlateGray;
                 BoxExact = new SolidColorBrush(Color.FromArgb(0xC0, 0x2F, 0xA0, 0x5F));
+                ValidUiText = new SolidColorBrush(Color.FromArgb(0xFF, 0x2F, 0xB0, 0x5F));
                 break;
         }
     }

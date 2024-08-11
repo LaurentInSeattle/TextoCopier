@@ -42,7 +42,7 @@ public sealed class GameViewModel : Bindable<GameView>
     private readonly IDialogService dialogService;
     private readonly IToaster toaster;
     private readonly IRandomizer randomizer;
-    private readonly IAnimationService animationService; 
+    private readonly IAnimationService animationService;
     private readonly LocalizerModel localizer;
     private readonly WordsModel wordsModel;
     private readonly Chooser<string> beNice;
@@ -50,15 +50,17 @@ public sealed class GameViewModel : Bindable<GameView>
 
     private DispatcherTimer dispatcherTimer;
     private DateTime gameStart;
+    private DateTime gameEnd;
     private int bonusMilliseconds;
     private int malusMilliseconds;
+    private int wrongCount;
+    private int wordsDiscovered;
 
     private Grid? selectedGrid;
     private Queue<Tuple<string, string>>? wordQueue;
     private List<WordBlockViewModel>? leftColumn;
     private List<WordBlockViewModel>? rightColumn;
     private WordBlockViewModel? selectedWord;
-    private int wordsDiscovered; 
 
     public GameViewModel(
         WordsModel wordsModel, LocalizerModel localizer,
@@ -84,14 +86,35 @@ public sealed class GameViewModel : Bindable<GameView>
 
     public bool HasSelection => this.selectedWord is not null;
 
-    private void OnDispatcherTimerTick(object? sender, EventArgs e)
+    #region Loading and Activation 
+
+    protected override void OnViewLoaded()
     {
-        if (this.State != GameState.Running)
+        this.Logger.Debug("GameViewModel: OnViewLoaded begins");
+
+        base.OnViewLoaded();
+        if (this.View is null)
         {
-            return;
+            throw new Exception("Failed to startup...");
         }
 
-        this.UpdateTimeLeft();
+        // Why do I need to do that ??? 
+        this.View.CountDownBarControl.DataContext = this;
+
+        this.Logger.Debug("GameViewModel: OnViewLoaded complete");
+    }
+
+    public override void Activate(object? activationParameters)
+    {
+        base.Activate(activationParameters);
+        if (activationParameters is not Parameters parameters)
+        {
+            throw new ArgumentException("Invalid activation parameters.");
+        }
+
+        this.Profiler.FullGcCollect();
+        this.Difficulty = parameters.Difficulty;
+        this.Start();
     }
 
     public override void Deactivate()
@@ -103,36 +126,82 @@ public sealed class GameViewModel : Bindable<GameView>
         this.leftColumn = null;
         this.rightColumn = null;
         this.selectedWord = null;
-        this.Profiler.FullGcCollect(); 
+        this.Profiler.FullGcCollect();
     }
 
-    public override void Activate(object? activationParameters)
+    #endregion Loading and Activation 
+
+    private void OnDispatcherTimerTick(object? sender, EventArgs e)
     {
-        base.Activate(activationParameters);
-        if (activationParameters is not Parameters parameters)
+        if (this.State != GameState.Running)
         {
-            throw new ArgumentException("Invalid activation parameters.");
+            return;
         }
 
-        this.Difficulty = parameters.Difficulty;
-        this.Start();
+        int duration = this.DurationMilliseconds + this.bonusMilliseconds - this.malusMilliseconds;
+        int elapsed = (int)((DateTime.Now - this.gameStart).TotalMilliseconds);
+        int left = duration - elapsed;
+        this.CountDownTotal = (float)duration;
+        this.CountDownValue = (float)left;
+        var timeLeft = TimeSpan.FromMilliseconds(left);
+        this.TimeLeft = string.Format("{0}:{1:D2}", timeLeft.Minutes, timeLeft.Seconds);
+
+        if (((timeLeft.Minutes < 0) || (timeLeft.Seconds < 0)) ||
+            ((timeLeft.Minutes == 0) && (timeLeft.Seconds == 0)))
+        {
+            this.GameOver();
+            return;
+        }
+
+        if (this.wordQueue is null)
+        {
+            throw new Exception("Words ! ");
+        }
+
+        int available = (from vm in this.leftColumn where vm.IsAvailable select vm).Count();
+        if ((available == this.RowCount) && (this.wordQueue.Count == 0))
+        {
+            this.GameOver();
+            return;
+        }
+
+        if ((available > 1) && (this.wordQueue.Count > 0))
+        {
+            this.RefillGrid();
+        }
     }
 
-    public void Start()
+    private void Start()
     {
         this.gameStart = DateTime.Now;
         this.bonusMilliseconds = 0;
         this.malusMilliseconds = 0;
         this.wordsDiscovered = 0;
+        this.wrongCount = 0;
         this.wordQueue = new(this.WordCount);
-        var words = this.wordsModel.RandomPicks(this.WordCount, []);
+        var words = this.wordsModel.RandomPicks(5 + this.WordCount, []);
         foreach (var word in words)
         {
-            string translated = this.wordsModel.TranslateToEnglish(word);
+            string translated;
+            try
+            {
+                translated = this.wordsModel.TranslateToEnglish(word);
+            }
+            catch (Exception ex)
+            {
+                this.Logger.Warning("Game View Model: Start: " + ex.ToString());
+                continue;
+            }
+
             translated = translated.Trim();
             string trimmedWord = word.Trim();
             Debug.WriteLine(trimmedWord + "  -  " + translated);
             this.wordQueue.Enqueue(new Tuple<string, string>(trimmedWord, translated));
+
+            if (this.wordQueue.Count == this.WordCount)
+            {
+                break;
+            }
         }
 
         this.PopulateGrid();
@@ -141,8 +210,10 @@ public sealed class GameViewModel : Bindable<GameView>
         this.State = GameState.Running;
     }
 
-    public void GameOver()
+    private void GameOver()
     {
+        this.gameStart = DateTime.Now;
+        this.State = GameState.Over;
         this.dispatcherTimer.Stop();
         this.dispatcherTimer.IsEnabled = false;
         this.CountDownValue = 0.0f;
@@ -165,7 +236,7 @@ public sealed class GameViewModel : Bindable<GameView>
             if (this.selectedWord!.Language == message.Language)
             {
                 // Same languages: just change selection 
-                this.selectedWord.Select(select:false);
+                this.selectedWord.Select(select: false);
                 this.selectedWord = message.WordBlockViewModel;
                 this.selectedWord.Select();
             }
@@ -173,7 +244,7 @@ public sealed class GameViewModel : Bindable<GameView>
             {
                 // Distinct languages: do we have a match ? 
                 var clickedVm = message.WordBlockViewModel;
-                if ( this.selectedWord.MatchWord == clickedVm.OriginalWord)
+                if (this.selectedWord.MatchWord == clickedVm.OriginalWord)
                 {
                     // Match! 
                     this.Score(clickedVm, isGood: true);
@@ -183,7 +254,6 @@ public sealed class GameViewModel : Bindable<GameView>
                     // Fail 
                     this.Score(clickedVm, isGood: false);
                 }
-
             }
         }
         else
@@ -194,12 +264,14 @@ public sealed class GameViewModel : Bindable<GameView>
         }
     }
 
-    private void Score(WordBlockViewModel wordBlockViewModel,  bool isGood )
+    private void Score(WordBlockViewModel wordBlockViewModel, bool isGood)
     {
         if (!this.HasSelection)
         {
             return;
         }
+
+        this.Logger.Debug("Score: " + (isGood ? "Match " : " Fail"));
 
         // Adjust colors 
         this.selectedWord!.BackgroundBrush = isGood ? ColorTheme.BoxExact : ColorTheme.UiText;
@@ -207,71 +279,67 @@ public sealed class GameViewModel : Bindable<GameView>
         this.selectedWord!.ForegroundBrush = ColorTheme.Text;
         wordBlockViewModel.ForegroundBrush = ColorTheme.Text;
 
-        // Fade 
-        this.selectedWord!.Fadeout();
-        wordBlockViewModel.Fadeout();
-
         bool popMessage = this.randomizer.NextBool();
         if (isGood)
         {
+            // Fade out if correct
+            this.selectedWord!.Fadeout();
+            wordBlockViewModel.Fadeout();
+
             ++this.wordsDiscovered;
             this.WordsDiscovered = string.Format("{0}/{1}", this.wordsDiscovered, this.WordCount);
             this.bonusMilliseconds += this.BonusMilliseconds;
             if (popMessage)
             {
-                this.Comment = this.beNice.Next();
-                this.CommentColor = ColorTheme.BoxExact;
+                this.PopMessage(this.beNice.Next(), ColorTheme.ValidUiText);
             }
         }
         else
         {
+            ++ wrongCount;
+            // Remove Red after a bit 
+            WordBlockViewModel wasSelectedWord = this.selectedWord;
+            Schedule.OnUiThread(1500, () =>
+            {
+                if (wasSelectedWord.BackgroundBrush == ColorTheme.UiText)
+                {
+                    wasSelectedWord.BackgroundBrush = ColorTheme.BoxAbsent;
+                }
+
+                if (wordBlockViewModel.BackgroundBrush == ColorTheme.UiText)
+                {
+                    wordBlockViewModel.BackgroundBrush = ColorTheme.BoxAbsent;
+                }
+            }, DispatcherPriority.Normal);
+
             this.malusMilliseconds += this.MalusMilliseconds;
             if (popMessage)
             {
-                this.Comment = this.beMean.Next();
-                this.CommentColor = ColorTheme.UiText;
+                this.PopMessage(this.beMean.Next(), ColorTheme.UiText);
             }
         }
 
-        // Both words unselected 
+        // Now unselected 
         this.selectedWord = null;
-
-        // Todo: Fade out
-        Schedule.OnUiThread( 1500, ()=> { this.Comment = string.Empty;  }, DispatcherPriority.Background );
     }
 
-    protected override void OnViewLoaded()
+    private void PopMessage(string text, Brush brush)
     {
-        this.Logger.Debug("GameViewModel: OnViewLoaded begins");
+        // TODO: Fade in and out
+        this.View.CountDownBarControl.Opacity = 0.15;
+        this.Comment = text;
+        this.CommentColor = brush;
 
-        base.OnViewLoaded();
-        if (this.View is null)
-        {
-            throw new Exception("Failed to startup...");
-        }
-
-        // Why do I need to do that ??? 
-        this.View.CountDownBarControl.DataContext = this;
-
-        this.Logger.Debug("GameViewModel: OnViewLoaded complete");
+        Schedule.OnUiThread(
+            1500,
+            () =>
+            {
+                this.View.CountDownBarControl.Opacity = 1.0;
+                this.Comment = string.Empty;
+            }, DispatcherPriority.Background);
     }
 
-    private void UpdateTimeLeft()
-    {
-        int duration = this.DurationMilliseconds + this.bonusMilliseconds - this.malusMilliseconds;
-        int elapsed = (int)((DateTime.Now - this.gameStart).TotalMilliseconds);
-        int left = duration - elapsed;
-        this.CountDownTotal = (float)duration;
-        this.CountDownValue = (float)left;
-        var timeLeft = TimeSpan.FromMilliseconds(left);
-        this.TimeLeft = string.Format("{0}:{1:D2}", timeLeft.Minutes, timeLeft.Seconds);
-
-        if (((timeLeft.Minutes < 0) || (timeLeft.Seconds < 0)) ||
-            ((timeLeft.Minutes == 0) && (timeLeft.Seconds == 0)))
-        {
-            this.GameOver();
-        }
-    }
+    #region Populating the word options 
 
     private void PopulateGrid()
     {
@@ -300,30 +368,61 @@ public sealed class GameViewModel : Bindable<GameView>
         for (int i = 0; i < rowCount; ++i)
         {
             var pair = this.wordQueue.Dequeue();
-            WordBlockViewModel CreateWordBlock(int col, int row)
-            {
-                var vm = new WordBlockViewModel(this.animationService);
-                vm.CreateViewAndBind();
-                WordBlockView view = vm.View;
-                this.selectedGrid.Children.Add(view);
-                view.SetValue(Grid.ColumnProperty, col);
-                view.SetValue(Grid.RowProperty, row);
-                view.SetValue(Grid.MarginProperty, new Thickness(20, 12, 20, 12));
-                return vm;
-            }
-
-            string italian = pair.Item1;
-            string english = pair.Item2;
-
-            var leftVm = CreateWordBlock(0, i);
-            this.leftColumn.Add(leftVm);
-            leftVm.Setup(italian, english, Language.Italian);
-
-            var rightVm = CreateWordBlock(1, rightColumnIndices[i]);
-            this.rightColumn.Add(rightVm);
-            rightVm.Setup(english, italian, Language.English);
+            this.FillOne(pair, i, rightColumnIndices[i]);
         }
     }
+
+    private void RefillGrid()
+    {
+        if ((this.wordQueue is null) || (this.wordQueue.Count == 0))
+        {
+            this.Logger.Fatal("No words...");
+            throw new Exception("No words...");
+        }
+
+        var leftAvailable = (from vm in this.leftColumn where vm.IsAvailable select vm).FirstOrDefault();
+        var rightAvailable = (from vm in this.rightColumn where vm.IsAvailable select vm).FirstOrDefault();
+        if (leftAvailable is null || rightAvailable is null)
+        {
+            throw new Exception("No spots???");
+        }
+
+        var pair = this.wordQueue.Dequeue();
+        string italian = pair.Item1;
+        string english = pair.Item2;
+        leftAvailable.Setup(italian, english, Language.Italian);
+        rightAvailable.Setup(english, italian, Language.English);
+    }
+
+    private void FillOne(Tuple<string, string> pair, int rowLeft, int rowRight)
+    {
+        WordBlockViewModel CreateWordBlock(int col, int row)
+        {
+            var vm = new WordBlockViewModel(this.animationService, this.randomizer);
+            vm.CreateViewAndBind();
+            WordBlockView view = vm.View;
+            this.selectedGrid!.Children.Add(view);
+            view.SetValue(Grid.ColumnProperty, col);
+            view.SetValue(Grid.RowProperty, row);
+            view.SetValue(Grid.MarginProperty, new Thickness(20, 12, 20, 12));
+            return vm;
+        }
+
+        string italian = pair.Item1;
+        string english = pair.Item2;
+
+        var leftVm = CreateWordBlock(0, rowLeft);
+        this.leftColumn!.Add(leftVm);
+        leftVm.Setup(italian, english, Language.Italian);
+
+        var rightVm = CreateWordBlock(1, rowRight);
+        this.rightColumn!.Add(rightVm);
+        rightVm.Setup(english, italian, Language.English);
+    }
+
+    #endregion Populating the word options 
+
+    #region Properties calculated from game parameters 
 
     private int BonusMilliseconds
         => this.Difficulty switch
@@ -373,6 +472,10 @@ public sealed class GameViewModel : Bindable<GameView>
             _ => 120_000, // Easy : 2 minutes 
         };
 
+    #endregion Properties calculated from game parameters 
+
+    #region Bound properties 
+
     public string TimeLeft { get => this.Get<string>()!; [DoNotLog] set => this.Set(value); }
 
     public string WordsDiscovered { get => this.Get<string>()!; set => this.Set(value); }
@@ -388,4 +491,6 @@ public sealed class GameViewModel : Bindable<GameView>
     public float CountDownTotal { get => this.Get<float>(); set => this.Set(value); }
 
     public float CountDownValue { get => this.Get<float>(); [DoNotLog] set => this.Set(value); }
+
+    #endregion Bound properties 
 }

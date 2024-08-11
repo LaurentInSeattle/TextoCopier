@@ -2,11 +2,13 @@
 
 public sealed class WordBlockViewModel : Bindable<WordBlockView>
 {
-    private readonly IAnimationService animationService; 
-    
-    public WordBlockViewModel(IAnimationService animationService)
+    private readonly IAnimationService animationService;
+    private readonly IRandomizer randomizer;
+
+    public WordBlockViewModel(IAnimationService animationService, IRandomizer randomizer)
     {
         this.animationService = animationService;
+        this.randomizer = randomizer;
         this.DisablePropertyChangedLogging = true;
         this.OriginalWord = string.Empty;
         this.Word = string.Empty;
@@ -24,6 +26,7 @@ public sealed class WordBlockViewModel : Bindable<WordBlockView>
             throw new Exception("Failed to startup...");
         }
 
+        this.View.Opacity = 0.0;
         this.ForegroundBrush = ColorTheme.Text;
         this.BackgroundBrush = ColorTheme.BoxAbsent;
         this.BorderBrush = ColorTheme.BoxBorder;
@@ -48,35 +51,40 @@ public sealed class WordBlockViewModel : Bindable<WordBlockView>
         this.Logger.Debug("WordBlockViewModel: Click");
     }
 
-    public void OnEnter()
-    {
-        this.ForegroundBrush = ColorTheme.UiText;
-    }
+    public void OnEnter() => this.ForegroundBrush = ColorTheme.UiText;
 
-    public void OnLeave()
-    {
-        this.ForegroundBrush = ColorTheme.Text;
-    }
+    public void OnLeave() => this.ForegroundBrush = ColorTheme.Text;
 
     public void Setup(string word, string matchWord, Language language)
     {
+        this.View.Opacity = 0.0;
         this.IsAvailable = false;
         this.OriginalWord = word;
         this.MatchWord = matchWord;
         this.Word = word.ToTitleCase();
         this.Language = language;
+        this.BackgroundBrush = ColorTheme.BoxAbsent;
+        this.FadeIn();
     }
 
     public void Show(bool show) => this.View.IsVisible = show;
 
     public void FadeIn()
     {
-
+        Schedule.OnUiThread(
+            this.randomizer.Next(100, 3000),
+            () =>
+            {
+                double duration = this.randomizer.NextDouble(3.0, 4.0);
+                this.animationService.FadeIn(this.View, duration);
+            }, DispatcherPriority.Normal);
     }
 
     public void Fadeout()
     {
-        this.animationService.FadeOut(this.View); 
+        double duration = this.randomizer.NextDouble(1.0, 2.0);
+        this.animationService.FadeOut(this.View, duration);
+        Schedule.OnUiThread(1500, () => { this.IsAvailable = true; }, DispatcherPriority.Normal);
     }
 
     public string Word { get => this.Get<string>()!; set => this.Set(value); }
