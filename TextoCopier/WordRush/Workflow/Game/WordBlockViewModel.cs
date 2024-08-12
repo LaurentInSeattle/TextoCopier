@@ -40,15 +40,20 @@ public sealed class WordBlockViewModel : Bindable<WordBlockView>
 
     public string MatchWord { get; private set; }
 
-    public bool IsAvailable { get; set; }
+    public bool IsAvailable { get; private set; }
+
+    public bool IsClickable { get; private set; }
 
     public void Select(bool select = true)
         => this.BackgroundBrush = select ? ColorTheme.BoxPresent : ColorTheme.BoxAbsent;
 
     public void OnClick()
     {
-        this.Messenger.Publish(new WordClickMessage(this, this.OriginalWord, this.Language));
-        this.Logger.Debug("WordBlockViewModel: Click");
+        if (this.IsClickable)
+        {
+            this.Messenger.Publish(new WordClickMessage(this, this.OriginalWord, this.Language));
+            this.Logger.Debug("WordBlockViewModel: Click");
+        }
     }
 
     public void OnEnter() => this.ForegroundBrush = ColorTheme.UiText;
@@ -78,13 +83,26 @@ public sealed class WordBlockViewModel : Bindable<WordBlockView>
                 double duration = this.randomizer.NextDouble(3.0, 4.0);
                 this.animationService.FadeIn(this.View, duration);
             }, DispatcherPriority.Normal);
+        Schedule.OnUiThread(
+            3000,
+            () =>
+            {
+                this.IsClickable = true;
+            }, DispatcherPriority.Normal);
     }
 
     public void Fadeout()
     {
-        double duration = this.randomizer.NextDouble(1.0, 2.0);
+        this.IsClickable = false;
+        double duration = this.randomizer.NextDouble(1.0, 1.5);
         this.animationService.FadeOut(this.View, duration);
-        Schedule.OnUiThread(1500, () => { this.IsAvailable = true; }, DispatcherPriority.Normal);
+        Schedule.OnUiThread(
+            1500, 
+            () => 
+            {
+                this.View.Opacity = 0.0;
+                this.IsAvailable = true; 
+            }, DispatcherPriority.Normal);
     }
 
     public string Word { get => this.Get<string>()!; set => this.Set(value); }

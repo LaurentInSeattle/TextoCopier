@@ -220,7 +220,22 @@ public sealed class GameViewModel : Bindable<GameView>
         this.View.CountDownBarControl.AdjustForegroundSize();
         this.TimeLeft = "Fine dei Giochi";
 
-        // this.Messenger.Publish(ViewActivationMessage.ActivatedView.Setup);
+        this.View.CountDownBarControl.IsVisible = false;
+
+        // All view models should hide at the end 
+        foreach (var vm in this.leftColumn!)
+        {
+            vm.Show(show: false);
+        }
+
+        foreach (var vm in this.rightColumn!)
+        {
+            vm.Show(show: false);
+        }
+
+        // TODO: Show carnage report 
+        // Move to game summary 
+        // this.Messenger.Publish(ViewActivationMessage.ActivatedView.GameOver);
     }
 
     private void OnWordClick(WordClickMessage message)
