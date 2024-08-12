@@ -37,7 +37,7 @@
 			Foreground="{Binding CommentColor}"
 			HorizontalAlignment="Center" VerticalAlignment="Center"
 			Margin="0"
-			FontSize="48" FontWeight="Bold"
+			FontSize="54" FontWeight="Bold"
 			/>
 		<TextBlock
 			Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"

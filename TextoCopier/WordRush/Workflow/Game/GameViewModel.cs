@@ -212,7 +212,7 @@ public sealed class GameViewModel : Bindable<GameView>
 
     private void GameOver()
     {
-        this.gameStart = DateTime.Now;
+        this.gameEnd = DateTime.Now;
         this.State = GameState.Over;
         this.dispatcherTimer.Stop();
         this.dispatcherTimer.IsEnabled = false;
@@ -328,8 +328,9 @@ public sealed class GameViewModel : Bindable<GameView>
             }, DispatcherPriority.Normal);
 
             this.malusMilliseconds += this.MalusMilliseconds;
-            if (popMessage)
+            if (popMessage && (this.Difficulty == GameDifficulty.Hard))
             {
+                // We are mean only on Hard difficulty 
                 this.PopMessage(this.beMean.Next(), ColorTheme.UiText);
             }
         }
@@ -405,8 +406,19 @@ public sealed class GameViewModel : Bindable<GameView>
         var pair = this.wordQueue.Dequeue();
         string italian = pair.Item1;
         string english = pair.Item2;
-        leftAvailable.Setup(italian, english, Language.Italian);
-        rightAvailable.Setup(english, italian, Language.English);
+
+        // On hard difficulty randomly swap language columns
+        bool regular = this.Difficulty == GameDifficulty.Hard ? this.randomizer.NextBool() : true;
+        if (regular)
+        {
+            leftAvailable.Setup(italian, english, Language.Italian);
+            rightAvailable.Setup(english, italian, Language.English);
+        }
+        else
+        {
+            rightAvailable.Setup(italian, english, Language.Italian);
+            leftAvailable.Setup(english, italian, Language.English);
+        }
     }
 
     private void FillOne(Tuple<string, string> pair, int rowLeft, int rowRight)
