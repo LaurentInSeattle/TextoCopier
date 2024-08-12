@@ -11,6 +11,7 @@
         x:Name="mainGrid"
         ClipToBounds="False"
         VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+		ShowGridLines="False"
         >
 		<Grid.RowDefinitions>
 			<RowDefinition Height ="*" />
@@ -18,6 +19,7 @@
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
 		<!-- Popup Keyboard Grid and Rectangle: MUST be below everything else -->
 		<Grid

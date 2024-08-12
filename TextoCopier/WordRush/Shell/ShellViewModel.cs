@@ -56,7 +56,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         //if (this.templatesModel.Groups.Count > 0)
         //{
             this.toaster.Show(
-                this.localizer.Lookup("Shell.Ready"), this.localizer.Lookup("Shell.Greetings"), 
+                "Benvenuto/a!", "Benvenuto/a a 'Parole in Fretta! Sei pronto/a per una sfida?", 
                 5_000, InformationLevel.Info);
         //}
         //else
@@ -69,9 +69,6 @@ public sealed class ShellViewModel : Bindable<ShellView>
         //this.Logger.Debug("OnViewLoaded SetupAvailableIcons begins");
         //this.Logger.Debug("OnViewLoaded SetupAvailableIcons complete");
         this.Logger.Debug("OnViewLoaded complete");
-
-        Schedule.OnUiThread(
-            5000, () => { this.Messenger.Publish(ActivatedView.Game); }, DispatcherPriority.Background);
     }
 
 
@@ -105,9 +102,14 @@ public sealed class ShellViewModel : Bindable<ShellView>
                 break;
 
             case ActivatedView.Game:
-                var parameters = 
-                    new GameViewModel.Parameters { Difficulty = GameViewModel.GameDifficulty.Hard };
-                this.Activate<GameViewModel, GameView>(isFirstActivation, parameters);
+                if (parameter is GameViewModel.Parameters parameters)
+                {
+                    this.Activate<GameViewModel, GameView>(isFirstActivation, parameters);
+                } 
+                else
+                {
+                    throw new Exception("No game parameters");
+                }
                 break;
         }
     }

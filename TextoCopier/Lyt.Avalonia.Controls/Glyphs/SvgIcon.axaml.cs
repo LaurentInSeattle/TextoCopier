@@ -362,7 +362,7 @@ public partial class SvgIcon : UserControl
     public static readonly StyledProperty<double> StrokeThicknessProperty =
         AvaloniaProperty.Register<SvgIcon, double>(
             nameof(StrokeThickness),
-            defaultValue: 2.0,
+            defaultValue: 1.0,
             inherits: false,
             defaultBindingMode: BindingMode.OneWay,
             validate: null,

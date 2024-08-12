@@ -109,25 +109,23 @@ public partial class GlyphButton : UserControl, ICanSelect
                 this.textBlock.SetValue(Grid.RowProperty, 1);
                 this.textBlock.SetValue(Grid.ColumnProperty, 0);
                 this.textBlock.SetValue(Grid.ColumnSpanProperty, 1);
-                this.textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center);
-                this.textBlock.SetValue(MarginProperty, new Thickness(0, 2, 0, 0));
-                // this.mainGrid.ColumnDefinitions[2].Width = new GridLength(0, GridUnitType.Pixel);
-                // this.mainGrid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel);
-                // this.mainGrid.ColumnDefinitions[0].Width = new GridLength(this.mainGrid.Width, GridUnitType.Pixel);
+                this.textBlock.HorizontalAlignment = HorizontalAlignment.Center;
+                this.textBlock.Margin = new Thickness(0, 2, 0, 0);
                 this.mainGrid.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Auto);
                 break;
 
             case ButtonLayout.IconTextRightSide:
-                this.icon.IsVisible = true; //Visibility.Visible;
-                this.textBlock.IsVisible = true; //Visibility.Visible;
-                this.textBlock.SetValue(Grid.RowProperty, 0);
-                this.textBlock.SetValue(Grid.ColumnProperty, 1);
-                this.textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Left);
-                this.textBlock.SetValue(HorizontalContentAlignmentProperty, HorizontalAlignment.Left);
-                this.textBlock.SetValue(MarginProperty, new Thickness(4, 0, 0, 0));
-                //this.mainGrid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Auto);
-                //this.mainGrid.ColumnDefinitions[2].Width = new GridLength(1, GridUnitType.Star);
+                this.mainGrid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Auto);
+                this.mainGrid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
                 this.mainGrid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Pixel);
+                this.icon.IsVisible = true; //Visibility.Visible;
+                this.icon.Margin = new Thickness(6);
+                this.textBlock.IsVisible = true; //Visibility.Visible;
+                this.border.SetValue(Grid.RowProperty, 0);
+                this.border.SetValue(Grid.ColumnProperty, 1);
+                this.textBlock.HorizontalAlignment = HorizontalAlignment.Center;
+                this.textBlock.SetValue(HorizontalContentAlignmentProperty, HorizontalAlignment.Center);
+                this.textBlock.Margin = new Thickness(4, 0, 0, 0);
                 break;
 
             case ButtonLayout.TextOnly:

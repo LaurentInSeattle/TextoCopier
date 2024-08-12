@@ -406,19 +406,8 @@ public sealed class GameViewModel : Bindable<GameView>
         var pair = this.wordQueue.Dequeue();
         string italian = pair.Item1;
         string english = pair.Item2;
-
-        // On hard difficulty randomly swap language columns
-        bool regular = this.Difficulty == GameDifficulty.Hard ? this.randomizer.NextBool() : true;
-        if (regular)
-        {
-            leftAvailable.Setup(italian, english, Language.Italian);
-            rightAvailable.Setup(english, italian, Language.English);
-        }
-        else
-        {
-            rightAvailable.Setup(italian, english, Language.Italian);
-            leftAvailable.Setup(english, italian, Language.English);
-        }
+        leftAvailable.Setup(italian, english, Language.Italian);
+        rightAvailable.Setup(english, italian, Language.English);
     }
 
     private void FillOne(Tuple<string, string> pair, int rowLeft, int rowRight)

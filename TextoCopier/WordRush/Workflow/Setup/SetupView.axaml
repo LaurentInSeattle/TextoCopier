@@ -5,8 +5,73 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
+    xmlns:theme="clr-namespace:Lyt.WordRush"
     xmlns:vm="clr-namespace:Lyt.WordRush.Workflow.Setup"
     x:DataType="vm:SetupViewModel" 
 	Background="Transparent"
 	>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="8" />
+			<ColumnDefinition Width="2*" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="8" />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="0" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="24" />
+		</Grid.RowDefinitions>
+
+		<TextBlock
+			Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="2"
+			Margin="12 30 20 0"
+			Text="Abbina parole italiane e inglesi in poco tempo.&#x0a;&#x0a;Dovrai essere veloce, intelligente e acuto.&#x0a;&#x0a;Pronto? Pronta? Scegli un livello di difficoltà..."
+			TextWrapping="Wrap"
+			FontSize="32"
+			Foreground="{x:Static theme:ColorTheme.UiText}"
+			>
+		</TextBlock>
+		<glyphs:GlyphButton
+			x:Name="easyButton"
+			Margin="0 -20 0 0"
+			Style="{StaticResource ViewIconButton}"
+			Grid.Column="2" Grid.Row="1" 
+			GlyphSource="emoji_smile_slight"
+			Text="Agevole"
+			Command="{Binding PlayEasyCommand}"
+    		/>
+		<glyphs:GlyphButton
+			x:Name="mediumButton"
+			Margin="0 -20 0 0"
+			Style="{StaticResource ViewIconButton}"
+			Grid.Column="2" Grid.Row="2" 
+			GlyphSource="emoji_surprise"
+			Text="Stimulante"
+			Command="{Binding PlayMediumCommand}"
+    		/>
+		<glyphs:GlyphButton
+			x:Name="hardButton"
+			Margin="0 -20 0 0"
+			Style="{StaticResource ViewIconButton}"
+			Grid.Column="2" Grid.Row="3" 
+			GlyphSource="emoji_meh"
+			Text="Pazzo!!!"
+			Command="{Binding PlayHardCommand}"
+    		/>
+		<glyphs:GlyphButton
+			x:Name="exitButton"
+			Margin="0 -20 0 0"
+			Style="{StaticResource ViewIconButton}"
+			Grid.Column="1" Grid.Row="3"
+			GlyphSource="dismiss"
+			Text="Fine e Chiudi"
+			Width="400"
+			HorizontalAlignment="Left"
+			Command="{Binding ExitCommand}"
+    		/>
+	</Grid>
 </UserControl>
