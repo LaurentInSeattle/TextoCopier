@@ -4,15 +4,13 @@ using static Lyt.WordRush.Messaging.ViewActivationMessage;
 
 public sealed class ShellViewModel : Bindable<ShellView>
 {
-    private readonly IDialogService dialogService;
     private readonly IToaster toaster;
     private readonly IMessenger messenger;
     private readonly IProfiler profiler;
 
     public ShellViewModel(
-        IDialogService dialogService, IToaster toaster, IMessenger messenger, IProfiler profiler)
+        IToaster toaster, IMessenger messenger, IProfiler profiler)
     {
-        this.dialogService = dialogService;
         this.toaster = toaster;
         this.messenger = messenger;
         this.profiler = profiler;

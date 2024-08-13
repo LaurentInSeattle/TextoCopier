@@ -4,16 +4,7 @@ using static Lyt.WordRush.Messaging.ViewActivationMessage;
 
 public sealed class GameOverViewModel : Bindable<GameOverView>
 {
-    private readonly IDialogService dialogService;
-    private readonly IToaster toaster;
-
     private GameResults? results;
-
-    public GameOverViewModel(IDialogService dialogService, IToaster toaster)
-    {
-        this.dialogService = dialogService;
-        this.toaster = toaster;
-    }
 
     protected override void OnViewLoaded()
     {

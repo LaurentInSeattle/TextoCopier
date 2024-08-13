@@ -4,16 +4,7 @@ namespace Lyt.WordRush.Workflow.Countdown;
 
 public sealed class CountdownViewModel : Bindable<CountdownView>
 {
-    private readonly IDialogService dialogService;
-    private readonly IToaster toaster;
-
     private Parameters? parameters;
-
-    public CountdownViewModel(IDialogService dialogService, IToaster toaster)
-    {
-        this.dialogService = dialogService;
-        this.toaster = toaster;
-    }
 
     protected override void OnViewLoaded()
     {

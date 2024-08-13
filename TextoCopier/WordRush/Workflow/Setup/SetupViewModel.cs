@@ -4,15 +4,6 @@ using static Lyt.WordRush.Messaging.ViewActivationMessage;
 
 public sealed class SetupViewModel : Bindable<SetupView>
 {
-    private readonly IDialogService dialogService;
-    private readonly IToaster toaster;
-
-    public SetupViewModel(IDialogService dialogService, IToaster toaster)
-    {
-        this.dialogService = dialogService;
-        this.toaster = toaster;
-    }
-
     protected override void OnViewLoaded()
     {
         this.Logger.Debug("SetupViewModel: OnViewLoaded begins");

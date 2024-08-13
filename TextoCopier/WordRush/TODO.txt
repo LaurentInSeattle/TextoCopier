@@ -1,5 +1,6 @@
 ﻿Must Haves 
-- Animation Service
-- Add 'to' to english verbs if missing
+- History 
+- Game report 
+- Statistics 
 
 Nice to Have 

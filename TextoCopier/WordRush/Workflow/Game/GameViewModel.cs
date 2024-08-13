@@ -39,8 +39,6 @@ public sealed class GameViewModel : Bindable<GameView>
         "Terribile"
     ];
     
-    private readonly IDialogService dialogService;
-    private readonly IToaster toaster;
     private readonly IRandomizer randomizer;
     private readonly IAnimationService animationService;
     private readonly WordsModel wordsModel;
@@ -64,11 +62,9 @@ public sealed class GameViewModel : Bindable<GameView>
 
     public GameViewModel(
         WordsModel wordsModel, 
-        IDialogService dialogService, IToaster toaster, IRandomizer randomizer, IAnimationService animationService)
+        IRandomizer randomizer, IAnimationService animationService)
     {
         this.wordsModel = wordsModel;
-        this.dialogService = dialogService;
-        this.toaster = toaster;
         this.randomizer = randomizer;
         this.animationService = animationService;
         this.beNice = new Chooser<string>(this.randomizer, GameViewModel.beingNice);
