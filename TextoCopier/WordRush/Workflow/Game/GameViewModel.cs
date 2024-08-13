@@ -44,15 +44,17 @@ public sealed class GameViewModel : Bindable<GameView>
     private readonly WordsModel wordsModel;
     private readonly Chooser<string> beNice;
     private readonly Chooser<string> beMean;
+    private readonly DispatcherTimer dispatcherTimer;
 
-    private DispatcherTimer dispatcherTimer;
     private DateTime gameStart;
     private DateTime gameEnd;
     private int bonusMilliseconds;
     private int malusMilliseconds;
-    private int wrongCount;
-    private int wordsDiscovered;
+    private int missedWordsCount;
+    private int matchedWordsCount;
+    private int clicksCount;
 
+    private GameResults? gameResults;
     private Parameters? parameters;
     private Grid? selectedGrid;
     private Queue<Tuple<string, string>>? wordQueue;
@@ -109,8 +111,7 @@ public sealed class GameViewModel : Bindable<GameView>
 
         this.parameters = parameters;
         this.Profiler.FullGcCollect();
-        this.Difficulty = parameters.Difficulty;
-        this.Start();
+        this.Start(parameters);
     }
 
     public override void Deactivate()
@@ -167,17 +168,20 @@ public sealed class GameViewModel : Bindable<GameView>
         }
     }
 
-    private void Start()
+    private async void Start(Parameters parameters)
     {
+        this.gameResults = new(parameters);
+        this.Difficulty = parameters.Difficulty;
         this.TimeLeft = string.Empty;
+        this.WordsDiscovered = string.Format("{0}/{1}", 0, this.WordCount);
         this.gameStart = DateTime.Now;
         this.bonusMilliseconds = 0;
         this.malusMilliseconds = 0;
-        this.wordsDiscovered = 0;
-        this.wrongCount = 0;
+        this.matchedWordsCount = 0;
+        this.missedWordsCount = 0;
         this.wordQueue = new(this.WordCount);
         var words = this.wordsModel.RandomPicks(5 + this.WordCount, []);
-        foreach (var word in words)
+        foreach (string word in words)
         {
             string translated;
             try
@@ -201,11 +205,11 @@ public sealed class GameViewModel : Bindable<GameView>
             }
         }
 
-        this.PopulateGrid();
+        await this.PopulateGrid();
         this.State = GameState.Running;
 
         Schedule.OnUiThread(
-            1_000,
+            500,
             () =>
             {
                 this.dispatcherTimer.IsEnabled = true;
@@ -215,7 +219,18 @@ public sealed class GameViewModel : Bindable<GameView>
 
     private void GameOver()
     {
+        if (this.gameResults is null)
+        {
+            throw new ArgumentNullException("no game results");
+        }
+
         this.gameEnd = DateTime.Now;
+        this.gameResults.GameDuration = this.gameEnd - this.gameStart;
+        this.gameResults.WordCount = this.WordCount;
+        this.gameResults.MatchedWordsCount = this.matchedWordsCount;
+        this.gameResults.MissedWordsCount = this.missedWordsCount;  
+        this.gameResults.ClicksCount = this.clicksCount;
+
         this.State = GameState.Over;
         this.dispatcherTimer.Stop();
         this.dispatcherTimer.IsEnabled = false;
@@ -235,7 +250,7 @@ public sealed class GameViewModel : Bindable<GameView>
             vm.Show(show: false);
         }
 
-        this.Messenger.Publish(ViewActivationMessage.ActivatedView.GameOver, new GameResults(this.parameters));
+        this.Messenger.Publish(ViewActivationMessage.ActivatedView.GameOver, this.gameResults);
     }
 
     private void OnWordClick(WordClickMessage message)
@@ -245,6 +260,7 @@ public sealed class GameViewModel : Bindable<GameView>
             return;
         }
 
+        ++this.clicksCount;
         if (this.HasSelection)
         {
             // We already have a selection 
@@ -297,12 +313,13 @@ public sealed class GameViewModel : Bindable<GameView>
         bool popMessage = this.randomizer.NextBool();
         if (isGood)
         {
+            ++this.matchedWordsCount;
+
             // Fade out if correct
             this.selectedWord!.Fadeout();
             wordBlockViewModel.Fadeout();
 
-            ++this.wordsDiscovered;
-            this.WordsDiscovered = string.Format("{0}/{1}", this.wordsDiscovered, this.WordCount);
+            this.WordsDiscovered = string.Format("{0}/{1}", this.matchedWordsCount, this.WordCount);
             this.bonusMilliseconds += this.BonusMilliseconds;
             if (popMessage)
             {
@@ -311,7 +328,8 @@ public sealed class GameViewModel : Bindable<GameView>
         }
         else
         {
-            ++ wrongCount;
+            ++ this.missedWordsCount;
+
             // Remove Red after a bit 
             WordBlockViewModel wasSelectedWord = this.selectedWord;
             Schedule.OnUiThread(1500, () =>
@@ -357,25 +375,27 @@ public sealed class GameViewModel : Bindable<GameView>
 
     #region Populating the word options 
 
-    private async void PopulateGrid()
+    private async Task PopulateGrid()
     {
-        int rowCount = this.RowCount;
         this.selectedGrid = this.GameGrid;
-        this.View.EasyGrid.IsVisible = this.Difficulty == GameDifficulty.Easy;
-        this.View.MediumGrid.IsVisible = this.Difficulty == GameDifficulty.Medium;
-        this.View.DifficultGrid.IsVisible = this.Difficulty == GameDifficulty.Hard;
 
-        if ((this.wordQueue is null) || (this.selectedGrid is null))
+        if ((this.wordQueue is null) || (this.selectedGrid is null) || (this.gameResults is null))
         {
             this.Logger.Fatal("No words...");
             throw new Exception("No words...");
         }
 
+        this.View.EasyGrid.IsVisible = this.Difficulty == GameDifficulty.Easy;
+        this.View.MediumGrid.IsVisible = this.Difficulty == GameDifficulty.Medium;
+        this.View.DifficultGrid.IsVisible = this.Difficulty == GameDifficulty.Hard;
+
+        int rowCount = this.RowCount;
         var rightColumnIndices = new List<int>(rowCount);
         for (int i = 0; i < rowCount; ++i)
         {
             rightColumnIndices.Add(i);
         }
+
         this.randomizer.Shuffle(rightColumnIndices);
 
         this.selectedGrid.Children.Clear();
@@ -385,13 +405,14 @@ public sealed class GameViewModel : Bindable<GameView>
         {
             await Task.Delay(500);
             var pair = this.wordQueue.Dequeue();
+            this.gameResults.Words.Add(pair.Item1);
             this.FillOne(pair, i, rightColumnIndices[i]);
         }
     }
 
     private void RefillGrid()
     {
-        if ((this.wordQueue is null) || (this.wordQueue.Count == 0))
+        if ((this.wordQueue is null) || (this.selectedGrid is null) || (this.gameResults is null))
         {
             this.Logger.Fatal("No words...");
             throw new Exception("No words...");
@@ -409,6 +430,7 @@ public sealed class GameViewModel : Bindable<GameView>
         string english = pair.Item2;
         leftAvailable.Setup(italian, english, Language.Italian);
         rightAvailable.Setup(english, italian, Language.English);
+        this.gameResults.Words.Add(italian);
     }
 
     private void FillOne(Tuple<string, string> pair, int rowLeft, int rowRight)
@@ -478,16 +500,16 @@ public sealed class GameViewModel : Bindable<GameView>
         {
             GameDifficulty.Medium => 30,
             GameDifficulty.Hard => 40,
-            _ => 8, // DEBUG !!! 
-            // _ => 8, // Easy 
+            // _ => 8, // DEBUG !!! 
+            _ => 20, // Easy 
         };
 
     private int DurationMilliseconds
         => this.Difficulty switch
         {
-            GameDifficulty.Medium => 150_000, // 2 minutes 30 sec
-            GameDifficulty.Hard => 180_000, // 3 minutes 
-            _ => 120_000, // Easy : 2 minutes 
+            GameDifficulty.Medium => 105_000, // 1 minute 45 sec
+            GameDifficulty.Hard => 120_000, // 2 minutes 
+            _ => 90_000, // Easy : 1 minute 30 sec
         };
 
     #endregion Properties calculated from game parameters 

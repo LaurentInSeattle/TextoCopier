@@ -44,7 +44,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
             this.toaster.Show(
                 "Benvenuto/a!", 
                 "Benvenuto/a a 'Parole in Fretta! Sei pronto/a per una sfida?", 
-                5_000, InformationLevel.Info);
+                3_000, InformationLevel.Info);
         this.Logger.Debug("OnViewLoaded complete");
     }
 
@@ -132,11 +132,6 @@ public sealed class ShellViewModel : Bindable<ShellView>
         {
             throw new Exception("No view: Failed to startup...");
         }
-
-        if (this.dialogService.IsModal)
-        {
-            this.dialogService.Dismiss();
-        } 
 
         object? currentView = this.View.ShellViewContent.Content;
         if (currentView is Control control && control.DataContext is Bindable currentViewModel)

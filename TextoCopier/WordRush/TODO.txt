@@ -4,3 +4,4 @@
 - Statistics 
 
 Nice to Have 
+- Lookup the web for the missed words 
