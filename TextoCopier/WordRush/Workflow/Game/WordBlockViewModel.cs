@@ -77,14 +77,13 @@ public sealed class WordBlockViewModel : Bindable<WordBlockView>
     public void FadeIn()
     {
         Schedule.OnUiThread(
-            this.randomizer.Next(100, 3000),
+            500,
             () =>
             {
-                double duration = this.randomizer.NextDouble(3.0, 4.0);
-                this.animationService.FadeIn(this.View, duration);
+                this.animationService.FadeIn(this.View, 1.5);
             }, DispatcherPriority.Normal);
         Schedule.OnUiThread(
-            3000,
+            2000,
             () =>
             {
                 this.IsClickable = true;

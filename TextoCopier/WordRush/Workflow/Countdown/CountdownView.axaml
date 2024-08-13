@@ -14,6 +14,7 @@
 		Text="{Binding Comment}"
 		Foreground="{Binding CommentColor}"
 		HorizontalAlignment="Center" VerticalAlignment="Center"
-		FontSize="120" FontWeight="Bold"
+		Margin="0 -200 0 0"
+		FontSize="140" FontWeight="Bold"
 		/>
 </UserControl>

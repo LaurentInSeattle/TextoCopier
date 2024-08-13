@@ -173,6 +173,7 @@ public sealed class GameViewModel : Bindable<GameView>
 
     private void Start()
     {
+        this.TimeLeft = string.Empty;
         this.gameStart = DateTime.Now;
         this.bonusMilliseconds = 0;
         this.malusMilliseconds = 0;
@@ -205,9 +206,15 @@ public sealed class GameViewModel : Bindable<GameView>
         }
 
         this.PopulateGrid();
-        this.dispatcherTimer.IsEnabled = true;
-        this.dispatcherTimer.Start();
         this.State = GameState.Running;
+
+        Schedule.OnUiThread(
+            1_000,
+            () =>
+            {
+                this.dispatcherTimer.IsEnabled = true;
+                this.dispatcherTimer.Start();
+            }, DispatcherPriority.Normal);
     }
 
     private void GameOver()
@@ -354,7 +361,7 @@ public sealed class GameViewModel : Bindable<GameView>
 
     #region Populating the word options 
 
-    private void PopulateGrid()
+    private async void PopulateGrid()
     {
         int rowCount = this.RowCount;
         this.selectedGrid = this.GameGrid;
@@ -380,6 +387,7 @@ public sealed class GameViewModel : Bindable<GameView>
         this.rightColumn = new(rowCount);
         for (int i = 0; i < rowCount; ++i)
         {
+            await Task.Delay(500);
             var pair = this.wordQueue.Dequeue();
             this.FillOne(pair, i, rightColumnIndices[i]);
         }
