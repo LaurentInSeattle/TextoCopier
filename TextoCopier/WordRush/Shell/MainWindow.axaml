@@ -14,11 +14,11 @@
 	<Grid>
 		<Image
             Stretch="UniformToFill"
-            Source="\Assets\Images\dark.jpg"
+            Source="\Assets\Images\venezia.jpg"
             Grid.ColumnSpan="999" Grid.RowSpan="999"
             />
 		<Rectangle
-			Fill="#48000020"
+			Fill="#20000020"
             Grid.ColumnSpan="999" Grid.RowSpan="999"
 			/>
 		<Viewbox

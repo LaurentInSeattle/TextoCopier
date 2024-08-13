@@ -5,8 +5,9 @@ public sealed class ViewActivationMessage(ViewActivationMessage.ActivatedView vi
     public enum ActivatedView
     {
         Setup,
+        Countdown,
         Game,
-
+        GameOver,
         GoBack,
         Exit,
     }

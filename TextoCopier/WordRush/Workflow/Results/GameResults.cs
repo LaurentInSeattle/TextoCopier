@@ -1,6 +1,6 @@
 ﻿namespace Lyt.WordRush.Workflow.Results;
 
-public sealed class GameResults
+public sealed class GameResults (GameViewModel.Parameters parameters)
 {
-    public GameViewModel.GameDifficulty Difficulty { get; set; }
+    public GameViewModel.Parameters Parameters { get; set; } = parameters;
 }

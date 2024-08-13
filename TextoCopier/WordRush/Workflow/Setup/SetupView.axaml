@@ -69,8 +69,9 @@
 			Grid.Column="1" Grid.Row="3"
 			GlyphSource="dismiss"
 			Text="Fine e Chiudi"
-			Width="400"
+			Width="340"
 			HorizontalAlignment="Left"
+			GlyphAngle="10"
 			Command="{Binding ExitCommand}"
     		/>
 	</Grid>

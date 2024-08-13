@@ -37,6 +37,7 @@
 	  <None Remove="Assets\Dictionaries\Uddl\english-italian.txt" />
 	  <None Remove="Assets\Dictionaries\Uddl\english-spanish.txt" />
 	  <None Remove="Assets\Images\parole.ico" />
+	  <None Remove="Assets\Images\venezia.jpg" />
 	  <None Remove="Assets\Palette\dark.jpg" />
 	</ItemGroup>
 

@@ -6,13 +6,9 @@ public sealed class SetupViewModel : Bindable<SetupView>
 {
     private readonly IDialogService dialogService;
     private readonly IToaster toaster;
-    private readonly LocalizerModel localizer;
 
-    public SetupViewModel(
-        LocalizerModel localizer,
-        IDialogService dialogService, IToaster toaster)
+    public SetupViewModel(IDialogService dialogService, IToaster toaster)
     {
-        this.localizer = localizer;
         this.dialogService = dialogService;
         this.toaster = toaster;
     }
@@ -30,22 +26,20 @@ public sealed class SetupViewModel : Bindable<SetupView>
         this.Logger.Debug("SetupViewModel: OnViewLoaded complete");
     }
 
+    private void Play(GameViewModel.GameDifficulty difficulty)
+        => this.Messenger.Publish(
+            ActivatedView.Countdown, new GameViewModel.Parameters { Difficulty = difficulty });
+
     #region Methods invoked by the Framework using reflection 
 #pragma warning disable IDE0051 // Remove unused private members
 
     private void OnExit(object? _) => this.Messenger.Publish(ActivatedView.Exit);
 
-    private void OnPlayEasy(object? _)
-        => this.Messenger.Publish(
-            ActivatedView.Game, new GameViewModel.Parameters { Difficulty = GameViewModel.GameDifficulty.Easy });
+    private void OnPlayEasy(object? _) => this.Play(GameViewModel.GameDifficulty.Easy);
 
-    private void OnPlayMedium(object? _)
-        => this.Messenger.Publish(
-            ActivatedView.Game, new GameViewModel.Parameters { Difficulty = GameViewModel.GameDifficulty.Medium });
+    private void OnPlayMedium(object? _)  => this.Play(GameViewModel.GameDifficulty.Medium);
 
-    private void OnPlayHard(object? _)
-        => this.Messenger.Publish(
-            ActivatedView.Game, new GameViewModel.Parameters { Difficulty = GameViewModel.GameDifficulty.Hard });
+    private void OnPlayHard(object? _)  => this.Play(GameViewModel.GameDifficulty.Hard );
 
 #pragma warning restore IDE0051
     #endregion Methods invoked by the Framework using reflection 

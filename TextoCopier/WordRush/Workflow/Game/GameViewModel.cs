@@ -38,12 +38,11 @@ public sealed class GameViewModel : Bindable<GameView>
         "Deficiente!" , "Stupido!" , "Cretino!" , "Scemo" ,  "Ottuso...",
         "Terribile"
     ];
-
+    
     private readonly IDialogService dialogService;
     private readonly IToaster toaster;
     private readonly IRandomizer randomizer;
     private readonly IAnimationService animationService;
-    private readonly LocalizerModel localizer;
     private readonly WordsModel wordsModel;
     private readonly Chooser<string> beNice;
     private readonly Chooser<string> beMean;
@@ -56,6 +55,7 @@ public sealed class GameViewModel : Bindable<GameView>
     private int wrongCount;
     private int wordsDiscovered;
 
+    private Parameters? parameters;
     private Grid? selectedGrid;
     private Queue<Tuple<string, string>>? wordQueue;
     private List<WordBlockViewModel>? leftColumn;
@@ -63,11 +63,10 @@ public sealed class GameViewModel : Bindable<GameView>
     private WordBlockViewModel? selectedWord;
 
     public GameViewModel(
-        WordsModel wordsModel, LocalizerModel localizer,
+        WordsModel wordsModel, 
         IDialogService dialogService, IToaster toaster, IRandomizer randomizer, IAnimationService animationService)
     {
         this.wordsModel = wordsModel;
-        this.localizer = localizer;
         this.dialogService = dialogService;
         this.toaster = toaster;
         this.randomizer = randomizer;
@@ -112,6 +111,7 @@ public sealed class GameViewModel : Bindable<GameView>
             throw new ArgumentException("Invalid activation parameters.");
         }
 
+        this.parameters = parameters;
         this.Profiler.FullGcCollect();
         this.Difficulty = parameters.Difficulty;
         this.Start();
@@ -218,7 +218,6 @@ public sealed class GameViewModel : Bindable<GameView>
         this.dispatcherTimer.IsEnabled = false;
         this.CountDownValue = 0.0f;
         this.View.CountDownBarControl.AdjustForegroundSize();
-        this.TimeLeft = "Fine dei Giochi";
 
         this.View.CountDownBarControl.IsVisible = false;
 
@@ -233,9 +232,7 @@ public sealed class GameViewModel : Bindable<GameView>
             vm.Show(show: false);
         }
 
-        // TODO: Show carnage report 
-        // Move to game summary 
-        // this.Messenger.Publish(ViewActivationMessage.ActivatedView.GameOver);
+        this.Messenger.Publish(ViewActivationMessage.ActivatedView.GameOver, new GameResults(this.parameters));
     }
 
     private void OnWordClick(WordClickMessage message)
@@ -477,7 +474,8 @@ public sealed class GameViewModel : Bindable<GameView>
         {
             GameDifficulty.Medium => 30,
             GameDifficulty.Hard => 40,
-            _ => 20, // Easy 
+            _ => 8, // DEBUG !!! 
+            // _ => 8, // Easy 
         };
 
     private int DurationMilliseconds

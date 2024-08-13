@@ -8,19 +8,15 @@ public sealed class ShellViewModel : Bindable<ShellView>
     private readonly IToaster toaster;
     private readonly IMessenger messenger;
     private readonly IProfiler profiler;
-    private readonly LocalizerModel localizer;
 
     public ShellViewModel(
-        LocalizerModel localizer, 
         IDialogService dialogService, IToaster toaster, IMessenger messenger, IProfiler profiler)
     {
-        this.localizer = localizer;
         this.dialogService = dialogService;
         this.toaster = toaster;
         this.messenger = messenger;
         this.profiler = profiler;
 
-        // this.templatesModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
         this.messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
     }
 
@@ -33,12 +29,6 @@ public sealed class ShellViewModel : Bindable<ShellView>
         {
             throw new Exception("Failed to startup...");
         }
-
-        // Select default language 
-        //this.localizer.DetectAvailableLanguages();
-        //string preferredLanguage = this.templatesModel.Language;
-        //this.Logger.Debug("Language: " + preferredLanguage);
-        //this.localizer.SelectLanguage(preferredLanguage);
 
         this.Logger.Debug("OnViewLoaded language loaded");
 
@@ -53,21 +43,10 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         // Ready 
         this.toaster.Host = this.View.ToasterHost;
-        //if (this.templatesModel.Groups.Count > 0)
-        //{
             this.toaster.Show(
-                "Benvenuto/a!", "Benvenuto/a a 'Parole in Fretta! Sei pronto/a per una sfida?", 
+                "Benvenuto/a!", 
+                "Benvenuto/a a 'Parole in Fretta! Sei pronto/a per una sfida?", 
                 5_000, InformationLevel.Info);
-        //}
-        //else
-        //{
-        //    this.toaster.Show(
-        //        this.localizer.Lookup("Shell.NoGroups.Title"), this.localizer.Lookup("Shell.NoGroups.Hint"), 
-        //        10_000, InformationLevel.Warning);
-        //}
-
-        //this.Logger.Debug("OnViewLoaded SetupAvailableIcons begins");
-        //this.Logger.Debug("OnViewLoaded SetupAvailableIcons complete");
         this.Logger.Debug("OnViewLoaded complete");
     }
 
@@ -88,6 +67,11 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
     private void OnViewActivation(ActivatedView activatedView, object? parameter = null, bool isFirstActivation = false)
     {
+        if (activatedView == ActivatedView.Exit)
+        {
+            this.OnExit(null);
+        }
+
         if (activatedView == ActivatedView.GoBack)
         {
             // We always go back to the Setup View 
@@ -101,28 +85,46 @@ public sealed class ShellViewModel : Bindable<ShellView>
                 this.Activate<SetupViewModel, SetupView>(isFirstActivation, null);
                 break;
 
-            case ActivatedView.Game:
-                if (parameter is GameViewModel.Parameters parameters)
+            case ActivatedView.Countdown:
+                if (parameter is GameViewModel.Parameters parametersSetup)
                 {
-                    this.Activate<GameViewModel, GameView>(isFirstActivation, parameters);
+                    this.Activate<CountdownViewModel, CountdownView>(isFirstActivation, parametersSetup);
+                }
+                else
+                {
+                    throw new Exception("No game parameters");
+                }
+                break;
+
+            case ActivatedView.Game:
+                if (parameter is GameViewModel.Parameters parametersGame)
+                {
+                    this.Activate<GameViewModel, GameView>(isFirstActivation, parametersGame);
                 } 
                 else
                 {
                     throw new Exception("No game parameters");
                 }
                 break;
+
+            case ActivatedView.GameOver:
+                if (parameter is GameResults gameResults)
+                {
+                    this.Activate<GameOverViewModel, GameOverView>(isFirstActivation, gameResults);
+                }
+                else
+                {
+                    throw new Exception("No game results");
+                }
+                break;
         }
     }
 
-    //private void OnSettings(object? _) => this.OnViewActivation(ActivatedView.Settings);
-
-    //private void OnAbout(object? _) => this.OnViewActivation(ActivatedView.Help);
-
-    //private void OnNewGroup(object? _) => this.OnViewActivation(ActivatedView.NewGroup);
-
-    //private void OnEditGroup(object? _) => this.OnViewActivation(ActivatedView.EditGroup);
-
-    private void OnExit(object? _) { }
+    private async void OnExit(object? _) 
+    {
+        var application = App.GetRequiredService<IApplicationBase>();
+        await application.Shutdown();
+    }
 
     private void Activate<TViewModel, TControl>(bool isFirstActivation, object? activationParameters)
         where TViewModel : Bindable<TControl>
@@ -165,18 +167,8 @@ public sealed class ShellViewModel : Bindable<ShellView>
         }
 
         CreateAndBind<SetupViewModel, SetupView>();
+        CreateAndBind<CountdownViewModel, CountdownView>();
         CreateAndBind<GameViewModel, GameView>();
+        CreateAndBind<GameOverViewModel, GameOverView>();
     }
-
-    public ICommand SettingsCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand AboutCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand NewGroupCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand EditGroupCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand DeleteGroupCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 }

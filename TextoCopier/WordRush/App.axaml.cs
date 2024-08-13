@@ -16,7 +16,6 @@ public partial class App : ApplicationBase
         typeof(ApplicationModelBase), // Top level model 
         [
             // Models 
-            typeof(LocalizerModel),
             typeof(FileManagerModel),
             typeof(WordsModel),
             typeof(History),
@@ -25,7 +24,9 @@ public partial class App : ApplicationBase
            // Singletons
            typeof(ShellViewModel),
            typeof(SetupViewModel),
+           typeof(CountdownViewModel),
            typeof(GameViewModel),
+           typeof(GameOverViewModel),
         ],
         [
             // Services 
@@ -58,16 +59,6 @@ public partial class App : ApplicationBase
         await fileManager.Configure(
             new FileManagerConfiguration(
                 App.Organization, App.Application, App.RootNamespace, App.AssemblyName, App.AssetsFolder));
-
-        // The localizer needs the File Manager, do not change the order.
-        var localizer = App.GetRequiredService<LocalizerModel>();
-        await localizer.Configure(
-            new LocalizerConfiguration
-            {
-                AssemblyName = App.AssemblyName,
-                Languages = ["en-US", "fr-FR", "it-IT"],
-                // Use default for all other config parameters 
-            });
 
         logger.Debug("OnStartupBegin complete");
     }
