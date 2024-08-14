@@ -56,8 +56,9 @@ public sealed partial class WordsModel : ModelBase
 
     public Statistics Statistics () => this.GameHistory.EvaluateStatistics();
 
-    public List<string> RandomPicks(int needed, HashSet<string> exclude)
+    public List<string> RandomPicks(int needed)
     {
+        HashSet<string> exclude = this.GameHistory.PlayedWords();
         string[] source = this.italian.ToArray();
         List<string> picks = new(needed);
         HashSet<string> alreadyFound = new(needed);
@@ -135,16 +136,12 @@ public sealed partial class WordsModel : ModelBase
             await Task.Delay(200);
 
             // Load game history 
-            Debugger.Break();
+            this.GameHistory = new GameHistory(this.fileManager, this.Messenger, this.Logger);
             var gameHistory =
                 this.fileManager.Load<GameHistory>(Area.User, Kind.Json, GameHistory.GameHistoryFilename);
             if ( gameHistory is not null)
             {
-                this.GameHistory = gameHistory;
-            }
-            else
-            {
-                this.GameHistory = new GameHistory(this.fileManager, this.Messenger, this.Logger);
+                this.GameHistory.GameResults = gameHistory.GameResults;
             }
 
             this.LoadCommonWords();

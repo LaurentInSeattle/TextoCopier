@@ -72,4 +72,17 @@ public sealed class GameOverViewModel : Bindable<GameOverView>
     public ICommand PlayAgainCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+
+    public string Plays { get => this.Get<string>()!; set => this.Set(value); }
+
+    public string Wins { get => this.Get<string>()!; set => this.Set(value); }
+
+    public string Losses { get => this.Get<string>()!; set => this.Set(value); }
+
+    public string WinRate { get => this.Get<string>()!; set => this.Set(value); }
+
+    public string BestStreak { get => this.Get<string>()!; set => this.Set(value); }
+
+    public string CurrentStreak { get => this.Get<string>()!; set => this.Set(value); }
+
 }

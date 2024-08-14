@@ -173,7 +173,7 @@ public sealed class GameViewModel : Bindable<GameView>
         this.matchedWordsCount = 0;
         this.missedWordsCount = 0;
         this.wordQueue = new(this.WordCount);
-        var words = this.wordsModel.RandomPicks(5 + this.WordCount, []);
+        var words = this.wordsModel.RandomPicks(5 + this.WordCount);
         foreach (string word in words)
         {
             string translated;
