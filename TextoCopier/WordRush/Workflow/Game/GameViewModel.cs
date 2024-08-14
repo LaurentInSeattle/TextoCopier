@@ -2,13 +2,6 @@
 
 public sealed class GameViewModel : Bindable<GameView>
 {
-    public enum GameDifficulty
-    {
-        Easy,
-        Medium,
-        Hard,
-    }
-
     public enum GameState
     {
         Idle,
@@ -54,7 +47,7 @@ public sealed class GameViewModel : Bindable<GameView>
     private int matchedWordsCount;
     private int clicksCount;
 
-    private GameResults? gameResults;
+    private GameResult? gameResults;
     private Parameters? parameters;
     private Grid? selectedGrid;
     private Queue<Tuple<string, string>>? wordQueue;
@@ -170,8 +163,8 @@ public sealed class GameViewModel : Bindable<GameView>
 
     private async void Start(Parameters parameters)
     {
-        this.gameResults = new(parameters);
         this.Difficulty = parameters.Difficulty;
+        this.gameResults = new() { Difficulty = this.Difficulty } ;
         this.TimeLeft = string.Empty;
         this.WordsDiscovered = string.Format("{0}/{1}", 0, this.WordCount);
         this.gameStart = DateTime.Now;
@@ -219,18 +212,7 @@ public sealed class GameViewModel : Bindable<GameView>
 
     private void GameOver()
     {
-        if (this.gameResults is null)
-        {
-            throw new ArgumentNullException("no game results");
-        }
-
-        this.gameEnd = DateTime.Now;
-        this.gameResults.GameDuration = this.gameEnd - this.gameStart;
-        this.gameResults.WordCount = this.WordCount;
-        this.gameResults.MatchedWordsCount = this.matchedWordsCount;
-        this.gameResults.MissedWordsCount = this.missedWordsCount;  
-        this.gameResults.ClicksCount = this.clicksCount;
-
+        this.SaveGame();
         this.State = GameState.Over;
         this.dispatcherTimer.Stop();
         this.dispatcherTimer.IsEnabled = false;
@@ -251,6 +233,24 @@ public sealed class GameViewModel : Bindable<GameView>
         }
 
         this.Messenger.Publish(ViewActivationMessage.ActivatedView.GameOver, this.gameResults);
+    }
+
+    private void SaveGame ()
+    {
+        if (this.gameResults is null)
+        {
+            throw new ArgumentNullException("no game results");
+        }
+
+        this.gameEnd = DateTime.Now;
+        this.gameResults.GameDuration = this.gameEnd - this.gameStart;
+        this.gameResults.WordCount = this.WordCount;
+        this.gameResults.MatchedWordsCount = this.matchedWordsCount;
+        this.gameResults.MissedWordsCount = this.missedWordsCount;
+        this.gameResults.ClicksCount = this.clicksCount;
+        this.gameResults.IsWon = this.WordCount == this.matchedWordsCount;
+        this.wordsModel.Add(this.gameResults);
+        this.wordsModel.Save();
     }
 
     private void OnWordClick(WordClickMessage message)
@@ -500,8 +500,8 @@ public sealed class GameViewModel : Bindable<GameView>
         {
             GameDifficulty.Medium => 30,
             GameDifficulty.Hard => 40,
-            // _ => 8, // DEBUG !!! 
-            _ => 20, // Easy 
+            _ => 8, // DEBUG !!! 
+            // _ => 20, // Easy 
         };
 
     private int DurationMilliseconds

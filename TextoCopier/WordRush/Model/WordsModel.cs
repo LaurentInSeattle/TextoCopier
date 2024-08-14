@@ -1,5 +1,6 @@
 ﻿namespace Lyt.WordRush.Model;
 
+using static Lyt.Avalonia.Persistence.FileManagerModel;
 using Mod = Lyt.WordRush.Model;
 
 public sealed partial class WordsModel : ModelBase
@@ -23,11 +24,37 @@ public sealed partial class WordsModel : ModelBase
 
     public bool IsReady { get; private set; }
 
+    [JsonIgnore]
+    // Not serialized - No model changed event
+    // This is EXPLICITLY saved and loaded 
+    public GameHistory GameHistory { get; private set; }
+
     public override Task Initialize()
     {
         _ = Task.Factory.StartNew(this.LoadWordsDatabase, TaskCreationOptions.LongRunning);
         return Task.CompletedTask;
     }
+
+    public override Task Save()
+    {
+
+        if (this.GameHistory.IsDirty)
+        {
+            this.GameHistory.Save();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public override Task Shutdown()
+    {
+        this.Save();
+        return Task.CompletedTask;
+    }
+
+    public void Add(GameResult gameResult) => this.GameHistory.Add(gameResult);
+
+    public Statistics Statistics () => this.GameHistory.EvaluateStatistics();
 
     public List<string> RandomPicks(int needed, HashSet<string> exclude)
     {
@@ -106,6 +133,20 @@ public sealed partial class WordsModel : ModelBase
             // Wait a bit so that the UI has time to load 
             Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
             await Task.Delay(200);
+
+            // Load game history 
+            Debugger.Break();
+            var gameHistory =
+                this.fileManager.Load<GameHistory>(Area.User, Kind.Json, GameHistory.GameHistoryFilename);
+            if ( gameHistory is not null)
+            {
+                this.GameHistory = gameHistory;
+            }
+            else
+            {
+                this.GameHistory = new GameHistory(this.fileManager, this.Messenger, this.Logger);
+            }
+
             this.LoadCommonWords();
             this.LoadDictionaries();
             this.CleanDictionary();

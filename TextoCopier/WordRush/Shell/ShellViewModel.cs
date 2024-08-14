@@ -106,7 +106,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
                 break;
 
             case ActivatedView.GameOver:
-                if (parameter is GameResults gameResults)
+                if (parameter is GameResult gameResults)
                 {
                     this.Activate<GameOverViewModel, GameOverView>(isFirstActivation, gameResults);
                 }

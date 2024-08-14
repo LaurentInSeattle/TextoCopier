@@ -4,7 +4,15 @@ using static Lyt.WordRush.Messaging.ViewActivationMessage;
 
 public sealed class GameOverViewModel : Bindable<GameOverView>
 {
-    private GameResults? results;
+    private WordsModel wordsModel;
+
+    private GameResult? results;
+    private Statistics? statistics;
+
+    public GameOverViewModel(WordsModel wordsModel)
+    {
+        this.wordsModel = wordsModel;    
+    }
 
     protected override void OnViewLoaded()
     {
@@ -22,13 +30,14 @@ public sealed class GameOverViewModel : Bindable<GameOverView>
     public override void Activate(object? activationParameters)
     {
         base.Activate(activationParameters);
-        if (activationParameters is not GameResults results)
+        if (activationParameters is not GameResult results)
         {
             throw new ArgumentException("Invalid activation parameters.");
         }
 
         this.Profiler.FullGcCollect();
         this.results = results;
+        this.statistics = this.wordsModel.Statistics(); 
         this.ShowResults();
     }
 

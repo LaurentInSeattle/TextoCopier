@@ -14,5 +14,9 @@ public sealed class Statistics
 
     public int BestStreak { get; set; }
 
-    public List<int> Histogram { get; set; } = [];
+    public int MatchedWordsCount { get; set; }
+
+    public int MissedWordsCount { get; set; }
+
+    public int ClicksCount { get; set; }
 }

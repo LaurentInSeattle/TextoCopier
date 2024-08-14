@@ -23,10 +23,13 @@ public abstract class ModelBase(IMessenger messenger, ILogger logger) : IModel
         return Task.CompletedTask;
     }
 
+    [JsonIgnore]
     public ILogger Logger { get; private set; } = logger;
 
+    [JsonIgnore]
     public IMessenger Messenger { get; private set; } = messenger;
 
+    [JsonIgnore]
     public bool IsDirty
     {
         get => this.isDirty;
@@ -40,10 +43,12 @@ public abstract class ModelBase(IMessenger messenger, ILogger logger) : IModel
         }
     }
 
+    [JsonIgnore]
     public bool ShouldAutoSave { get; protected set; }
 
     /// <summary> Allows to disable logging when properties are changing so that we do not flood the logs. </summary>
     /// <remarks> Use for quickly changing properties, mouse, sliders, etc.</remarks>
+    [JsonIgnore]
     public bool DisablePropertyChangedLogging { get; protected set; }
 
     /// <summary> The model properties.</summary>

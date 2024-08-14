@@ -17,7 +17,7 @@ public sealed class SetupViewModel : Bindable<SetupView>
         this.Logger.Debug("SetupViewModel: OnViewLoaded complete");
     }
 
-    private void Play(GameViewModel.GameDifficulty difficulty)
+    private void Play(GameDifficulty difficulty)
         => this.Messenger.Publish(
             ActivatedView.Countdown, new GameViewModel.Parameters { Difficulty = difficulty });
 
@@ -26,11 +26,11 @@ public sealed class SetupViewModel : Bindable<SetupView>
 
     private void OnExit(object? _) => this.Messenger.Publish(ActivatedView.Exit);
 
-    private void OnPlayEasy(object? _) => this.Play(GameViewModel.GameDifficulty.Easy);
+    private void OnPlayEasy(object? _) => this.Play(GameDifficulty.Easy);
 
-    private void OnPlayMedium(object? _)  => this.Play(GameViewModel.GameDifficulty.Medium);
+    private void OnPlayMedium(object? _)  => this.Play(GameDifficulty.Medium);
 
-    private void OnPlayHard(object? _)  => this.Play(GameViewModel.GameDifficulty.Hard );
+    private void OnPlayHard(object? _)  => this.Play(GameDifficulty.Hard );
 
 #pragma warning restore IDE0051
     #endregion Methods invoked by the Framework using reflection 

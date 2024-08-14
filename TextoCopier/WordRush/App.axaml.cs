@@ -18,7 +18,7 @@ public partial class App : ApplicationBase
             // Models 
             typeof(FileManagerModel),
             typeof(WordsModel),
-            typeof(History),
+            typeof(GameHistory),
         ],
         [
            // Singletons
