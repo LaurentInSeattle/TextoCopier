@@ -1,4 +1,6 @@
-﻿namespace Lyt.WordRush.Workflow.Game;
+﻿using Avalonia.Controls.Documents;
+
+namespace Lyt.WordRush.Workflow.Game;
 
 public sealed class GameViewModel : Bindable<GameView>
 {
@@ -297,9 +299,9 @@ public sealed class GameViewModel : Bindable<GameView>
 
     private void Score(WordBlockViewModel wordBlockViewModel, bool isGood)
     {
-        if (!this.HasSelection)
+        if (!this.HasSelection || (this.gameResults is null)|| (this.selectedWord is null))
         {
-            return;
+            throw new ArgumentNullException("no selection, null items");
         }
 
         this.Logger.Debug("Score: " + (isGood ? "Match " : " Fail"));
@@ -319,6 +321,10 @@ public sealed class GameViewModel : Bindable<GameView>
             this.selectedWord!.Fadeout();
             wordBlockViewModel.Fadeout();
 
+            // Save only the words that were properly matched so that the one we missed will eventually be presented again 
+            this.gameResults.Words.Add(this.selectedWord.OriginalWord);
+
+            // Update UI 
             this.WordsDiscovered = string.Format("{0}/{1}", this.matchedWordsCount, this.WordCount);
             this.bonusMilliseconds += this.BonusMilliseconds;
             if (popMessage)
@@ -405,7 +411,6 @@ public sealed class GameViewModel : Bindable<GameView>
         {
             await Task.Delay(500);
             var pair = this.wordQueue.Dequeue();
-            this.gameResults.Words.Add(pair.Item1);
             this.FillOne(pair, i, rightColumnIndices[i]);
         }
     }
@@ -430,7 +435,6 @@ public sealed class GameViewModel : Bindable<GameView>
         string english = pair.Item2;
         leftAvailable.Setup(italian, english, Language.Italian);
         rightAvailable.Setup(english, italian, Language.English);
-        this.gameResults.Words.Add(italian);
     }
 
     private void FillOne(Tuple<string, string> pair, int rowLeft, int rowRight)
