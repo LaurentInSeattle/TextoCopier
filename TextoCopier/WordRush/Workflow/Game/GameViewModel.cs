@@ -105,7 +105,6 @@ public sealed class GameViewModel : Bindable<GameView>
         }
 
         this.parameters = parameters;
-        this.Profiler.FullGcCollect();
         this.Start(parameters);
     }
 
@@ -409,7 +408,7 @@ public sealed class GameViewModel : Bindable<GameView>
         this.rightColumn = new(rowCount);
         for (int i = 0; i < rowCount; ++i)
         {
-            await Task.Delay(500);
+            await Task.Delay(300);
             var pair = this.wordQueue.Dequeue();
             this.FillOne(pair, i, rightColumnIndices[i]);
         }
@@ -504,8 +503,8 @@ public sealed class GameViewModel : Bindable<GameView>
         {
             GameDifficulty.Medium => 30,
             GameDifficulty.Hard => 40,
-            _ => 8, // DEBUG !!! 
-            // _ => 20, // Easy 
+            // _ => 8, // DEBUG !!! 
+            _ => 20, // Easy 
         };
 
     private int DurationMilliseconds

@@ -33,12 +33,6 @@ public sealed class CountdownViewModel : Bindable<CountdownView>
         this.StartCountdown();
     }
 
-    public override void Deactivate()
-    {
-        base.Deactivate();
-        this.Profiler.FullGcCollect();
-    }
-
     private void StartCountdown()
     {
         // pronti, partenza, via 

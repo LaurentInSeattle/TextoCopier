@@ -135,14 +135,16 @@ public sealed partial class WordsModel : ModelBase
             Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
             await Task.Delay(200);
 
-            // Load game history 
+            // Load game history, if any 
             this.GameHistory = new GameHistory(this.fileManager, this.Messenger, this.Logger);
-            var gameHistory =
-                this.fileManager.Load<GameHistory>(Area.User, Kind.Json, GameHistory.GameHistoryFilename);
-            if ( gameHistory is not null)
+            if (this.fileManager.Exists(Area.User, Kind.Json, GameHistory.GameHistoryFilename))
             {
-                this.GameHistory.GameResults = gameHistory.GameResults;
-            }
+                var gameHistory = this.fileManager.Load<GameHistory>(Area.User, Kind.Json, GameHistory.GameHistoryFilename);
+                if (gameHistory is not null)
+                {
+                    this.GameHistory.GameResults = gameHistory.GameResults;
+                }
+            } 
 
             this.LoadCommonWords();
             this.LoadDictionaries();

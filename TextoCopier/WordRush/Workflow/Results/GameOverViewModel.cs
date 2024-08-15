@@ -4,15 +4,12 @@ using static Lyt.WordRush.Messaging.ViewActivationMessage;
 
 public sealed class GameOverViewModel : Bindable<GameOverView>
 {
-    private WordsModel wordsModel;
+    private readonly WordsModel wordsModel;
 
     private GameResult? results;
     private Statistics? statistics;
 
-    public GameOverViewModel(WordsModel wordsModel)
-    {
-        this.wordsModel = wordsModel;    
-    }
+    public GameOverViewModel(WordsModel wordsModel) => this.wordsModel = wordsModel;
 
     protected override void OnViewLoaded()
     {
@@ -37,7 +34,7 @@ public sealed class GameOverViewModel : Bindable<GameOverView>
 
         this.Profiler.FullGcCollect();
         this.results = results;
-        this.statistics = this.wordsModel.Statistics(); 
+        this.statistics = this.wordsModel.Statistics();
         this.ShowResults();
     }
 
@@ -49,10 +46,39 @@ public sealed class GameOverViewModel : Bindable<GameOverView>
 
     private void ShowResults()
     {
-        this.GameOver = "Fine dei Giochi";
-        this.GameOverColor = ColorTheme.UiText;
+        if ((this.results is null) || (this.statistics is null) || (App.Current is null))
+        {
+            throw new Exception("no results or stats");
+        }
 
-        // TODO 
+        this.GameOver = "Fine dei Giochi";
+        App.Current.TryGetResource("LightAqua_1_100", out object? resource);
+        this.GameOverColor = resource is Brush brush ? brush : (Brush)Brushes.DodgerBlue;
+        this.Plays =
+            string.Format(
+                "Giocato {0} partite per {1} minuti",
+                this.statistics.Wins + this.statistics.Losses,
+                (int)(0.5 + this.statistics.Duration.TotalMinutes));
+        this.WinsLosses =
+            string.Format("Vittorie: {0}  ~  Perdite: {1}", this.statistics.Wins, this.statistics.Losses);
+        int percent =
+            (int)(0.5 + 100.0 * this.statistics.Wins / (this.statistics.Wins + this.statistics.Losses));
+        this.Percent = string.Format("Percentuale di Vittorie: {0}%", percent);
+        this.Streaks =
+            string.Format(
+                "Serie: Più Lunga: {0}, In Corso: {1}",
+                this.statistics.BestStreak, this.statistics.CurrentStreak);
+
+        this.IsWon = this.results.IsWon ? "Hai Vinto!" : "Perdi... :(";
+        this.IsWonColor = this.results.IsWon ? ColorTheme.ValidUiText : ColorTheme.BoxBorder;
+        this.Duration = string.Format("Questa Partita: {0} seconds", (int)(0.5 + this.results.GameDuration.TotalSeconds));
+        this.Matches = string.Format("Parole Abbinate: {0}", this.results.MatchedWordsCount);
+        this.Missed = string.Format("Errori: {0}", this.results.MissedWordsCount);
+        this.Clicks = string.Format("Clic del Mouse: {0}", this.results.ClicksCount);
+
+        this.TotalMatches = string.Format("Totale Parole Abbinate: {0}", this.statistics.MatchedWordsCount);
+        this.TotalMissed = string.Format("Somma degli Errori: {0}", this.statistics.MissedWordsCount);
+        this.TotalClicks = string.Format("Tutti i Clic del Mouse: {0}", this.statistics.ClicksCount);
     }
 
     #region Methods invoked by the Framework using reflection 
@@ -73,16 +99,31 @@ public sealed class GameOverViewModel : Bindable<GameOverView>
 
     public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
+
     public string Plays { get => this.Get<string>()!; set => this.Set(value); }
 
-    public string Wins { get => this.Get<string>()!; set => this.Set(value); }
+    public string WinsLosses { get => this.Get<string>()!; set => this.Set(value); }
 
-    public string Losses { get => this.Get<string>()!; set => this.Set(value); }
+    public string Percent { get => this.Get<string>()!; set => this.Set(value); }
 
-    public string WinRate { get => this.Get<string>()!; set => this.Set(value); }
+    public string Streaks { get => this.Get<string>()!; set => this.Set(value); }
 
-    public string BestStreak { get => this.Get<string>()!; set => this.Set(value); }
 
-    public string CurrentStreak { get => this.Get<string>()!; set => this.Set(value); }
+    public string IsWon { get => this.Get<string>()!; set => this.Set(value); }
 
+    public Brush IsWonColor { get => this.Get<Brush>()!; set => this.Set(value); }
+
+    public string Duration { get => this.Get<string>()!; set => this.Set(value); }
+
+    public string Matches { get => this.Get<string>()!; set => this.Set(value); }
+
+    public string Missed { get => this.Get<string>()!; set => this.Set(value); }
+
+    public string Clicks { get => this.Get<string>()!; set => this.Set(value); }
+
+    public string TotalMatches { get => this.Get<string>()!; set => this.Set(value); }
+
+    public string TotalMissed { get => this.Get<string>()!; set => this.Set(value); }
+
+    public string TotalClicks { get => this.Get<string>()!; set => this.Set(value); }
 }

@@ -77,13 +77,13 @@ public sealed class WordBlockViewModel : Bindable<WordBlockView>
     public void FadeIn()
     {
         Schedule.OnUiThread(
-            500,
+            300,
             () =>
             {
-                this.animationService.FadeIn(this.View, 1.5);
+                this.animationService.FadeIn(this.View, 0.9);
             }, DispatcherPriority.Normal);
         Schedule.OnUiThread(
-            2000,
+            1200,
             () =>
             {
                 this.IsClickable = true;
