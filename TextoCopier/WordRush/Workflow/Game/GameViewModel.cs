@@ -1,6 +1,4 @@
-﻿using Avalonia.Controls.Documents;
-
-namespace Lyt.WordRush.Workflow.Game;
+﻿namespace Lyt.WordRush.Workflow.Game;
 
 public sealed class GameViewModel : Bindable<GameView>
 {
