@@ -72,7 +72,7 @@ global using Lyt.Avalonia.Persistence;
 
 #endregion Framework 
 
-global using Avalonia.Controls.PanAndZoom;
+//global using Avalonia.Controls.PanAndZoom;
 
 global using Lyt.Invasion.Converters;
 global using Lyt.Invasion.Messaging;

@@ -422,18 +422,6 @@
             ReleaseMouseCapture();
         }
 
-        public void ZoomTo(Rect rect)
-        {
-            var deltaZoom = Math.Min(
-                ActualWidth / rect.Width,
-                ActualHeight / rect.Height);
-
-            var startHandlePosition = new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
-
-            DoZoom(deltaZoom, OrigoPosition, startHandlePosition, OrigoPosition);
-            ZoomBox = new Rect();
-        }
-
         private void ZoomControl_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             switch (ModifierMode)
@@ -513,6 +501,26 @@
             PreviewMouseMove += ZoomControl_PreviewMouseMove;
         }
 
+        private void ZoomControl_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            bool handle = 
+                // (Keyboard.Modifiers & ModifierKeys.Control) > 0 && 
+                ModifierMode == ZoomViewModifierMode.None;
+
+            if (!handle)
+                return;
+
+            e.Handled = true;
+            Point origoPosition = new Point(ActualWidth / 2, ActualHeight / 2);
+            Point mousePosition = e.GetPosition(this);
+
+            DoZoom(
+                Math.Max(1 / MaxZoomDelta, Math.Min(MaxZoomDelta, e.Delta / 10000.0 * ZoomDeltaMultiplier + 1)),
+                origoPosition,
+                mousePosition,
+                mousePosition);
+        }
+
         private static void TranslateX_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var zc = (ZoomControl)d;
@@ -552,24 +560,16 @@
             }
         }
 
-        private void ZoomControl_MouseWheel(object sender, MouseWheelEventArgs e)
+        public void ZoomTo(Rect rect)
         {
-            bool handle = 
-                // (Keyboard.Modifiers & ModifierKeys.Control) > 0 && 
-                ModifierMode == ZoomViewModifierMode.None;
+            var deltaZoom = Math.Min(
+                ActualWidth / rect.Width,
+                ActualHeight / rect.Height);
 
-            if (!handle)
-                return;
+            var startHandlePosition = new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
 
-            e.Handled = true;
-            Point origoPosition = new Point(ActualWidth / 2, ActualHeight / 2);
-            Point mousePosition = e.GetPosition(this);
-
-            DoZoom(
-                Math.Max(1 / MaxZoomDelta, Math.Min(MaxZoomDelta, e.Delta / 10000.0 * ZoomDeltaMultiplier + 1)),
-                origoPosition,
-                mousePosition,
-                mousePosition);
+            DoZoom(deltaZoom, OrigoPosition, startHandlePosition, OrigoPosition);
+            ZoomBox = new Rect();
         }
 
         private void DoZoom(double deltaZoom, Point origoPosition, Point startHandlePosition, Point targetHandlePosition)

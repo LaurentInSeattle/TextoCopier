@@ -6,6 +6,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	xmlns:panzoom="clr-namespace:Lyt.Avalonia.PanZoom"
+	xmlns:zoom="clr-namespace:Lyt.Avalonia.Zoom"
     xmlns:vm="clr-namespace:PanZoom"
     x:DataType="vm:ShellViewModel" 
 	>
@@ -16,19 +17,23 @@
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="260" />
 		</Grid.ColumnDefinitions>
+		<!--
 		<ScrollViewer 
+			Margin="8"
 			x:Name="scroller"
 			HorizontalScrollBarVisibility="Visible"
 			VerticalScrollBarVisibility="Visible"
 			Background="Black"
 			>
-			<panzoom:PanZoomControl
-				x:Name="PanAndZoom"
-				Background="#AACCCCCC"
-				Margin="4"
-				ZoomableContent="{Binding ZoomableContent}"
-				/>
 		</ScrollViewer>
+			-->
+		<zoom:ZoomControl
+			x:Name="PanAndZoom"
+			Background="#AACCCCCC"
+			Margin="8"
+			ZoomableContent="{Binding ZoomableContent}"
+			Zoom="{Binding ZoomFactor}"
+			/>
 		<Grid
 			Grid.Column="1"
 			>
@@ -56,6 +61,14 @@
 				Content="Zoom OUT"
 				TextBlock.TextAlignment="Center"
 				Command="{Binding ZoomOutCommand}"
+				/>
+			<Button
+				Grid.Row="1" Grid.Column="1"
+				HorizontalAlignment="Center" VerticalAlignment="Center"
+				Width="100"
+				Content="Zoom One"
+				TextBlock.TextAlignment="Center"
+				Command="{Binding ZoomOneCommand}"
 				/>
 		</Grid>
 	</Grid>

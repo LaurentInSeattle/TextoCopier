@@ -60,3 +60,7 @@ global using Lyt.Avalonia.Model;
 
 global using Lyt.Avalonia.PanZoom;
 
+global using Avalonia.Media.Imaging;
+global using Avalonia.Platform;
+global using Lyt.Avalonia.Zoom;
+

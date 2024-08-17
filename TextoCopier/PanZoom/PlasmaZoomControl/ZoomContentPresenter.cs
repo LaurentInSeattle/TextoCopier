@@ -31,7 +31,7 @@ public class ZoomContentPresenter : ContentControl
     protected override Size MeasureOverride(Size constraint)
     {
         base.MeasureOverride(new Size(double.PositiveInfinity, double.PositiveInfinity));
-        double max = 1_000_000_000.0;
+        double max = 10_000.0;
         double x = double.IsInfinity(constraint.Width) ? max : constraint.Width;
         double y = double.IsInfinity(constraint.Height) ? max : constraint.Height;
         return new Size(x, y);
@@ -45,11 +45,19 @@ public class ZoomContentPresenter : ContentControl
         if (child is null)
         {
             return arrangeBounds;
-        } 
+        }
+
+        var grandChildren = child.GetVisualChildren();
+        visualChildrenCount = grandChildren.Count();
+        Control? grandChild = visualChildrenCount > 0 ? grandChildren.FirstOrDefault() as Control : null;
+        if (grandChild is null)
+        {
+            return arrangeBounds;
+        }
 
         // set the ContentSize
-        this.ContentSize = child.DesiredSize;
-        child.Arrange(new Rect(child.DesiredSize));
+        this.ContentSize = grandChild.DesiredSize;
+        grandChild.Arrange(new Rect(grandChild.DesiredSize));
         return arrangeBounds;
     }
 }

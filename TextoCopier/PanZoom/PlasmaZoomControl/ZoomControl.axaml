@@ -1,4 +1,4 @@
-<UserControl 
+<UserControl
 	x:Class="Lyt.Avalonia.Zoom.ZoomControl"
 	xmlns="https://github.com/avaloniaui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -6,17 +6,29 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	xmlns:zoom="clr-namespace:Lyt.Avalonia.Zoom"
+	Margin="8"
+	Background="AntiqueWhite"
 	>
-	<Grid>
-		<Border 
+	<Grid
+		Margin="8"
+		Background="AliceBlue"
+		>
+		<Border
+			Margin="8"
 			BorderBrush="Transparent"
 			BorderThickness="0"
-			Background="Transparent"
+			Background="LemonChiffon"
 			ClipToBounds="True"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch"
 			>
-			<zoom:ZoomContentPresenter 
-				x:Name="Presenter" 
-				ClipToBounds="False" 
+			<zoom:ZoomContentPresenter
+				x:Name="ZoomContentPresenter"
+				Margin="8"
+				ClipToBounds="False"
+				Background="Aquamarine"
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Stretch"
 				/>
 		</Border>
 	</Grid>
