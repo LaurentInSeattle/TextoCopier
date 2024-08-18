@@ -21,18 +21,20 @@ public class ShellViewModel : Bindable<ShellView>
 
     protected override void OnViewLoaded()
     {
-        base.OnViewLoaded();
-        this.zoom = this.View.PanAndZoom;
-        var bitmap = new Bitmap(AssetLoader.Open(new Uri("avares://PanZoom/Assets/Images/dark.jpg")));
-        var image = new Image
-        {
-            Stretch = Stretch.UniformToFill,
-            Source = bitmap,
-        };
+        //base.OnViewLoaded();
+        ////this.zoom = this.View.PanAndZoom;
+        //var bitmap = new Bitmap(AssetLoader.Open(new Uri("avares://PanZoom/Assets/Images/dark.jpg")));
+        //var image = new Image
+        //{
+        //    Stretch = Stretch.UniformToFill,
+        //    Source = bitmap,
+        //};
 
-        image.Width = bitmap.PixelSize.Width;
-        image.Height = bitmap.PixelSize.Height;
-        this.ZoomableContent = image;
+        //image.Width = bitmap.PixelSize.Width;
+        //image.Height = bitmap.PixelSize.Height;
+        //this.ZoomableContent = image;
+
+        this.View.scroller.Offset = new Vector(100, 100.0); 
     }
 
     private void OnZoomIn(object? _)

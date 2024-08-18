@@ -17,16 +17,26 @@
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="260" />
 		</Grid.ColumnDefinitions>
-		<!--
 		<ScrollViewer 
 			Margin="8"
 			x:Name="scroller"
 			HorizontalScrollBarVisibility="Visible"
 			VerticalScrollBarVisibility="Visible"
-			Background="Black"
+			Background="DarkGray"
 			>
+			<Grid
+				Width="3600"
+				Height="2024"				
+				>				
+				<Image
+					Source="/Assets/Images/venezia.jpg"
+					Stretch="UniformToFill"
+					Margin="200 200 0 0"
+					>
+				</Image>
+			</Grid>
 		</ScrollViewer>
-			-->
+		<!--
 		<zoom:ZoomControl
 			x:Name="PanAndZoom"
 			Background="#AACCCCCC"
@@ -34,6 +44,7 @@
 			ZoomableContent="{Binding ZoomableContent}"
 			Zoom="{Binding ZoomFactor}"
 			/>
+		-->
 		<Grid
 			Grid.Column="1"
 			>
