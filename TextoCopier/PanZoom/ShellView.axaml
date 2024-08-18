@@ -25,18 +25,49 @@
 			Background="DarkGray"
 			>
 			<Grid
-				Width="3600"
-				Height="2024"				
-				>				
+				Width="2000"
+				Height="1000"				
+				>
+				<Viewbox
+					>
+					<Grid
+						Width="1000" Height="500"
+						>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+						<Rectangle 
+							Grid.Row="0" Grid.Column="0"
+							Fill="Aquamarine"
+							/>
+						<Rectangle
+							Grid.Row="1" Grid.Column="0"
+							Fill="LemonChiffon"
+							/>
+						<Rectangle
+							Grid.Row="0" Grid.Column="1"
+							Fill="DarkOrange"
+							/>
+						<Rectangle
+							Grid.Row="1" Grid.Column="1"
+							Fill="DodgerBlue"
+							/>
+					</Grid>
+				</Viewbox>
+			</Grid>
+		</ScrollViewer>
+		<!--
 				<Image
 					Source="/Assets/Images/venezia.jpg"
 					Stretch="UniformToFill"
 					Margin="200 200 0 0"
 					>
 				</Image>
-			</Grid>
-		</ScrollViewer>
-		<!--
 		<zoom:ZoomControl
 			x:Name="PanAndZoom"
 			Background="#AACCCCCC"

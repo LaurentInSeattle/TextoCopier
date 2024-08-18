@@ -7,23 +7,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="Control\Original\Src_ZoomAndPanControl.cs" />
-    <Compile Remove="Control\Original\ZoomAndPanControl_EventHandlers.cs" />
-    <Compile Remove="Control\Original\ZoomAndPanControl_IScrollInfo.cs" />
-    <Compile Remove="Control\Original\ZoomAndPanControl_Methods.cs" />
-  </ItemGroup>
     <ItemGroup>
         <AvaloniaResource Include="Assets\**" />
         <AvaloniaResource Include="Assets\Languages\**" />
     </ItemGroup>
-
-    <ItemGroup>
-    <None Include="Control\Original\Src_ZoomAndPanControl.cs" />
-    <None Include="Control\Original\ZoomAndPanControl_EventHandlers.cs" />
-    <None Include="Control\Original\ZoomAndPanControl_IScrollInfo.cs" />
-    <None Include="Control\Original\ZoomAndPanControl_Methods.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.1.3" />
@@ -40,15 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Control\PanZoomControl.IScrollInfo.axaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <Compile Update="Control\PanZoomControl.Properties.axaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <Compile Update="Control\PanZoomControl.axaml.cs">
-      <DependentUpon>PanZoomControl.axaml</DependentUpon>
-    </Compile>
     <Compile Update="ShellView.axaml.cs">
       <DependentUpon>ShellView.axaml</DependentUpon>
     </Compile>
