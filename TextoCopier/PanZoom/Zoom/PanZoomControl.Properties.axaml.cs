@@ -1,7 +1,15 @@
-﻿namespace Lyt.Avalonia.Controls.PanZoom;
+﻿
+namespace Lyt.Avalonia.Controls.PanZoom;
 
 public partial class PanZoomControl : UserControl
 {
+    public enum ActionRequest
+    {
+        None, 
+        Fit, 
+        One,
+    }
+
     /// <summary> Zoomable content  </summary>
     public static readonly StyledProperty<Control?> ZoomableContentProperty =
         AvaloniaProperty.Register<PanZoomControl, Control?>(
@@ -65,5 +73,27 @@ public partial class PanZoomControl : UserControl
         }
 
         return newZoom;
+    }
+
+    public static readonly StyledProperty<ActionRequest> RequestProperty =
+        AvaloniaProperty.Register<PanZoomControl, ActionRequest>(
+            nameof(Request),
+            defaultValue: ActionRequest.None,
+            inherits: false,
+            defaultBindingMode: BindingMode.TwoWay,
+            validate: null,
+            coerce: CoerceRequest,
+            enableDataValidation: false);
+
+    public ActionRequest Request { get => this.GetValue(RequestProperty); set => this.SetValue(RequestProperty, value); }
+
+    private static ActionRequest CoerceRequest(AvaloniaObject sender, ActionRequest actionRequest)
+    {
+        if ((actionRequest != ActionRequest.None) && (sender is PanZoomControl zoomControl))
+        {
+            zoomControl.ProcessRequest(actionRequest);
+        }
+
+        return ActionRequest.None;
     }
 }

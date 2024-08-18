@@ -10,6 +10,7 @@ public partial class PanZoomControl : UserControl
 
         this.Loaded += this.OnLoaded;
         this.ZoomContentPresenter.SizeChanged += this.OnZoomContentPresenterSizeChanged;
+        this.ScrollViewer.SizeChanged += this.OnScrollViewerSizeChanged;
         //this.PointerPressed += this.OnPointerPressed;
         //this.PointerReleased += this.OnPointerReleased;
         //this.PointerMoved += this.OnPointerMoved;
@@ -21,6 +22,7 @@ public partial class PanZoomControl : UserControl
     {
         this.Loaded -= this.OnLoaded;
         this.ZoomContentPresenter.SizeChanged -= this.OnZoomContentPresenterSizeChanged;
+        this.ScrollViewer.SizeChanged -= this.OnScrollViewerSizeChanged;
         //this.PointerPressed -= this.OnPointerPressed;
         //this.PointerReleased -= this.OnPointerReleased;
         //this.PointerMoved -= this.OnPointerMoved;
@@ -38,13 +40,16 @@ public partial class PanZoomControl : UserControl
         
         if (this.ZoomableContent is null)
         {
-            // throw new Exception("no content ");
+            Debug.WriteLine("Loaded: no content");
             return; 
         }
 
         this.UpdateContent(this.ZoomableContent);
         this.UpdateZoom(this.Zoom);
     }
+
+    private void OnScrollViewerSizeChanged(object? sender, SizeChangedEventArgs e)
+        => this.ZoomToFit();
 
     private void OnZoomContentPresenterSizeChanged(object? sender, SizeChangedEventArgs e) 
         => this.AdjustContentSize(this.ZoomContentPresenter.Content);
@@ -85,6 +90,42 @@ public partial class PanZoomControl : UserControl
 
         this.Grid.Width = this.contentSize.Width * zoom;
         this.Grid.Height = this.contentSize.Height * zoom;
+    }
+
+    private void ProcessRequest(ActionRequest newActionRequest)
+    {
+        Debug.WriteLine( "Request: " + newActionRequest.ToString() );
+        switch (newActionRequest)
+        {
+            default:
+            case ActionRequest.None: return; 
+
+            case ActionRequest.Fit:
+                this.ZoomToFit(); 
+                break;
+            case ActionRequest.One:
+                break;
+        }
+    }
+
+    private void ZoomToFit()
+    {
+        Debug.WriteLine("Executing Request: ZoomToFit" );
+        Size size = this.ScrollViewer.Bounds.Size;
+        double zoomX = size.Width / this.contentSize.Width;
+        double zoomY = size.Height / this.contentSize.Height;
+        double zoom = Math.Min(zoomX, zoomY);
+        this.Zoom = zoom;
+        this.Grid.Width = this.contentSize.Width * zoom;
+        this.Grid.Height = this.contentSize.Height * zoom;
+    }
+
+    private void ZoomToOne()
+    {
+        Debug.WriteLine("Executing Request: Zoom To One");
+        this.Zoom = 1.0; 
+        this.Grid.Width = this.contentSize.Width;
+        this.Grid.Height = this.contentSize.Height;
     }
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs args)

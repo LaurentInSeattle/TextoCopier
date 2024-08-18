@@ -34,12 +34,29 @@ public class ShellViewModel : Bindable<ShellView>
 
     private void OnZoomOne(object? _)
     {
-        this.ZoomFactor = 1.0;
+        this.ZoomRequest = PanZoomControl.ActionRequest.One;
+    }
+
+    private void OnZoomFit(object? _)
+    {
+        this.ZoomRequest = PanZoomControl.ActionRequest.Fit;
     }
 
     public double ZoomFactor { get => this.Get<double>(); set => this.Set(value); }
 
+    public PanZoomControl.ActionRequest ZoomRequest 
+    { 
+        get => this.Get<PanZoomControl.ActionRequest>();
+        set
+        {
+            this.Set(value);
+            this.Set(PanZoomControl.ActionRequest.None);
+        }
+    }
+
     public Control ZoomableContent { get => this.Get<Control>()!; set => this.Set(value); }
+
+    public ICommand ZoomFitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     public ICommand ZoomOneCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
