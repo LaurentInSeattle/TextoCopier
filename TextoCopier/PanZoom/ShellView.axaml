@@ -5,7 +5,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-	xmlns:panzoom="clr-namespace:Lyt.Avalonia.PanZoom"
+	xmlns:panzoom="clr-namespace:Lyt.Avalonia.Controls.PanZoom"
 	xmlns:zoom="clr-namespace:Lyt.Avalonia.Zoom"
     xmlns:vm="clr-namespace:PanZoom"
     x:DataType="vm:ShellViewModel" 
@@ -17,6 +17,47 @@
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="260" />
 		</Grid.ColumnDefinitions>
+		<panzoom:PanZoomControl
+			x:Name="PanAndZoom"
+			Background="#AACCCCCC"
+			Margin="8"
+			ZoomableContent="{Binding ZoomableContent}"
+			Zoom="{Binding ZoomFactor}"
+			>
+			<panzoom:PanZoomControl.ZoomableContent>
+				<Grid
+					Width="1000" Height="500"
+						>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+					<Rectangle
+						Grid.Row="0" Grid.Column="0"
+						Fill="Aquamarine"
+							/>
+					<Rectangle
+						Grid.Row="1" Grid.Column="0"
+						Fill="LemonChiffon"
+							/>
+					<Rectangle
+						Grid.Row="0" Grid.Column="1"
+						Fill="DarkOrange"
+							/>
+					<Rectangle
+						Grid.Row="1" Grid.Column="1"
+						Fill="DodgerBlue"
+							/>
+				</Grid>
+			</panzoom:PanZoomControl.ZoomableContent>
+		</panzoom:PanZoomControl>
+
+
+		<!--
 		<ScrollViewer 
 			Margin="8"
 			x:Name="scroller"
@@ -30,51 +71,15 @@
 				>
 				<Viewbox
 					>
-					<Grid
-						Width="1000" Height="500"
-						>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="*" />
-						</Grid.ColumnDefinitions>
-						<Grid.RowDefinitions>
-							<RowDefinition Height="*" />
-							<RowDefinition Height="*" />
-						</Grid.RowDefinitions>
-						<Rectangle 
-							Grid.Row="0" Grid.Column="0"
-							Fill="Aquamarine"
-							/>
-						<Rectangle
-							Grid.Row="1" Grid.Column="0"
-							Fill="LemonChiffon"
-							/>
-						<Rectangle
-							Grid.Row="0" Grid.Column="1"
-							Fill="DarkOrange"
-							/>
-						<Rectangle
-							Grid.Row="1" Grid.Column="1"
-							Fill="DodgerBlue"
-							/>
-					</Grid>
 				</Viewbox>
 			</Grid>
 		</ScrollViewer>
-		<!--
 				<Image
 					Source="/Assets/Images/venezia.jpg"
 					Stretch="UniformToFill"
 					Margin="200 200 0 0"
 					>
 				</Image>
-		<zoom:ZoomControl
-			x:Name="PanAndZoom"
-			Background="#AACCCCCC"
-			Margin="8"
-			ZoomableContent="{Binding ZoomableContent}"
-			Zoom="{Binding ZoomFactor}"
-			/>
 		-->
 		<Grid
 			Grid.Column="1"

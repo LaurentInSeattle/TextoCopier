@@ -58,9 +58,8 @@ global using Lyt.Avalonia.Model;
 
 #endregion Framework 
 
-global using Lyt.Avalonia.PanZoom;
+global using Lyt.Avalonia.Controls.PanZoom;
 
 global using Avalonia.Media.Imaging;
 global using Avalonia.Platform;
-global using Lyt.Avalonia.Zoom;
 

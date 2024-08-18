@@ -2,22 +2,7 @@
 
 public class ShellViewModel : Bindable<ShellView>
 {
-    // PanZoomControl panZoom;
-    ZoomControl zoom;
-
-    private readonly IDialogService dialogService;
-    private readonly IToaster toaster;
-    private readonly IMessenger messenger;
-    private readonly IProfiler profiler;
-
-    public ShellViewModel(
-        IDialogService dialogService, IToaster toaster, IMessenger messenger, IProfiler profiler)
-    {
-        this.dialogService = dialogService;
-        this.toaster = toaster;
-        this.messenger = messenger;
-        this.profiler = profiler;
-    }
+    public ShellViewModel() {    }
 
     protected override void OnViewLoaded()
     {
@@ -34,13 +19,12 @@ public class ShellViewModel : Bindable<ShellView>
         //image.Height = bitmap.PixelSize.Height;
         //this.ZoomableContent = image;
 
-        this.View.scroller.Offset = new Vector(100, 100.0); 
+        // this.View.scroller.Offset = new Vector(100, 100.0); 
     }
 
     private void OnZoomIn(object? _)
     {
         this.ZoomFactor = 2.0; 
-        // this.panZoom.ViewportZoom = 0.5;
     }
 
     private void OnZoomOut(object? _)

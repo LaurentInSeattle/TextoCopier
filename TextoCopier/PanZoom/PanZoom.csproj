@@ -30,5 +30,8 @@
     <Compile Update="ShellView.axaml.cs">
       <DependentUpon>ShellView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Zoom\PanZoomControl.Properties.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>
