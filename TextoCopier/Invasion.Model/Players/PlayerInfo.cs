@@ -5,7 +5,7 @@ public sealed class PlayerInfo
 {
     public bool IsHuman { get; set; }
 
-    public string Name { get; set; }  = string.Empty;
+    public string Name { get; set; }  = "The King";
 
     public string EmpireName { get; set; } = string.Empty;
 

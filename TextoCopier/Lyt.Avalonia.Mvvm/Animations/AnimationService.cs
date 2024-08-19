@@ -1,4 +1,6 @@
-﻿namespace Lyt.Avalonia.Mvvm.Animations;
+﻿using System.Threading;
+
+namespace Lyt.Avalonia.Mvvm.Animations;
 
 public sealed class AnimationService : IAnimationService
 {
@@ -7,14 +9,66 @@ public sealed class AnimationService : IAnimationService
     public static IterationCount OneIteration = IterationCount.Parse("1");
 #pragma warning restore CA2211 
 
+    private Dictionary<Control, CancellationTokenSource>? fadeOutAnimations; 
+
     public void FadeIn(Control control, double durationSeconds = 1.5, Action? onAnimationCompleted = null)
-        => this.StartAnimation(
-            control, Control.OpacityProperty, 1.0, durationSeconds, 
+    {
+        // Cancel FadeOut if any ongoing 
+        if (this.fadeOutAnimations is not null)
+        {
+            if (this.fadeOutAnimations.TryGetValue(control, out CancellationTokenSource? cancellationTokenSource))
+            {
+                if (cancellationTokenSource is not null) // && !cancellationTokenSource.IsCancellationRequested) 
+                {
+                    Debug.WriteLine("Cancelling Fade Out"); 
+                    cancellationTokenSource.Cancel();
+                    Debug.WriteLine("Fade Out entry removed");
+                    this.fadeOutAnimations.Remove(control);
+                }
+            }
+        }
+
+        Debug.WriteLine("Fade IN begins");
+        this.StartAnimation(
+            control, Control.OpacityProperty, 1.0, durationSeconds,
             OneIteration, PlaybackDirection.Normal, FillMode.Forward, onAnimationCompleted);
+    }
 
     public void FadeOut(Control control, double durationSeconds = 1.5, Action? onAnimationCompleted = null)
-        => this.StartAnimation(control, Control.OpacityProperty, 0.0, durationSeconds,
-            OneIteration, PlaybackDirection.Normal, FillMode.Forward, onAnimationCompleted);
+    {
+        Debug.WriteLine("Fade OUT begins");
+        CancellationTokenSource cancellationTokenSource = 
+            this.StartAnimation(control, Control.OpacityProperty, 0.0, durationSeconds,
+                OneIteration, PlaybackDirection.Normal, FillMode.Forward, 
+                ()=>
+                {
+                    Debug.WriteLine("Fade Out Complete");
+                    if (this.fadeOutAnimations is not null)
+                    {
+                        if (this.fadeOutAnimations.TryGetValue(control, out CancellationTokenSource? cancellationTokenSource))
+                        {
+                            Debug.WriteLine("Fade Out entry removed");
+                            this.fadeOutAnimations.Remove(control);
+                        }
+                    }
+
+                    Dispatch.OnUiThread(() => { onAnimationCompleted?.Invoke(); }, DispatcherPriority.Send);
+                });
+
+        // Save the CancellationTokenSource should we fade in soon 
+        if (this.fadeOutAnimations is null)
+        {
+            this.fadeOutAnimations = [];
+        }
+
+        if (this.fadeOutAnimations.ContainsKey(control))
+        {
+            Debug.WriteLine("Fade Out entry removed");
+            this.fadeOutAnimations.Remove(control);
+        }
+
+        this.fadeOutAnimations.Add(control, cancellationTokenSource); 
+    } 
 
     public void CancelAnimation(CancellationTokenSource cancellationTokenSource)
         => cancellationTokenSource.Cancel();
@@ -66,7 +120,7 @@ public sealed class AnimationService : IAnimationService
             {
                 // Invoke completion delegate if present,
                 // Important => Most likely, this is NOT running on the UI thread, so: dispatch 
-                Dispatch.OnUiThread(() => { onAnimationCompleted.Invoke(); }, DispatcherPriority.Normal);
+                Dispatch.OnUiThread(() => { onAnimationCompleted.Invoke(); }, DispatcherPriority.Send);
             }
 
             // Do not leak the cancellation Token Source, always dispose it.

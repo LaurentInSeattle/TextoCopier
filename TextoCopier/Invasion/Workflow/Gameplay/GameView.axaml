@@ -19,7 +19,7 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="1" />
 			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="380" />
+			<ColumnDefinition Width="374" />
 			<ColumnDefinition Width="1" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
@@ -42,6 +42,7 @@
 			x:Name="PanAndZoom"
 			Grid.Column="1" Grid.Row="1" 
 			Background="#AACCCCCC"
+			ZoomFactor="{Binding ZoomFactor}"
 			>
 			<panzoom:PanZoomControl.ZoomableContent>				
 				<Canvas
@@ -57,7 +58,7 @@
 			x:Name="ZoomController"
 			Grid.Column="1" Grid.Row="1" 
 			VerticalAlignment="Top" HorizontalAlignment="Right"
-			Margin="0 8 8 8"
+			Margin="0 12 12 12"
 			/>		
 		<Grid
 			x:Name="SideBar"

@@ -2,7 +2,7 @@ namespace Lyt.Avalonia.Controls.PanZoom;
 
 public partial class PanZoomControl : UserControl
 {
-    public const double DragStrength = 1.6;
+    public const double DragStrength = 1.35;
     public const double MaxZoom = 8.0;
 
     private Size contentSize;

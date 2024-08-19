@@ -33,6 +33,7 @@ public sealed class GameViewModel : Bindable<GameView>
         this.toaster = toaster;
 
         this.playerBrushes = new SolidColorBrush[8];
+        this.Messenger.Subscribe<ZoomRequestMessage>(this.OnZoomRequest); 
     }
 
     protected override void OnViewLoaded()
@@ -79,9 +80,11 @@ public sealed class GameViewModel : Bindable<GameView>
 
     public override void Deactivate()
     {
-    } 
+    }
 
-    private bool sendTestResponseOnMapClick;
+    private void OnZoomRequest(ZoomRequestMessage message)
+        => this.ZoomFactor = message.ZoomFactor; 
+
     private void OnGameSynchronizationRequest(GameSynchronizationRequest request)
     {
         if (request.Message == MessageKind.GameOver)
@@ -94,7 +97,7 @@ public sealed class GameViewModel : Bindable<GameView>
         }
         else if (request.Message == MessageKind.Test)
         {
-            this.sendTestResponseOnMapClick = true;
+            // Not used for now
         }
     }
 
@@ -115,6 +118,8 @@ public sealed class GameViewModel : Bindable<GameView>
     #endregion Methods invoked by the Framework using reflection 
 
     public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+
+    public double ZoomFactor { get => this.Get<double>(); set => this.Set(value); }
 
     public double MaxOffsetX { get => this.Get<double>(); set => this.Set(value); }
 
@@ -368,18 +373,18 @@ public sealed class GameViewModel : Bindable<GameView>
         var region = map.Regions[regionIndex];
         this.Messenger.Publish(new RegionSelectMessage(region, PointerAction.Clicked, keyModifiers));
 
-        if (this.sendTestResponseOnMapClick)
-        {
-            this.sendTestResponseOnMapClick = false;
-            if (keyModifiers == KeyModifiers.Shift)
-            {
-                this.Messenger.Publish(new GameSynchronizationResponse(MessageKind.Abort));
-            }
-            else
-            {
-                this.Messenger.Publish(new GameSynchronizationResponse(MessageKind.Test));
-            }
-        }
+        //if (this.sendTestResponseOnMapClick)
+        //{
+        //    this.sendTestResponseOnMapClick = false;
+        //    if (keyModifiers == KeyModifiers.Shift)
+        //    {
+        //        this.Messenger.Publish(new GameSynchronizationResponse(MessageKind.Abort));
+        //    }
+        //    else
+        //    {
+        //        this.Messenger.Publish(new GameSynchronizationResponse(MessageKind.Test));
+        //    }
+        //}
     }
 
     private void OnPointerMovedOnMap(Point point, KeyModifiers keyModifiers)
