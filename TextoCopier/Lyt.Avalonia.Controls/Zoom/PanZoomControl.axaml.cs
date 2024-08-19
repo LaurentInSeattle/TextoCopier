@@ -2,7 +2,8 @@ namespace Lyt.Avalonia.Controls.PanZoom;
 
 public partial class PanZoomControl : UserControl
 {
-    public const double DragStrength = 1.7;
+    public const double DragStrength = 1.6;
+    public const double MaxZoom = 8.0;
 
     private Size contentSize;
     private bool isDragging;
@@ -112,13 +113,18 @@ public partial class PanZoomControl : UserControl
     private void ZoomToFit()
     {
         Debug.WriteLine("Executing Request: ZoomToFit");
-        Size size = this.ScrollViewer.Bounds.Size;
-        double zoomX = size.Width / this.contentSize.Width;
-        double zoomY = size.Height / this.contentSize.Height;
-        double zoom = Math.Min(zoomX, zoomY);
+        double zoom = this.GetFitZoomFactor();
         this.Zoom = zoom;
         this.Grid.Width = this.contentSize.Width * zoom;
         this.Grid.Height = this.contentSize.Height * zoom;
+    }
+
+    private double GetFitZoomFactor()
+    {
+        Size size = this.ScrollViewer.Bounds.Size;
+        double zoomX = size.Width / this.contentSize.Width;
+        double zoomY = size.Height / this.contentSize.Height;
+        return  Math.Min(zoomX, zoomY);
     }
 
     private void ZoomToOne()
@@ -152,6 +158,7 @@ public partial class PanZoomControl : UserControl
             return;
         }
 
+        // CONSIDER: Creare a property to select the KeyModifier allowing drag 
         if (!args.KeyModifiers.HasFlag(KeyModifiers.Shift))
         {
             this.isDragging = false;
@@ -169,8 +176,8 @@ public partial class PanZoomControl : UserControl
                 Vector offset = this.ScrollViewer.Offset;
                 double dx = (this.currentDragPoint.X - this.startDragPoint.X) * this.Zoom / PanZoomControl.DragStrength;
                 double dy = (this.currentDragPoint.Y - this.startDragPoint.Y) * this.Zoom / PanZoomControl.DragStrength;
-                double x = Math.Min(offset.X + dx, extent.Width);
-                double y = Math.Min(offset.Y + dy, extent.Height);
+                double x = Math.Min(offset.X - dx, extent.Width);
+                double y = Math.Min(offset.Y - dy, extent.Height);
                 x = Math.Max(x, 0.0);
                 y = Math.Max(y, 0.0);
                 this.ScrollViewer.Offset = new Vector(x, y);

@@ -61,17 +61,73 @@ public partial class PanZoomControl : UserControl
     {
         if (sender is PanZoomControl zoomControl)
         {
+            double minZoom = zoomControl.GetFitZoomFactor();
+            double maxZoom = PanZoomControl.MaxZoom;
             double oldValue = zoomControl.GetValue(ZoomProperty);
             Debug.WriteLine("Zoom: " + oldValue.ToString("F3") + " - > " + newZoom.ToString("F3"));
-            if (newZoom <= 0.000_001)
+
+            if ( newZoom < 0.000_1)
             {
                 return oldValue;
+            }
+
+            if (newZoom < minZoom) 
+            {
+                return minZoom;
+            }
+
+            if (newZoom > maxZoom)
+            {
+                return maxZoom;
             }
 
             zoomControl.UpdateZoom(newZoom);
         }
 
         return newZoom;
+    }
+
+    public static readonly StyledProperty<double> ZoomFactorProperty =
+        AvaloniaProperty.Register<PanZoomControl, double>(
+            nameof(ZoomFactor),
+            defaultValue: 1.0,
+            inherits: false,
+            defaultBindingMode: BindingMode.TwoWay,
+            validate: null,
+            coerce: CoerceZoomFactor,
+            enableDataValidation: false);
+
+    public double ZoomFactor { get => this.GetValue(ZoomFactorProperty); set => this.SetValue(ZoomFactorProperty, value); }
+
+    private static double CoerceZoomFactor(AvaloniaObject sender, double newZoomFactor)
+    {
+        if (sender is PanZoomControl zoomControl)
+        {
+            double minZoom = zoomControl.GetFitZoomFactor();
+            double maxZoom = PanZoomControl.MaxZoom;
+            double newZoom = minZoom * newZoomFactor;
+            double oldValue = zoomControl.GetValue(ZoomFactorProperty);
+            Debug.WriteLine("Zoom: " + oldValue.ToString("F3") + " - > " + newZoomFactor.ToString("F3"));
+
+            if (newZoomFactor < 1.000)
+            {
+                return oldValue;
+            }
+
+            if (newZoom < minZoom)
+            {
+                return minZoom;
+            }
+
+            if (newZoom > maxZoom)
+            {
+                return maxZoom;
+            }
+
+            zoomControl.UpdateZoom(newZoom);
+        }
+
+        return newZoomFactor;
     }
 
     public static readonly StyledProperty<ActionRequest> RequestProperty =

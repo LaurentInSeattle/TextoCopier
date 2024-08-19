@@ -20,8 +20,9 @@
 			x:Name="PanAndZoom"
 			Background="#AACCCCCC"
 			Margin="8"
+			Zoom="1.0"
 			ZoomableContent="{Binding ZoomableContent}"
-			Zoom="{Binding ZoomFactor}"
+			ZoomFactor="{Binding ZoomFactor}"
 			Request="{Binding ZoomRequest}"
 			>
 			<panzoom:PanZoomControl.ZoomableContent>

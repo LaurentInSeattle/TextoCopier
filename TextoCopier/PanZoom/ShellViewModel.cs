@@ -19,7 +19,7 @@ public class ShellViewModel : Bindable<ShellView>
         //image.Height = bitmap.PixelSize.Height;
         //this.ZoomableContent = image;
 
-        // this.View.scroller.Offset = new Vector(100, 100.0); 
+        this.ZoomRequest = PanZoomControl.ActionRequest.Fit; 
     }
 
     private void OnZoomIn(object? _)
