@@ -1,0 +1,46 @@
+<UserControl 
+    x:Class="Lyt.Invasion.Controls.ZoomController"
+	xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	>
+	<Border
+		BorderThickness="1.0"
+		BorderBrush="DodgerBlue"
+		Background="#C0203050"
+		CornerRadius="8"
+		Width="48" Height="224"
+		Opacity="1.0"
+		>
+		<StackPanel 
+			Orientation="Vertical"
+			Margin="4 8 4 8"
+			>
+			<Button
+				Content="Max"
+				Margin="0 0 0 8"
+				Padding="0"
+				Width="36" Height="36"
+				/>
+			<Slider
+				Orientation="Vertical"
+				Margin="3 0 0 0"
+				Height="120" Width="40"
+				Minimum="1.0" Maximum="2.25"
+				SmallChange="0.25"
+				TickFrequency="0.25"
+				ValueChanged="OnSliderValueChanged"
+				TickPlacement="Outside"
+				 IsSnapToTickEnabled="True"			
+				/>
+			<Button
+				Content="Fit"
+				Margin="0 8 0 0"
+				Padding="0"
+				Width="36" Height="36"
+				/>
+		</StackPanel>
+	</Border>
+</UserControl>
