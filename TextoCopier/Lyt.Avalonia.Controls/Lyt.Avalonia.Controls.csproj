@@ -17,5 +17,14 @@
   <ItemGroup>
     <ProjectReference Include="..\Lyt.Avalonia.Interfaces\Lyt.Avalonia.Interfaces.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Zoom\PanZoomControl.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Zoom\PanZoomControl.Properties.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
 	
 </Project>

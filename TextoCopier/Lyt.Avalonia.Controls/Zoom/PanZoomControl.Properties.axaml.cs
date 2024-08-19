@@ -1,5 +1,4 @@
-﻿
-namespace Lyt.Avalonia.Controls.PanZoom;
+﻿namespace Lyt.Avalonia.Controls.PanZoom;
 
 public partial class PanZoomControl : UserControl
 {

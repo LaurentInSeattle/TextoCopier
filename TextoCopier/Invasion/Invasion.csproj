@@ -19,28 +19,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Compile Remove="Controls\ZoomAndPan_IS\ZoomAndPanControl.cs" />
-    <Compile Remove="Controls\ZoomAndPan_IS\ZoomAndPanControlIScrollInfo.cs" />
-    <Compile Remove="Controls\ZoomAndPan_IS\ZoomAndPanController.xaml.cs" />
-    <Compile Remove="Controls\ZoomAndPan_IS\ZoomAndPanOverview.xaml.cs" />
-    <Compile Remove="Controls\Zoom_Plasmagonia\ZoomContentPresenter.cs" />
-    <Compile Remove="Controls\Zoom_Plasmagonia\ZoomControl.cs" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <None Remove="Assets\Images\dark.jpg" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <None Include="Controls\ZoomAndPan_IS\ZoomAndPanControl.cs" />
-    <None Include="Controls\ZoomAndPan_IS\ZoomAndPanControlIScrollInfo.cs" />
-    <None Include="Controls\ZoomAndPan_IS\ZoomAndPanController.xaml.cs" />
-    <None Include="Controls\ZoomAndPan_IS\ZoomAndPanOverview.xaml.cs" />
-    <None Include="Controls\Zoom_Plasmagonia\ZoomContentPresenter.cs" />
-    <None Include="Controls\Zoom_Plasmagonia\ZoomControl.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.1.3" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.1.3" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.1.3" />
@@ -72,17 +50,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Controls\ZoomAndPan_IS\ZoomAndPan.Generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Controls\ZoomAndPan_IS\ZoomAndPanController.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Controls\ZoomAndPan_IS\ZoomAndPanOverview.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Controls\Zoom_Plasmagonia\ZoomControl.Generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
+    <Folder Include="Controls\" />
   </ItemGroup>
 </Project>

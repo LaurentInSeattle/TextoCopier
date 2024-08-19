@@ -46,6 +46,7 @@ global using Lyt.Avalonia.Controls;
 global using Lyt.Avalonia.Controls.Glyphs;
 global using Lyt.Avalonia.Controls.Logging;
 global using Lyt.Avalonia.Controls.Toasting;
+global using Lyt.Avalonia.Controls.PanZoom;
 
 global using Lyt.Avalonia.Mvvm;
 global using Lyt.Avalonia.Mvvm.Core;
@@ -58,7 +59,6 @@ global using Lyt.Avalonia.Model;
 
 #endregion Framework 
 
-global using Lyt.Avalonia.Controls.PanZoom;
 
 global using Avalonia.Media.Imaging;
 global using Avalonia.Platform;

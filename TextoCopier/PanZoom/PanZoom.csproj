@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Lyt.Avalonia.Controls\Lyt.Avalonia.Controls.csproj" />
     <ProjectReference Include="..\Lyt.Avalonia.Model\Lyt.Avalonia.Model.csproj" />
     <ProjectReference Include="..\Lyt.Avalonia.Mvvm\Lyt.Avalonia.Mvvm.csproj" />
   </ItemGroup>
@@ -29,9 +30,6 @@
   <ItemGroup>
     <Compile Update="ShellView.axaml.cs">
       <DependentUpon>ShellView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Zoom\PanZoomControl.Properties.axaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>

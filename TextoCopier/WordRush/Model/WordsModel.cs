@@ -20,6 +20,7 @@ public sealed partial class WordsModel : ModelBase
         this.italian = new(2048, StringComparer.InvariantCultureIgnoreCase);
         this.italianToEnglish = new(2048);
         this.randomizer = randomizer;
+        this.GameHistory = new GameHistory();
     }
 
     public bool IsReady { get; private set; }

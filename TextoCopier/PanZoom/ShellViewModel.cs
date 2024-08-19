@@ -42,7 +42,8 @@ public class ShellViewModel : Bindable<ShellView>
         this.ZoomRequest = PanZoomControl.ActionRequest.Fit;
     }
 
-    public double ZoomFactor { get => this.Get<double>(); set => this.Set(value); }
+    
+    public double ZoomFactor { get => this.Get<double>(); [DoNotLog] set => this.Set(value); }
 
     public PanZoomControl.ActionRequest ZoomRequest 
     { 

@@ -2,7 +2,12 @@ namespace Lyt.Avalonia.Controls.PanZoom;
 
 public partial class PanZoomControl : UserControl
 {
-    private Size contentSize; 
+    public const double DragStrength = 1.7;
+
+    private Size contentSize;
+    private bool isDragging;
+    private Point startDragPoint;
+    private Point currentDragPoint;
 
     public PanZoomControl()
     {
@@ -11,11 +16,9 @@ public partial class PanZoomControl : UserControl
         this.Loaded += this.OnLoaded;
         this.ZoomContentPresenter.SizeChanged += this.OnZoomContentPresenterSizeChanged;
         this.ScrollViewer.SizeChanged += this.OnScrollViewerSizeChanged;
-        //this.PointerPressed += this.OnPointerPressed;
-        //this.PointerReleased += this.OnPointerReleased;
-        //this.PointerMoved += this.OnPointerMoved;
-        //this.PointerWheelChanged += this.OnPointerWheelChanged;
-        //this.DoubleTapped += this.OnDoubleTapped;
+        this.PointerPressed += this.OnPointerPressed;
+        this.PointerReleased += this.OnPointerReleased;
+        this.PointerMoved += this.OnPointerMoved;
     }
 
     ~PanZoomControl()
@@ -23,11 +26,9 @@ public partial class PanZoomControl : UserControl
         this.Loaded -= this.OnLoaded;
         this.ZoomContentPresenter.SizeChanged -= this.OnZoomContentPresenterSizeChanged;
         this.ScrollViewer.SizeChanged -= this.OnScrollViewerSizeChanged;
-        //this.PointerPressed -= this.OnPointerPressed;
-        //this.PointerReleased -= this.OnPointerReleased;
-        //this.PointerMoved -= this.OnPointerMoved;
-        //this.PointerWheelChanged -= this.OnPointerWheelChanged;
-        //this.DoubleTapped -= this.OnDoubleTapped;
+        this.PointerPressed -= this.OnPointerPressed;
+        this.PointerReleased -= this.OnPointerReleased;
+        this.PointerMoved -= this.OnPointerMoved;
     }
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
@@ -37,11 +38,11 @@ public partial class PanZoomControl : UserControl
         {
             throw new Exception("no presenter");
         }
-        
+
         if (this.ZoomableContent is null)
         {
             Debug.WriteLine("Loaded: no content");
-            return; 
+            return;
         }
 
         this.UpdateContent(this.ZoomableContent);
@@ -51,10 +52,10 @@ public partial class PanZoomControl : UserControl
     private void OnScrollViewerSizeChanged(object? sender, SizeChangedEventArgs e)
         => this.ZoomToFit();
 
-    private void OnZoomContentPresenterSizeChanged(object? sender, SizeChangedEventArgs e) 
+    private void OnZoomContentPresenterSizeChanged(object? sender, SizeChangedEventArgs e)
         => this.AdjustContentSize(this.ZoomContentPresenter.Content);
 
-    private void AdjustContentSize(object? controlObject  )
+    private void AdjustContentSize(object? controlObject)
     {
         if (controlObject is not Control control)
         {
@@ -82,7 +83,7 @@ public partial class PanZoomControl : UserControl
 
     private void UpdateZoom(double zoom)
     {
-        if ((contentSize.Width <= 0.000_001) || (contentSize.Height<= 0.000_001))
+        if ((this.contentSize.Width <= 0.000_001) || (this.contentSize.Height <= 0.000_001))
         {
             Debug.WriteLine("Invalid content");
             this.AdjustContentSize(this.ZoomContentPresenter.Content);
@@ -94,14 +95,14 @@ public partial class PanZoomControl : UserControl
 
     private void ProcessRequest(ActionRequest newActionRequest)
     {
-        Debug.WriteLine( "Request: " + newActionRequest.ToString() );
+        Debug.WriteLine("Request: " + newActionRequest.ToString());
         switch (newActionRequest)
         {
             default:
-            case ActionRequest.None: return; 
+            case ActionRequest.None: return;
 
             case ActionRequest.Fit:
-                this.ZoomToFit(); 
+                this.ZoomToFit();
                 break;
             case ActionRequest.One:
                 break;
@@ -110,7 +111,7 @@ public partial class PanZoomControl : UserControl
 
     private void ZoomToFit()
     {
-        Debug.WriteLine("Executing Request: ZoomToFit" );
+        Debug.WriteLine("Executing Request: ZoomToFit");
         Size size = this.ScrollViewer.Bounds.Size;
         double zoomX = size.Width / this.contentSize.Width;
         double zoomY = size.Height / this.contentSize.Height;
@@ -123,28 +124,58 @@ public partial class PanZoomControl : UserControl
     private void ZoomToOne()
     {
         Debug.WriteLine("Executing Request: Zoom To One");
-        this.Zoom = 1.0; 
+        this.Zoom = 1.0;
         this.Grid.Width = this.contentSize.Width;
         this.Grid.Height = this.contentSize.Height;
     }
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs args)
     {
+        if (!args.KeyModifiers.HasFlag(KeyModifiers.Shift))
+        {
+            return;
+        }
+
+        if (this.ZoomContentPresenter.Content is Control control)
+        {
+            this.isDragging = true;
+            this.startDragPoint = args.GetPosition(control);
+        }
     }
 
-    private void OnPointerReleased(object? sender, PointerReleasedEventArgs args)
-    {
-    }
-
+    private void OnPointerReleased(object? sender, PointerReleasedEventArgs args) =>  this.isDragging = false;
+    
     private void OnPointerMoved(object? sender, PointerEventArgs args)
     {
-    }
+        if (!this.isDragging)
+        {
+            return;
+        }
 
-    private void OnPointerWheelChanged(object? sender, PointerWheelEventArgs args)
-    {
-    }
+        if (!args.KeyModifiers.HasFlag(KeyModifiers.Shift))
+        {
+            this.isDragging = false;
+            return;
+        }
 
-    private void OnDoubleTapped(object? sender, TappedEventArgs args)
-    {
+        if (this.ZoomContentPresenter.Content is Control control)
+        {
+            this.isDragging = true;
+            this.currentDragPoint = args.GetPosition(control);
+            double distance = Point.Distance(this.startDragPoint, this.currentDragPoint);
+            if (distance > 2.0)
+            {
+                Size extent = this.ScrollViewer.Extent;
+                Vector offset = this.ScrollViewer.Offset;
+                double dx = (this.currentDragPoint.X - this.startDragPoint.X) * this.Zoom / PanZoomControl.DragStrength;
+                double dy = (this.currentDragPoint.Y - this.startDragPoint.Y) * this.Zoom / PanZoomControl.DragStrength;
+                double x = Math.Min(offset.X + dx, extent.Width);
+                double y = Math.Min(offset.Y + dy, extent.Height);
+                x = Math.Max(x, 0.0);
+                y = Math.Max(y, 0.0);
+                this.ScrollViewer.Offset = new Vector(x, y);
+                this.startDragPoint = this.currentDragPoint;
+            }
+        }
     }
 }
