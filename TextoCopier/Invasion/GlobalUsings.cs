@@ -54,7 +54,6 @@ global using Lyt.Avalonia.Interfaces.Model;
 global using Lyt.Avalonia.Interfaces.Profiler;
 global using Lyt.Avalonia.Interfaces.Random;
 global using Lyt.Avalonia.Interfaces.UserInterface;
-
 global using Lyt.Avalonia.Controls;
 global using Lyt.Avalonia.Controls.Glyphs;
 global using Lyt.Avalonia.Controls.Logging;
@@ -62,6 +61,7 @@ global using Lyt.Avalonia.Controls.Toasting;
 
 global using Lyt.Avalonia.Mvvm;
 global using Lyt.Avalonia.Mvvm.Animations;
+global using Lyt.Avalonia.Mvvm.Behaviors;
 global using Lyt.Avalonia.Mvvm.Core;
 global using Lyt.Avalonia.Mvvm.Dialogs;
 global using Lyt.Avalonia.Mvvm.Extensions;
@@ -74,8 +74,6 @@ global using Lyt.Avalonia.Model;
 global using Lyt.Avalonia.Persistence;
 
 #endregion Framework 
-
-//global using Avalonia.Controls.PanAndZoom;
 
 global using Lyt.Invasion.Converters;
 global using Lyt.Invasion.Messaging;

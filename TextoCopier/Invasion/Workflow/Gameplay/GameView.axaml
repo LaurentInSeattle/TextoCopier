@@ -11,6 +11,8 @@
     xmlns:regions="clr-namespace:Lyt.Invasion.Workflow.Gameplay.Regions"
     xmlns:players="clr-namespace:Lyt.Invasion.Workflow.Gameplay.Players"
 	xmlns:panzoom="using:Lyt.Avalonia.Controls.PanZoom"
+	xmlns:interactions="using:Lyt.Avalonia.Mvvm.Behaviors"
+    xmlns:behaviors="clr-namespace:Lyt.Invasion.Behaviors"
 	>
 	<Grid
 		x:Name="InnerGrid"
@@ -56,10 +58,16 @@
 		</panzoom:PanZoomControl>
 		<controls:ZoomController
 			x:Name="ZoomController"
-			Grid.Column="1" Grid.Row="1" 
+			Grid.Column="1" Grid.Row="1"
 			VerticalAlignment="Top" HorizontalAlignment="Right"
 			Margin="0 12 12 12"
-			/>		
+			>
+			<interactions:Interaction.Behaviors>
+				<interactions:BehaviorCollection>
+					<behaviors:AppearsOnMouseOverBehavior />
+				</interactions:BehaviorCollection>
+			</interactions:Interaction.Behaviors>
+		</controls:ZoomController>		
 		<Grid
 			x:Name="SideBar"
 			Grid.Column="2" Grid.Row="1" Grid.RowSpan="999"			

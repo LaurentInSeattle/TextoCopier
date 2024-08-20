@@ -1,6 +1,6 @@
 ﻿namespace Lyt.Avalonia.Mvvm.Behaviors;
 
-public class Behavior : AvaloniaObject, IBehavior
+public abstract class Behavior : AvaloniaObject, IBehavior
 {
     /// <summary> Gets the AvaloniaObject to which this behavior is attached. </summary>
     public AvaloniaObject? AssociatedObject { get; private set; }
@@ -35,9 +35,9 @@ public class Behavior : AvaloniaObject, IBehavior
 
     /// <summary> Called after the behavior is attached to the <see cref="AssociatedObject"/> </summary>
     /// <remarks> Override this to hook up functionality to the <see cref="AssociatedObject"/> </remarks>
-    protected virtual void OnAttached() { }
+    protected abstract void OnAttached();
 
     /// <summary> Called when the behavior is being detached from its <see cref="AssociatedObject"/> </summary>
     /// <remarks> Override this to unhook functionality from the <see cref="AssociatedObject"/> </remarks>
-    protected virtual void OnDetaching() { }
+    protected abstract void OnDetaching();
 }

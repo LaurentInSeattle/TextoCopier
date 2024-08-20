@@ -1,9 +1,9 @@
 ﻿namespace Lyt.Avalonia.Mvvm.Behaviors;
 
-public class Behavior<T> : Behavior where T : AvaloniaObject
+public abstract class Behavior<T> : Behavior where T : AvaloniaObject
 {
-    /// <summary> Gets the AvaloniaObject to which this behavior is attached. </summary>
-    public new T? AssociatedObject { get; private set; }
+    /// <summary> Gets the T Object to which this behavior is attached. </summary>
+    public new T? AssociatedObject => base.AssociatedObject as T; 
 
     public void Attach(T associatedObject) => base.Attach(associatedObject);
 

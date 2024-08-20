@@ -1,6 +1,6 @@
 ﻿namespace Lyt.Avalonia.Mvvm.Behaviors;
 
-public sealed class BehaviorCollection : List<IBehavior>
+public sealed class BehaviorCollection : AvaloniaList<IBehavior>
 {
     /// <summary> Gets the <see cref="AvaloniaObject"/> to which the <see cref="BehaviorCollection"/> is attached. </summary>
     public AvaloniaObject? AssociatedObject { get; private set; }
