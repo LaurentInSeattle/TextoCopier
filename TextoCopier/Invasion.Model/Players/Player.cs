@@ -5,11 +5,11 @@ public abstract class Player
     public enum StatusKind
     {
         Competing = 0,
-        Won, 
+        Won,
         Lost,
     }
 
-    public readonly Game Game; 
+    public readonly Game Game;
 
     public readonly Wealth Wealth;
 
@@ -22,24 +22,26 @@ public abstract class Player
 #pragma warning restore CS8618 
     {
         this.Index = index;
-        this.Game = game;   
+        this.Game = game;
         this.Avatar = playerInfo.Avatar;
         this.Name = playerInfo.Name;
         this.EmpireName = playerInfo.EmpireName;
         this.Color = playerInfo.Color;
         this.Territory = new List<Region>(this.Game.GameOptions.RegionCount);
-        this.Wealth = new Wealth(); 
+        this.Wealth = new Wealth();
         this.Wealth.AllocateInitialWealth( /* this */ );
         this.Population = this.CreateInitialPopulation();
+        this.Buildings = this.CreateInitialBuildings();
+        this.Status = StatusKind.Competing;
     }
 
     public abstract bool IsHuman { get; }
 
-    public abstract Task<bool> Turn(CancellationToken cancellationToken); 
+    public abstract Task<bool> Turn(CancellationToken cancellationToken);
 
     public int Index { get; private set; }
 
-    public StatusKind Status { get; set; } = StatusKind.Competing;
+    public StatusKind Status { get; set; }
 
     public string Name { get; set; } = string.Empty;
 
@@ -55,25 +57,35 @@ public abstract class Player
 
     public List<Region> Territory { get; private set; }
 
+    public List<Building> Buildings { get; private set; }
+
     public Age Age { get; private set; }
 
     public void DoCollect() { }
 
     public void DoDeploy() { }
-    
+
     public void DoDestroy() { }
-    
+
     public void DoBuild() { }
-    
+
     public void DoAttack() { }
-    
+
     public void DoColonize() { }
-    
+
     public void DoMove() { }
 
     private Dictionary<ActorKind, int> CreateInitialPopulation()
     {
         Dictionary<ActorKind, int> population = [];
+        // TODO
         return population;
+    }
+
+    private List<Building> CreateInitialBuildings()
+    {
+        List<Building> buildings = new(16);
+        // TODO
+        return buildings;
     }
 }

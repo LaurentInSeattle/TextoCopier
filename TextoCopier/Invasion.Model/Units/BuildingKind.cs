@@ -1,6 +1,6 @@
 ﻿namespace Lyt.Invasion.Model.Units;
 
-public enum CivilisationTrait
+public enum Trait
 {
     Economy,
     Military,
@@ -12,6 +12,18 @@ public enum CivilisationTrait
 
 public enum BuildingKind
 {
+    None,
+
+    // Cities 
+    Campfire,
+    Settlement,
+    Hamlet,
+    Village,
+    Town,
+    City,
+    Capital,
+    Conurbation,
+
     // Economy 
     Farm,
     Port,
@@ -22,7 +34,7 @@ public enum BuildingKind
     Quarry,
     Mine,
     CoalField,
-    OilRigs,
+    OilRig,
     TradingPost,
     Market,
 
@@ -39,29 +51,32 @@ public enum BuildingKind
     // Clergy
     StoneCircle,
     Temple,
-    Cathedral,
     Church,
+    Cathedral,
     Mosque,
     ShintoShrine,
     ChinSweeTower,
     Mausoleum,
-    ScientololyArcology,
+    Scientology,
 
     // Education
+    Preschool,
     Library,
-    Daycare,
     School,
     College,
     University,
+    Museum,
     TechnologyCampus, 
     ResearchCenter,
     ScienceAcademy,
 
     // Civics
+    Daycare,
+    OldCastle,
+    Arcology,
     CityHall,
     Clinic,
     Hospital,
-    Museum,
     Stadium,
     SportComplex,
     BusinessPark,
@@ -73,10 +88,11 @@ public enum BuildingKind
     // Energy 
     HydropowerDam,
     CoalPlant,
+    Refinery,
     WindFarm,
     SolarField,
-    NuclearPlant,
-    Refinery,
+    NuclearFissionPlant,
+    NuclearFusionPlant,
     GeothermalPlant,
     QuantumFluxGenerator,
 }

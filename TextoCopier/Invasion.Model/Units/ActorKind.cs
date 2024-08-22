@@ -4,6 +4,7 @@ public enum ActorKind
 {
     // Economy 
     Hunter,
+    Gatherer,
     Farmer,
     Fisher,
     Worker,
@@ -14,7 +15,7 @@ public enum ActorKind
     Fighter,
     Soldier,
     Archer,
-    Military,
+    Pilot,
 
     // Clergy
     Shaman, 

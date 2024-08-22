@@ -3,11 +3,13 @@
 public enum Age
 {
     Stone, 
-    Bronze, 
+    Bronze,
+    Iron,
     Classical,
     Medieval,    
     Discovery,
     Industrial, 
     Modern,
     Information,
+    Singularity,
 }

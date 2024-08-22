@@ -13,7 +13,8 @@ public sealed class GameViewModel : Bindable<GameView>
     private readonly IToaster toaster;
     private readonly LocalizerModel localizer;
     private readonly InvasionModel invasionModel;
-    private readonly SolidColorBrush[] playerBrushes;
+    private readonly List<SolidColorBrush> playerBrushes;
+    private readonly Dictionary<Region, List<Polyline>> regionsBorders;
 
     private Image? mapImage;
     private Region? hoveredRegion;
@@ -32,7 +33,8 @@ public sealed class GameViewModel : Bindable<GameView>
         this.dialogService = dialogService;
         this.toaster = toaster;
 
-        this.playerBrushes = new SolidColorBrush[8];
+        this.playerBrushes = new (4);
+        this.regionsBorders = new(512); 
         this.Messenger.Subscribe<ZoomRequestMessage>(this.OnZoomRequest); 
     }
 
@@ -70,8 +72,6 @@ public sealed class GameViewModel : Bindable<GameView>
         canvas.Children.Clear();
         canvas.Width = this.gameOptions.PixelWidth;
         canvas.Height = this.gameOptions.PixelHeight;
-        this.MaxOffsetX = this.gameOptions.PixelWidth;
-        this.MaxOffsetY = this.gameOptions.PixelHeight;
         canvas.InvalidateVisual();
 
         this.Messenger.Subscribe<GameSynchronizationRequest>(this.OnGameSynchronizationRequest, withUiDispatch: true);
@@ -113,7 +113,6 @@ public sealed class GameViewModel : Bindable<GameView>
 
     private void OnExit(object? _) => this.Messenger.Publish(ActivatedView.Exit);
 
-
 #pragma warning restore IDE0051
     #endregion Methods invoked by the Framework using reflection 
 
@@ -121,13 +120,9 @@ public sealed class GameViewModel : Bindable<GameView>
 
     public double ZoomFactor { get => this.Get<double>(); set => this.Set(value); }
 
-    public double MaxOffsetX { get => this.Get<double>(); set => this.Set(value); }
-
-    public double MaxOffsetY { get => this.Get<double>(); set => this.Set(value); }
-
     private void UpdateUi()
     {
-        // TODO: Create the game model in a background thread 
+        // CONSIDER: Create the game model in a background thread 
         this.invasionModel.NewGame(this.gameOptions);
         if (this.invasionModel.Game is null)
         {
@@ -197,12 +192,15 @@ public sealed class GameViewModel : Bindable<GameView>
             return;
         }
 
-        int count = 0;
+        this.regionsBorders.Clear();
         var canvas = this.View.Canvas;
         var map = game.Map;
-        var unclaimedStrokeBrush = new SolidColorBrush(Color.FromRgb(red, blu, gre));
+        // new SolidColorBrush(Color.FromRgb(red, blu, gre));
+        var unclaimedStrokeBrush = new SolidColorBrush(Color.FromArgb(140,0,0,0));
         foreach (var region in map.Regions)
         {
+            List<Polyline> paths = new (16);
+            this.regionsBorders.Add(region, paths);
             SolidColorBrush strokeBrush;
             int zindex;
             if (!region.CanBeOwned)
@@ -244,12 +242,7 @@ public sealed class GameViewModel : Bindable<GameView>
                 polyline.SetValue(Canvas.TopProperty, 0.0);
                 polyline.SetValue(Canvas.LeftProperty, 0.0);
                 canvas.Children.Add(polyline);
-            }
-
-            ++count;
-            if (count > 1000)
-            {
-                break;
+                paths.Add(polyline);
             }
         }
     }
@@ -322,6 +315,7 @@ public sealed class GameViewModel : Bindable<GameView>
             return;
         }
 
+        this.playerBrushes.Clear();
         for (int i = 0; i < this.gameOptions.Players.Count; i++)
         {
             Color playerColor = PlayerToColor(game.Players[i]);
@@ -330,6 +324,8 @@ public sealed class GameViewModel : Bindable<GameView>
     }
 
     private static Color PlayerToColor(Player player) => player.Color.ColorNameToColor();
+
+    #region Pointer Events Handlers 
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
@@ -409,4 +405,6 @@ public sealed class GameViewModel : Bindable<GameView>
             this.hoveredRegion = region;
         }
     }
+    
+    #endregion Pointer Events Handlers 
 }

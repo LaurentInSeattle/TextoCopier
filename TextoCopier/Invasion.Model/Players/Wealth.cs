@@ -5,10 +5,7 @@ public sealed class Wealth
 {
     public Dictionary<WealthKind, float> wealth { get; private set; }
 
-    public Wealth()
-    {
-        this.wealth = new Dictionary<WealthKind, float>();
-    }
+    public Wealth() => this.wealth = [];
 
     public void AllocateInitialWealth(/* Player player*/ )
     {
