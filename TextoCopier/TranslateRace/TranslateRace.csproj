@@ -1,0 +1,73 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+		<RootNamespace>Lyt.TranslateRace</RootNamespace>
+	</PropertyGroup>
+
+	<PropertyGroup Label="Avalonia">
+		<AvaloniaXamlVerboseExceptions>True</AvaloniaXamlVerboseExceptions>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<AvaloniaResource Include="Assets\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <AvaloniaXaml Remove="Assets\Icons\FluentSvgResourceDictionary.axaml" />
+	  <AvaloniaXaml Remove="Assets\Palette\DeepBluePalette.axaml" />
+	  <AvaloniaXaml Remove="Assets\Theme\Buttons.axaml" />
+	  <AvaloniaXaml Remove="Assets\Theme\Toggles.axaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Assets\Images\dark.jpg" />
+	  <None Remove="Assets\Images\parole.ico" />
+	  <None Remove="Assets\Images\venezia.jpg" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Avalonia" Version="11.1.3" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.1.3" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.1.3" />
+		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.1.3" />
+		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.1.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Lyt.Avalonia.Controls\Lyt.Avalonia.Controls.csproj" />
+		<ProjectReference Include="..\Lyt.Avalonia.Interfaces\Lyt.Avalonia.Interfaces.csproj" />
+		<ProjectReference Include="..\Lyt.Avalonia.Localizer\Lyt.Avalonia.Localizer.csproj" />
+		<ProjectReference Include="..\Lyt.Avalonia.Model\Lyt.Avalonia.Model.csproj" />
+		<ProjectReference Include="..\Lyt.Avalonia.Mvvm\Lyt.Avalonia.Mvvm.csproj" />
+		<ProjectReference Include="..\Lyt.Avalonia.Persistence\Lyt.Avalonia.Persistence.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Assets\Phrases\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Update="Shell\MainWindow.axaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Shell\ShellView.axaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Workflow\Game\CountDownBarControl.axaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Workflow\Game\GameView.axaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Workflow\Results\GameOverView.axaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Workflow\Setup\SetupView.axaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+</Project>
