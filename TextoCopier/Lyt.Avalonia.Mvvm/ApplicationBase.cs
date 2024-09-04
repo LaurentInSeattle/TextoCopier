@@ -1,5 +1,4 @@
-﻿
-namespace Lyt.Avalonia.Mvvm;
+﻿namespace Lyt.Avalonia.Mvvm;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -161,7 +160,7 @@ public class ApplicationBase(
     public static T GetRequiredService<T>() where T : notnull
         => ApplicationBase.AppHost!.Services.GetRequiredService<T>();
 
-    public static object GetRequiredService(Type type) 
+    public static object GetRequiredService(Type type)
         => ApplicationBase.AppHost!.Services.GetRequiredService(type);
 
     public static TModel GetModel<TModel>() where TModel : notnull
@@ -300,7 +299,7 @@ public class ApplicationBase(
     {
         if (Debugger.IsAttached) { Debugger.Break(); }
 
-        if ((this.Logger is not null)  && ( exception is not null))
+        if ((this.Logger is not null) && (exception is not null))
         {
             this.Logger.Error(exception.ToString());
         }
