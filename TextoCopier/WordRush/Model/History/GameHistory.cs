@@ -42,26 +42,6 @@ public sealed class GameHistory : ModelBase
                     this.fileManager.Load<List<GameResult>>(Area.User, Kind.Json, GameHistory.GameHistoryFilename);
                 this.GameResults = gameResults;
             }
-
-            //string root = WpfExtensions.ApplicationDataFolder("LYT", "Parole"); 
-            //string fileName = Word.Length == 5 ? FileName5 : FileName6;
-            //string path = Path.Combine(root, fileName);
-            //if (File.Exists(path))
-            //{
-            //    var serializer = new XmlSerializer(typeof(History));
-            //    if (serializer != null)
-            //    {
-            //        using var reader = new FileStream(path, FileMode.Open);
-            //        if (reader != null)
-            //        {
-            //            if (serializer.Deserialize(reader) is History history && 
-            //                !history.GameEntries.IsNullOrEmpty())
-            //            {
-            //                this.GameEntries.AddRange(history.GameEntries);
-            //            }
-            //        }
-            //    }
-            //}
         }
         catch (Exception ex)
         {

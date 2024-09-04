@@ -5,7 +5,7 @@ using Mod = Lyt.TranslateRace.Model;
 
 public sealed partial class TranslateRaceModel : ModelBase
 {
-    private static readonly char[] separator = [' ', '\t', '\r', '\n'];
+    private static readonly char[] separator = ['\t', '\r', '\n'];
 
     private readonly FileManagerModel fileManager;
     private readonly HashSet<string> italian;
@@ -30,20 +30,22 @@ public sealed partial class TranslateRaceModel : ModelBase
     // This is EXPLICITLY saved and loaded 
     public GameHistory GameHistory { get; private set; }
 
+    public List<Participant> Participants { get; private set; } = [];
+
     public override Task Initialize()
     {
-        _ = Task.Factory.StartNew(this.LoadWordsDatabase, TaskCreationOptions.LongRunning);
+        _ = Task.Factory.StartNew(this.LoadGameModel, TaskCreationOptions.LongRunning);
         return Task.CompletedTask;
     }
 
     public override Task Save()
     {
-
         if (this.GameHistory.IsDirty)
         {
             this.GameHistory.Save();
         }
 
+        this.SaveParticipants();
         return Task.CompletedTask;
     }
 
@@ -128,7 +130,7 @@ public sealed partial class TranslateRaceModel : ModelBase
         return string.Empty;
     }
 
-    private async void LoadWordsDatabase()
+    private async void LoadGameModel()
     {
         try
         {
@@ -145,10 +147,30 @@ public sealed partial class TranslateRaceModel : ModelBase
                 {
                     this.GameHistory.GameResults = gameHistory.GameResults;
                 }
-            } 
+            }
 
-            //this.LoadCommonWords();
-            //this.LoadDictionaries();
+            // Load participants, if any 
+            this.Participants = new List<Participant>(64);
+            if (this.fileManager.Exists(Area.User, Kind.Json, Participant.ParticipantsFilename))
+            {
+                var participants = this.fileManager.Load<List<Participant>>(Area.User, Kind.Json, Participant.ParticipantsFilename);
+                if (participants is not null)
+                {
+                    this.Participants = participants;
+                }
+            }
+
+            // Load default participants, if nothing loaded  
+            if (this.Participants.Count == 0 ) 
+            {
+                this.LoadDefaultParticipants();
+                this.SaveParticipants();
+            }
+
+            // Load phrases, if any 
+            // Load default phrases, if nothing loaded  
+
+            //this.LoadPhrases();
             this.IsReady = true;
         }
         catch (Exception ex)
@@ -162,7 +184,7 @@ public sealed partial class TranslateRaceModel : ModelBase
         }
     }
 
-    //private bool LoadDictionaries()
+    //private bool LoadLoadPhrases()
     //{
     //    try
     //    {
@@ -239,41 +261,58 @@ public sealed partial class TranslateRaceModel : ModelBase
     //    }
     //}
 
-    //private bool LoadCommonWords()
-    //{
-    //    try
-    //    {
-    //        string uriString = string.Format("avares://WordRush/Assets/Words/{0}.txt", "comuni");
-    //        var streamReader = new StreamReader(AssetLoader.Open(new Uri(uriString)));
-    //        string content = this.fileManager.LoadResourceFromStream<string>(FileManagerModel.Kind.Text, streamReader);
-    //        string[] commonTokens = content.Split(separator, StringSplitOptions.RemoveEmptyEntries);
-    //        foreach (string token in commonTokens)
-    //        {
-    //            if (string.IsNullOrWhiteSpace(token))
-    //            {
-    //                continue;
-    //            }
+    private bool LoadDefaultParticipants()
+    {
+        try
+        {
+            HashSet<Participant> participants = new (64);
+            string uriString = string.Format("avares://TranslateRace/Assets/Model/{0}.txt", "people");
+            var streamReader = new StreamReader(AssetLoader.Open(new Uri(uriString)));
+            string content = this.fileManager.LoadResourceFromStream<string>(FileManagerModel.Kind.Text, streamReader);
+            string[] nameTokens = content.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string token in nameTokens)
+            {
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    continue;
+                }
 
-    //            if (TranslateRaceModel.HasNonItalianOrSpecialCharacters(token))
-    //            {
-    //                continue;
-    //            }
+                string name = token.Trim();
+                if (name.Length > 1)
+                {
+                    _ = participants.Add(new Participant { Name = name.Capitalize() } );
+                }
+            }
 
-    //            string word = token.Trim().ToLower();
-    //            if (word.Length > 1)
-    //            {
-    //                _ = this.italian.Add(word);
-    //            }
-    //        }
+            this.Participants = [.. participants];
+            Debug.WriteLine("Participants count: " + participants.Count);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Debugger.Break();
+            this.Logger.Warning(ex.ToString());
+            return false;
+        }
+    }
 
-    //        Debug.WriteLine("Common Word count: " + this.italian.Count);
-    //        return true;
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Debugger.Break();
-    //        this.Logger.Warning(ex.ToString());
-    //        return false;
-    //    }
-    //}
+    private void SaveParticipants()
+    {
+        try
+        {
+            // Null check is needed !
+            // If the File Manager is null we are currently loading the model and activating properties on a second instance 
+            // causing dirtyness, and in such case we must avoid the null crash and anyway there is no need to save anything.
+            if (this.fileManager is not null)
+            {
+                this.fileManager.Save(Area.User, Kind.Json, Participant.ParticipantsFilename, this.Participants);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+            throw;
+        }
+    }
+
 }
