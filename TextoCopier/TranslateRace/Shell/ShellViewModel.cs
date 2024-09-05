@@ -36,7 +36,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         this.Logger.Debug("OnViewLoaded BindGroupIcons complete");
 
-        this.OnViewActivation(ActivatedView.Setup, parameter: null, isFirstActivation: true);
+        this.OnViewActivation(ActivatedView.Intro, parameter: null, isFirstActivation: true);
         this.Logger.Debug("OnViewLoaded OnViewActivation complete");
 
         // Ready 
@@ -72,13 +72,17 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         if (activatedView == ActivatedView.GoBack)
         {
-            // We always go back to the Setup View 
-            activatedView = ActivatedView.Setup;
+            // We always go back to the Intro View 
+            activatedView = ActivatedView.Intro;
         }
 
         switch (activatedView)
         {
             default:
+            case ActivatedView.Intro:
+                this.Activate<IntroViewModel, IntroView>(isFirstActivation, null);
+                break;
+
             case ActivatedView.Setup:
                 this.Activate<SetupViewModel, SetupView>(isFirstActivation, null);
                 break;
@@ -148,6 +152,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
             vm.CreateViewAndBind();
         }
 
+        CreateAndBind<IntroViewModel, IntroView>();
         CreateAndBind<SetupViewModel, SetupView>();
         CreateAndBind<GameViewModel, GameView>();
         CreateAndBind<GameOverViewModel, GameOverView>();

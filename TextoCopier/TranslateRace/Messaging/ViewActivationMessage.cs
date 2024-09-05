@@ -4,6 +4,7 @@ public sealed class ViewActivationMessage(ViewActivationMessage.ActivatedView vi
 {
     public enum ActivatedView
     {
+        Intro,
         Setup,
         Game,
         GameOver,

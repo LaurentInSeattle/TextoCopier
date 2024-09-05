@@ -28,7 +28,7 @@
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="56" MaxHeight="56" />
+			<RowDefinition Height="42" MaxHeight="42" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 		<Rectangle
@@ -44,7 +44,7 @@
 			Text="Corsa per Tradurre!" 
 			HorizontalAlignment="Left" VerticalAlignment="Center"
 			Margin="8 0 0 0"
-			FontSize="32" 
+			FontSize="30" 
 			FontStyle="Italic"
 			Foreground="{x:Static theme:ColorTheme.UiText}"
 			TextWrapping="Wrap"

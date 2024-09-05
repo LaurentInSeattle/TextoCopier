@@ -83,6 +83,7 @@ global using Lyt.TranslateRace.Model;
 global using Lyt.TranslateRace.Model.History;
 global using Lyt.TranslateRace.Shell;
 global using Lyt.TranslateRace.Utilities;
+global using Lyt.TranslateRace.Workflow.Intro;
 global using Lyt.TranslateRace.Workflow.Game;
 global using Lyt.TranslateRace.Workflow.Results;
 global using Lyt.TranslateRace.Workflow.Setup;
