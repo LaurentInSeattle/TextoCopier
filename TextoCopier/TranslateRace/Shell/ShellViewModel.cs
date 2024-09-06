@@ -41,10 +41,10 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         // Ready 
         this.toaster.Host = this.View.ToasterHost;
-            this.toaster.Show(
-                "Benvenuto/a!", 
-                "Benvenuto/a a 'Corsa per Tradurre'! Sei pronto/a per una sfida?", 
-                3_000, InformationLevel.Info);
+        this.toaster.Show(
+            "Benvenuto/a!",
+            "Benvenuto/a a 'Corsa per Tradurre'! Sei pronto/a per una sfida?",
+            3_000, InformationLevel.Info);
         this.Logger.Debug("OnViewLoaded complete");
     }
 
@@ -95,7 +95,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
                 if (parameter is GameViewModel.Parameters parametersGame)
                 {
                     this.Activate<GameViewModel, GameView>(isFirstActivation, parametersGame);
-                } 
+                }
                 else
                 {
                     throw new Exception("No game parameters");
@@ -115,7 +115,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         }
     }
 
-    private async void OnExit(object? _) 
+    private async void OnExit(object? _)
     {
         var application = App.GetRequiredService<IApplicationBase>();
         await application.Shutdown();
@@ -140,7 +140,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         newViewModel.Activate(activationParameters);
         this.View.ShellViewContent.Content = newViewModel.View;
 
-        if( ! isFirstActivation)
+        if (!isFirstActivation)
         {
             this.profiler.MemorySnapshot(newViewModel.View.GetType().Name + ":  Activated");
         }

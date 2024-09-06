@@ -1,4 +1,4 @@
-<UserControl 
+<UserControl
     x:Class="Lyt.TranslateRace.Workflow.Setup.SetupView"
 	xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,7 +8,7 @@
 	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
     xmlns:theme="clr-namespace:Lyt.TranslateRace"
     xmlns:vm="clr-namespace:Lyt.TranslateRace.Workflow.Setup"
-    x:DataType="vm:SetupViewModel" 
+    x:DataType="vm:SetupViewModel"
 	Background="Transparent"
 	>
 	<Grid
@@ -32,8 +32,8 @@
 		</Grid.RowDefinitions>
 
 		<TextBlock
-			Grid.Column="1" Grid.Row="1" 
-			Text="Squadra Azzurra"			
+			Grid.Column="1" Grid.Row="1"
+			Text="Squadra Azzurra"
 			VerticalAlignment="Center" HorizontalAlignment="Center"
 			TextWrapping="Wrap"
 			FontSize="24"

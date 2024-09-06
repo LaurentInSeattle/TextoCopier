@@ -3,7 +3,7 @@
 public sealed class NewParticipantViewModel : Bindable<NewParticipantView>
 {
     private readonly IMessenger messenger;
-    private readonly TranslateRaceModel translateRaceModel; 
+    private readonly TranslateRaceModel translateRaceModel;
 
     public NewParticipantViewModel(IMessenger messenger, TranslateRaceModel translateRaceModel)
     {
@@ -15,8 +15,8 @@ public sealed class NewParticipantViewModel : Bindable<NewParticipantView>
     {
         base.Activate(activationParameters);
 
-            this.Name = string.Empty;
-            this.Title = "Aggiungi un nuovo partecipante"; 
+        this.Name = string.Empty;
+        this.Title = "Aggiungi un nuovo partecipante";
         this.OnEditing();
     }
 

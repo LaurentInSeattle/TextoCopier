@@ -340,7 +340,7 @@ public sealed partial class TranslateRaceModel : ModelBase
             return false;
         }
 
-        if (name.Length <=2 )
+        if (name.Length <= 2)
         {
             message = "Il nome del nuovo partecipante è troppo corto.";
             return false;
@@ -356,7 +356,7 @@ public sealed partial class TranslateRaceModel : ModelBase
             (from p in this.Participants
              where p.Name.Trim().Equals(name, StringComparison.CurrentCultureIgnoreCase)
              select p).FirstOrDefault();
-        if ( same is not null)
+        if (same is not null)
         {
             message = "Il nome del nuovo partecipante è già stato preso.";
             return false;

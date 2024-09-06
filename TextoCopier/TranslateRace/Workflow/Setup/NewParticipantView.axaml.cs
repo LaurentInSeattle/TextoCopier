@@ -15,7 +15,7 @@ public partial class NewParticipantView : UserControl
 
     private void OnAnyTextBoxTextChanged(object? sender, TextChangedEventArgs e)
     {
-        if ( this.DataContext is NewParticipantViewModel newParticipantViewModel)
+        if (this.DataContext is NewParticipantViewModel newParticipantViewModel)
         {
             newParticipantViewModel.OnEditing();
             e.Handled = true;
