@@ -11,6 +11,7 @@ public sealed class GameViewModel : Bindable<GameView>
 
     public sealed class Parameters
     {
+
         public GameDifficulty Difficulty { get; set; }
     }
 

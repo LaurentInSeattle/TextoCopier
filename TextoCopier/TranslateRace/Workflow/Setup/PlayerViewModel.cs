@@ -58,9 +58,12 @@ public sealed class PlayerViewModel : Bindable<PlayerView>
 
     public Participant Participant { get; private set; }
 
+    #region Methods invoked by the Framework using reflection 
+#pragma warning disable IDE0051 // Remove unused private members
+
     private void OnLeft(object? _)
     {
-        Assignment newAssignment = Assignment.Left;
+        Assignment newAssignment;
         switch (this.assignment)
         {
             default:
@@ -86,7 +89,7 @@ public sealed class PlayerViewModel : Bindable<PlayerView>
 
     private void OnRight(object? _)
     {
-        Assignment newAssignment = Assignment.Left;
+        Assignment newAssignment;
         switch (this.assignment)
         {
             default:
@@ -95,15 +98,16 @@ public sealed class PlayerViewModel : Bindable<PlayerView>
                 break;
 
             case Assignment.Left:
-                newAssignment = Assignment.Left;
-                break;
-
-            case Assignment.Right:
                 newAssignment = Assignment.Participant;
                 break;
 
+            case Assignment.Right:
+                newAssignment = Assignment.Absent;
+                break;
+
             case Assignment.Absent:
-                return;
+                newAssignment = Assignment.Delete;
+                break;
         }
 
         IMessenger messenger = ApplicationBase.GetRequiredService<IMessenger>();
@@ -112,7 +116,7 @@ public sealed class PlayerViewModel : Bindable<PlayerView>
 
     private void OnCenter(object? _)
     {
-        Assignment newAssignment = Assignment.Left;
+        Assignment newAssignment;
         switch (this.assignment)
         {
             default:
@@ -120,21 +124,23 @@ public sealed class PlayerViewModel : Bindable<PlayerView>
                 newAssignment = Assignment.Absent;
                 break;
 
-            case Assignment.Left:
-                newAssignment = Assignment.Left;
-                break;
-
             case Assignment.Right:
-                newAssignment = Assignment.Participant;
-                break;
+            case Assignment.Left:
+                return;
 
             case Assignment.Absent:
-                return;
+                newAssignment = Assignment.Participant;
+                break;
         }
 
         IMessenger messenger = ApplicationBase.GetRequiredService<IMessenger>();
         messenger.Publish(new PlayerAssignmentMessage(this, this.assignment, newAssignment));
     }
+
+#pragma warning restore IDE0051
+    #endregion Methods invoked by the Framework using reflection 
+
+    #region Bound properties 
 
     public string Name { get => this.Get<string>()!; set => this.Set(value); }
 
@@ -149,4 +155,6 @@ public sealed class PlayerViewModel : Bindable<PlayerView>
     public ICommand RightCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     public ICommand CenterCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+    
+    #endregion  Bound properties 
 }

@@ -6,9 +6,11 @@ public enum Assignment
     Right, 
     Absent, 
     Participant,
+    Delete,
 }
 
-public sealed class PlayerAssignmentMessage(PlayerViewModel playerViewModel, Assignment fromAssignment, Assignment toAssignment)
+public sealed class PlayerAssignmentMessage(
+    PlayerViewModel playerViewModel, Assignment fromAssignment, Assignment toAssignment)
 {
     public PlayerViewModel PlayerViewModel { get; private set; } = playerViewModel;
 

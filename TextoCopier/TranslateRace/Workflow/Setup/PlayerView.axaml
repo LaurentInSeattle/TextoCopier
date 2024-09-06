@@ -54,7 +54,6 @@
                 />
 			<glyphs:GlyphButton
                 x:Name="leftButton"
-				IsVisible="{Binding LeftIsVisible}"
                 Grid.Column="0" Grid.Row="0" 
                 Style="{StaticResource ToolbarIconButton}"
                 Layout="IconOnly"
@@ -70,7 +69,6 @@
                 />
 			<glyphs:GlyphButton
                 x:Name="centerButton"
-				IsVisible="{Binding CenterIsVisible}"
                 Grid.Column="2" Grid.Row="0" 
                 Style="{StaticResource ToolbarIconButton}"
                 Layout="IconOnly"

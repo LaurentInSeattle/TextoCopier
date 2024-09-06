@@ -33,8 +33,16 @@
 
 		<TextBlock
 			Grid.Column="1" Grid.Row="1" 
-			Text="La Squadra Azzurra"			
+			Text="Squadra Azzurra"			
 			VerticalAlignment="Center" HorizontalAlignment="Center"
+			TextWrapping="Wrap"
+			FontSize="24"
+			Foreground="{x:Static theme:ColorTheme.UiText}"
+			/>
+		<TextBlock
+			Grid.Column="1" Grid.Row="1"
+			Text="{Binding LeftTeamPlayerCount}"
+			VerticalAlignment="Center" HorizontalAlignment="Right"
 			TextWrapping="Wrap"
 			FontSize="24"
 			Foreground="{x:Static theme:ColorTheme.UiText}"
@@ -44,11 +52,13 @@
 			Text="Partecipanti"
 			VerticalAlignment="Center" HorizontalAlignment="Center"
 			TextWrapping="Wrap"
+			Margin="0 0 80 0"
 			FontSize="24"
 			Foreground="{x:Static theme:ColorTheme.UiText}"
 			/>
 		<TextBlock
 			Grid.Column="2" Grid.Row="3"
+			Margin="0 0 80 0"
 			Text="Assenti"
 			VerticalAlignment="Center" HorizontalAlignment="Center"
 			TextWrapping="Wrap"
@@ -59,6 +69,14 @@
 			Grid.Column="3" Grid.Row="1"
 			Text="Scuderia Ferrari"
 			VerticalAlignment="Center" HorizontalAlignment="Center"
+			TextWrapping="Wrap"
+			FontSize="24"
+			Foreground="{x:Static theme:ColorTheme.UiText}"
+			/>
+		<TextBlock
+			Grid.Column="3" Grid.Row="1"
+			Text="{Binding RightTeamPlayerCount}"
+			VerticalAlignment="Center" HorizontalAlignment="Right"
 			TextWrapping="Wrap"
 			FontSize="24"
 			Foreground="{x:Static theme:ColorTheme.UiText}"
@@ -164,25 +182,27 @@
 
 		<glyphs:GlyphButton
 			x:Name="splitButton"
-			Margin="0 0 0 0"
+			Margin="0 0 12 0"
 			Style="{StaticResource ViewIconButton}"
-			Grid.Column="1" Grid.Row="5"
+			Grid.Column="2" Grid.Row="1"
 			GlyphSource="split_vertical"
 			Text="Dividi"
-			Height ="52" Width="242"
-			HorizontalAlignment="Center"
+			Height ="24" Width="80"
+			FontSize="14"
+			HorizontalAlignment="Right"
 			GlyphAngle="0"
 			Command="{Binding SplitCommand}"
     		/>
 		<glyphs:GlyphButton
 			x:Name="addButton"
-			Margin="0 0 0 0"
+			Margin="0 0 12 0"
 			Style="{StaticResource ViewIconButton}"
-			Grid.Column="2" Grid.Row="5"
+			Grid.Column="2" Grid.Row="3"
 			GlyphSource="add"
 			Text="Nuovo..."
-			Height ="52" Width="242"
-			HorizontalAlignment="Center"
+			Height ="24" Width="80"
+			FontSize="14"
+			HorizontalAlignment="Right"
 			GlyphAngle="0"
 			Command="{Binding AddCommand}"
     		/>

@@ -1,6 +1,5 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Setup;
 
-using System.Collections.ObjectModel;
 using static Lyt.TranslateRace.Messaging.ViewActivationMessage;
 
 public enum PlayerTeam
@@ -43,7 +42,7 @@ public sealed class SetupViewModel : Bindable<SetupView>
 
     private void OnPlayerAssignmentMessage(PlayerAssignmentMessage message)
     {
-        ObservableCollection<PlayerViewModel> fromCollection = 
+        ObservableCollection<PlayerViewModel> fromCollection =
             message.FromAssignment switch
             {
                 Assignment.Right => this.RightTeam,
@@ -53,15 +52,25 @@ public sealed class SetupViewModel : Bindable<SetupView>
             };
         fromCollection.Remove(message.PlayerViewModel);
 
-        ObservableCollection<PlayerViewModel> toCollection =
-            message.ToAssignment switch
-            {
-                Assignment.Right => this.RightTeam,
-                Assignment.Absent => this.BottomTeam,
-                Assignment.Participant => this.MiddleTeam,
-                _ => this.LeftTeam,
-            };
-        toCollection.Add( new PlayerViewModel(message.PlayerViewModel.Participant, message.ToAssignment));
+        if (message.ToAssignment == Assignment.Delete)
+        {
+            // TODO
+            // Delete participant 
+        }
+        else
+        {
+            ObservableCollection<PlayerViewModel> toCollection =
+                message.ToAssignment switch
+                {
+                    Assignment.Right => this.RightTeam,
+                    Assignment.Absent => this.BottomTeam,
+                    Assignment.Participant => this.MiddleTeam,
+                    _ => this.LeftTeam,
+                };
+            toCollection.Add(new PlayerViewModel(message.PlayerViewModel.Participant, message.ToAssignment));
+        }
+
+        this.ReorderAndUpdateTeamCounts();
     }
 
     private void LoadParticipants()
@@ -76,7 +85,21 @@ public sealed class SetupViewModel : Bindable<SetupView>
         this.LeftTeam = [];
         this.RightTeam = [];
         this.BottomTeam = [];
-        this.MiddleTeam = new ObservableCollection<PlayerViewModel>( participants);
+        this.MiddleTeam = new ObservableCollection<PlayerViewModel>(participants);
+        this.ReorderAndUpdateTeamCounts();
+    }
+
+    private void ReorderAndUpdateTeamCounts()
+    {
+        // Reorder
+        this.LeftTeam = new ObservableCollection<PlayerViewModel>(this.LeftTeam.OrderBy(vm => vm.Name));
+        this.RightTeam = new ObservableCollection<PlayerViewModel>(this.RightTeam.OrderBy(vm => vm.Name));
+        this.BottomTeam = new ObservableCollection<PlayerViewModel>(this.BottomTeam.OrderBy(vm => vm.Name));
+        this.MiddleTeam = new ObservableCollection<PlayerViewModel>(this.MiddleTeam.OrderBy(vm => vm.Name));
+
+        // Update Team Counts
+        this.LeftTeamPlayerCount = string.Format("({0})", this.LeftTeam.Count);
+        this.RightTeamPlayerCount = string.Format("({0})", this.RightTeam.Count);
     }
 
     #region Methods invoked by the Framework using reflection 
@@ -84,7 +107,28 @@ public sealed class SetupViewModel : Bindable<SetupView>
 
     private void OnSplit(object? _)
     {
+        if (this.MiddleTeam.Count == 0)
+        {
+            return;
+        }
 
+        bool addLeft = true;
+        foreach (var playerViewModel in this.MiddleTeam)
+        {
+            if (addLeft)
+            {
+                this.LeftTeam.Add(new PlayerViewModel(playerViewModel.Participant, Assignment.Left));
+            }
+            else
+            {
+                this.RightTeam.Add(new PlayerViewModel(playerViewModel.Participant, Assignment.Right));
+            }
+
+            addLeft = !addLeft;
+        }
+
+        this.MiddleTeam.Clear();
+        this.ReorderAndUpdateTeamCounts();
     }
 
     private void OnAdd(object? _)
@@ -92,7 +136,26 @@ public sealed class SetupViewModel : Bindable<SetupView>
 
     }
 
-    private void OnNext(object? _) => this.Messenger.Publish(ActivatedView.Game);
+    private void OnNext(object? _)
+    {
+        if ((this.LeftTeam.Count == 0) || (this.RightTeam.Count == 0))
+        {
+            // Toast: Not enough players
+            this.toaster.Show( "Problema!", "Non ci sono abbastanza giocatori!", 3_000, InformationLevel.Warning);
+            return;
+        }
+
+        // Update players participations 
+
+        // Save model 
+
+        // Create players and teams 
+
+        // Create and populate game parameters 
+        GameViewModel.Parameters parameters = new ();
+
+        this.Messenger.Publish(ActivatedView.Game, parameters);
+    }
 
 #pragma warning restore IDE0051
     #endregion Methods invoked by the Framework using reflection 
@@ -104,6 +167,10 @@ public sealed class SetupViewModel : Bindable<SetupView>
     public ICommand NextCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     public ICommand AddCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+
+    public string LeftTeamPlayerCount { get => this.Get<string>()!; set => this.Set(value); }
+
+    public string RightTeamPlayerCount { get => this.Get<string>()!; set => this.Set(value); }
 
     public ObservableCollection<PlayerViewModel> LeftTeam { get => this.Get<ObservableCollection<PlayerViewModel>>()!; set => this.Set(value); }
 

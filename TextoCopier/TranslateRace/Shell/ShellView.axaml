@@ -11,7 +11,7 @@
     x:DataType="vm:ShellViewModel" 
     xmlns:theme="clr-namespace:Lyt.TranslateRace"
     Background="Transparent"
-	Width="840" Height="600"
+	Width="960" Height="600"
     >
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
