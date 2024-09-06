@@ -43,7 +43,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.toaster.Host = this.View.ToasterHost;
             this.toaster.Show(
                 "Benvenuto/a!", 
-                "Benvenuto/a a 'Parole in Fretta! Sei pronto/a per una sfida?", 
+                "Benvenuto/a a 'Corsa per Tradurre'! Sei pronto/a per una sfida?", 
                 3_000, InformationLevel.Info);
         this.Logger.Debug("OnViewLoaded complete");
     }

@@ -315,4 +315,18 @@ public sealed partial class TranslateRaceModel : ModelBase
         }
     }
 
+    public bool DeleteParticipant (Participant participant)
+    {
+        Participant? toDelete = 
+            (from p in this.Participants 
+             where p.Name.Trim().ToLower() == participant.Name.ToLower() 
+             select p).FirstOrDefault();
+        if (toDelete is not null) 
+        { 
+            this.Participants.Remove(toDelete);
+            return true;
+        }
+
+        return false;
+    }
 }

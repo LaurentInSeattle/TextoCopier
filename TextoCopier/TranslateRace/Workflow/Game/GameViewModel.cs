@@ -9,8 +9,11 @@ public sealed class GameViewModel : Bindable<GameView>
         Over,
     }
 
-    public sealed class Parameters
+    public sealed class Parameters(Team leftTeam, Team rightTeam)
     {
+        public Team LeftTeam { get; private set; } = leftTeam;
+
+        public Team RightTeam { get; private set; } = rightTeam;
 
         public GameDifficulty Difficulty { get; set; }
     }

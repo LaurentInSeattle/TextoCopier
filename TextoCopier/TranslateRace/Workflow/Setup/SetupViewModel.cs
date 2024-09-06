@@ -42,6 +42,12 @@ public sealed class SetupViewModel : Bindable<SetupView>
 
     private void OnPlayerAssignmentMessage(PlayerAssignmentMessage message)
     {
+        if ((message.PlayerViewModel is not PlayerViewModel playerViewModel) ||
+            (playerViewModel.Participant is not Participant participant))
+        {
+            return;
+        }
+
         ObservableCollection<PlayerViewModel> fromCollection =
             message.FromAssignment switch
             {
@@ -50,12 +56,16 @@ public sealed class SetupViewModel : Bindable<SetupView>
                 Assignment.Participant => this.MiddleTeam,
                 _ => this.LeftTeam,
             };
-        fromCollection.Remove(message.PlayerViewModel);
+        fromCollection.Remove(playerViewModel);
 
         if (message.ToAssignment == Assignment.Delete)
         {
-            // TODO
             // Delete participant 
+            if (!this.translateRaceModel.DeleteParticipant(participant))
+            {
+                // Toast: Failed to delete 
+                this.toaster.Show("Problema!", "Impossibile eliminare questo elemento dati!", 3_000, InformationLevel.Warning);
+            }
         }
         else
         {
@@ -67,7 +77,7 @@ public sealed class SetupViewModel : Bindable<SetupView>
                     Assignment.Participant => this.MiddleTeam,
                     _ => this.LeftTeam,
                 };
-            toCollection.Add(new PlayerViewModel(message.PlayerViewModel.Participant, message.ToAssignment));
+            toCollection.Add(new PlayerViewModel(participant, message.ToAssignment));
         }
 
         this.ReorderAndUpdateTeamCounts();
@@ -141,19 +151,41 @@ public sealed class SetupViewModel : Bindable<SetupView>
         if ((this.LeftTeam.Count == 0) || (this.RightTeam.Count == 0))
         {
             // Toast: Not enough players
-            this.toaster.Show( "Problema!", "Non ci sono abbastanza giocatori!", 3_000, InformationLevel.Warning);
+            this.toaster.Show("Problema!", "Non ci sono abbastanza giocatori!", 3_000, InformationLevel.Warning);
             return;
         }
 
         // Update players participations 
+        foreach (var playerViewModel in this.LeftTeam)
+        {
+            ++playerViewModel.Participant.Participations;
+        }
 
-        // Save model 
+        foreach (var playerViewModel in this.RightTeam)
+        {
+            ++playerViewModel.Participant.Participations;
+        }
+
+        // Save Participants model 
+        this.translateRaceModel.Save();
 
         // Create players and teams 
+        Team leftTeam = new("Squadra Azzurra");
+        foreach (var playerViewModel in this.LeftTeam)
+        {
+            leftTeam.Join(playerViewModel.Participant);
+        }
+
+        Team rightTeam = new("Scuderia Ferrari");
+        foreach (var playerViewModel in this.RightTeam)
+        {
+            rightTeam.Join(playerViewModel.Participant);
+        }
 
         // Create and populate game parameters 
-        GameViewModel.Parameters parameters = new ();
+        GameViewModel.Parameters parameters = new(leftTeam, rightTeam);
 
+        // And... Rock and roll 
         this.Messenger.Publish(ActivatedView.Game, parameters);
     }
 
