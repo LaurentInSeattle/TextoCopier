@@ -67,6 +67,9 @@
 	  <Compile Update="Workflow\Results\GameOverView.axaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>
+	  <Compile Update="Workflow\Setup\NewParticipantView.axaml.cs">
+	    <DependentUpon>NewParticipantView.axaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Workflow\Setup\SetupView.axaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>

@@ -87,6 +87,10 @@ public sealed class ShellViewModel : Bindable<ShellView>
                 this.Activate<SetupViewModel, SetupView>(isFirstActivation, null);
                 break;
 
+            case ActivatedView.NewParticipant:
+                this.Activate<NewParticipantViewModel, NewParticipantView>(isFirstActivation, null);
+                break;
+
             case ActivatedView.Game:
                 if (parameter is GameViewModel.Parameters parametersGame)
                 {
@@ -154,6 +158,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         CreateAndBind<IntroViewModel, IntroView>();
         CreateAndBind<SetupViewModel, SetupView>();
+        CreateAndBind<NewParticipantViewModel, NewParticipantView>();
         CreateAndBind<GameViewModel, GameView>();
         CreateAndBind<GameOverViewModel, GameOverView>();
     }

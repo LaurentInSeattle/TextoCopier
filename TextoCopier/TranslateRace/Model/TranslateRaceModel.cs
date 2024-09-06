@@ -57,7 +57,7 @@ public sealed partial class TranslateRaceModel : ModelBase
 
     public void Add(GameResult gameResult) => this.GameHistory.Add(gameResult);
 
-    public Statistics Statistics () => this.GameHistory.EvaluateStatistics();
+    public Statistics Statistics() => this.GameHistory.EvaluateStatistics();
 
     public List<string> RandomPicks(int needed)
     {
@@ -161,7 +161,7 @@ public sealed partial class TranslateRaceModel : ModelBase
             }
 
             // Load default participants, if nothing loaded  
-            if (this.Participants.Count == 0 ) 
+            if (this.Participants.Count == 0)
             {
                 this.LoadDefaultParticipants();
                 this.SaveParticipants();
@@ -265,7 +265,7 @@ public sealed partial class TranslateRaceModel : ModelBase
     {
         try
         {
-            HashSet<Participant> participants = new (64);
+            HashSet<Participant> participants = new(64);
             string uriString = string.Format("avares://TranslateRace/Assets/Model/{0}.txt", "people");
             var streamReader = new StreamReader(AssetLoader.Open(new Uri(uriString)));
             string content = this.fileManager.LoadResourceFromStream<string>(FileManagerModel.Kind.Text, streamReader);
@@ -280,7 +280,7 @@ public sealed partial class TranslateRaceModel : ModelBase
                 string name = token.Trim();
                 if (name.Length > 1)
                 {
-                    _ = participants.Add(new Participant { Name = name.Capitalize() } );
+                    _ = participants.Add(new Participant { Name = name.Capitalize() });
                 }
             }
 
@@ -315,18 +315,67 @@ public sealed partial class TranslateRaceModel : ModelBase
         }
     }
 
-    public bool DeleteParticipant (Participant participant)
+    public bool DeleteParticipant(Participant participant)
     {
-        Participant? toDelete = 
-            (from p in this.Participants 
-             where p.Name.Trim().ToLower() == participant.Name.ToLower() 
+        Participant? toDelete =
+            (from p in this.Participants
+             where p.Name.Trim().ToLower() == participant.Name.ToLower()
              select p).FirstOrDefault();
-        if (toDelete is not null) 
-        { 
+        if (toDelete is not null)
+        {
             this.Participants.Remove(toDelete);
             return true;
         }
 
         return false;
+    }
+
+    public bool ValidateNewParticipantForAdd(string name, out string message)
+    {
+        message = string.Empty;
+        name = name.Trim();
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            message = "Il nome del nuovo partecipante non può essere vuoto.";
+            return false;
+        }
+
+        if (name.Length <=2 )
+        {
+            message = "Il nome del nuovo partecipante è troppo corto.";
+            return false;
+        }
+
+        if (name.Length >= 32)
+        {
+            message = "Il nome del nuovo partecipante è troppo longo.";
+            return false;
+        }
+
+        Participant? same =
+            (from p in this.Participants
+             where p.Name.Trim().Equals(name, StringComparison.CurrentCultureIgnoreCase)
+             select p).FirstOrDefault();
+        if ( same is not null)
+        {
+            message = "Il nome del nuovo partecipante è già stato preso.";
+            return false;
+        }
+
+        return true;
+    }
+
+    public bool AddParticipant(string name, out string message)
+    {
+        if (!this.ValidateNewParticipantForAdd(name, out message))
+        {
+            return false;
+        }
+
+        message = string.Empty;
+        name = name.Trim();
+        Participant participant = new() { Name = name.Capitalize() };
+        this.Participants.Add(participant);
+        return true;
     }
 }

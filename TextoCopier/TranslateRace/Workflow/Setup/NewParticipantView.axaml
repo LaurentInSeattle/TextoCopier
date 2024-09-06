@@ -1,0 +1,119 @@
+<UserControl 
+    x:Class="Lyt.TranslateRace.Workflow.Setup.NewParticipantView"
+	xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
+    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+    xmlns:vm="clr-namespace:Lyt.TranslateRace.Workflow.Setup"
+    x:DataType="vm:NewParticipantViewModel" 
+	>
+	<Grid
+		x:Name="MainGrid"
+		>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="64" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Rectangle
+			Fill="#70000020"
+            Grid.Row="0"
+			/>
+		<TextBlock
+			Grid.Row="0"
+			Text="{Binding Title}"
+			HorizontalAlignment="Left" VerticalAlignment="Center"
+			Margin="12 0 0 0"
+			FontSize="18"
+			FontStyle="Italic"
+			Foreground="{StaticResource PastelOrchid_0_080}"
+			TextWrapping="Wrap"
+			/>
+		<glyphs:GlyphButton
+			Style="{StaticResource ToolbarIconButton}"
+			Behaviour="Tap"
+			HorizontalAlignment="Right" VerticalAlignment="Center"
+			Width="72" Height="48"
+			Margin="4 4 12 4"
+			GlyphSource="dismiss"
+			ButtonBackground="BorderlessRectangle"
+			GlyphStrokeThickness="0"
+			GlyphAngle="0"
+			Text="Chiudi"
+			Command="{Binding CloseCommand}"
+	    	/>
+		<Grid
+			x:Name="InnerGrid"
+			Grid.Row="1"
+			>
+			<Grid.RowDefinitions>
+				<!-- Fields -->
+				<RowDefinition Height="32" />
+				<RowDefinition Height="44" />
+				<RowDefinition Height="32" />
+				<RowDefinition Height="44" />
+
+				<!-- Message -->
+				<RowDefinition Height="64" />
+
+				<!-- Buttons -->
+				<RowDefinition Height="64" />
+				
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<TextBlock
+				Grid.Row="0"
+				VerticalAlignment="Center" HorizontalAlignment="Stretch"
+				TextAlignment="Left"
+				Foreground="{StaticResource LightAqua_0_080}"
+				Text="Nome del nuovo partecipante:"
+				FontStyle="Italic"
+				FontSize="14"
+				Margin="6 0 0 0"
+				IsHitTestVisible="False"
+                />
+			<TextBox
+                x:Name="NameTextBox"
+                Grid.Row="1"
+                VerticalAlignment="Center" HorizontalAlignment="Stretch"
+				Watermark="{DynamicResource NewEditView.Max64}"
+				MaxLength="64"
+                Text="{Binding Name}"
+                Margin="12 0 8 0"
+                />
+			<Rectangle
+				Fill="#70000020"
+                Grid.Row="7"
+				/>
+			<TextBlock
+				Grid.Row="6"
+				VerticalAlignment="Center" HorizontalAlignment="Stretch"
+				TextAlignment="Left"
+				Foreground="{StaticResource OrangePeel_0_100}"
+				Text="{Binding ValidationMessage}"
+				FontStyle="Italic"
+				FontSize="16"
+				Margin="12 0 8 0"
+				IsHitTestVisible="False"
+				TextWrapping="Wrap"
+                />
+			<glyphs:GlyphButton
+				x:Name="SaveButton"
+                Grid.Row="7"
+				Style="{StaticResource ToolbarIconButton}"
+				Behaviour="Tap"
+				HorizontalAlignment="Right" VerticalAlignment="Center"
+				Width="72" Height="48"
+				Margin="4 4 12 4"
+				GlyphSource="save"
+				ButtonBackground="BorderlessRectangle"
+				GlyphStrokeThickness="0"
+				GlyphAngle="0"
+				Text="Salva"
+				Command="{Binding SaveCommand}"
+				IsDisabled="{Binding SaveButtonIsDisabled}"
+	    		/>
+		</Grid>
+	</Grid>
+</UserControl>

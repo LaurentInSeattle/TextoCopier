@@ -141,10 +141,7 @@ public sealed class SetupViewModel : Bindable<SetupView>
         this.ReorderAndUpdateTeamCounts();
     }
 
-    private void OnAdd(object? _)
-    {
-
-    }
+    private void OnAdd(object? _) => this.Messenger.Publish(ActivatedView.NewParticipant);
 
     private void OnNext(object? _)
     {

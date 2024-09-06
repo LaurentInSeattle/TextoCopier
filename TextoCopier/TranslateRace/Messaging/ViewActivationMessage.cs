@@ -6,6 +6,7 @@ public sealed class ViewActivationMessage(ViewActivationMessage.ActivatedView vi
     {
         Intro,
         Setup,
+        NewParticipant,
         Game,
         GameOver,
         GoBack,

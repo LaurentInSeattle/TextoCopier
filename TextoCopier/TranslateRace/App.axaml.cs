@@ -25,6 +25,7 @@ public partial class App : ApplicationBase
            typeof(ShellViewModel),
            typeof(IntroViewModel),
            typeof(SetupViewModel),
+           typeof(NewParticipantViewModel),
            typeof(GameViewModel),
            typeof(GameOverViewModel),
         ],
