@@ -186,7 +186,16 @@ public partial class GlyphButton
     }
 
     /// <summary> Coerces the GlyphSource value. </summary>
-    private static string CoerceGlyphSource(AvaloniaObject sender, string newText) => newText;
+    private static string CoerceGlyphSource(AvaloniaObject sender, string newText)
+    {
+        if ( sender is GlyphButton glyphButton)
+        {
+            glyphButton.icon.Source = newText;
+            glyphButton.icon.UpdateImage();
+        }
+
+        return newText;
+    } 
 
     /// <summary> GlyphAngle Styled Property </summary>
     public static readonly StyledProperty<double> GlyphAngleProperty =

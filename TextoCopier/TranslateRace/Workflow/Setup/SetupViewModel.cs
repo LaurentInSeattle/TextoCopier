@@ -1,5 +1,6 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Setup;
 
+using System.Collections.ObjectModel;
 using static Lyt.TranslateRace.Messaging.ViewActivationMessage;
 
 public enum PlayerTeam
@@ -23,6 +24,7 @@ public sealed class SetupViewModel : Bindable<SetupView>
         this.toaster = toaster;
         this.dialogService = dialogService;
         this.translateRaceModel = translateRaceModel;
+        this.messenger.Subscribe<PlayerAssignmentMessage>(this.OnPlayerAssignmentMessage);
     }
 
     protected override void OnViewLoaded()
@@ -39,16 +41,42 @@ public sealed class SetupViewModel : Bindable<SetupView>
         this.Logger.Debug("SetupViewModel: OnViewLoaded complete");
     }
 
+    private void OnPlayerAssignmentMessage(PlayerAssignmentMessage message)
+    {
+        ObservableCollection<PlayerViewModel> fromCollection = 
+            message.FromAssignment switch
+            {
+                Assignment.Right => this.RightTeam,
+                Assignment.Absent => this.BottomTeam,
+                Assignment.Participant => this.MiddleTeam,
+                _ => this.LeftTeam,
+            };
+        fromCollection.Remove(message.PlayerViewModel);
+
+        ObservableCollection<PlayerViewModel> toCollection =
+            message.ToAssignment switch
+            {
+                Assignment.Right => this.RightTeam,
+                Assignment.Absent => this.BottomTeam,
+                Assignment.Participant => this.MiddleTeam,
+                _ => this.LeftTeam,
+            };
+        toCollection.Add( new PlayerViewModel(message.PlayerViewModel.Participant, message.ToAssignment));
+    }
+
     private void LoadParticipants()
     {
         List<PlayerViewModel> participants = new(this.translateRaceModel.Participants.Count);
         foreach (var participant in this.translateRaceModel.Participants)
         {
-            var vm = new PlayerViewModel(participant);
+            var vm = new PlayerViewModel(participant, Assignment.Participant);
             participants.Add(vm);
         }
 
-        this.MiddleTeam = participants;
+        this.LeftTeam = [];
+        this.RightTeam = [];
+        this.BottomTeam = [];
+        this.MiddleTeam = new ObservableCollection<PlayerViewModel>( participants);
     }
 
     #region Methods invoked by the Framework using reflection 
@@ -77,11 +105,13 @@ public sealed class SetupViewModel : Bindable<SetupView>
 
     public ICommand AddCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
-    public List<PlayerViewModel> LeftTeam { get => this.Get<List<PlayerViewModel>>()!; set => this.Set(value); }
+    public ObservableCollection<PlayerViewModel> LeftTeam { get => this.Get<ObservableCollection<PlayerViewModel>>()!; set => this.Set(value); }
 
-    public List<PlayerViewModel> MiddleTeam { get => this.Get<List<PlayerViewModel>>()!; set => this.Set(value); }
+    public ObservableCollection<PlayerViewModel> MiddleTeam { get => this.Get<ObservableCollection<PlayerViewModel>>()!; set => this.Set(value); }
 
-    public List<PlayerViewModel> RightTeam { get => this.Get<List<PlayerViewModel>>()!; set => this.Set(value); }
+    public ObservableCollection<PlayerViewModel> BottomTeam { get => this.Get<ObservableCollection<PlayerViewModel>>()!; set => this.Set(value); }
+
+    public ObservableCollection<PlayerViewModel> RightTeam { get => this.Get<ObservableCollection<PlayerViewModel>>()!; set => this.Set(value); }
 
     #endregion Bound properties 
 }

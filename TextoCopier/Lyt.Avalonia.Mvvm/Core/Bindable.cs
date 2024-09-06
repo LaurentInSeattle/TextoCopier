@@ -11,7 +11,32 @@ public class Bindable : NotifyPropertyChanged
     /// <remarks> 
     /// Needed in some special cases to prevent spurious calls to Set from Avalonia controls, such as the radio button.
     /// </remarks>
-    private string setPropertyName;
+    private string setPropertyName = string.Empty;
+
+    /// <summary> The bounds properties.</summary>
+    protected readonly Dictionary<string, object?> properties = [] ;
+
+    /// <summary> Actions to invoke for changing properties.</summary>
+    protected readonly Dictionary<string, MethodInfo> actions = [];
+
+    public Bindable(bool disablePropertyChangedLogging = false, bool disableAutomaticBindingsLogging = false )
+    {
+        this.DisablePropertyChangedLogging = disablePropertyChangedLogging;
+        this.DisableAutomaticBindingsLogging = disableAutomaticBindingsLogging;
+        try
+        {
+            this.Messenger = ApplicationBase.GetRequiredService<IMessenger>();
+            this.Logger = ApplicationBase.GetRequiredService<ILogger>();
+            this.Profiler = ApplicationBase.GetRequiredService<IProfiler>();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("Missing essential services \n" + ex.ToString());
+            throw;
+        }
+
+        this.Construct();
+    }
 
     public Bindable()
     {
@@ -26,11 +51,11 @@ public class Bindable : NotifyPropertyChanged
             Debug.WriteLine("Missing essential services \n" + ex.ToString());
             throw;
         }
+        this.Construct();
+    }
 
-        this.setPropertyName = string.Empty;
-        this.properties = [];
-        this.actions = [];
-
+    private void Construct()
+    {
         try
         {
             this.CreateAndBindCommands();
@@ -49,12 +74,6 @@ public class Bindable : NotifyPropertyChanged
 
     public IProfiler Profiler { get; private set; }
 
-    /// <summary> The bounds properties.</summary>
-    protected readonly Dictionary<string, object?> properties;
-
-    /// <summary> Actions to invoke for changing properties.</summary>
-    protected readonly Dictionary<string, MethodInfo> actions;
-
     /// <summary> The control, its Data Context is this instance. </summary>
     /// <remarks> Aka, the "View" </remarks>
     public Control? Control { get; private set; }
@@ -62,6 +81,9 @@ public class Bindable : NotifyPropertyChanged
     /// <summary> Allows to disable logging when properties are changing so that we do not flood the logs. </summary>
     /// <remarks> Use for quickly changing properties, mouse, sliders, etc.</remarks>
     public bool DisablePropertyChangedLogging { get; set; }
+
+    /// <summary> Allows to disable logging of automatic bindings so that we do not flood the logs. </summary>
+    public bool DisableAutomaticBindingsLogging { get; set; }
 
     /// <summary> Binds any object, when possible.</summary>
     public object? XamlView
@@ -234,8 +256,11 @@ public class Bindable : NotifyPropertyChanged
 
             this.properties[propertyName] = new Command(methodInfo, this);
             this.OnPropertyChanged(propertyName);
-            this.Logger.Info(
-                string.Format("{0}: Command {1} has been bound to {2}", type.Name, propertyName, methodName));
+            if (!this.DisableAutomaticBindingsLogging)
+            {
+                this.Logger.Info(
+                    string.Format("{0}: Command {1} has been bound to {2}", type.Name, propertyName, methodName));
+            } 
         }
     }
 
@@ -276,8 +301,11 @@ public class Bindable : NotifyPropertyChanged
             }
 
             this.actions.Add(propertyName, methodInfo);
-            this.Logger.Info(
-                string.Format("{0}: Changes of property {1} have been bound to {2}", type.Name, propertyName, methodName));
+            if (!this.DisableAutomaticBindingsLogging)
+            {
+                this.Logger.Info(
+                    string.Format("{0}: Changes of property {1} have been bound to {2}", type.Name, propertyName, methodName));
+            } 
         }
     }
 
