@@ -8,6 +8,9 @@
     mc:Ignorable="d"
 	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
     Background="Transparent"
+	MaxWidth="820"
+	HorizontalAlignment="Left"
+	Margin="12 0 0 0"
     >
     <Grid
 		x:Name="OuterGrid"
@@ -80,7 +83,7 @@
 			Behaviour="Tap"
 			HorizontalAlignment="Center" VerticalAlignment="Center"
 			Width="48" Height="48"
-			Margin="0"
+			Margin="8 0 8 0"
 			GlyphSource="dismiss"
 			Text="{DynamicResource Toast.Dismiss}"
 			ButtonBackground="BorderlessRectangle"

@@ -30,8 +30,14 @@ public sealed partial class TranslateRaceModel : ModelBase
     // This is EXPLICITLY saved and loaded 
     public GameHistory GameHistory { get; private set; }
 
+    [JsonIgnore]
+    // Not serialized - No model changed event
+    // This is EXPLICITLY saved and loaded 
     public List<Participant> Participants { get; private set; } = [];
 
+    [JsonIgnore]
+    // Not serialized - No model changed event
+    // This is EXPLICITLY saved and loaded 
     public List<Phrase> Phrases { get; private set; } = [];
 
     public override Task Initialize()

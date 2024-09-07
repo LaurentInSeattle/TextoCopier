@@ -38,7 +38,7 @@ public sealed class GameViewModel : Bindable<GameView>
     
     private readonly IRandomizer randomizer;
     private readonly IAnimationService animationService;
-    private readonly TranslateRaceModel wordsModel;
+    private readonly TranslateRaceModel translateRaceModel;
     private readonly Chooser<string> beNice;
     private readonly Chooser<string> beMean;
     private readonly DispatcherTimer dispatcherTimer;
@@ -55,10 +55,10 @@ public sealed class GameViewModel : Bindable<GameView>
     private Queue<Tuple<string, string>>? wordQueue;
 
     public GameViewModel(
-        TranslateRaceModel wordsModel, 
+        TranslateRaceModel translateRaceModel, 
         IRandomizer randomizer, IAnimationService animationService)
     {
-        this.wordsModel = wordsModel;
+        this.translateRaceModel = translateRaceModel;
         this.randomizer = randomizer;
         this.animationService = animationService;
         this.beNice = new Chooser<string>(this.randomizer, GameViewModel.beingNice);
@@ -145,13 +145,13 @@ public sealed class GameViewModel : Bindable<GameView>
         this.matchedWordsCount = 0;
         this.missedWordsCount = 0;
         this.wordQueue = new(this.WordCount);
-        var words = this.wordsModel.RandomPicks(5 + this.WordCount);
+        var words = this.translateRaceModel.RandomPicks(5 + this.WordCount);
         foreach (string word in words)
         {
             string translated;
             try
             {
-                translated = this.wordsModel.TranslateToEnglish(word);
+                translated = this.translateRaceModel.TranslateToEnglish(word);
             }
             catch (Exception ex)
             {
@@ -208,8 +208,8 @@ public sealed class GameViewModel : Bindable<GameView>
         this.gameResults.MissedWordsCount = this.missedWordsCount;
         this.gameResults.ClicksCount = 0; 
         this.gameResults.IsWon = this.WordCount == this.matchedWordsCount;
-        this.wordsModel.Add(this.gameResults);
-        this.wordsModel.Save();
+        this.translateRaceModel.Add(this.gameResults);
+        this.translateRaceModel.Save();
     }
 
     private void PopMessage(string text, Brush brush)

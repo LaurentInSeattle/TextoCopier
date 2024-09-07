@@ -28,7 +28,6 @@ public enum PhraseTheme
 
 }
 
-
 public sealed class Phrase
 {
     public static readonly string PhrasesFilename = "translaterace_phrases";
@@ -85,6 +84,27 @@ public sealed class Phrase
             Id= 14 , Difficulty = PhraseDifficulty.Insane, Theme = PhraseTheme.Love,
             Italian = "Pronto? Sono io, Annalisa. Ti sono mancata? Mi sei mancato tanto, piccolo.",
             English = "Hello? It's me, Annalisa. Did you miss me? I missed you so much, baby..." ,
+        },
+
+        new() {
+            Id= 21 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Science,
+            Italian = "Hai mai sentito parlare del gatto di Schrödinger?",
+            English = "Have you ever heard about Schrodinger's cat?" ,
+        },
+        new() {
+            Id= 22 , Difficulty = PhraseDifficulty.Medium, Theme = PhraseTheme.Science,
+            Italian = "Come può il gatto di Schrödinger essere vivo e morto allo stesso tempo? Non ci posso credere!",
+            English = "How can Schrodinger's cat be alive and dead at the same time? I can't believe it!" ,
+        },
+        new() {
+            Id= 23 , Difficulty = PhraseDifficulty.Hard, Theme = PhraseTheme.Science,
+            Italian = "Il paradosso del gatto di Schrödinger è molto difficile da spiegare alla gente comune.",
+            English = "The Schrodinger's cat paradox is very difficult to explain to regular people." ,
+        },
+        new() {
+            Id= 24 , Difficulty = PhraseDifficulty.Insane, Theme = PhraseTheme.Science,
+            Italian = "La meccanica quantistica è molto difficile da comprendere in modo approfondito, anche per i laureati universitari.",
+            English = "Quantum mechanics is very hard to understand in depth, even for university graduates." ,
         },
 
         //new() {
