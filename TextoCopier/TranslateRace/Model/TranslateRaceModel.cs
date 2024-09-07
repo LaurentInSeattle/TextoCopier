@@ -32,6 +32,8 @@ public sealed partial class TranslateRaceModel : ModelBase
 
     public List<Participant> Participants { get; private set; } = [];
 
+    public List<Phrase> Phrases { get; private set; } = [];
+
     public override Task Initialize()
     {
         _ = Task.Factory.StartNew(this.LoadGameModel, TaskCreationOptions.LongRunning);
@@ -46,6 +48,7 @@ public sealed partial class TranslateRaceModel : ModelBase
         }
 
         this.SaveParticipants();
+        this.SavePhrases();
         return Task.CompletedTask;
     }
 
@@ -150,6 +153,17 @@ public sealed partial class TranslateRaceModel : ModelBase
             }
 
             // Load participants, if any 
+            this.LoadParticipants();
+
+            // Load default participants, if nothing loaded  
+            if (this.Participants.Count == 0)
+            {
+                this.LoadDefaultParticipants();
+                this.SaveParticipants();
+            }
+
+            // Load phrases, if any 
+            this.LoadPhrases (); 
             this.Participants = new List<Participant>(64);
             if (this.fileManager.Exists(Area.User, Kind.Json, Participant.ParticipantsFilename))
             {
@@ -160,17 +174,13 @@ public sealed partial class TranslateRaceModel : ModelBase
                 }
             }
 
-            // Load default participants, if nothing loaded  
-            if (this.Participants.Count == 0)
-            {
-                this.LoadDefaultParticipants();
-                this.SaveParticipants();
-            }
-
-            // Load phrases, if any 
             // Load default phrases, if nothing loaded  
+            if (this.Phrases.Count == 0)
+            {
+                this.LoadDefaultPhrases();
+                this.SavePhrases();
+            } 
 
-            //this.LoadPhrases();
             this.IsReady = true;
         }
         catch (Exception ex)
@@ -183,6 +193,8 @@ public sealed partial class TranslateRaceModel : ModelBase
             Thread.CurrentThread.Priority = ThreadPriority.Normal;
         }
     }
+
+    #region Phrases
 
     //private bool LoadLoadPhrases()
     //{
@@ -260,6 +272,71 @@ public sealed partial class TranslateRaceModel : ModelBase
     //        return false;
     //    }
     //}
+
+    private void LoadPhrases()
+    {
+        this.Phrases = new List<Phrase>(4096);
+        if (this.fileManager.Exists(Area.User, Kind.Json, Phrase.PhrasesFilename))
+        {
+            var phrases = this.fileManager.Load<List<Phrase>>(Area.User, Kind.Json, Phrase.PhrasesFilename);
+            if (phrases is not null)
+            {
+                this.Phrases = phrases;
+            }
+        }
+    }
+
+    private bool LoadDefaultPhrases()
+    {
+        try
+        {
+            this.Phrases = Phrase.DefaultPhrases;
+            Debug.WriteLine("Phrases count: " + this.Phrases.Count);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Debugger.Break();
+            this.Logger.Warning(ex.ToString());
+            return false;
+        }
+    }
+
+    private void SavePhrases()
+    {
+        try
+        {
+            // Null check is needed !
+            // If the File Manager is null we are currently loading the model and activating properties on a second instance 
+            // causing dirtyness, and in such case we must avoid the null crash and anyway there is no need to save anything.
+            if (this.fileManager is not null)
+            {
+                this.fileManager.Save(Area.User, Kind.Json, Phrase.PhrasesFilename, this.Phrases);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+            throw;
+        }
+    }
+
+    #endregion Phrases
+
+    #region Participants 
+
+    private void LoadParticipants()
+    {
+        this.Participants = new List<Participant>(64);
+        if (this.fileManager.Exists(Area.User, Kind.Json, Participant.ParticipantsFilename))
+        {
+            var participants = this.fileManager.Load<List<Participant>>(Area.User, Kind.Json, Participant.ParticipantsFilename);
+            if (participants is not null)
+            {
+                this.Participants = participants;
+            }
+        }
+    } 
 
     private bool LoadDefaultParticipants()
     {
@@ -378,4 +455,6 @@ public sealed partial class TranslateRaceModel : ModelBase
         this.Participants.Add(participant);
         return true;
     }
+
+    #endregion Participants 
 }
