@@ -38,6 +38,7 @@ global using Avalonia.Data.Core.Plugins;
 global using Avalonia.Input;
 global using Avalonia.Input.Platform;
 global using Avalonia.Interactivity;
+global using Avalonia.Layout;
 global using Avalonia.Markup.Xaml;
 global using Avalonia.Markup.Xaml.Styling;
 global using Avalonia.Media;

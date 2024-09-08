@@ -61,6 +61,9 @@
 	  <Compile Update="Workflow\Game\GameView.axaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>
+	  <Compile Update="Workflow\Game\TeamProgressView.axaml.cs">
+	    <DependentUpon>TeamProgressView.axaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Workflow\Intro\IntroView.axaml.cs">
 	    <DependentUpon>IntroView.axaml</DependentUpon>
 	  </Compile>

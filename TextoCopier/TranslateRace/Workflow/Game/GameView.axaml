@@ -13,6 +13,7 @@
 	<Grid
 		>
 		<Grid.RowDefinitions>
+			<RowDefinition Height="140" />
 			<RowDefinition Height="60" />
 			<RowDefinition Height="*" />
 			<RowDefinition Height="80" />
@@ -22,6 +23,17 @@
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="200" />
 		</Grid.ColumnDefinitions>
+		<Grid
+			Grid.Row="1"
+			>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<vm:TeamProgressView Grid.Row="0" />
+			<vm:TeamProgressView Grid.Row="1" />
+		</Grid>
+
 		<vm:CountDownBarControl 
 			x:Name="CountDownBarControl"
 			Margin="18 16 18 12"

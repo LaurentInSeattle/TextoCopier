@@ -34,6 +34,8 @@ public partial class CountDownBarControl : UserControl
             double width = this.Bounds.Width;
             width *= ratio;
             this.foregroundRectangle.IsVisible = true;
+            this.foregroundRectangle.HorizontalAlignment =
+                this.IsProgress ? HorizontalAlignment.Left : HorizontalAlignment.Right;
             this.foregroundRectangle.Width = width;
         }
     }
@@ -47,6 +49,8 @@ public partial class CountDownBarControl : UserControl
         this.foregroundRectangle.Height = this.BarHeight;
         this.foregroundRectangle.RadiusX = halfHeight;
         this.foregroundRectangle.RadiusY = halfHeight;
+        this.foregroundRectangle.HorizontalAlignment = 
+            this.IsProgress ? HorizontalAlignment.Left : HorizontalAlignment.Right; 
     }
 
     /// <summary> ForegroundBrush Styled Property </summary>
@@ -217,6 +221,41 @@ public partial class CountDownBarControl : UserControl
         if (value < 0.0f)
         {
             value = 0.0f;
+        }
+
+        control.AdjustForegroundSize();
+        return value;
+    }
+
+    /// <summary> IsProgress Styled Property </summary>
+    public static readonly StyledProperty<bool> IsProgressProperty =
+        AvaloniaProperty.Register<CountDownBarControl, bool>(
+            nameof(IsProgress),
+            defaultValue: false,
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: CoerceIsProgress,
+            enableDataValidation: false);
+
+
+    /// <summary> Gets or sets the IsProgress property.</summary>
+    public bool IsProgress
+    {
+        get => this.GetValue(IsProgressProperty);
+        set
+        {
+            this.SetValue(IsProgressProperty, value);
+            this.AdjustForegroundSize();
+        }
+    }
+
+    /// <summary> Coerces the IsProgress value. </summary>
+    private static bool CoerceIsProgress(AvaloniaObject sender, bool value)
+    {
+        if (sender is not CountDownBarControl control)
+        {
+            return value;
         }
 
         control.AdjustForegroundSize();

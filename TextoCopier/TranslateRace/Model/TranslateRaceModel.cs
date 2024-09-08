@@ -118,23 +118,23 @@ public sealed partial class TranslateRaceModel : ModelBase
 
     private string RandomPick(string[] source, HashSet<string> exclude, HashSet<string> alreadyFound)
     {
-        bool found = false;
-        int retries = 10 * (5 + exclude.Count);
-        while (!found)
-        {
-            int choice = this.randomizer.Next(source.Length);
-            string word = source[choice];
-            if (!exclude.Contains(word) && !alreadyFound.Contains(word))
-            {
-                return word;
-            }
+        //bool found = false;
+        //int retries = 10 * (5 + exclude.Count);
+        //while (!found)
+        //{
+        //    int choice = this.randomizer.Next(source.Length);
+        //    string word = source[choice];
+        //    if (!exclude.Contains(word) && !alreadyFound.Contains(word))
+        //    {
+        //        return word;
+        //    }
 
-            --retries;
-            if (retries <= 0)
-            {
-                break;
-            }
-        }
+        //    --retries;
+        //    if (retries <= 0)
+        //    {
+        //        break;
+        //    }
+        //}
 
         return string.Empty;
     }
