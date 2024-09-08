@@ -50,6 +50,12 @@ public sealed class GameViewModel : Bindable<GameView>
     private int missedWordsCount;
     private int matchedWordsCount;
 
+    private Team? leftTeam;
+    private Team? rightTeam;
+    private bool isLeftTurn;
+    private int leftPlayerIndex;
+    private int rightPlayerIndex;
+
     private GameResult? gameResults;
     private Parameters? parameters;
     private Queue<Tuple<string, string>>? wordQueue;
@@ -148,6 +154,12 @@ public sealed class GameViewModel : Bindable<GameView>
     {
         this.LeftTeamScore.Update(0);
         this.RightTeamScore.Update(0);
+        this.leftTeam = parameters.LeftTeam;
+        this.rightTeam = parameters.RightTeam;
+        this.isLeftTurn = true;
+        this.leftPlayerIndex = 0;
+        this.rightPlayerIndex = 0;
+        this.BeginTurn();
 
         this.Difficulty = parameters.Difficulty;
         this.gameResults = new() { Difficulty = this.Difficulty } ;
@@ -193,6 +205,20 @@ public sealed class GameViewModel : Bindable<GameView>
                 this.dispatcherTimer.IsEnabled = true;
                 this.dispatcherTimer.Start();
             }, DispatcherPriority.Normal);
+    }
+
+    private void BeginTurn()
+    {
+        if (this.leftTeam is null || this.rightTeam is null)
+        {
+            throw new Exception("Null Teams ???");
+        }
+
+        Team team = this.isLeftTurn ? this.leftTeam : this.rightTeam;
+        Player player = this.isLeftTurn ? team.Players[this.leftPlayerIndex] : team.Players[this.rightPlayerIndex];
+        Team nextTeam = !this.isLeftTurn ? this.leftTeam : this.rightTeam;
+        Player nextPlayer = this.isLeftTurn ? nextTeam.Players[this.leftPlayerIndex] : nextTeam.Players[this.rightPlayerIndex];
+        this.Turn = new TurnViewModel(team, player, nextTeam, nextPlayer); 
     }
 
     private void GameOver()
@@ -292,6 +318,8 @@ public sealed class GameViewModel : Bindable<GameView>
     public string LeftTeamName { get => this.Get<string>()!; set => this.Set(value); }
 
     public string RightTeamName { get => this.Get<string>()!; set => this.Set(value); }
+
+    public TurnViewModel Turn { get => this.Get<TurnViewModel>()!; set => this.Set(value); }
 
     public TeamProgressViewModel LeftTeamScore { get => this.Get<TeamProgressViewModel>()!; set => this.Set(value); }
 

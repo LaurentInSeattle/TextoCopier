@@ -1,0 +1,94 @@
+<UserControl 
+    x:Class="Lyt.TranslateRace.Workflow.Game.TurnView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="80"
+	Background="Transparent"
+    xmlns:vm="clr-namespace:Lyt.TranslateRace.Workflow.Game"
+    x:DataType="vm:TurnViewModel" 
+    xmlns:theme="clr-namespace:Lyt.TranslateRace"
+	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
+	>
+	<Grid
+		ShowGridLines="False"
+		>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="90" /> 
+			<ColumnDefinition Width="230" />
+			<ColumnDefinition Width="200" />
+			<ColumnDefinition Width="140" /> <!-- Ha lasciato button -->
+			<ColumnDefinition Width="64" />
+			<ColumnDefinition Width="120" />
+			<ColumnDefinition Width="96" />
+		</Grid.ColumnDefinitions>
+
+		<TextBlock
+			Grid.Column="0"
+			Text="Tocca a:"
+			HorizontalAlignment="Center" VerticalAlignment="Center"
+			Margin="0 0 0 0"
+			FontSize="22" FontWeight="Normal"
+			TextWrapping="Wrap"
+			Foreground="{Binding TeamColor}"
+			/>
+		<TextBlock
+			Grid.Column="1"
+			Text="{Binding PlayerName}"
+			HorizontalAlignment="Center" VerticalAlignment="Center"
+			Margin="0 0 0 0"
+			FontSize="28" FontWeight="Bold"
+			TextWrapping="Wrap"
+			Foreground="{Binding TeamColor}"
+			/>
+		<TextBlock
+			Grid.Column="2"
+			Text="{Binding TeamName}"
+			HorizontalAlignment="Center" VerticalAlignment="Center"
+			Margin="0 0 0 0"
+			FontSize="22" FontWeight="Normal"
+			TextWrapping="Wrap"
+			Foreground="{Binding TeamColor}"
+			/>
+		<glyphs:GlyphButton
+			Grid.Column="3" 
+			Margin="0 0 0 0"
+			Style="{StaticResource ViewIconButton}"
+			GlyphSource="arrow_down"
+			Text="Ha lasciato..."
+			Height ="32" Width="132"
+			FontSize="14"
+			HorizontalAlignment="Center"
+			GlyphAngle="0"
+			Command="{Binding HasDroppedCommand}"
+    		/>
+		<TextBlock
+			Grid.Column="4"
+			Text="Prossimo:"
+			HorizontalAlignment="Center" VerticalAlignment="Center"
+			Margin="0 0 0 0"
+			FontSize="12" FontWeight="Normal"
+			TextWrapping="Wrap"
+			Foreground="{Binding NextTeamColor}"
+			/>
+		<TextBlock
+			Grid.Column="5"
+			Text="{Binding NextPlayerName}"
+			HorizontalAlignment="Center" VerticalAlignment="Center"
+			Margin="0 0 0 0"
+			FontSize="16" FontWeight="Bold"
+			TextWrapping="Wrap"
+			Foreground="{Binding NextTeamColor}"
+			/>
+		<TextBlock
+			Grid.Column="6"
+			Text="{Binding NextTeamName}"
+			HorizontalAlignment="Center" VerticalAlignment="Center"
+			Margin="0 0 0 0"
+			FontSize="12" FontWeight="Normal"
+			TextWrapping="Wrap"
+			Foreground="{Binding NextTeamColor}"
+			/>
+	</Grid>
+</UserControl>

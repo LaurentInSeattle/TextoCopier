@@ -64,6 +64,9 @@
 	  <Compile Update="Workflow\Game\TeamProgressView.axaml.cs">
 	    <DependentUpon>TeamProgressView.axaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Workflow\Game\TurnView.axaml.cs">
+	    <DependentUpon>TurnView.axaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Workflow\Intro\IntroView.axaml.cs">
 	    <DependentUpon>IntroView.axaml</DependentUpon>
 	  </Compile>

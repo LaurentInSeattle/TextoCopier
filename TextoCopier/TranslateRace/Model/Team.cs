@@ -1,20 +1,20 @@
 ﻿namespace Lyt.TranslateRace.Model;
 
-public sealed class Team
+public sealed class Team(string name, bool isLeft)
 {
     public static string LeftName = "Squadra Azzurra";
 
     public static string RightName = "Scuderia Ferrari";
 
-    public Team(string name) => this.Name = name;
-    
-    public string Name { get; private set; }
+    public string Name { get; private set; } = name;
+
+    public bool IsLeft { get; private set; } = isLeft;
 
     public List<Player> Players { get; set; } = new(16);
 
-    public void Join(Participant participant)
+    public void Join(int index, Participant participant)
     {
-        Player player = new(participant);
+        Player player = new(index, participant);
         this.Players.Add(player);
     }
 

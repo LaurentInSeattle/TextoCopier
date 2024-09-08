@@ -170,16 +170,20 @@ public sealed class SetupViewModel : Bindable<SetupView>
         this.translateRaceModel.Save();
 
         // Create players and teams 
-        Team leftTeam = new("Squadra Azzurra");
+        int playerIndex = 0;
+        Team leftTeam = new(Team.LeftName, isLeft:true);
         foreach (var playerViewModel in this.LeftTeam)
         {
-            leftTeam.Join(playerViewModel.Participant);
+            leftTeam.Join(playerIndex, playerViewModel.Participant);
+            ++playerIndex;
         }
 
-        Team rightTeam = new("Scuderia Ferrari");
+        playerIndex = 0;
+        Team rightTeam = new(Team.RightName, isLeft: false);
         foreach (var playerViewModel in this.RightTeam)
         {
-            rightTeam.Join(playerViewModel.Participant);
+            rightTeam.Join(playerIndex, playerViewModel.Participant);
+            ++playerIndex;
         }
 
         // Create and populate game parameters 

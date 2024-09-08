@@ -4,19 +4,19 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" d:DesignWidth="840" d:DesignHeight="600" 
+    mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="800" 
     xmlns:theme="clr-namespace:Lyt.TranslateRace"
     xmlns:vm="clr-namespace:Lyt.TranslateRace.Workflow.Game"
     x:DataType="vm:GameViewModel" 
 	Background="Transparent"
 	>
 	<Grid
-		ShowGridLines="True"
+		ShowGridLines="False"
 		>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="4" />
 			<RowDefinition Height="96" />
-			<RowDefinition Height="*" />
+			<RowDefinition Height="64" />
 			<RowDefinition Height="*" />
 			<RowDefinition Height="48" />
 			<RowDefinition Height="4" />
@@ -35,7 +35,10 @@
 			<vm:TeamProgressView Grid.Row="0" DataContext="{Binding LeftTeamScore}"/>
 			<vm:TeamProgressView Grid.Row="1" DataContext="{Binding RightTeamScore}"/>
 		</Grid>
-
+		<vm:TurnView 
+			Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="999"
+			DataContext="{Binding Turn}"
+			/>
 		<vm:CountDownBarControl 
 			x:Name="CountDownBarControl"
 			Grid.Row="4"
