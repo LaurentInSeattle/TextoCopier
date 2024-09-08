@@ -66,6 +66,17 @@ public sealed class GameViewModel : Bindable<GameView>
         this.State = GameState.Idle;
         this.dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(120), IsEnabled = false };
         this.dispatcherTimer.Tick += this.OnDispatcherTimerTick;
+
+        this.LeftTeamName = Team.LeftName;
+        this.RightTeamName = Team.RightName;
+        this.LeftTeamScore =
+            new TeamProgressViewModel(
+                this.LeftTeamName, TranslateRaceModel.WinScore, ColorTheme.LeftBackground, ColorTheme.LeftForeground);
+        this.LeftTeamScore.Update(0);
+        this.RightTeamScore =
+            new TeamProgressViewModel(
+                this.RightTeamName, TranslateRaceModel.WinScore, ColorTheme.RightBackground, ColorTheme.RightForeground);
+        this.RightTeamScore.Update(0);
     }
 
     public GameState State { get; private set; }
@@ -135,16 +146,19 @@ public sealed class GameViewModel : Bindable<GameView>
 
     private void Start(Parameters parameters)
     {
+        this.LeftTeamScore.Update(0);
+        this.RightTeamScore.Update(0);
+
         this.Difficulty = parameters.Difficulty;
         this.gameResults = new() { Difficulty = this.Difficulty } ;
         this.TimeLeft = string.Empty;
-        this.WordsDiscovered = string.Format("{0}/{1}", 0, this.WordCount);
         this.gameStart = DateTime.Now;
         this.bonusMilliseconds = 0;
         this.malusMilliseconds = 0;
         this.matchedWordsCount = 0;
         this.missedWordsCount = 0;
         this.wordQueue = new(this.WordCount);
+
         var words = this.translateRaceModel.RandomPicks(5 + this.WordCount);
         foreach (string word in words)
         {
@@ -246,14 +260,6 @@ public sealed class GameViewModel : Bindable<GameView>
             _ => 3_000, // Easy 
         };
 
-    private Grid GameGrid
-        => this.Difficulty switch
-        {
-            GameDifficulty.Medium => this.View.MediumGrid,
-            GameDifficulty.Hard => this.View.DifficultGrid,
-            _ => this.View.EasyGrid, // Easy 
-        };
-
     private int RowCount
         => this.Difficulty switch
         {
@@ -283,13 +289,15 @@ public sealed class GameViewModel : Bindable<GameView>
 
     #region Bound properties 
 
+    public string LeftTeamName { get => this.Get<string>()!; set => this.Set(value); }
+
+    public string RightTeamName { get => this.Get<string>()!; set => this.Set(value); }
+
+    public TeamProgressViewModel LeftTeamScore { get => this.Get<TeamProgressViewModel>()!; set => this.Set(value); }
+
+    public TeamProgressViewModel RightTeamScore { get => this.Get<TeamProgressViewModel>()!; set => this.Set(value); }
+
     public string TimeLeft { get => this.Get<string>()!; [DoNotLog] set => this.Set(value); }
-
-    public string WordsDiscovered { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string Bonus { get => this.Get<string>()!; set => this.Set(value); }
-
-    public Brush BonusColor { get => this.Get<Brush>()!; set => this.Set(value); }
 
     public string Comment { get => this.Get<string>()!; set => this.Set(value); }
 

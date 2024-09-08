@@ -2,6 +2,10 @@
 
 public sealed class Team
 {
+    public static string LeftName = "Squadra Azzurra";
+
+    public static string RightName = "Scuderia Ferrari";
+
     public Team(string name) => this.Name = name;
     
     public string Name { get; private set; }

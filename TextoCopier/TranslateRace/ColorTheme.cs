@@ -8,6 +8,11 @@ public static class ColorTheme
         Translucent,
     }
 
+    public static Brush LeftBackground { get; private set; }
+    public static Brush LeftForeground { get; private set; }
+    public static Brush RightBackground { get; private set; }
+    public static Brush RightForeground { get; private set; }
+
     public static Brush Background { get; private set; }
     public static Brush UiText { get; private set; }
     public static Brush ValidUiText { get; private set; }
@@ -25,21 +30,27 @@ public static class ColorTheme
 
     public static void Set(Style style)
     {
+        // MUST use SolidColorBrush for all themes
         switch (style)
         {
             default:
             case Style.Default:
-                // TODO: Use SolidColorBrush for this theme
-                Background = (Brush)Brushes.Black;
-                UiText = (Brush)Brushes.DarkOrange;
-                Text = (Brush)Brushes.LavenderBlush;
-                TextAbsent = (Brush)Brushes.SlateGray;
-                BoxBorder = (Brush)Brushes.Lavender;
-                BoxUnknown = (Brush)Brushes.DarkSlateBlue;
-                BoxPresent = (Brush)Brushes.DarkOrange;
-                BoxAbsent = (Brush)Brushes.DarkSlateGray;
-                BoxExact = (Brush)Brushes.MediumSeaGreen;
-                ValidUiText = (Brush)Brushes.MediumSeaGreen;
+                Background = new SolidColorBrush(Colors.Black);
+                UiText = new SolidColorBrush(Colors.DarkOrange);
+                Text = new SolidColorBrush(Colors.LavenderBlush);
+                TextAbsent = new SolidColorBrush(Colors.SlateGray);
+                BoxBorder = new SolidColorBrush(Colors.Lavender);
+                BoxUnknown = new SolidColorBrush(Colors.DarkSlateBlue);
+                BoxPresent = new SolidColorBrush(Colors.DarkOrange);
+                BoxAbsent = new SolidColorBrush(Colors.DarkSlateGray);
+                BoxExact = new SolidColorBrush(Colors.MediumSeaGreen);
+                ValidUiText = new SolidColorBrush(Colors.MediumSeaGreen);
+
+                LeftBackground = new SolidColorBrush(Colors.DodgerBlue);
+                LeftForeground = new SolidColorBrush(Colors.DarkBlue);
+                RightBackground = new SolidColorBrush(Colors.LightSalmon);
+                RightForeground = new SolidColorBrush(Colors.Firebrick);
+
                 break;
 
             case Style.Translucent:
@@ -53,6 +64,12 @@ public static class ColorTheme
                 BoxAbsent = new SolidColorBrush(Color.FromArgb(0xC0, 0x20, 0x30, 0x50));// Brushes.DarkSlateGray;
                 BoxExact = new SolidColorBrush(Color.FromArgb(0xC0, 0x2F, 0xA0, 0x5F));
                 ValidUiText = new SolidColorBrush(Color.FromArgb(0xFF, 0x2F, 0xB0, 0x5F));
+
+                LeftBackground = new SolidColorBrush(Colors.DodgerBlue);
+                LeftForeground = new SolidColorBrush(Colors.LightCyan);
+                RightBackground = new SolidColorBrush(Colors.LightSalmon);
+                RightForeground = new SolidColorBrush(Colors.Firebrick);
+
                 break;
         }
     }

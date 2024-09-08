@@ -36,6 +36,9 @@ public sealed class SetupViewModel : Bindable<SetupView>
             throw new Exception("Failed to startup...");
         }
 
+        this.LeftTeamName = Team.LeftName;
+        this.RightTeamName = Team.LeftName;
+
         this.LoadParticipants();
         this.Logger.Debug("SetupViewModel: OnViewLoaded complete");
     }
@@ -196,6 +199,10 @@ public sealed class SetupViewModel : Bindable<SetupView>
     public ICommand NextCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     public ICommand AddCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+
+    public string LeftTeamName { get => this.Get<string>()!; set => this.Set(value); }
+
+    public string RightTeamName { get => this.Get<string>()!; set => this.Set(value); }
 
     public string LeftTeamPlayerCount { get => this.Get<string>()!; set => this.Set(value); }
 

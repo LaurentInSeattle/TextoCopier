@@ -33,7 +33,7 @@
 
 		<TextBlock
 			Grid.Column="1" Grid.Row="1"
-			Text="Squadra Azzurra"
+			Text="{Binding LeftTeamName}"
 			VerticalAlignment="Center" HorizontalAlignment="Center"
 			TextWrapping="Wrap"
 			FontSize="24"
@@ -67,7 +67,7 @@
 			/>
 		<TextBlock
 			Grid.Column="3" Grid.Row="1"
-			Text="Scuderia Ferrari"
+			Text="{Binding RightTeamName}"
 			VerticalAlignment="Center" HorizontalAlignment="Center"
 			TextWrapping="Wrap"
 			FontSize="24"

@@ -10,21 +10,22 @@
     xmlns:theme="clr-namespace:Lyt.TranslateRace"
 	>
 	<Grid
-		Margin="18 16 18 12"
+		Margin="0"
+		ShowGridLines="True"
 		>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="240" />
+			<ColumnDefinition Width="260" />
 			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="180" />
+			<ColumnDefinition Width="150" />
 		</Grid.ColumnDefinitions>
 		<TextBlock
-			Grid.Column="2"
+			Grid.Column="0"
 			Text="{Binding TeamName}"
 			HorizontalAlignment="Center" VerticalAlignment="Top"
-			Margin="0 -4 0 0"
-			FontSize="40" FontWeight="Bold"
+			Margin="0 6 0 0"
+			FontSize="28" FontWeight="Normal"
 			TextWrapping="Wrap"
-			Foreground="{x:Static theme:ColorTheme.UiText}"
+			Foreground="{Binding Foreground}"
 			/>
 		<vm:CountDownBarControl
 			x:Name="ProgressBarControl"
@@ -41,9 +42,9 @@
 			Text="{Binding ScoreText}"
 			HorizontalAlignment="Center" VerticalAlignment="Top"
 			Margin="0 -4 0 0"
-			FontSize="60" FontWeight="Bold"
+			FontSize="48" FontWeight="Bold"
 			TextWrapping="Wrap"
-			Foreground="{x:Static theme:ColorTheme.UiText}"
+			Foreground="{Binding Foreground}"
 			/>
 	</Grid>
 </UserControl>
