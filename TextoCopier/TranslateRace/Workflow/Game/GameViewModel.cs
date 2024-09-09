@@ -101,9 +101,14 @@ public sealed class GameViewModel : Bindable<GameView>
             throw new Exception("Failed to startup...");
         }
 
-        var vm = new OptionsViewModel();
-        vm.Bind(this.View.OptionsView);
-        this.Options = vm;
+        var vmOptions = new OptionsViewModel();
+        vmOptions.Bind(this.View.OptionsView);
+        this.Options = vmOptions;
+
+        var vmEvaluation = new EvaluationViewModel();
+        vmEvaluation.Bind(this.View.EvaluationView);
+        this.Evaluation = vmEvaluation;
+
         this.Logger.Debug("GameViewModel: OnViewLoaded complete");
     }
 
@@ -117,7 +122,7 @@ public sealed class GameViewModel : Bindable<GameView>
 
         this.parameters = parameters;
         Schedule.OnUiThread(
-            100,
+            200,
             () =>
             {
                 this.Start(parameters);
@@ -160,8 +165,8 @@ public sealed class GameViewModel : Bindable<GameView>
 
     private void Start(Parameters parameters)
     {
-        this.LeftTeamScore.Update(0);
-        this.RightTeamScore.Update(0);
+        this.LeftTeamScore.Update(7);
+        this.RightTeamScore.Update(13);
         this.leftTeam = parameters.LeftTeam;
         this.rightTeam = parameters.RightTeam;
         this.isLeftTurn = true;
@@ -227,7 +232,8 @@ public sealed class GameViewModel : Bindable<GameView>
         Team nextTeam = !this.isLeftTurn ? this.leftTeam : this.rightTeam;
         Player nextPlayer = this.isLeftTurn ? nextTeam.Players[this.leftPlayerIndex] : nextTeam.Players[this.rightPlayerIndex];
         this.Turn = new TurnViewModel(team, player, nextTeam, nextPlayer);
-        this.Options.Update(team, player); 
+        this.Options.Update(team);
+        this.Evaluation.Update(team);
     }
 
     private void GameOver()
@@ -239,7 +245,6 @@ public sealed class GameViewModel : Bindable<GameView>
         this.CountDownValue = 0.0f;
 
         // All view models should hide at the end 
-
         this.Messenger.Publish(ViewActivationMessage.ActivatedView.GameOver, this.gameResults);
     }
 
@@ -335,6 +340,8 @@ public sealed class GameViewModel : Bindable<GameView>
     public TurnViewModel Turn { get => this.Get<TurnViewModel>()!; set => this.Set(value); }
 
     public OptionsViewModel Options { get => this.Get<OptionsViewModel>()!; set => this.Set(value); }
+
+    public EvaluationViewModel Evaluation { get => this.Get<EvaluationViewModel>()!; set => this.Set(value); }
 
     public string Comment { get => this.Get<string>()!; set => this.Set(value); }
 

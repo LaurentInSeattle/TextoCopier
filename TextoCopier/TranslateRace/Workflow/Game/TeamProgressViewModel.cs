@@ -12,8 +12,9 @@ public sealed class TeamProgressViewModel : Bindable<TeamProgressView>
 
     public void Update(int score)
     {
-        this.ScoreValue = score;
-        this.ScoreText = string.Format("{0}/{1}", score, this.Total);
+        this.ScoreValue = (float) score;
+        this.ScoreTextLeft = score.ToString();
+        this.ScoreTextRight = (this.Total - score).ToString();
     }
 
     #region Bound properties 
@@ -22,7 +23,9 @@ public sealed class TeamProgressViewModel : Bindable<TeamProgressView>
 
     public float Total { get => this.Get<float>(); set => this.Set(value); }
 
-    public string ScoreText { get => this.Get<string>()!; set => this.Set(value); }
+    public string ScoreTextLeft { get => this.Get<string>()!; set => this.Set(value); }
+
+    public string ScoreTextRight { get => this.Get<string>()!; set => this.Set(value); }
 
     public float ScoreValue { get => this.Get<float>(); set => this.Set(value); }
 

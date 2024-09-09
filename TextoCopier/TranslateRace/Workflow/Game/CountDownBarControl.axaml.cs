@@ -13,18 +13,18 @@ public partial class CountDownBarControl : UserControl
         this.AdjustSizes();
         this.backgroundRectangle.Fill = this.BackgroundBrush;
         this.foregroundRectangle.Fill = this.ForegroundBrush;
-        this.AdjustForegroundSize();
+        this.AdjustForegroundSize(this.Value);
     }
 
-    public void AdjustForegroundSize()
+    public void AdjustForegroundSize(float value)
     {
-        if ((this.Total < 0.000_1f) || (this.Value < 0.000_1f))
+        if ((this.Total < 0.000_1f) || (value < 0.000_1f))
         {
             this.foregroundRectangle.IsVisible = false;
             return;
         }
 
-        float ratio = this.Value / this.Total;
+        float ratio = value / this.Total;
         if (ratio < 0.005f)
         {
             this.foregroundRectangle.IsVisible = false;
@@ -156,7 +156,7 @@ public partial class CountDownBarControl : UserControl
             }
 
             this.SetValue(ValueProperty, value);
-            this.AdjustForegroundSize();
+            this.AdjustForegroundSize(value);
         }
     }
 
@@ -178,7 +178,7 @@ public partial class CountDownBarControl : UserControl
             value = control.Total;
         }
 
-        control.AdjustForegroundSize();
+        control.AdjustForegroundSize(value);
         return value;
     }
 
@@ -206,7 +206,7 @@ public partial class CountDownBarControl : UserControl
             }
 
             this.SetValue(TotalProperty, value);
-            this.AdjustForegroundSize();
+            this.AdjustForegroundSize(this.Value);
         }
     }
 
@@ -223,7 +223,7 @@ public partial class CountDownBarControl : UserControl
             value = 0.0f;
         }
 
-        control.AdjustForegroundSize();
+        control.AdjustForegroundSize(control.Value);
         return value;
     }
 
@@ -246,7 +246,7 @@ public partial class CountDownBarControl : UserControl
         set
         {
             this.SetValue(IsProgressProperty, value);
-            this.AdjustForegroundSize();
+            this.AdjustForegroundSize(this.Value);
         }
     }
 
@@ -258,7 +258,7 @@ public partial class CountDownBarControl : UserControl
             return value;
         }
 
-        control.AdjustForegroundSize();
+        control.AdjustForegroundSize(control.Value);
         return value;
     }
 }

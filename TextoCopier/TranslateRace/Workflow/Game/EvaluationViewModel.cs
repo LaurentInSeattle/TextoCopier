@@ -1,10 +1,10 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Game;
 
-public sealed class OptionsViewModel : Bindable<OptionsView>
+public sealed class EvaluationViewModel : Bindable<EvaluationView>
 {
-    private PhraseDifficulty difficulty;
+    private Result result;
 
-    public OptionsViewModel() => this.TeamColor = ColorTheme.LeftForeground;
+    public EvaluationViewModel() => this.TeamColor = ColorTheme.LeftForeground;
 
     public void Update(Team team)
     {
@@ -19,15 +19,15 @@ public sealed class OptionsViewModel : Bindable<OptionsView>
     {
         if (parameter is string enumAsString)
         {
-            if (Enum.TryParse(enumAsString, ignoreCase: true, out PhraseDifficulty difficulty))
+            if (Enum.TryParse(enumAsString, ignoreCase: true, out Result result))
             {
-                this.difficulty = difficulty;
-                Debug.WriteLine(this.difficulty.ToString());
+                this.result= result;
+                Debug.WriteLine(this.result.ToString());
             }
         }
     }
 
-    private void OnNext(object? _) => this.Messenger.Publish(new DifficultyChoiceMessage(this.difficulty));   
+    private void OnNext(object? _) => this.Messenger.Publish(new ResultMessage(this.result));
 
     #endregion Methods invoked by the Framework using reflection 
 #pragma warning restore IDE0051 // Remove unused private members
