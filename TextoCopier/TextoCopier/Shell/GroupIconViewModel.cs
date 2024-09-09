@@ -24,8 +24,7 @@ public class GroupIconViewModel : Bindable<GroupIconView>
             this.Logger.Warning("Failed to select group: " + message);
         }
 
-        var messenger = ApplicationBase.GetRequiredService<IMessenger>();
-        messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.Group)); 
+        this.Messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.Group)); 
     }
 
     public string IconGlyphSource { get => this.Get<string>()!; set => this.Set(value); }

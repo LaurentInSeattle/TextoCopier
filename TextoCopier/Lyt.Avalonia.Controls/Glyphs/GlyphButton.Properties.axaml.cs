@@ -111,14 +111,32 @@ public partial class GlyphButton
     }
 
     /// <summary> Group Styled Property </summary>
-    public static readonly StyledProperty<SelectionGroup> GroupProperty =
-        AvaloniaProperty.Register<GlyphButton, SelectionGroup>(nameof(Group));
+    public static readonly StyledProperty<SelectionGroup?> GroupProperty =
+        AvaloniaProperty.Register<GlyphButton, SelectionGroup?>(
+            nameof(Group),
+            defaultValue: null,
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: CoerceGroup,
+            enableDataValidation: false);
 
     /// <summary> Gets or sets the Group property.</summary>
-    public SelectionGroup Group
+    public SelectionGroup? Group
     {
         get => this.GetValue(GroupProperty);
         set => this.SetValue(GroupProperty, value);
+    }
+
+    /// <summary> Coerces the Group value. </summary>
+    private static SelectionGroup? CoerceGroup(AvaloniaObject sender, SelectionGroup? newGroup)
+    {
+        if ((sender is GlyphButton glyphButton) && (newGroup is not null))
+        {
+            newGroup.Register(glyphButton);
+        }
+
+        return newGroup; 
     }
 
     #endregion State and Layout Styled Properties 

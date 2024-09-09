@@ -101,6 +101,9 @@ public sealed class GameViewModel : Bindable<GameView>
             throw new Exception("Failed to startup...");
         }
 
+        var vm = new OptionsViewModel();
+        vm.Bind(this.View.OptionsView);
+        this.Options = vm;
         this.Logger.Debug("GameViewModel: OnViewLoaded complete");
     }
 
@@ -113,7 +116,12 @@ public sealed class GameViewModel : Bindable<GameView>
         }
 
         this.parameters = parameters;
-        this.Start(parameters);
+        Schedule.OnUiThread(
+            100,
+            () =>
+            {
+                this.Start(parameters);
+            }, DispatcherPriority.Normal);
     }
 
     public override void Deactivate()
@@ -218,7 +226,8 @@ public sealed class GameViewModel : Bindable<GameView>
         Player player = this.isLeftTurn ? team.Players[this.leftPlayerIndex] : team.Players[this.rightPlayerIndex];
         Team nextTeam = !this.isLeftTurn ? this.leftTeam : this.rightTeam;
         Player nextPlayer = this.isLeftTurn ? nextTeam.Players[this.leftPlayerIndex] : nextTeam.Players[this.rightPlayerIndex];
-        this.Turn = new TurnViewModel(team, player, nextTeam, nextPlayer); 
+        this.Turn = new TurnViewModel(team, player, nextTeam, nextPlayer);
+        this.Options.Update(team, player); 
     }
 
     private void GameOver()
@@ -319,13 +328,13 @@ public sealed class GameViewModel : Bindable<GameView>
 
     public string RightTeamName { get => this.Get<string>()!; set => this.Set(value); }
 
-    public TurnViewModel Turn { get => this.Get<TurnViewModel>()!; set => this.Set(value); }
-
     public TeamProgressViewModel LeftTeamScore { get => this.Get<TeamProgressViewModel>()!; set => this.Set(value); }
 
     public TeamProgressViewModel RightTeamScore { get => this.Get<TeamProgressViewModel>()!; set => this.Set(value); }
 
-    public string TimeLeft { get => this.Get<string>()!; [DoNotLog] set => this.Set(value); }
+    public TurnViewModel Turn { get => this.Get<TurnViewModel>()!; set => this.Set(value); }
+
+    public OptionsViewModel Options { get => this.Get<OptionsViewModel>()!; set => this.Set(value); }
 
     public string Comment { get => this.Get<string>()!; set => this.Set(value); }
 
@@ -335,5 +344,6 @@ public sealed class GameViewModel : Bindable<GameView>
 
     public float CountDownValue { get => this.Get<float>(); [DoNotLog] set => this.Set(value); }
 
+    public string TimeLeft { get => this.Get<string>()!; [DoNotLog] set => this.Set(value); }
     #endregion Bound properties 
 }
