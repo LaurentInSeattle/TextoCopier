@@ -14,7 +14,7 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="90" />
 			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="150" />
+			<ColumnDefinition Width="270" />
 		</Grid.ColumnDefinitions>
 		<TextBlock
 			Grid.Column="0"
@@ -80,7 +80,7 @@
 			Command="{Binding NextCommand}"
 			Behaviour="Tap"
 			HorizontalAlignment="Right" VerticalAlignment="Center"
-			Width="120" Height="88" Margin="4" FontSize="22"
+			Width="250" Height="88" Margin="4" FontSize="22"
 			GlyphSource="next"
 			GlyphAngle="00"
 			GlyphStrokeThickness="0.1"

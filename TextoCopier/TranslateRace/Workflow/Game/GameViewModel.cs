@@ -30,9 +30,10 @@ public sealed class GameViewModel : Bindable<GameView>
     // TODO: Add more !
     private static readonly string[] beingMean =
     [
+        // "Deficiente!" , "Stupido!" , "Cretino!" ,  // Maybe too mean...
         "Merda!",  "Cazzo!" , "Cazzata!" , "Accidenti!", "Maledizione" ,
         "Errore" , "Sbaglio" , "Mancanza", "Fallo", "Pecca",
-        "Deficiente!" , "Stupido!" , "Cretino!" , "Scemo" ,  "Ottuso...",
+        "Scemo" ,  "Ottuso...",
         "Terribile"
     ];
     
@@ -105,6 +106,10 @@ public sealed class GameViewModel : Bindable<GameView>
         vmOptions.Bind(this.View.OptionsView);
         this.Options = vmOptions;
 
+        var vmPhrase = new PhraseViewModel();
+        vmPhrase.Bind(this.View.PhraseView);
+        this.Phrase = vmPhrase;
+
         var vmEvaluation = new EvaluationViewModel();
         vmEvaluation.Bind(this.View.EvaluationView);
         this.Evaluation = vmEvaluation;
@@ -157,10 +162,9 @@ public sealed class GameViewModel : Bindable<GameView>
         if (((timeLeft.Minutes < 0) || (timeLeft.Seconds < 0)) ||
             ((timeLeft.Minutes == 0) && (timeLeft.Seconds == 0)))
         {
-            this.GameOver();
+            this.StopTimer();
             return;
         }
-
     }
 
     private void Start(Parameters parameters)
@@ -233,16 +237,22 @@ public sealed class GameViewModel : Bindable<GameView>
         Player nextPlayer = this.isLeftTurn ? nextTeam.Players[this.leftPlayerIndex] : nextTeam.Players[this.rightPlayerIndex];
         this.Turn = new TurnViewModel(team, player, nextTeam, nextPlayer);
         this.Options.Update(team);
+        this.randomizer.Shuffle(this.translateRaceModel.Phrases);
+        this.Phrase.Update(team, this.translateRaceModel.Phrases.First());  
         this.Evaluation.Update(team);
+    }
+
+    private void StopTimer ()
+    {
+        this.dispatcherTimer.Stop();
+        this.dispatcherTimer.IsEnabled = false;
+        this.CountDownValue = 0.0f;
     }
 
     private void GameOver()
     {
         this.SaveGame();
         this.State = GameState.Over;
-        this.dispatcherTimer.Stop();
-        this.dispatcherTimer.IsEnabled = false;
-        this.CountDownValue = 0.0f;
 
         // All view models should hide at the end 
         this.Messenger.Publish(ViewActivationMessage.ActivatedView.GameOver, this.gameResults);
@@ -340,6 +350,8 @@ public sealed class GameViewModel : Bindable<GameView>
     public TurnViewModel Turn { get => this.Get<TurnViewModel>()!; set => this.Set(value); }
 
     public OptionsViewModel Options { get => this.Get<OptionsViewModel>()!; set => this.Set(value); }
+
+    public PhraseViewModel Phrase { get => this.Get<PhraseViewModel>()!; set => this.Set(value); }
 
     public EvaluationViewModel Evaluation { get => this.Get<EvaluationViewModel>()!; set => this.Set(value); }
 

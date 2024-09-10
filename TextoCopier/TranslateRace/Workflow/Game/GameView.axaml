@@ -15,11 +15,12 @@
 		>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="4" />
-			<RowDefinition Height="96" />
-			<RowDefinition Height="64" />
-			<RowDefinition Height="96" />
-			<RowDefinition Height="96" />
-			<RowDefinition Height="48" />
+			<RowDefinition Height="104" /> <!-- Score -->
+			<RowDefinition Height="64" /> <!-- Turn -->
+			<RowDefinition Height="Auto" /> <!-- Difficulty -->
+			<RowDefinition Height="256" /> <!-- Phrase -->
+			<RowDefinition Height="96" /> <!-- Eval  -->
+			<RowDefinition Height="48" /> <!-- Timer -->
 			<RowDefinition Height="4" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
@@ -31,10 +32,11 @@
 			>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="*" />
+				<RowDefinition Height="8" />
 				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
 			<vm:TeamProgressView Grid.Row="0" DataContext="{Binding LeftTeamScore}"/>
-			<vm:TeamProgressView Grid.Row="1" DataContext="{Binding RightTeamScore}"/>
+			<vm:TeamProgressView Grid.Row="2" DataContext="{Binding RightTeamScore}"/>
 		</Grid>
 		<vm:TurnView 
 			x:Name="TurnView"
@@ -46,14 +48,19 @@
 			Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="999"
 			DataContext="{Binding Options}"
 			/>
+		<vm:PhraseView
+			x:Name="PhraseView"
+			Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="999"
+			DataContext="{Binding Phrase}"
+			/>
 		<vm:EvaluationView
 			x:Name="EvaluationView"
-			Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="999"
+			Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="999"
 			DataContext="{Binding Evaluation}"
 			/>
 		<vm:CountDownBarControl 
 			x:Name="CountDownBarControl"
-			Grid.Row="5"
+			Grid.Row="6"
 			Margin="18 0 18 0"
 			BarHeight="12"
 			BackgroundBrush="LightSeaGreen"
@@ -62,7 +69,7 @@
 			Value="{Binding CountDownValue}"
 			/>
 		<TextBlock
-			Grid.Column="1" Grid.Row="5" Grid.RowSpan="1"
+			Grid.Column="1" Grid.Row="6" Grid.RowSpan="1"
 			Text="{Binding TimeLeft}"
 			HorizontalAlignment="Center" VerticalAlignment="Top"
 			Margin="0 -4 0 0"
@@ -71,7 +78,7 @@
 			Foreground="{x:Static theme:ColorTheme.UiText}"
 			/>
 		<TextBlock
-			Grid.Column="0" Grid.Row="5"
+			Grid.Column="0" Grid.Row="6"
 			Text="{Binding Comment}"
 			Foreground="{Binding CommentColor}"
 			HorizontalAlignment="Center" VerticalAlignment="Center"

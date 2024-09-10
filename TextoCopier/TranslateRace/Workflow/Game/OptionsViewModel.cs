@@ -8,6 +8,7 @@ public sealed class OptionsViewModel : Bindable<OptionsView>
 
     public void Update(Team team)
     {
+        this.Visible = true; 
         this.TeamColor = team.IsLeft ? ColorTheme.LeftForeground : ColorTheme.RightForeground;
         this.SelectionGroup = this.View.SelectionGroup;
     }
@@ -27,10 +28,16 @@ public sealed class OptionsViewModel : Bindable<OptionsView>
         }
     }
 
-    private void OnNext(object? _) => this.Messenger.Publish(new DifficultyChoiceMessage(this.difficulty));   
+    private void OnNext(object? _)
+    {
+        this.Visible = false;
+        this.Messenger.Publish(new DifficultyChoiceMessage(this.difficulty));
+    } 
 
     #endregion Methods invoked by the Framework using reflection 
 #pragma warning restore IDE0051 // Remove unused private members
+
+    public bool Visible { get => this.Get<bool>(); set => this.Set(value); }
 
     public ICommand ClickCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 

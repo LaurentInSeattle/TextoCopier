@@ -26,6 +26,9 @@
 
 	<ItemGroup>
 	  <None Remove="Assets\Images\dark.jpg" />
+	  <None Remove="Assets\Images\Flags\Italy.png" />
+	  <None Remove="Assets\Images\Flags\UnitedKingdom.png" />
+	  <None Remove="Assets\Images\Flags\UnitedStates.png" />
 	  <None Remove="Assets\Images\parole.ico" />
 	  <None Remove="Assets\Images\venezia.jpg" />
 	  <None Remove="Assets\Model\people.txt" />

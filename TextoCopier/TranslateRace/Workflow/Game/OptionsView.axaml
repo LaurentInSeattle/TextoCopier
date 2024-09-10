@@ -9,8 +9,11 @@
     xmlns:theme="clr-namespace:Lyt.TranslateRace"
     xmlns:vm="clr-namespace:Lyt.TranslateRace.Workflow.Game"
     x:DataType="vm:OptionsViewModel" 
+	IsVisible="{Binding Visible}"
 	>
-	<Grid>
+	<Grid
+		Height="96"
+		>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="90" />
 			<ColumnDefinition Width="*" />
