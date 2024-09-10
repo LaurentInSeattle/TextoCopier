@@ -9,12 +9,13 @@
     xmlns:theme="clr-namespace:Lyt.TranslateRace"
     xmlns:vm="clr-namespace:Lyt.TranslateRace.Workflow.Game"
     x:DataType="vm:EvaluationViewModel" 
+	IsVisible="{Binding Visible}"
 	>
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="90" />
 			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="270" />
+			<ColumnDefinition Width="260" />
 		</Grid.ColumnDefinitions>
 		<TextBlock
 			Grid.Column="0"
@@ -80,7 +81,7 @@
 			Command="{Binding NextCommand}"
 			Behaviour="Tap"
 			HorizontalAlignment="Right" VerticalAlignment="Center"
-			Width="250" Height="88" Margin="4" FontSize="22"
+			Width="240" Height="88" Margin="4" FontSize="22"
 			GlyphSource="next"
 			GlyphAngle="00"
 			GlyphStrokeThickness="0.1"

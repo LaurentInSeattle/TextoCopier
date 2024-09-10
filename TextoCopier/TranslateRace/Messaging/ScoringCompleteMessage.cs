@@ -1,5 +1,5 @@
 ﻿namespace Lyt.TranslateRace.Messaging;
 
-public sealed class NextMessage
+public sealed class ScoringCompleteMessage
 {
 }

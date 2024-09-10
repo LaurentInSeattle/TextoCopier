@@ -8,7 +8,6 @@ public sealed class OptionsViewModel : Bindable<OptionsView>
 
     public void Update(Team team)
     {
-        this.Visible = true; 
         this.TeamColor = team.IsLeft ? ColorTheme.LeftForeground : ColorTheme.RightForeground;
         this.SelectionGroup = this.View.SelectionGroup;
     }
@@ -30,7 +29,6 @@ public sealed class OptionsViewModel : Bindable<OptionsView>
 
     private void OnNext(object? _)
     {
-        this.Visible = false;
         this.Messenger.Publish(new DifficultyChoiceMessage(this.difficulty));
     } 
 

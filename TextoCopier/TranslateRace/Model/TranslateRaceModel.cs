@@ -65,6 +65,13 @@ public sealed partial class TranslateRaceModel : ModelBase
         return Task.CompletedTask;
     }
 
+    public Phrase PickPhrase(PhraseDifficulty phraseDifficulty)
+    {
+        // TODO: Randomize
+        var x = (from phrase in this.Phrases where phrase.Difficulty == phraseDifficulty select phrase).FirstOrDefault();
+        return x; 
+    }
+
     public void Add(GameResult gameResult) => this.GameHistory.Add(gameResult);
 
     public Statistics Statistics() => this.GameHistory.EvaluateStatistics();

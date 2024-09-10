@@ -27,6 +27,7 @@
 	<ItemGroup>
 	  <None Remove="Assets\Images\dark.jpg" />
 	  <None Remove="Assets\Images\Flags\Italy.png" />
+	  <None Remove="Assets\Images\Flags\San_Marino.png" />
 	  <None Remove="Assets\Images\Flags\UnitedKingdom.png" />
 	  <None Remove="Assets\Images\Flags\UnitedStates.png" />
 	  <None Remove="Assets\Images\parole.ico" />

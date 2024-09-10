@@ -16,15 +16,5 @@ public sealed class GameResult
 
     public bool IsWon { get; set; }
 
-    public List<string> Words { get; set; } = [];
-
     public TimeSpan GameDuration { get; set; }
-
-    public int WordCount { get; set; }
-
-    public int MatchedWordsCount { get; set; }
-
-    public int MissedWordsCount { get; set; }
-
-    public int ClicksCount { get; set; }
 }

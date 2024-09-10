@@ -102,10 +102,10 @@ public sealed class GameHistory : ModelBase
         var hashSet = new HashSet<string>(this.GameResults.Count);
         foreach (var gameEntry in this.GameResults)
         {
-            foreach (string word in gameEntry.Words)
-            {
-                _ = hashSet.Add(word);
-            }
+            //foreach (string word in gameEntry.Words)
+            //{
+            //    _ = hashSet.Add(word);
+            //}
         }
 
         return hashSet;
@@ -114,9 +114,6 @@ public sealed class GameHistory : ModelBase
     public Statistics EvaluateStatistics()
     {
         int wins = (from entry in this.GameResults where entry.IsWon select entry).Count();
-        int matches = (from entry in this.GameResults select entry.MatchedWordsCount).Sum();
-        int misses = (from entry in this.GameResults select entry.MissedWordsCount).Sum();
-        int clicks = (from entry in this.GameResults select entry.ClicksCount).Sum();
         int count = this.GameResults.Count;
         int winRate = count == 0 ? 0 : (int)((0.5f + (100 * wins)) / count);
         long durationLong = (from entry in this.GameResults select entry.GameDuration.Ticks).Sum();
@@ -130,9 +127,6 @@ public sealed class GameHistory : ModelBase
             Duration = durationTs,
             BestStreak = streaks.Item1,
             CurrentStreak = streaks.Item2,
-            MatchedWordsCount = matches,
-            MissedWordsCount = misses,
-            ClicksCount = clicks,
         };
         return statistics;
     }

@@ -72,9 +72,6 @@ public sealed class GameOverViewModel : Bindable<GameOverView>
         this.IsWon = this.results.IsWon ? "Hai Vinto!" : "Perdi... :(";
         this.IsWonColor = this.results.IsWon ? ColorTheme.ValidUiText : ColorTheme.BoxBorder;
         this.Duration = string.Format("Questa Partita: {0} seconds", (int)(0.5 + this.results.GameDuration.TotalSeconds));
-        this.Matches = string.Format("Parole Abbinate: {0}", this.results.MatchedWordsCount);
-        this.Missed = string.Format("Errori: {0}", this.results.MissedWordsCount);
-        this.Clicks = string.Format("Clic del Mouse: {0}", this.results.ClicksCount);
 
         this.TotalMatches = string.Format("Totale Parole Abbinate: {0}", this.statistics.MatchedWordsCount);
         this.TotalMissed = string.Format("Somma degli Errori: {0}", this.statistics.MissedWordsCount);

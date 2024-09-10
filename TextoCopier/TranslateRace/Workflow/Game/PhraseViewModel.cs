@@ -28,7 +28,7 @@ public sealed class PhraseViewModel : Bindable<PhraseView>
     {
         if (this.isRevealed)
         {
-            this.Messenger.Publish(new NextMessage());
+            this.Messenger.Publish(new TranslateCompleteMessage());
         }
         else
         {
@@ -44,6 +44,8 @@ public sealed class PhraseViewModel : Bindable<PhraseView>
 
     #endregion Methods invoked by the Framework using reflection 
 #pragma warning restore IDE0051 // Remove unused private members
+
+    public bool Visible { get => this.Get<bool>(); set => this.Set(value); }
 
     public string Italian { get => this.Get<string>()!; set => this.Set(value); }
 

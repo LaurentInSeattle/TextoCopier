@@ -4,18 +4,19 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="192"
+	mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="256"
 	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
     xmlns:theme="clr-namespace:Lyt.TranslateRace"
     xmlns:vm="clr-namespace:Lyt.TranslateRace.Workflow.Game"
     x:DataType="vm:PhraseViewModel" 
 	Height="256"
+	IsVisible="{Binding Visible}"
 	>
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="40" />
 			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="270" />
+			<ColumnDefinition Width="260" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*" />
@@ -23,8 +24,15 @@
 		</Grid.RowDefinitions>
 		<Image
 			Grid.Column="0"
-			HorizontalAlignment="Center" VerticalAlignment="Center"
+			HorizontalAlignment="Center" VerticalAlignment="Top"
+			Margin="0 24 0 0"
 			Source="/Assets/Images/Flags/Italy.png"
+			/>
+		<Image
+			Grid.Column="0"
+			Margin="0 0 0 24"
+			HorizontalAlignment="Center" VerticalAlignment="Bottom"
+			Source="/Assets/Images/Flags/San_Marino.png"
 			/>
 		<TextBlock
 			Grid.Column="1"
@@ -32,7 +40,7 @@
 			HorizontalAlignment="Left" VerticalAlignment="Center"
 			TextAlignment="Left"
 			Margin="12 0 0 0"
-			FontSize="30" FontWeight="Normal"
+			FontSize="26" FontWeight="Normal"
 			TextWrapping="Wrap"
 			Foreground="{Binding TeamColor}"
 			/>
@@ -42,7 +50,7 @@
 			Command="{Binding CallCommand}"
 			Behaviour="Tap"
 			HorizontalAlignment="Right" VerticalAlignment="Center"
-			Width="250" Height="88" Margin="4" FontSize="22"
+			Width="240" Height="88" Margin="4" FontSize="22"
 			GlyphSource="person_phone"
 			GlyphAngle="00"
 			GlyphStrokeThickness="0.1"
@@ -50,8 +58,15 @@
     		/>
 		<Image
 			Grid.Column="0" Grid.Row="1"
-			HorizontalAlignment="Center" VerticalAlignment="Center"
+			HorizontalAlignment="Center" VerticalAlignment="Top"
+			Margin="0 24 0 0"
 			Source="/Assets/Images/Flags/UnitedKingdom.png"
+			/>
+		<Image
+			Grid.Column="0" Grid.Row="1"
+			Margin="0 0 0 24"
+			HorizontalAlignment="Center" VerticalAlignment="Bottom"
+			Source="/Assets/Images/Flags/UnitedStates.png"
 			/>
 		<TextBlock
 			Grid.Column="1" Grid.Row="1"
@@ -59,7 +74,7 @@
 			HorizontalAlignment="Left" VerticalAlignment="Center"
 			TextAlignment="Left"
 			Margin="12 0 0 0"
-			FontSize="30" FontWeight="Normal"
+			FontSize="26" FontWeight="Normal"
 			TextWrapping="Wrap"
 			Foreground="{Binding TeamColor}"
 			/>
@@ -69,7 +84,7 @@
 			Command="{Binding NextCommand}"
 			Behaviour="Tap"
 			HorizontalAlignment="Right" VerticalAlignment="Center"
-			Width="250" Height="88" Margin="4" FontSize="22"
+			Width="240" Height="88" Margin="4" FontSize="22"
 			GlyphSource="next"
 			GlyphAngle="00"
 			GlyphStrokeThickness="0.1"

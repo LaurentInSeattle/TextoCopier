@@ -9,6 +9,16 @@ public sealed class GameViewModel : Bindable<GameView>
         Over,
     }
 
+    public enum GameStep
+    {
+        Idle,
+        DifficultySelection,
+        ThemeSelection,
+        Translate,
+        Evaluate,
+        Score,
+    }
+
     public sealed class Parameters(Team leftTeam, Team rightTeam)
     {
         public Team LeftTeam { get; private set; } = leftTeam;
@@ -36,7 +46,7 @@ public sealed class GameViewModel : Bindable<GameView>
         "Scemo" ,  "Ottuso...",
         "Terribile"
     ];
-    
+
     private readonly IRandomizer randomizer;
     private readonly IAnimationService animationService;
     private readonly TranslateRaceModel translateRaceModel;
@@ -46,23 +56,22 @@ public sealed class GameViewModel : Bindable<GameView>
 
     private DateTime gameStart;
     private DateTime gameEnd;
-    private int bonusMilliseconds;
-    private int malusMilliseconds;
-    private int missedWordsCount;
-    private int matchedWordsCount;
+    private bool isViewLoaded;
 
     private Team? leftTeam;
     private Team? rightTeam;
     private bool isLeftTurn;
     private int leftPlayerIndex;
     private int rightPlayerIndex;
+    private GameStep gameStep;
+    private PhraseDifficulty phraseDifficulty;
+    private EvaluationResult evaluationResult;
 
     private GameResult? gameResults;
     private Parameters? parameters;
-    private Queue<Tuple<string, string>>? wordQueue;
 
     public GameViewModel(
-        TranslateRaceModel translateRaceModel, 
+        TranslateRaceModel translateRaceModel,
         IRandomizer randomizer, IAnimationService animationService)
     {
         this.translateRaceModel = translateRaceModel;
@@ -84,7 +93,29 @@ public sealed class GameViewModel : Bindable<GameView>
             new TeamProgressViewModel(
                 this.RightTeamName, TranslateRaceModel.WinScore, ColorTheme.RightBackground, ColorTheme.RightForeground);
         this.RightTeamScore.Update(0);
+
+        this.Messenger.Subscribe<DifficultyChoiceMessage>(this.OnDifficultyChoice);
+        this.Messenger.Subscribe<PlayerDropMessage>(this.OnPlayerDrop);
+        this.Messenger.Subscribe<PlayerLifelineMessage>(this.OnPlayerLifeline);
+        this.Messenger.Subscribe<TranslateCompleteMessage>(this.OnTranslateComplete);
+        this.Messenger.Subscribe<EvaluationResultMessage>(this.OnEvaluationResult);
+        this.Messenger.Subscribe<ScoringCompleteMessage>(this.OnScoringComplete);
     }
+
+    public GameStep TurnStep
+    {
+        get => this.gameStep;
+        private set
+        {
+            if (this.gameStep != value)
+            {
+                this.gameStep = value;
+                this.UpdateUiComponentsVisibility();
+            }
+        }
+    }
+
+    public Team? CurrentTeam => this.isLeftTurn ? this.leftTeam : this.rightTeam; 
 
     public GameState State { get; private set; }
 
@@ -114,6 +145,7 @@ public sealed class GameViewModel : Bindable<GameView>
         vmEvaluation.Bind(this.View.EvaluationView);
         this.Evaluation = vmEvaluation;
 
+        this.isViewLoaded = true;
         this.Logger.Debug("GameViewModel: OnViewLoaded complete");
     }
 
@@ -125,24 +157,195 @@ public sealed class GameViewModel : Bindable<GameView>
             throw new ArgumentException("Invalid activation parameters.");
         }
 
-        this.parameters = parameters;
-        Schedule.OnUiThread(
-            200,
-            () =>
+        // Wait to make sure the view is loaded
+        this.DelayedStart(parameters);
+    }
+
+    private async void DelayedStart(Parameters parameters)
+    {
+        int retries = 10;
+        while (!this.isViewLoaded)
+        {
+            await Task.Delay(120);
+            --retries;
+            if (retries < 0)
             {
-                this.Start(parameters);
-            }, DispatcherPriority.Normal);
+                throw new Exception("View not loaded ??? ");
+            }
+        }
+
+        this.parameters = parameters;
+        Dispatch.OnUiThread(this.Start);
     }
 
     public override void Deactivate()
     {
         base.Deactivate();
 
-        this.wordQueue = null;
         this.Profiler.FullGcCollect();
     }
 
     #endregion Loading and Activation 
+
+    private void Start()
+    {
+        if (this.parameters is null)
+        {
+            throw new ArgumentException("No parameters ???");
+        }
+
+        this.Difficulty = this.parameters.Difficulty;
+        this.leftTeam = this.parameters.LeftTeam;
+        this.rightTeam = this.parameters.RightTeam;
+        this.isLeftTurn = true;
+        this.leftPlayerIndex = 0;
+        this.rightPlayerIndex = 0;
+        this.LeftTeamScore.Update(0);
+        this.RightTeamScore.Update(0);
+
+        this.BeginTurn();
+
+        this.gameResults = new() { Difficulty = this.Difficulty };
+        this.TimeLeft = string.Empty;
+        this.gameStart = DateTime.Now;
+
+        this.State = GameState.Running;
+    }
+
+    private void BeginTurn()
+    {
+        if (this.leftTeam is null || this.rightTeam is null)
+        {
+            throw new Exception("Null Teams ???");
+        }
+
+        Team team = this.isLeftTurn ? this.leftTeam : this.rightTeam;
+        Player player = this.isLeftTurn ? team.Players[this.leftPlayerIndex] : team.Players[this.rightPlayerIndex];
+        Team nextTeam = !this.isLeftTurn ? this.leftTeam : this.rightTeam;
+        Player nextPlayer = this.isLeftTurn ? nextTeam.Players[this.leftPlayerIndex] : nextTeam.Players[this.rightPlayerIndex];
+        this.Turn = new TurnViewModel(team, player, nextTeam, nextPlayer);
+        this.TurnStep = GameStep.DifficultySelection;
+        this.Options.Update(team);
+        this.Phrase.Update(team, this.translateRaceModel.PickPhrase(PhraseDifficulty.Insane));
+        this.Evaluation.Update(team);
+    }
+
+    private void UpdateUiComponentsVisibility()
+    {
+        switch (this.TurnStep)
+        {
+            default:
+            case GameStep.DifficultySelection:
+                this.Options.Visible = true;
+                this.Phrase.Visible = false;
+                this.Evaluation.Visible = false;
+                this.TimerIsVisible = false;
+                break;
+
+            case GameStep.ThemeSelection:
+                this.Options.Visible = false;
+                this.Phrase.Visible = false;
+                this.Evaluation.Visible = false;
+                this.TimerIsVisible = false;
+                break;
+            case GameStep.Translate:
+                this.Options.Visible = false;
+                this.Phrase.Visible = true;
+                this.Evaluation.Visible = false;
+                this.TimerIsVisible = true;
+                break;
+            case GameStep.Evaluate:
+                this.Options.Visible = false;
+                this.Phrase.Visible = true;
+                this.Evaluation.Visible = true;
+                this.TimerIsVisible = false;
+                break;
+            case GameStep.Score:
+                this.Options.Visible = false;
+                this.Phrase.Visible = true;
+                this.Evaluation.Visible = false;
+                this.TimerIsVisible = false;
+                break;
+        }
+    }
+
+    private void OnPlayerDrop(PlayerDropMessage message)
+    {
+        if (this.State != GameState.Running)
+        {
+            return;
+        }
+
+        // TODO 
+    }
+
+    private void OnDifficultyChoice(DifficultyChoiceMessage message)
+    {
+        if ((this.State != GameState.Running) || (this.TurnStep != GameStep.DifficultySelection))
+        {
+            return;
+        }
+
+        this.phraseDifficulty = message.PhraseDifficulty;
+        var phrase = this.translateRaceModel.PickPhrase(this.phraseDifficulty);
+        var team = this.CurrentTeam;
+        if (phrase is null || team is null)
+        {
+            throw new Exception("No phrase, no team ???");
+        }
+
+        this.Phrase.Update(team, phrase);
+        // TODO: Launch timer 
+        this.TurnStep = GameStep.Translate;        
+    }
+
+    private void OnPlayerLifeline(PlayerLifelineMessage message)
+    {
+        if ((this.State != GameState.Running) || (this.TurnStep != GameStep.Translate))
+        {
+            return;
+        }
+
+        // TODO: Choose a player of pick at random ??? 
+    }
+
+
+    private void OnTranslateComplete(TranslateCompleteMessage message)
+    {
+        if ((this.State != GameState.Running) || (this.TurnStep != GameStep.Translate))
+        {
+            return;
+        }
+
+        this.TurnStep = GameStep.Evaluate;
+    }
+
+    private void OnEvaluationResult(EvaluationResultMessage message)
+    {
+        if ((this.State != GameState.Running) || (this.TurnStep != GameStep.Evaluate))
+        {
+            return;
+        }
+
+        this.evaluationResult = message.Result;
+        this.TurnStep = GameStep.Score;
+    }
+
+    private void OnScoringComplete(ScoringCompleteMessage message)
+    {
+        if ((this.State != GameState.Running) || (this.TurnStep != GameStep.Score))
+        {
+            return;
+        }
+
+        // TODO: Check Game Over 
+
+        // TODO: Next Turn !!!
+
+        this.TurnStep = GameStep.DifficultySelection;
+    }
+
+    #region Timer 
 
     private void OnDispatcherTimerTick(object? sender, EventArgs e)
     {
@@ -151,7 +354,7 @@ public sealed class GameViewModel : Bindable<GameView>
             return;
         }
 
-        int duration = this.DurationMilliseconds + this.bonusMilliseconds - this.malusMilliseconds;
+        int duration = this.DurationMilliseconds;
         int elapsed = (int)((DateTime.Now - this.gameStart).TotalMilliseconds);
         int left = duration - elapsed;
         this.CountDownTotal = (float)duration;
@@ -167,54 +370,8 @@ public sealed class GameViewModel : Bindable<GameView>
         }
     }
 
-    private void Start(Parameters parameters)
+    private void StartTimer()
     {
-        this.LeftTeamScore.Update(7);
-        this.RightTeamScore.Update(13);
-        this.leftTeam = parameters.LeftTeam;
-        this.rightTeam = parameters.RightTeam;
-        this.isLeftTurn = true;
-        this.leftPlayerIndex = 0;
-        this.rightPlayerIndex = 0;
-        this.BeginTurn();
-
-        this.Difficulty = parameters.Difficulty;
-        this.gameResults = new() { Difficulty = this.Difficulty } ;
-        this.TimeLeft = string.Empty;
-        this.gameStart = DateTime.Now;
-        this.bonusMilliseconds = 0;
-        this.malusMilliseconds = 0;
-        this.matchedWordsCount = 0;
-        this.missedWordsCount = 0;
-        this.wordQueue = new(this.WordCount);
-
-        var words = this.translateRaceModel.RandomPicks(5 + this.WordCount);
-        foreach (string word in words)
-        {
-            string translated;
-            try
-            {
-                translated = this.translateRaceModel.TranslateToEnglish(word);
-            }
-            catch (Exception ex)
-            {
-                this.Logger.Warning("Game View Model: Start: " + ex.ToString());
-                continue;
-            }
-
-            translated = translated.Trim();
-            string trimmedWord = word.Trim();
-            Debug.WriteLine(trimmedWord + "  -  " + translated);
-            this.wordQueue.Enqueue(new Tuple<string, string>(trimmedWord, translated));
-
-            if (this.wordQueue.Count == this.WordCount)
-            {
-                break;
-            }
-        }
-
-        this.State = GameState.Running;
-
         Schedule.OnUiThread(
             500,
             () =>
@@ -224,30 +381,14 @@ public sealed class GameViewModel : Bindable<GameView>
             }, DispatcherPriority.Normal);
     }
 
-    private void BeginTurn()
-    {
-        if (this.leftTeam is null || this.rightTeam is null)
-        {
-            throw new Exception("Null Teams ???");
-        }
-
-        Team team = this.isLeftTurn ? this.leftTeam : this.rightTeam;
-        Player player = this.isLeftTurn ? team.Players[this.leftPlayerIndex] : team.Players[this.rightPlayerIndex];
-        Team nextTeam = !this.isLeftTurn ? this.leftTeam : this.rightTeam;
-        Player nextPlayer = this.isLeftTurn ? nextTeam.Players[this.leftPlayerIndex] : nextTeam.Players[this.rightPlayerIndex];
-        this.Turn = new TurnViewModel(team, player, nextTeam, nextPlayer);
-        this.Options.Update(team);
-        this.randomizer.Shuffle(this.translateRaceModel.Phrases);
-        this.Phrase.Update(team, this.translateRaceModel.Phrases.First());  
-        this.Evaluation.Update(team);
-    }
-
-    private void StopTimer ()
+    private void StopTimer()
     {
         this.dispatcherTimer.Stop();
         this.dispatcherTimer.IsEnabled = false;
         this.CountDownValue = 0.0f;
     }
+
+    #endregion Timer 
 
     private void GameOver()
     {
@@ -258,7 +399,7 @@ public sealed class GameViewModel : Bindable<GameView>
         this.Messenger.Publish(ViewActivationMessage.ActivatedView.GameOver, this.gameResults);
     }
 
-    private void SaveGame ()
+    private void SaveGame()
     {
         if (this.gameResults is null)
         {
@@ -267,11 +408,7 @@ public sealed class GameViewModel : Bindable<GameView>
 
         this.gameEnd = DateTime.Now;
         this.gameResults.GameDuration = this.gameEnd - this.gameStart;
-        this.gameResults.WordCount = this.WordCount;
-        this.gameResults.MatchedWordsCount = this.matchedWordsCount;
-        this.gameResults.MissedWordsCount = this.missedWordsCount;
-        this.gameResults.ClicksCount = 0; 
-        this.gameResults.IsWon = this.WordCount == this.matchedWordsCount;
+        this.gameResults.IsWon = true;
         this.translateRaceModel.Add(this.gameResults);
         this.translateRaceModel.Save();
     }
@@ -293,39 +430,6 @@ public sealed class GameViewModel : Bindable<GameView>
     }
 
     #region Properties calculated from game parameters 
-
-    private int BonusMilliseconds
-        => this.Difficulty switch
-        {
-            GameDifficulty.Medium => 2_000,
-            GameDifficulty.Hard => 1_000,
-            _ => 5_000, // Easy 
-        };
-
-    private int MalusMilliseconds
-        => this.Difficulty switch
-        {
-            GameDifficulty.Medium => 5_000,
-            GameDifficulty.Hard => 7_000,
-            _ => 3_000, // Easy 
-        };
-
-    private int RowCount
-        => this.Difficulty switch
-        {
-            GameDifficulty.Medium => 5,
-            GameDifficulty.Hard => 6,
-            _ => 4, // Easy 
-        };
-
-    private int WordCount
-        => this.Difficulty switch
-        {
-            GameDifficulty.Medium => 30,
-            GameDifficulty.Hard => 40,
-            // _ => 8, // DEBUG !!! 
-            _ => 20, // Easy 
-        };
 
     private int DurationMilliseconds
         => this.Difficulty switch
@@ -363,6 +467,9 @@ public sealed class GameViewModel : Bindable<GameView>
 
     public float CountDownValue { get => this.Get<float>(); [DoNotLog] set => this.Set(value); }
 
+    public bool TimerIsVisible { get => this.Get<bool>(); set => this.Set(value); }
+
     public string TimeLeft { get => this.Get<string>()!; [DoNotLog] set => this.Set(value); }
+
     #endregion Bound properties 
 }

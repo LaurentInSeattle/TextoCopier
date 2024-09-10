@@ -8,7 +8,7 @@ public enum PhraseDifficulty
     Insane,
 }
 
-public enum Result
+public enum EvaluationResult
 {
     Fail,
     Close,

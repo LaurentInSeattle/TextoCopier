@@ -2,7 +2,7 @@
 
 public sealed class EvaluationViewModel : Bindable<EvaluationView>
 {
-    private Result result;
+    private EvaluationResult result;
 
     public EvaluationViewModel() => this.TeamColor = ColorTheme.LeftForeground;
 
@@ -19,7 +19,7 @@ public sealed class EvaluationViewModel : Bindable<EvaluationView>
     {
         if (parameter is string enumAsString)
         {
-            if (Enum.TryParse(enumAsString, ignoreCase: true, out Result result))
+            if (Enum.TryParse(enumAsString, ignoreCase: true, out EvaluationResult result))
             {
                 this.result= result;
                 Debug.WriteLine(this.result.ToString());
@@ -27,7 +27,7 @@ public sealed class EvaluationViewModel : Bindable<EvaluationView>
         }
     }
 
-    private void OnNext(object? _) => this.Messenger.Publish(new ResultMessage(this.result));
+    private void OnNext(object? _) => this.Messenger.Publish(new EvaluationResultMessage(this.result));
 
     #endregion Methods invoked by the Framework using reflection 
 #pragma warning restore IDE0051 // Remove unused private members
@@ -35,6 +35,8 @@ public sealed class EvaluationViewModel : Bindable<EvaluationView>
     public ICommand ClickCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     public ICommand NextCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+
+    public bool Visible { get => this.Get<bool>(); set => this.Set(value); }
 
     public SelectionGroup SelectionGroup { get => this.Get<SelectionGroup>()!; set => this.Set(value); }
 
