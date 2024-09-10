@@ -15,7 +15,7 @@ public sealed class PhraseViewModel : Bindable<PhraseView>
         this.Italian = phrase.Italian;
         this.English = string.Empty;
         this.CallVisible = true;
-        this.NextVisible = false;
+        this.NextVisible = true;
     }
 
     #region Methods invoked by the Framework using reflection 

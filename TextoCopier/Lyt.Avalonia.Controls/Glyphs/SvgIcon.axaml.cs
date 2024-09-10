@@ -104,7 +104,7 @@ public partial class SvgIcon : UserControl
                     Debug.WriteLine("No brush ??? ");
                 }
 
-                if (Debugger.IsAttached) { Debugger.Break(); }
+                // if (Debugger.IsAttached) { Debugger.Break(); }
             }
         }
         else
@@ -153,7 +153,6 @@ public partial class SvgIcon : UserControl
                 Utilities.TryFindResource<DrawingImage>(source, out svgIcon.drawingImage))
             {
                 svgIcon.imageUpdateRequired = true;
-                return newSource;
             }
             else if (Utilities.TryFindResource<GeometryDrawing>(newSource, out GeometryDrawing? geometryDrawing))
             {
@@ -161,7 +160,6 @@ public partial class SvgIcon : UserControl
                 {
                     svgIcon.CreateDrawingImage(geometryDrawing);
                     svgIcon.imageUpdateRequired = true;
-                    return newSource;
                 }
             }
             else if (Utilities.TryFindResource<DrawingGroup>(newSource, out DrawingGroup? drawingGroup))
@@ -170,10 +168,15 @@ public partial class SvgIcon : UserControl
                 {
                     svgIcon.CreateDrawingImage(drawingGroup);
                     svgIcon.imageUpdateRequired = true;
-                    return newSource;
                 }
             }
 
+            if (svgIcon.imageUpdateRequired)
+            {
+                svgIcon.UpdateImage();
+                svgIcon.imageUpdateRequired = false;
+                return newSource;
+            }
         }
 
         return string.Empty;

@@ -1,4 +1,6 @@
-﻿namespace Lyt.TranslateRace.Workflow.Game;
+﻿using Lyt.TranslateRace.Model;
+
+namespace Lyt.TranslateRace.Workflow.Game;
 
 public sealed class GameViewModel : Bindable<GameView>
 {
@@ -226,18 +228,21 @@ public sealed class GameViewModel : Bindable<GameView>
         Player nextPlayer = this.isLeftTurn ? nextTeam.Players[this.leftPlayerIndex] : nextTeam.Players[this.rightPlayerIndex];
         this.Turn = new TurnViewModel(team, player, nextTeam, nextPlayer);
         this.TurnStep = GameStep.DifficultySelection;
-        this.Options.Update(team);
-        this.Phrase.Update(team, this.translateRaceModel.PickPhrase(PhraseDifficulty.Insane));
-        this.Evaluation.Update(team);
     }
 
     private void UpdateUiComponentsVisibility()
     {
+        if ( this.CurrentTeam is not Team team )
+        {
+            throw new Exception("No team ???");
+        }
+
         switch (this.TurnStep)
         {
             default:
             case GameStep.DifficultySelection:
                 this.Options.Visible = true;
+                this.Options.Update(team);
                 this.Phrase.Visible = false;
                 this.Evaluation.Visible = false;
                 this.TimerIsVisible = false;
@@ -251,6 +256,7 @@ public sealed class GameViewModel : Bindable<GameView>
                 break;
             case GameStep.Translate:
                 this.Options.Visible = false;
+                this.Phrase.Update(team, this.translateRaceModel.PickPhrase(this.phraseDifficulty));
                 this.Phrase.Visible = true;
                 this.Evaluation.Visible = false;
                 this.TimerIsVisible = true;
@@ -258,6 +264,7 @@ public sealed class GameViewModel : Bindable<GameView>
             case GameStep.Evaluate:
                 this.Options.Visible = false;
                 this.Phrase.Visible = true;
+                this.Evaluation.Update(team, this.phraseDifficulty);
                 this.Evaluation.Visible = true;
                 this.TimerIsVisible = false;
                 break;

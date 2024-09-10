@@ -1,3 +1,5 @@
+using Avalonia.Controls;
+
 namespace Lyt.Avalonia.Controls.Glyphs; 
 
 public interface ICanSelect
@@ -10,6 +12,14 @@ public partial class SelectionGroup : UserControl
     public SelectionGroup() => this.InitializeComponent();
 
     public readonly List<ICanSelect> Members = [];
+
+    public void Clear()
+    {
+        foreach (var member in this.Members)
+        {
+                member.IsSelected = false;
+        }
+    }
 
     public void Register(ICanSelect selectable)
     {

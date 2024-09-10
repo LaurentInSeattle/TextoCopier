@@ -32,6 +32,15 @@
 			Margin="0"
 			VerticalAlignment="Top"
 			>
+			<glyphs:SvgIcon
+				Source="{Binding GlyphSource}"
+				Foreground="{StaticResource FreshGreen_2_100}"
+				Width="44" Height="44"
+				Margin="4"
+				HorizontalAlignment="Left" VerticalAlignment="Center"
+				StrokeThickness="0.2"
+				>				
+			</glyphs:SvgIcon>
 			<glyphs:SelectionGroup x:Name="SelectionGroup" />
 			<glyphs:GlyphButton
 				Style="{StaticResource ToolbarIconButton}"
@@ -79,6 +88,7 @@
 			Grid.Column="2"
 			Style="{StaticResource ToolbarIconButton}"
 			Command="{Binding NextCommand}"
+			IsVisible="{Binding NextVisible}"
 			Behaviour="Tap"
 			HorizontalAlignment="Right" VerticalAlignment="Center"
 			Width="240" Height="88" Margin="4" FontSize="22"

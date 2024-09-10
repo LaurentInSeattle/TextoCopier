@@ -4,12 +4,18 @@ public sealed class OptionsViewModel : Bindable<OptionsView>
 {
     private PhraseDifficulty difficulty;
 
-    public OptionsViewModel() => this.TeamColor = ColorTheme.LeftForeground;
+    public OptionsViewModel()
+    {
+        this.TeamColor = ColorTheme.LeftForeground;
+        this.NextVisible = true; // So that we'll have a property changed 
+    }
 
     public void Update(Team team)
     {
         this.TeamColor = team.IsLeft ? ColorTheme.LeftForeground : ColorTheme.RightForeground;
         this.SelectionGroup = this.View.SelectionGroup;
+        this.SelectionGroup.Clear();
+        this.NextVisible = false;
     }
 
     #region Methods invoked by the Framework using reflection 
@@ -23,6 +29,7 @@ public sealed class OptionsViewModel : Bindable<OptionsView>
             {
                 this.difficulty = difficulty;
                 Debug.WriteLine(this.difficulty.ToString());
+                this.NextVisible = true;
             }
         }
     }
@@ -30,10 +37,12 @@ public sealed class OptionsViewModel : Bindable<OptionsView>
     private void OnNext(object? _)
     {
         this.Messenger.Publish(new DifficultyChoiceMessage(this.difficulty));
-    } 
+    }
 
     #endregion Methods invoked by the Framework using reflection 
 #pragma warning restore IDE0051 // Remove unused private members
+
+    public bool NextVisible { get => this.Get<bool>(); set => this.Set(value); }
 
     public bool Visible { get => this.Get<bool>(); set => this.Set(value); }
 

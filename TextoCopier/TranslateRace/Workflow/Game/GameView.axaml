@@ -11,7 +11,7 @@
 	Background="Transparent"
 	>
 	<Grid
-		ShowGridLines="True"
+		ShowGridLines="False"
 		>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="4" />
