@@ -14,6 +14,8 @@ public sealed class PhraseViewModel : Bindable<PhraseView>
         this.TeamColor = team.IsLeft ? ColorTheme.LeftForeground : ColorTheme.RightForeground;
         this.Italian = phrase.Italian;
         this.English = string.Empty;
+        this.CallVisible = true;
+        this.NextVisible = false;
     }
 
     #region Methods invoked by the Framework using reflection 
@@ -29,6 +31,7 @@ public sealed class PhraseViewModel : Bindable<PhraseView>
         if (this.isRevealed)
         {
             this.Messenger.Publish(new TranslateCompleteMessage());
+            this.NextVisible = false;
         }
         else
         {
@@ -39,11 +42,16 @@ public sealed class PhraseViewModel : Bindable<PhraseView>
 
             this.English = this.phrase.English;
             this.isRevealed = true;
+            this.CallVisible = false; 
         }
     }
 
     #endregion Methods invoked by the Framework using reflection 
 #pragma warning restore IDE0051 // Remove unused private members
+
+    public bool CallVisible { get => this.Get<bool>(); set => this.Set(value); }
+
+    public bool NextVisible { get => this.Get<bool>(); set => this.Set(value); }
 
     public bool Visible { get => this.Get<bool>(); set => this.Set(value); }
 

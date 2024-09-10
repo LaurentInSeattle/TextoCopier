@@ -109,6 +109,7 @@ public sealed class GameViewModel : Bindable<GameView>
         {
             if (this.gameStep != value)
             {
+                this.Logger.Info("Game Step: from " + this.gameStep.ToString() + " to " + value.ToString());
                 this.gameStep = value;
                 this.UpdateUiComponentsVisibility();
             }

@@ -11,7 +11,7 @@
 	Background="Transparent"
 	>
 	<Grid
-		ShowGridLines="False"
+		ShowGridLines="True"
 		>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="4" />
@@ -19,7 +19,7 @@
 			<RowDefinition Height="64" /> <!-- Turn -->
 			<RowDefinition Height="Auto" /> <!-- Difficulty -->
 			<RowDefinition Height="256" /> <!-- Phrase -->
-			<RowDefinition Height="96" /> <!-- Eval  -->
+			<RowDefinition Height="Auto" /> <!-- Eval  -->
 			<RowDefinition Height="48" /> <!-- Timer -->
 			<RowDefinition Height="4" />
 		</Grid.RowDefinitions>
