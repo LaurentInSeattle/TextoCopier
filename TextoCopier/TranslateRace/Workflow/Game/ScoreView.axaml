@@ -1,0 +1,23 @@
+<UserControl 
+	x:Class="Lyt.TranslateRace.Workflow.Game.ScoreView"
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="48"
+	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
+    xmlns:theme="clr-namespace:Lyt.TranslateRace"
+    xmlns:vm="clr-namespace:Lyt.TranslateRace.Workflow.Game"
+    x:DataType="vm:ScoreViewModel" 
+	IsVisible="{Binding Visible}"
+	Background="BurlyWood"
+	>
+	<TextBlock
+		Grid.Column="0" Grid.Row="6"
+		Text="{Binding Comment}"
+		Foreground="{Binding CommentColor}"
+		HorizontalAlignment="Center" VerticalAlignment="Center"
+		Margin="0"
+		FontSize="54" FontWeight="Bold"
+			/>
+</UserControl>

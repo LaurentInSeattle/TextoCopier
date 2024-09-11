@@ -40,6 +40,7 @@ public sealed class PhraseViewModel : Bindable<PhraseView>
                 throw new Exception("No phrase!");
             }
 
+            this.Messenger.Publish(new TranslateRevealedMessage());
             this.English = this.phrase.English;
             this.isRevealed = true;
             this.CallVisible = false; 

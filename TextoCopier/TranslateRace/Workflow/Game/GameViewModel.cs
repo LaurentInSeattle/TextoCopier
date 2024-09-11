@@ -1,6 +1,4 @@
-﻿using Lyt.TranslateRace.Model;
-
-namespace Lyt.TranslateRace.Workflow.Game;
+﻿namespace Lyt.TranslateRace.Workflow.Game;
 
 public sealed class GameViewModel : Bindable<GameView>
 {
@@ -30,31 +28,9 @@ public sealed class GameViewModel : Bindable<GameView>
         public GameDifficulty Difficulty { get; set; }
     }
 
-    // TODO: Add more !
-    private static readonly string[] beingNice =
-    [
-        "Che Bello!" , "Dunque!",  "Potente!" , "Strabiliante!" , "Stupefacente!",
-        "Ben Fatto" , "Bene Bene.." , "Grande" , "Imponente", "Maestoso",
-        "Eccezionale", "Stupendo!" , "Assordante" , "Bello..." , "Grandioso" ,
-        "Spaventoso!" , "Forza!"
-    ];
-
-    // TODO: Add more !
-    private static readonly string[] beingMean =
-    [
-        // "Deficiente!" , "Stupido!" , "Cretino!" ,  // Maybe too mean...
-        "Merda!",  "Cazzo!" , "Cazzata!" , "Accidenti!", "Maledizione" ,
-        "Errore" , "Sbaglio" , "Mancanza", "Fallo", "Pecca",
-        "Scemo" ,  "Ottuso...",
-        "Terribile"
-    ];
-
     private readonly IRandomizer randomizer;
     private readonly IAnimationService animationService;
     private readonly TranslateRaceModel translateRaceModel;
-    private readonly Chooser<string> beNice;
-    private readonly Chooser<string> beMean;
-    private readonly DispatcherTimer dispatcherTimer;
 
     private DateTime gameStart;
     private DateTime gameEnd;
@@ -68,6 +44,7 @@ public sealed class GameViewModel : Bindable<GameView>
     private GameStep gameStep;
     private PhraseDifficulty phraseDifficulty;
     private EvaluationResult evaluationResult;
+    private TimeSpan translateTime;
 
     private GameResult? gameResults;
     private Parameters? parameters;
@@ -79,11 +56,7 @@ public sealed class GameViewModel : Bindable<GameView>
         this.translateRaceModel = translateRaceModel;
         this.randomizer = randomizer;
         this.animationService = animationService;
-        this.beNice = new Chooser<string>(this.randomizer, GameViewModel.beingNice);
-        this.beMean = new Chooser<string>(this.randomizer, GameViewModel.beingMean);
         this.State = GameState.Idle;
-        this.dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(120), IsEnabled = false };
-        this.dispatcherTimer.Tick += this.OnDispatcherTimerTick;
 
         this.LeftTeamName = Team.LeftName;
         this.RightTeamName = Team.RightName;
@@ -100,6 +73,7 @@ public sealed class GameViewModel : Bindable<GameView>
         this.Messenger.Subscribe<PlayerDropMessage>(this.OnPlayerDrop);
         this.Messenger.Subscribe<PlayerLifelineMessage>(this.OnPlayerLifeline);
         this.Messenger.Subscribe<TranslateCompleteMessage>(this.OnTranslateComplete);
+        this.Messenger.Subscribe<TranslateRevealedMessage>(this.OnTranslateRevealed);
         this.Messenger.Subscribe<EvaluationResultMessage>(this.OnEvaluationResult);
         this.Messenger.Subscribe<ScoringCompleteMessage>(this.OnScoringComplete);
     }
@@ -142,11 +116,23 @@ public sealed class GameViewModel : Bindable<GameView>
 
         var vmPhrase = new PhraseViewModel();
         vmPhrase.Bind(this.View.PhraseView);
+        this.View.PhraseView.IsVisible = false;
         this.Phrase = vmPhrase;
 
         var vmEvaluation = new EvaluationViewModel();
         vmEvaluation.Bind(this.View.EvaluationView);
+        this.View.EvaluationView.IsVisible = false;
         this.Evaluation = vmEvaluation;
+
+        var vmCountdown = new CountdownViewModel();
+        vmCountdown.Bind(this.View.CountdownView);
+        this.View.CountdownView.IsVisible = false;
+        this.Countdown = vmCountdown;
+
+        var vmScore = new ScoreViewModel(this.randomizer);
+        vmScore.Bind(this.View.ScoreView);
+        this.View.ScoreView.IsVisible = false;
+        this.Score = vmScore;
 
         this.isViewLoaded = true;
         this.Logger.Debug("GameViewModel: OnViewLoaded complete");
@@ -209,7 +195,6 @@ public sealed class GameViewModel : Bindable<GameView>
         this.BeginTurn();
 
         this.gameResults = new() { Difficulty = this.Difficulty };
-        this.TimeLeft = string.Empty;
         this.gameStart = DateTime.Now;
 
         this.State = GameState.Running;
@@ -245,34 +230,41 @@ public sealed class GameViewModel : Bindable<GameView>
                 this.Options.Update(team);
                 this.Phrase.Visible = false;
                 this.Evaluation.Visible = false;
-                this.TimerIsVisible = false;
+                this.Countdown.Visible = false;
+                this.Score.Visible = false;
                 break;
 
             case GameStep.ThemeSelection:
                 this.Options.Visible = false;
                 this.Phrase.Visible = false;
                 this.Evaluation.Visible = false;
-                this.TimerIsVisible = false;
+                this.Countdown.Visible = false;
+                this.Score.Visible = false;
                 break;
             case GameStep.Translate:
                 this.Options.Visible = false;
                 this.Phrase.Update(team, this.translateRaceModel.PickPhrase(this.phraseDifficulty));
                 this.Phrase.Visible = true;
                 this.Evaluation.Visible = false;
-                this.TimerIsVisible = true;
+                this.translateTime = TimeSpan.Zero;
+                this.Countdown.Visible = true;
+                this.Countdown.Start();
+                this.Score.Visible = false;
                 break;
             case GameStep.Evaluate:
                 this.Options.Visible = false;
                 this.Phrase.Visible = true;
                 this.Evaluation.Update(team, this.phraseDifficulty);
                 this.Evaluation.Visible = true;
-                this.TimerIsVisible = false;
+                this.Countdown.Visible = false;
+                this.Score.Visible = false;
                 break;
             case GameStep.Score:
                 this.Options.Visible = false;
                 this.Phrase.Visible = true;
                 this.Evaluation.Visible = false;
-                this.TimerIsVisible = false;
+                this.Countdown.Visible = false;
+                this.Score.Visible = true;
                 break;
         }
     }
@@ -303,7 +295,7 @@ public sealed class GameViewModel : Bindable<GameView>
         }
 
         this.Phrase.Update(team, phrase);
-        // TODO: Launch timer 
+
         this.TurnStep = GameStep.Translate;        
     }
 
@@ -317,6 +309,16 @@ public sealed class GameViewModel : Bindable<GameView>
         // TODO: Choose a player of pick at random ??? 
     }
 
+    private void OnTranslateRevealed(TranslateRevealedMessage message)
+    {
+        if ((this.State != GameState.Running) || (this.TurnStep != GameStep.Translate))
+        {
+            return;
+        }
+
+        this.translateTime = this.Countdown.TimeUsed;
+        this.Countdown.Stop();
+    }
 
     private void OnTranslateComplete(TranslateCompleteMessage message)
     {
@@ -353,51 +355,6 @@ public sealed class GameViewModel : Bindable<GameView>
         this.TurnStep = GameStep.DifficultySelection;
     }
 
-    #region Timer 
-
-    private void OnDispatcherTimerTick(object? sender, EventArgs e)
-    {
-        if (this.State != GameState.Running)
-        {
-            return;
-        }
-
-        int duration = this.DurationMilliseconds;
-        int elapsed = (int)((DateTime.Now - this.gameStart).TotalMilliseconds);
-        int left = duration - elapsed;
-        this.CountDownTotal = (float)duration;
-        this.CountDownValue = (float)left;
-        var timeLeft = TimeSpan.FromMilliseconds(left);
-        this.TimeLeft = string.Format("{0}:{1:D2}", timeLeft.Minutes, timeLeft.Seconds);
-
-        if (((timeLeft.Minutes < 0) || (timeLeft.Seconds < 0)) ||
-            ((timeLeft.Minutes == 0) && (timeLeft.Seconds == 0)))
-        {
-            this.StopTimer();
-            return;
-        }
-    }
-
-    private void StartTimer()
-    {
-        Schedule.OnUiThread(
-            500,
-            () =>
-            {
-                this.dispatcherTimer.IsEnabled = true;
-                this.dispatcherTimer.Start();
-            }, DispatcherPriority.Normal);
-    }
-
-    private void StopTimer()
-    {
-        this.dispatcherTimer.Stop();
-        this.dispatcherTimer.IsEnabled = false;
-        this.CountDownValue = 0.0f;
-    }
-
-    #endregion Timer 
-
     private void GameOver()
     {
         this.SaveGame();
@@ -421,34 +378,6 @@ public sealed class GameViewModel : Bindable<GameView>
         this.translateRaceModel.Save();
     }
 
-    private void PopMessage(string text, Brush brush)
-    {
-        // TODO: Fade in and out
-        // this.View.CountDownBarControl.Opacity = 0.15;
-        this.Comment = text;
-        this.CommentColor = brush;
-
-        Schedule.OnUiThread(
-            1500,
-            () =>
-            {
-                // this.View.CountDownBarControl.Opacity = 1.0;
-                this.Comment = string.Empty;
-            }, DispatcherPriority.Background);
-    }
-
-    #region Properties calculated from game parameters 
-
-    private int DurationMilliseconds
-        => this.Difficulty switch
-        {
-            GameDifficulty.Medium => 105_000, // 1 minute 45 sec
-            GameDifficulty.Hard => 120_000, // 2 minutes 
-            _ => 90_000, // Easy : 1 minute 30 sec
-        };
-
-    #endregion Properties calculated from game parameters 
-
     #region Bound properties 
 
     public string LeftTeamName { get => this.Get<string>()!; set => this.Set(value); }
@@ -467,17 +396,9 @@ public sealed class GameViewModel : Bindable<GameView>
 
     public EvaluationViewModel Evaluation { get => this.Get<EvaluationViewModel>()!; set => this.Set(value); }
 
-    public string Comment { get => this.Get<string>()!; set => this.Set(value); }
+    public CountdownViewModel Countdown { get => this.Get<CountdownViewModel>()!; set => this.Set(value); }
 
-    public Brush CommentColor { get => this.Get<Brush>()!; set => this.Set(value); }
-
-    public float CountDownTotal { get => this.Get<float>(); set => this.Set(value); }
-
-    public float CountDownValue { get => this.Get<float>(); [DoNotLog] set => this.Set(value); }
-
-    public bool TimerIsVisible { get => this.Get<bool>(); set => this.Set(value); }
-
-    public string TimeLeft { get => this.Get<string>()!; [DoNotLog] set => this.Set(value); }
+    public ScoreViewModel Score { get => this.Get<ScoreViewModel>()!; set => this.Set(value); }
 
     #endregion Bound properties 
 }

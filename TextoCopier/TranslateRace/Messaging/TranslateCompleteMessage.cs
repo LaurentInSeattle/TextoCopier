@@ -3,3 +3,7 @@
 public sealed class TranslateCompleteMessage
 {
 }
+
+public sealed class TranslateRevealedMessage
+{
+}

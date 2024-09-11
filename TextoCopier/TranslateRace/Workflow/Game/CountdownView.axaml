@@ -1,0 +1,43 @@
+<UserControl
+	x:Class="Lyt.TranslateRace.Workflow.Game.CountdownView"
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="48"
+	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
+    xmlns:theme="clr-namespace:Lyt.TranslateRace"
+    xmlns:vm="clr-namespace:Lyt.TranslateRace.Workflow.Game"
+    x:DataType="vm:CountdownViewModel" 
+	IsVisible="{Binding Visible}"
+	>
+	<Grid
+		Margin="0"
+		Height="48"
+		ShowGridLines="False"
+		>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="150" />
+		</Grid.ColumnDefinitions>
+
+		<vm:CountDownBarControl
+			x:Name="CountDownBarControl"
+			Margin="18 0 18 0"
+			BarHeight="12"
+			BackgroundBrush="LightSeaGreen"
+			ForegroundBrush="CadetBlue"
+			Total="{Binding CountDownTotal}"
+			Value="{Binding CountDownValue}"
+			/>
+		<TextBlock
+			Grid.Column="1" 
+			HorizontalAlignment="Center" VerticalAlignment="Top"
+			Margin="0 -4 0 0"
+			FontSize="48" FontWeight="Bold"
+			TextWrapping="Wrap"
+			Text="{Binding TimeLeftText}"
+			Foreground="{x:Static theme:ColorTheme.UiText}"
+			/>
+		</Grid>
+</UserControl>
