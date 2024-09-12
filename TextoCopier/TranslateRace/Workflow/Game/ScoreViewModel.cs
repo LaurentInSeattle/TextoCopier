@@ -61,3 +61,12 @@ public sealed class ScoreViewModel : Bindable<ScoreView>
     public Brush CommentColor { get => this.Get<Brush>()!; set => this.Set(value); }
 
 }
+/*
+10s come un fulmine  +2
+20s abbastanza veloce +1
+30s svelto
+45s vivace
+1:00 lento 
+1:30 così lento -1
+
+ */
