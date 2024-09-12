@@ -19,7 +19,7 @@
 		</Grid.ColumnDefinitions>
 		<TextBlock
 			Grid.Column="0"
-			Text="Punteggio Finale:"
+			Text="Punteggio:"
 			HorizontalAlignment="Center" VerticalAlignment="Center"
 			Margin="0 0 0 0"
 			FontSize="22" FontWeight="Normal"
@@ -32,7 +32,7 @@
 			Foreground="{Binding CommentColor}"
 			HorizontalAlignment="Center" VerticalAlignment="Center"
 			Margin="0"
-			FontSize="48" FontWeight="Bold"
+			FontSize="42" FontWeight="Bold"
 			/>
 		<glyphs:GlyphButton
 			Grid.Column="2"

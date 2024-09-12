@@ -2,7 +2,7 @@
 
 public sealed class ScoreViewModel : Bindable<ScoreView>
 {
-    private const int delay = 2_500;
+    private const int delay = 2_700;
     private const int shortenedDelay = delay - 100;
 
     // TODO: Add more !
@@ -43,6 +43,7 @@ public sealed class ScoreViewModel : Bindable<ScoreView>
         Team team,
         PhraseDifficulty phraseDifficulty, EvaluationResult evaluationResult, TimeSpan translateTime, bool hasCalledFriend)
     {
+        this.NextVisible = false; // So that we'll have a property changed 
         this.TeamColor = team.IsLeft ? ColorTheme.LeftForeground : ColorTheme.RightForeground;
         this.Visible = true;
         if (evaluationResult == EvaluationResult.Fail)
@@ -55,21 +56,22 @@ public sealed class ScoreViewModel : Bindable<ScoreView>
         }
 
         int teamScore = team.Score;
-        int score = this.DifficultyToScore(phraseDifficulty);
-        int malus = this.Malus(phraseDifficulty, evaluationResult);
-        int lifeline = hasCalledFriend ? -2 : 0;
-
-        // TODO
-        int timeBonus = 2;
-
-        Debugger.Break(); 
+        int score = ScoreViewModel.DifficultyToScore(phraseDifficulty);
+        int malus = ScoreViewModel.Malus(phraseDifficulty, evaluationResult);
+        int lifeline = ScoreViewModel.Lifeline(hasCalledFriend);
+        int timeBonus = ScoreViewModel.TimeBonus(translateTime);
+        int scoreUpdate = score - malus - lifeline + timeBonus;
+        if (scoreUpdate < 0)
+        {
+            scoreUpdate = 0;
+        }
 
         // Baseline 
         Schedule.OnUiThread(
             delay,
             () =>
             {
-                string message = this.DifficultyToScoreText(phraseDifficulty);
+                string message = ScoreViewModel.DifficultyToScoreText(phraseDifficulty);
                 this.PopMessage(message, ColorTheme.Text);
                 this.Messenger.Publish(new ScoreUpdateMessage(teamScore + score));
             }, DispatcherPriority.Background);
@@ -79,7 +81,7 @@ public sealed class ScoreViewModel : Bindable<ScoreView>
             2 * delay,
             () =>
             {
-                string message = this.MalusText(evaluationResult, malus);
+                string message = ScoreViewModel.MalusText(evaluationResult, malus);
                 this.PopMessage(message, ColorTheme.Text);
                 this.Messenger.Publish(new ScoreUpdateMessage(teamScore + score - malus));
             }, DispatcherPriority.Background);
@@ -89,7 +91,7 @@ public sealed class ScoreViewModel : Bindable<ScoreView>
             3 * delay,
             () =>
             {
-                string message = this.LifelineText(hasCalledFriend);
+                string message = ScoreViewModel.LifelineText(hasCalledFriend);
                 this.PopMessage(message, ColorTheme.Text);
                 this.Messenger.Publish(new ScoreUpdateMessage(teamScore + score - malus - lifeline));
             }, DispatcherPriority.Background);
@@ -99,7 +101,9 @@ public sealed class ScoreViewModel : Bindable<ScoreView>
             4 * delay,
             () =>
             {
-                // TODO 
+                string message = ScoreViewModel.TimeBonusText(translateTime);
+                this.PopMessage(message, ColorTheme.Text);
+                this.Messenger.Publish(new ScoreUpdateMessage(teamScore + score - malus - lifeline + timeBonus));
             }, DispatcherPriority.Background);
 
         // Final 
@@ -107,48 +111,48 @@ public sealed class ScoreViewModel : Bindable<ScoreView>
             5 * delay,
             () =>
             {
-                int scoreUpdate = score - malus - lifeline + timeBonus;
-                if (scoreUpdate < 0)
+                string message = "Punteggio non è cambiato.";
+                if (scoreUpdate > 0)
                 {
-                    scoreUpdate = 0;
+                    message = string.Format("Punteggio aumentato di: {0}" , scoreUpdate);
                 }
-
-                // TODO 
+                this.PopMessage(message, ColorTheme.Text, hide:false);
 
                 team.Score = teamScore + scoreUpdate;
                 this.NextVisible = true;
+                this.Messenger.Publish(new ScoreUpdateMessage(teamScore + score - malus - lifeline + timeBonus));
             }, DispatcherPriority.Background);
     }
 
-    private void PopMessage(string text, Brush brush)
+    private void PopMessage(string text, Brush brush, bool hide = true)
     {
+        this.Logger.Info(text); 
         this.Comment = text;
         this.CommentColor = brush;
-        Schedule.OnUiThread(
-            shortenedDelay,
-            () =>
-            {
-                this.Comment = string.Empty;
-            }, DispatcherPriority.Background);
+        if (hide)
+        {
+            Schedule.OnUiThread(shortenedDelay, () => { this.Comment = string.Empty; }, DispatcherPriority.Background);
+        } 
     }
 
-    private int Malus(PhraseDifficulty phraseDifficulty, EvaluationResult evaluationResult)
+    private static int Lifeline(bool hasCalledFriend) => hasCalledFriend ? -2 : 0;
+
+    private static int TimeBonus(TimeSpan timeSpan)
     {
-        if (evaluationResult == EvaluationResult.Fail)
+        int seconds = (int)timeSpan.TotalSeconds;
+        if (seconds < 15)
         {
-            return this.DifficultyToScore(phraseDifficulty);
+            return 2;
+        }
+        else if (seconds < 25)
+        {
+            return 1;
         }
 
-        return evaluationResult == EvaluationResult.Perfect ? 0 : 2;
+        return 0;
     }
 
-    private string LifelineText(bool hasCalledFriend)
-        => hasCalledFriend ? "Hai Chiamato:   -2" : "Non Hai Chiamato";
-
-    private string MalusText(EvaluationResult evaluationResult, int malus)
-        => string.Format("{0}   {1}", this.ResultToScoreText(evaluationResult), malus);
-
-    private int DifficultyToScore(PhraseDifficulty phraseDifficulty)
+    private static int DifficultyToScore(PhraseDifficulty phraseDifficulty)
         => phraseDifficulty switch
         {
             PhraseDifficulty.Medium => 3,
@@ -157,7 +161,26 @@ public sealed class ScoreViewModel : Bindable<ScoreView>
             _ => 1,
         };
 
-    private string DifficultyToScoreText(PhraseDifficulty phraseDifficulty)
+    private static int Malus(PhraseDifficulty phraseDifficulty, EvaluationResult evaluationResult)
+    {
+        if (evaluationResult == EvaluationResult.Fail)
+        {
+            return ScoreViewModel.DifficultyToScore(phraseDifficulty);
+        }
+
+        return evaluationResult == EvaluationResult.Perfect ? 0 : 2;
+    }
+
+    private static string LifelineText(bool hasCalledFriend)
+        => hasCalledFriend ? "Hai Chiamato:   -2" : "Non Hai Chiamato";
+
+    private static string MalusText(EvaluationResult evaluationResult, int malus)
+    {
+        string result = ScoreViewModel.ResultToScoreText(evaluationResult); 
+        return malus == 0 ? result :  string.Format("{0}   -{1}", result , malus);
+    }
+
+    private static string DifficultyToScoreText(PhraseDifficulty phraseDifficulty)
         => phraseDifficulty switch
         {
             PhraseDifficulty.Medium => "Agevole   +3",
@@ -166,13 +189,36 @@ public sealed class ScoreViewModel : Bindable<ScoreView>
             _ => "Facile   +1",
         };
 
-    private string ResultToScoreText(EvaluationResult evaluationResult)
+    private static string ResultToScoreText(EvaluationResult evaluationResult)
         => evaluationResult switch
         {
-            EvaluationResult.Perfect => "Perfetto",
+            EvaluationResult.Perfect => "Perfetto!",
             EvaluationResult.Close => "Abbozzato",
             _ => "Fallimento",
         };
+
+    private static string TimeBonusText(TimeSpan timeSpan)
+    {
+        int seconds = (int)timeSpan.TotalSeconds;
+        if (seconds < 15)
+        {
+            return "Un Fulmine!  +2";
+        }
+        else if (seconds < 25)
+        {
+            return "Veloce   +1";
+        }
+        else if (seconds < 50)
+        {
+            return "Svelto";
+        }
+        else if (seconds < 70)
+        {
+            return "Adagio...";
+        }
+
+        return "Così Lento...";
+    }
 
     #region Methods invoked by the Framework using reflection 
 #pragma warning disable IDE0051 // Remove unused private members
@@ -194,12 +240,3 @@ public sealed class ScoreViewModel : Bindable<ScoreView>
 
     public IBrush TeamColor { get => this.Get<IBrush>()!; set => this.Set(value); }
 }
-/*
-10s come un fulmine  +2
-20s abbastanza veloce +1
-30s svelto
-45s vivace
-1:00 lento 
-1:30 così lento -1
-
- */
