@@ -61,7 +61,7 @@
 			GlyphSource="person_phone"
 			GlyphAngle="00"
 			GlyphStrokeThickness="0.1"
-			Text="Chiama un amico   -3"
+			Text="Chiama un Amico   -2"
     		/>
 		<Image
 			Grid.Column="0" Grid.Row="1"

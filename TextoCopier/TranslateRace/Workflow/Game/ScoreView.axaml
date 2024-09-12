@@ -4,20 +4,48 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="48"
+	mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="96"
 	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
     xmlns:theme="clr-namespace:Lyt.TranslateRace"
     xmlns:vm="clr-namespace:Lyt.TranslateRace.Workflow.Game"
     x:DataType="vm:ScoreViewModel" 
 	IsVisible="{Binding Visible}"
-	Background="BurlyWood"
 	>
-	<TextBlock
-		Grid.Column="0" Grid.Row="6"
-		Text="{Binding Comment}"
-		Foreground="{Binding CommentColor}"
-		HorizontalAlignment="Center" VerticalAlignment="Center"
-		Margin="0"
-		FontSize="54" FontWeight="Bold"
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="120" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="260" />
+		</Grid.ColumnDefinitions>
+		<TextBlock
+			Grid.Column="0"
+			Text="Punteggio Finale:"
+			HorizontalAlignment="Center" VerticalAlignment="Center"
+			Margin="0 0 0 0"
+			FontSize="22" FontWeight="Normal"
+			TextWrapping="Wrap"
+			Foreground="{Binding TeamColor}"
 			/>
+		<TextBlock
+			Grid.Column="1" 
+			Text="{Binding Comment}"
+			Foreground="{Binding CommentColor}"
+			HorizontalAlignment="Center" VerticalAlignment="Center"
+			Margin="0"
+			FontSize="48" FontWeight="Bold"
+			/>
+		<glyphs:GlyphButton
+			Grid.Column="2"
+			Style="{StaticResource ToolbarIconButton}"
+			Command="{Binding NextCommand}"
+			IsVisible="{Binding NextVisible}"
+			Behaviour="Tap"
+			HorizontalAlignment="Right" VerticalAlignment="Center"
+			Width="240" Height="88" Margin="4" FontSize="22"
+			GlyphSource="next"
+			GlyphAngle="00"
+			GlyphStrokeThickness="0.1"
+			Text="Avanti"
+    		/>
+	</Grid>
 </UserControl>

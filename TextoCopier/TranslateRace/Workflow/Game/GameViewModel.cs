@@ -1,4 +1,6 @@
-﻿namespace Lyt.TranslateRace.Workflow.Game;
+﻿using Lyt.TranslateRace.Messaging;
+
+namespace Lyt.TranslateRace.Workflow.Game;
 
 public sealed class GameViewModel : Bindable<GameView>
 {
@@ -45,6 +47,7 @@ public sealed class GameViewModel : Bindable<GameView>
     private PhraseDifficulty phraseDifficulty;
     private EvaluationResult evaluationResult;
     private TimeSpan translateTime;
+    private bool hasCalledFriend; 
 
     private GameResult? gameResults;
     private Parameters? parameters;
@@ -76,6 +79,7 @@ public sealed class GameViewModel : Bindable<GameView>
         this.Messenger.Subscribe<TranslateRevealedMessage>(this.OnTranslateRevealed);
         this.Messenger.Subscribe<EvaluationResultMessage>(this.OnEvaluationResult);
         this.Messenger.Subscribe<ScoringCompleteMessage>(this.OnScoringComplete);
+        this.Messenger.Subscribe<ScoreUpdateMessage>(this.OnScoreUpdate);
     }
 
     public GameStep TurnStep
@@ -87,12 +91,14 @@ public sealed class GameViewModel : Bindable<GameView>
             {
                 this.Logger.Info("Game Step: from " + this.gameStep.ToString() + " to " + value.ToString());
                 this.gameStep = value;
-                this.UpdateUiComponentsVisibility();
+                this.UpdateUiComponents();
             }
         }
     }
 
-    public Team? CurrentTeam => this.isLeftTurn ? this.leftTeam : this.rightTeam; 
+    public Team? CurrentTeam => this.isLeftTurn ? this.leftTeam : this.rightTeam;
+
+    public TeamProgressViewModel? CurrentTeamProgressViewModel => this.isLeftTurn ? this.LeftTeamScore : this.RightTeamScore;
 
     public GameState State { get; private set; }
 
@@ -191,6 +197,8 @@ public sealed class GameViewModel : Bindable<GameView>
         this.rightPlayerIndex = 0;
         this.LeftTeamScore.Update(0);
         this.RightTeamScore.Update(0);
+        this.leftTeam.Score = 0;
+        this.rightTeam.Score = 0;
 
         this.BeginTurn();
 
@@ -215,7 +223,7 @@ public sealed class GameViewModel : Bindable<GameView>
         this.TurnStep = GameStep.DifficultySelection;
     }
 
-    private void UpdateUiComponentsVisibility()
+    private void UpdateUiComponents()
     {
         if ( this.CurrentTeam is not Team team )
         {
@@ -226,6 +234,7 @@ public sealed class GameViewModel : Bindable<GameView>
         {
             default:
             case GameStep.DifficultySelection:
+                this.hasCalledFriend = false; 
                 this.Options.Visible = true;
                 this.Options.Update(team);
                 this.Phrase.Visible = false;
@@ -264,6 +273,8 @@ public sealed class GameViewModel : Bindable<GameView>
                 this.Phrase.Visible = true;
                 this.Evaluation.Visible = false;
                 this.Countdown.Visible = false;
+                this.Score.Show(
+                    team, this.phraseDifficulty, this.evaluationResult, this.translateTime, this.hasCalledFriend);
                 this.Score.Visible = true;
                 break;
         }
@@ -307,6 +318,7 @@ public sealed class GameViewModel : Bindable<GameView>
         }
 
         // TODO: Choose a player of pick at random ??? 
+        this.hasCalledFriend = true;
     }
 
     private void OnTranslateRevealed(TranslateRevealedMessage message)
@@ -353,6 +365,18 @@ public sealed class GameViewModel : Bindable<GameView>
         // TODO: Next Turn !!!
 
         this.TurnStep = GameStep.DifficultySelection;
+    }
+
+    private void OnScoreUpdate(ScoreUpdateMessage message)
+    {
+        if ((this.State != GameState.Running) || 
+            (this.TurnStep != GameStep.Score) || 
+            this.CurrentTeamProgressViewModel is null)
+        {
+            return;
+        }
+
+        this.CurrentTeamProgressViewModel.Update(message.Score);
     }
 
     private void GameOver()

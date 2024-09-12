@@ -68,7 +68,7 @@
 				GlyphSource="thumb_like_dislike"
 				GlyphAngle="00"
 				GlyphStrokeThickness="0.1"
-				Text="Abbozzato  -3"
+				Text="Abbozzato  -2"
     			/>
 			<glyphs:GlyphButton
 				Style="{StaticResource ToolbarIconButton}"
