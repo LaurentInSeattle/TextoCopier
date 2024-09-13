@@ -66,7 +66,7 @@ public static class ColorTheme
                 ValidUiText = new SolidColorBrush(Color.FromArgb(0xFF, 0x2F, 0xB0, 0x5F));
 
                 LeftBackground = new SolidColorBrush(Colors.DodgerBlue);
-                LeftForeground = new SolidColorBrush(Colors.LightCyan);
+                LeftForeground = new SolidColorBrush(Colors.LightSkyBlue);
                 RightBackground = new SolidColorBrush(Colors.LightSalmon);
                 RightForeground = new SolidColorBrush(Colors.Firebrick);
 

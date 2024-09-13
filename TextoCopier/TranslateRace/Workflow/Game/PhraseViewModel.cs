@@ -5,13 +5,17 @@ public sealed class PhraseViewModel : Bindable<PhraseView>
     private Phrase? phrase;
     private bool isRevealed;
 
-    public PhraseViewModel() => this.TeamColor = ColorTheme.LeftForeground;
+    public PhraseViewModel()
+    {
+        this.TeamColor = ColorTheme.Text;
+        this.Visible = true;
+    }
 
-    public void Update(Team team, Phrase phrase)
+    public void Update(Phrase phrase)
     {
         this.phrase = phrase;
         this.isRevealed = false;
-        this.TeamColor = team.IsLeft ? ColorTheme.LeftForeground : ColorTheme.RightForeground;
+        this.TeamColor = ColorTheme.Text;
         this.Italian = phrase.Italian;
         this.English = string.Empty;
         this.CallVisible = true;
@@ -21,10 +25,7 @@ public sealed class PhraseViewModel : Bindable<PhraseView>
     #region Methods invoked by the Framework using reflection 
 #pragma warning disable IDE0051 // Remove unused private members
 
-    private void OnCall(object? _)
-    {
-        this.Messenger.Publish(new PlayerLifelineMessage());
-    }
+    private void OnCall(object? _) => this.Messenger.Publish(new PlayerLifelineMessage());
 
     private void OnNext(object? _)
     {
@@ -35,7 +36,7 @@ public sealed class PhraseViewModel : Bindable<PhraseView>
         }
         else
         {
-            if( this.phrase is null)
+            if (this.phrase is null)
             {
                 throw new Exception("No phrase!");
             }
@@ -43,18 +44,18 @@ public sealed class PhraseViewModel : Bindable<PhraseView>
             this.Messenger.Publish(new TranslateRevealedMessage());
             this.English = this.phrase.English;
             this.isRevealed = true;
-            this.CallVisible = false; 
+            this.CallVisible = false;
         }
     }
 
     #endregion Methods invoked by the Framework using reflection 
 #pragma warning restore IDE0051 // Remove unused private members
 
+    public bool Visible { get => this.Get<bool>(); set => this.Set(value); }
+
     public bool CallVisible { get => this.Get<bool>(); set => this.Set(value); }
 
     public bool NextVisible { get => this.Get<bool>(); set => this.Set(value); }
-
-    public bool Visible { get => this.Get<bool>(); set => this.Set(value); }
 
     public string Italian { get => this.Get<string>()!; set => this.Set(value); }
 

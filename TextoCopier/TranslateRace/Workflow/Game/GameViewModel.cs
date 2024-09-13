@@ -1,6 +1,4 @@
-﻿using Lyt.TranslateRace.Messaging;
-
-namespace Lyt.TranslateRace.Workflow.Game;
+﻿namespace Lyt.TranslateRace.Workflow.Game;
 
 public sealed class GameViewModel : Bindable<GameView>
 {
@@ -47,7 +45,7 @@ public sealed class GameViewModel : Bindable<GameView>
     private PhraseDifficulty phraseDifficulty;
     private EvaluationResult evaluationResult;
     private TimeSpan translateTime;
-    private bool hasCalledFriend; 
+    private bool hasCalledFriend;
 
     private GameResult? gameResults;
     private Parameters? parameters;
@@ -96,8 +94,63 @@ public sealed class GameViewModel : Bindable<GameView>
         }
     }
 
-    public Team? CurrentTeam => this.isLeftTurn ? this.leftTeam : this.rightTeam;
+    public Team CurrentTeam
+    {
+        get
+        {
+            if (this.leftTeam is null || this.rightTeam is null)
+            {
+                throw new Exception("Null Teams ???");
+            }
 
+            return this.isLeftTurn ? this.leftTeam : this.rightTeam;
+        }
+    }
+
+    public Team NextTeam
+    {
+        get
+        {
+            if (this.leftTeam is null || this.rightTeam is null)
+            {
+                throw new Exception("Null Teams ???");
+            }
+
+            return this.isLeftTurn ? this.rightTeam : this.leftTeam ;
+        }
+    }
+
+    public Player CurrentPlayer
+    {
+        get
+        {
+            if (this.leftTeam is null || this.rightTeam is null)
+            {
+                throw new Exception("Null Teams ???");
+            }
+
+            return
+                this.isLeftTurn ?
+                    this.leftTeam.At(this.leftPlayerIndex) :
+                    this.rightTeam.At(this.rightPlayerIndex);
+        }
+    }
+
+    public Player NextPlayer
+    {
+        get
+        {
+            if (this.leftTeam is null || this.rightTeam is null)
+            {
+                throw new Exception("Null Teams ???");
+            }
+
+            return
+                this.isLeftTurn ?
+                    this.rightTeam.At(this.rightPlayerIndex):
+                    this.leftTeam.At(this.leftPlayerIndex);
+        }
+    }
     public TeamProgressViewModel? CurrentTeamProgressViewModel => this.isLeftTurn ? this.LeftTeamScore : this.RightTeamScore;
 
     public GameState State { get; private set; }
@@ -193,8 +246,8 @@ public sealed class GameViewModel : Bindable<GameView>
         this.leftTeam = this.parameters.LeftTeam;
         this.rightTeam = this.parameters.RightTeam;
         this.isLeftTurn = true;
-        this.leftPlayerIndex = 0;
-        this.rightPlayerIndex = 0;
+        this.leftPlayerIndex = this.leftTeam.FirstPlayerIndex;
+        this.rightPlayerIndex = this.rightTeam.FirstPlayerIndex;
         this.LeftTeamScore.Update(0);
         this.RightTeamScore.Update(0);
         this.leftTeam.Score = 0;
@@ -210,34 +263,54 @@ public sealed class GameViewModel : Bindable<GameView>
 
     private void BeginTurn()
     {
-        if (this.leftTeam is null || this.rightTeam is null)
-        {
-            throw new Exception("Null Teams ???");
-        }
-
-        Team team = this.isLeftTurn ? this.leftTeam : this.rightTeam;
-        Player player = this.isLeftTurn ? team.Players[this.leftPlayerIndex] : team.Players[this.rightPlayerIndex];
-        Team nextTeam = !this.isLeftTurn ? this.leftTeam : this.rightTeam;
-        Player nextPlayer = this.isLeftTurn ? nextTeam.Players[this.leftPlayerIndex] : nextTeam.Players[this.rightPlayerIndex];
-        this.Turn = new TurnViewModel(team, player, nextTeam, nextPlayer);
+        this.Turn = new TurnViewModel(this.CurrentTeam, this.CurrentPlayer, this.NextTeam, this.NextPlayer);
         this.TurnStep = GameStep.DifficultySelection;
     }
 
-    private void UpdateUiComponents()
+    private void NextTurn()
     {
-        if ( this.CurrentTeam is not Team team )
+        int nextPlayerIndex = this.FindNextPlayerIndex(this.CurrentTeam, this.CurrentPlayer);
+        if (this.isLeftTurn)
         {
-            throw new Exception("No team ???");
+            this.leftPlayerIndex = nextPlayerIndex;
+        }
+        else
+        {
+            this.rightPlayerIndex = nextPlayerIndex;
         }
 
+        this.isLeftTurn = !this.isLeftTurn;
+    }
+
+    private int FindNextPlayerIndex(Team team, Player player)
+    {
+        var orderedPlayers = (from p in team.Players orderby p.Index ascending select p).ToList();
+        var nextPlayer = (from p in orderedPlayers where p.Index > player.Index select p).FirstOrDefault();
+        if (nextPlayer is null)
+        {
+            // Loop around 
+            int teamFirstPlayerIndex = team.FirstPlayerIndex;
+            nextPlayer = (from p in orderedPlayers where p.Index > teamFirstPlayerIndex select p).FirstOrDefault();
+            if (nextPlayer is null)
+            {
+                throw new Exception("No Players ???"); 
+            }
+        }
+
+        return nextPlayer.Index; 
+    } 
+
+    private void UpdateUiComponents()
+    {
         switch (this.TurnStep)
         {
             default:
             case GameStep.DifficultySelection:
-                this.hasCalledFriend = false; 
-                this.Options.Visible = true;
-                this.Options.Update(team);
+
                 this.Phrase.Visible = false;
+                this.hasCalledFriend = false;
+                this.Options.Visible = true;
+                this.Options.Update(this.CurrentTeam);
                 this.Evaluation.Visible = false;
                 this.Countdown.Visible = false;
                 this.Score.Visible = false;
@@ -250,9 +323,9 @@ public sealed class GameViewModel : Bindable<GameView>
                 this.Countdown.Visible = false;
                 this.Score.Visible = false;
                 break;
+
             case GameStep.Translate:
                 this.Options.Visible = false;
-                this.Phrase.Update(team, this.translateRaceModel.PickPhrase(this.phraseDifficulty));
                 this.Phrase.Visible = true;
                 this.Evaluation.Visible = false;
                 this.translateTime = TimeSpan.Zero;
@@ -260,21 +333,23 @@ public sealed class GameViewModel : Bindable<GameView>
                 this.Countdown.Start();
                 this.Score.Visible = false;
                 break;
+
             case GameStep.Evaluate:
                 this.Options.Visible = false;
                 this.Phrase.Visible = true;
-                this.Evaluation.Update(team, this.phraseDifficulty);
+                this.Evaluation.Update(this.CurrentTeam, this.phraseDifficulty);
                 this.Evaluation.Visible = true;
                 this.Countdown.Visible = false;
                 this.Score.Visible = false;
                 break;
+
             case GameStep.Score:
                 this.Options.Visible = false;
                 this.Phrase.Visible = true;
                 this.Evaluation.Visible = false;
                 this.Countdown.Visible = false;
                 this.Score.Show(
-                    team, this.phraseDifficulty, this.evaluationResult, this.translateTime, this.hasCalledFriend);
+                    this.CurrentTeam, this.phraseDifficulty, this.evaluationResult, this.translateTime, this.hasCalledFriend);
                 this.Score.Visible = true;
                 break;
         }
@@ -305,9 +380,8 @@ public sealed class GameViewModel : Bindable<GameView>
             throw new Exception("No phrase, no team ???");
         }
 
-        this.Phrase.Update(team, phrase);
-
-        this.TurnStep = GameStep.Translate;        
+        this.Phrase.Update(phrase);
+        this.TurnStep = GameStep.Translate;
     }
 
     private void OnPlayerLifeline(PlayerLifelineMessage message)
@@ -360,17 +434,27 @@ public sealed class GameViewModel : Bindable<GameView>
             return;
         }
 
-        // TODO: Check Game Over 
+        // Check Game Over 
+        if (this.CurrentTeam.Score >= TranslateRaceModel.WinScore)
+        {
+            this.GameOver();
+        }
+        else
+        {
+            // Save player performance 
+            ++ this.CurrentPlayer.Traductions;
+            this.CurrentPlayer.Points = message.ScoreUpdate;
 
-        // TODO: Next Turn !!!
-
-        this.TurnStep = GameStep.DifficultySelection;
+            // Next Turn !!!
+            this.NextTurn();
+            this.BeginTurn();
+        }
     }
 
     private void OnScoreUpdate(ScoreUpdateMessage message)
     {
-        if ((this.State != GameState.Running) || 
-            (this.TurnStep != GameStep.Score) || 
+        if ((this.State != GameState.Running) ||
+            (this.TurnStep != GameStep.Score) ||
             this.CurrentTeamProgressViewModel is null)
         {
             return;

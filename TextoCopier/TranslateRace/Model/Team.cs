@@ -17,4 +17,29 @@ public sealed class Team(string name, bool isLeft)
     public void Join(int index, Participant participant) => this.Players.Add(new(index, participant));
 
     public bool Drop(Player player) => this.Players.Remove(player);
+
+    public int FirstPlayerIndex
+    {
+        get
+        {
+            if (this.Players.Count == 0 )
+            {
+                throw new Exception("No Players");
+            }
+
+            return (from p in this.Players select p.Index).Min();
+        }
+    }
+
+
+    public Player At(int index)
+    {
+        var player = (from p in this.Players where p.Index == index select p).FirstOrDefault();
+        if (player is null)
+        {
+            throw new Exception("Null Player ??? ");
+        }
+
+        return player; 
+    } 
 }

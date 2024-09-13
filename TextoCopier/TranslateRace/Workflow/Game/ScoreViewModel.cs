@@ -2,7 +2,7 @@
 
 public sealed class ScoreViewModel : Bindable<ScoreView>
 {
-    private const int delay = 2_700;
+    private const int delay = 2_600;
     private const int shortenedDelay = delay - 100;
 
     // TODO: Add more !
@@ -28,6 +28,8 @@ public sealed class ScoreViewModel : Bindable<ScoreView>
     private readonly IRandomizer randomizer;
     private readonly Chooser<string> beNice;
     private readonly Chooser<string> beMean;
+
+    private int scoreUpdate;
 
     public ScoreViewModel(IRandomizer randomizer)
     {
@@ -58,12 +60,12 @@ public sealed class ScoreViewModel : Bindable<ScoreView>
         int teamScore = team.Score;
         int score = ScoreViewModel.DifficultyToScore(phraseDifficulty);
         int malus = ScoreViewModel.Malus(phraseDifficulty, evaluationResult);
-        int lifeline = ScoreViewModel.Lifeline(hasCalledFriend);
+        int lifeline = ScoreViewModel.LifelineMalus(hasCalledFriend);
         int timeBonus = ScoreViewModel.TimeBonus(translateTime);
-        int scoreUpdate = score - malus - lifeline + timeBonus;
-        if (scoreUpdate < 0)
+        this.scoreUpdate = score - malus - lifeline + timeBonus;
+        if (this.scoreUpdate < 0)
         {
-            scoreUpdate = 0;
+            this.scoreUpdate = 0;
         }
 
         // Baseline 
@@ -135,7 +137,7 @@ public sealed class ScoreViewModel : Bindable<ScoreView>
         } 
     }
 
-    private static int Lifeline(bool hasCalledFriend) => hasCalledFriend ? -2 : 0;
+    private static int LifelineMalus(bool hasCalledFriend) => hasCalledFriend ? 2 : 0;
 
     private static int TimeBonus(TimeSpan timeSpan)
     {
@@ -223,7 +225,7 @@ public sealed class ScoreViewModel : Bindable<ScoreView>
     #region Methods invoked by the Framework using reflection 
 #pragma warning disable IDE0051 // Remove unused private members
 
-    private void OnNext(object? _) => this.Messenger.Publish(new ScoringCompleteMessage());
+    private void OnNext(object? _) => this.Messenger.Publish(new ScoringCompleteMessage(this.scoreUpdate));
 
     #endregion Methods invoked by the Framework using reflection 
 #pragma warning restore IDE0051 // Remove unused private members

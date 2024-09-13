@@ -10,8 +10,9 @@ public class Bindable : NotifyPropertyChanged
     /// <summary> The property currently being set. </summary>
     /// <remarks> 
     /// Needed in some special cases to prevent spurious calls to Set from Avalonia controls, such as the radio button.
+    /// =>> Last implemented solution was creating issues of view models non updating properly. 
     /// </remarks>
-    private string setPropertyName = string.Empty;
+    //  private string setPropertyName = string.Empty;
 
     /// <summary> The bounds properties.</summary>
     protected readonly Dictionary<string, object?> properties = [] ;
@@ -169,13 +170,6 @@ public class Bindable : NotifyPropertyChanged
             throw new Exception("Set property: no name");
         }
 
-        if (this.setPropertyName == name)
-        {
-            this.setPropertyName = string.Empty;
-            return false;
-        }
-
-        this.setPropertyName = name;
         T? current = this.Get<T>(name);
         if (Equals(value, current))
         {
@@ -194,7 +188,6 @@ public class Bindable : NotifyPropertyChanged
             methodInfo.Invoke(this, [current, value]);
         }
 
-        this.setPropertyName = string.Empty;
         return true;
     }
 
