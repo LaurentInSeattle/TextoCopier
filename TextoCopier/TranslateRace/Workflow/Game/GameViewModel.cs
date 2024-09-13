@@ -1,4 +1,6 @@
-﻿namespace Lyt.TranslateRace.Workflow.Game;
+﻿using Lyt.TranslateRace.Model;
+
+namespace Lyt.TranslateRace.Workflow.Game;
 
 public sealed class GameViewModel : Bindable<GameView>
 {
@@ -362,7 +364,24 @@ public sealed class GameViewModel : Bindable<GameView>
             return;
         }
 
-        // TODO 
+        // Must use current player before we removed it 
+        int nextPlayerIndex = this.FindNextPlayerIndex(this.CurrentTeam, this.CurrentPlayer);
+        if (!this.CurrentTeam.Drop(this.CurrentPlayer))
+        {
+            throw new Exception("Cant drop ??? ");
+        }
+
+        if (this.isLeftTurn)
+        {
+            this.leftPlayerIndex = nextPlayerIndex;
+        }
+        else
+        {
+            this.rightPlayerIndex = nextPlayerIndex;
+        }
+
+        // Dont change current team, but refresh both teams
+        this.Turn = new TurnViewModel(this.CurrentTeam, this.CurrentPlayer, this.NextTeam, this.NextPlayer);
     }
 
     private void OnDifficultyChoice(DifficultyChoiceMessage message)
