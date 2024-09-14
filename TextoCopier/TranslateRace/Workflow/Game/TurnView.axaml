@@ -55,6 +55,7 @@
 			Grid.Column="3" 
 			Margin="0 0 0 0"
 			Style="{StaticResource ViewIconButton}"
+			IsVisible="{Binding HasDroppedVisible}"
 			GlyphSource="arrow_down"
 			Text="Ha lasciato..."
 			Height ="32" Width="132"

@@ -30,20 +30,6 @@ public sealed class IntroViewModel : Bindable<IntroView>
 #pragma warning restore IDE0051
     #endregion Methods invoked by the Framework using reflection 
 
-    /*
-    private void OnPlayEasy(object? _) => this.Play(GameDifficulty.Easy);
-
-    private void OnPlayMedium(object? _)  => this.Play(GameDifficulty.Medium);
-
-    private void OnPlayHard(object? _)  => this.Play(GameDifficulty.Hard );
-
-    public ICommand PlayEasyCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand PlayMediumCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand PlayHardCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-    */
-
     public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     public ICommand NextCommand { get => this.Get<ICommand>()!; set => this.Set(value); }

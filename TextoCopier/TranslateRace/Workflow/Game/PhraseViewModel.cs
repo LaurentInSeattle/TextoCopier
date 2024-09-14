@@ -2,6 +2,7 @@
 
 public sealed class PhraseViewModel : Bindable<PhraseView>
 {
+    private Team? team;
     private Phrase? phrase;
     private bool isRevealed;
 
@@ -9,23 +10,43 @@ public sealed class PhraseViewModel : Bindable<PhraseView>
     {
         this.TeamColor = ColorTheme.Text;
         this.Visible = true;
+        this.Messenger.Subscribe<PlayerDropMessage>(this.OnPlayerDrop);
     }
 
-    public void Update(Phrase phrase)
+    public void Update(Team team, Phrase phrase)
     {
+        this.team = team;
         this.phrase = phrase;
         this.isRevealed = false;
         this.TeamColor = ColorTheme.Text;
         this.Italian = phrase.Italian;
         this.English = string.Empty;
-        this.CallVisible = true;
+        this.CallVisible = team.Players.Count > 1;
         this.NextVisible = true;
+    }
+
+    private void OnPlayerDrop(PlayerDropMessage message)
+    {
+        if (this.team is null)
+        {
+            return;
+        }
+
+        if (this.CallVisible && (this.team.Players.Count < 2))
+        {
+            this.CallVisible = false;
+        } 
     }
 
     #region Methods invoked by the Framework using reflection 
 #pragma warning disable IDE0051 // Remove unused private members
 
-    private void OnCall(object? _) => this.Messenger.Publish(new PlayerLifelineMessage());
+    private void OnCall(object? _)
+    {
+        // Can call only once 
+        this.CallVisible = false;
+        this.Messenger.Publish(new PlayerLifelineMessage());
+    }
 
     private void OnNext(object? _)
     {

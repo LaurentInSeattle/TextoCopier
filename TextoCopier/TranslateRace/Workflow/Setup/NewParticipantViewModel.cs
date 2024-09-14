@@ -1,15 +1,10 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Setup;
 
-public sealed class NewParticipantViewModel : Bindable<NewParticipantView>
+public sealed class NewParticipantViewModel(IMessenger messenger, TranslateRaceModel translateRaceModel) 
+    : Bindable<NewParticipantView>
 {
-    private readonly IMessenger messenger;
-    private readonly TranslateRaceModel translateRaceModel;
-
-    public NewParticipantViewModel(IMessenger messenger, TranslateRaceModel translateRaceModel)
-    {
-        this.messenger = messenger;
-        this.translateRaceModel = translateRaceModel;
-    }
+    private readonly IMessenger messenger = messenger;
+    private readonly TranslateRaceModel translateRaceModel = translateRaceModel;
 
     public override void Activate(object? activationParameters)
     {
@@ -43,10 +38,8 @@ public sealed class NewParticipantViewModel : Bindable<NewParticipantView>
         this.SaveButtonIsDisabled = !validated;
     }
 
-    private bool Validate(out string message)
-    {
-        return this.translateRaceModel.ValidateNewParticipantForAdd(this.Name, out message);
-    }
+    private bool Validate(out string message) 
+        => this.translateRaceModel.ValidateNewParticipantForAdd(this.Name, out message);
 
     private bool Save(out string message)
     {

@@ -1,6 +1,4 @@
-﻿using Lyt.TranslateRace.Model;
-
-namespace Lyt.TranslateRace.Workflow.Game;
+﻿namespace Lyt.TranslateRace.Workflow.Game;
 
 public sealed class GameViewModel : Bindable<GameView>
 {
@@ -384,6 +382,33 @@ public sealed class GameViewModel : Bindable<GameView>
         this.Turn = new TurnViewModel(this.CurrentTeam, this.CurrentPlayer, this.NextTeam, this.NextPlayer);
     }
 
+    private void OnPlayerLifeline(PlayerLifelineMessage message)
+    {
+        if ((this.State != GameState.Running) || (this.TurnStep != GameStep.Translate))
+        {
+            return;
+        }
+
+        // We called a friend: points to be discounted 
+        this.hasCalledFriend = true;
+
+        // For now , we choose the next player
+        int nextPlayerIndex = this.FindNextPlayerIndex(this.CurrentTeam, this.CurrentPlayer);
+
+        // Dont remove current player, just make current the one we just picked 
+        if (this.isLeftTurn)
+        {
+            this.leftPlayerIndex = nextPlayerIndex;
+        }
+        else
+        {
+            this.rightPlayerIndex = nextPlayerIndex;
+        }
+
+        // Dont change current team, but refresh both teams
+        this.Turn = new TurnViewModel(this.CurrentTeam, this.CurrentPlayer, this.NextTeam, this.NextPlayer);
+    }
+
     private void OnDifficultyChoice(DifficultyChoiceMessage message)
     {
         if ((this.State != GameState.Running) || (this.TurnStep != GameStep.DifficultySelection))
@@ -399,19 +424,8 @@ public sealed class GameViewModel : Bindable<GameView>
             throw new Exception("No phrase, no team ???");
         }
 
-        this.Phrase.Update(phrase);
+        this.Phrase.Update(this.CurrentTeam, phrase);
         this.TurnStep = GameStep.Translate;
-    }
-
-    private void OnPlayerLifeline(PlayerLifelineMessage message)
-    {
-        if ((this.State != GameState.Running) || (this.TurnStep != GameStep.Translate))
-        {
-            return;
-        }
-
-        // TODO: Choose a player of pick at random ??? 
-        this.hasCalledFriend = true;
     }
 
     private void OnTranslateRevealed(TranslateRevealedMessage message)
