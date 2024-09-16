@@ -2,10 +2,7 @@
 
 public class HGate : UnaryOperation
 {
-    protected override Complex[,] GetMatrix()
-    {
-        return h_matrix;
-    }
+    protected override Complex[,] GetMatrix() => this.h_matrix;
 
     private readonly Complex[,] h_matrix = new Complex[,]
     {

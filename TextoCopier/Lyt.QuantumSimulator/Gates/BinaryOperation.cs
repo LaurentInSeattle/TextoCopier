@@ -10,26 +10,22 @@ public abstract class BinaryOperation
 
     public Complex[,] GetMatrix(int bitLen, int bit1Pos, int bit2Pos)
     {
-        var matrix = GetMatrix();
+        var matrix = this.GetMatrix();
         var table = AlgebraUtility.LookupTable(matrix);
 
-        var mLen = (1 << bitLen);
+        int mLen = 1 << bitLen;
         matrix = new Complex[mLen, mLen];
 
         for (int i = 0; i < mLen; i++)
         {
-            var x =
+            int x =
                 (BinaryUtility.HasBit(i, bit1Pos) ? 2 : 0) +
                 (BinaryUtility.HasBit(i, bit2Pos) ? 1 : 0);
 
             foreach (var y in table[x])
             {
-                var j = BinaryUtility.SetBit(
-                    i, bit1Pos, BinaryUtility.HasBit(y.Key, 1)
-                );
-                j = BinaryUtility.SetBit(
-                    j, bit2Pos, BinaryUtility.HasBit(y.Key, 0)
-                );
+                int  j = BinaryUtility.SetBit( i, bit1Pos, BinaryUtility.HasBit(y.Key, 1) );
+                j = BinaryUtility.SetBit( j, bit2Pos, BinaryUtility.HasBit(y.Key, 0));
 
                 matrix[i, j] = y.Value;
                 matrix[j, i] = y.Value;

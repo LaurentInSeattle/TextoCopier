@@ -2,7 +2,7 @@
 
 public class DeutschAlgorithm
 {
-    public bool IsBalanced(BinaryOperation gate)
+    public static bool IsBalanced(BinaryOperation gate)
     {
         var q1 = new Qubit(false);
         var q2 = new Qubit(true);

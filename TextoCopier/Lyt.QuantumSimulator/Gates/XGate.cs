@@ -2,7 +2,7 @@
 
 public class XGate : UnaryOperation
 {
-    protected override Complex[,] GetMatrix() => x_matrix;
+    protected override Complex[,] GetMatrix() => this.x_matrix;
 
     private readonly Complex[,] x_matrix = new Complex[,]
     {

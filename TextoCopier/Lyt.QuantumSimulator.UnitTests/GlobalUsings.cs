@@ -28,3 +28,7 @@ global using Lyt.QuantumSimulator.Algorithms;
 global using Lyt.QuantumSimulator.Core;
 global using Lyt.QuantumSimulator.Gates;
 global using Lyt.QuantumSimulator.Utilities;
+
+global using Lyt.QuantumSimulator.UnitTests.Algorithms;
+global using Lyt.QuantumSimulator.UnitTests.Gates;
+global using Lyt.QuantumSimulator.UnitTests.Utilities;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Tcgv.QuantumSim.Utility
+namespace Lyt.QuantumSimulator.UnitTests.Utilities
 {
     [TestClass()]
     public class VectorDecoderTests
@@ -62,6 +62,5 @@ namespace Tcgv.QuantumSim.Utility
 
             Assert.IsNull(r);
         }
-
     }
 }

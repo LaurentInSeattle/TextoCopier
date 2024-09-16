@@ -47,6 +47,7 @@ public class Qubit
         }
 
         value.Add(this);
+        DumpCache("Add");
     }
 
     private static void UpdateCache(QuState oldState, QuState newState)
@@ -57,5 +58,33 @@ public class Qubit
         }
 
         cache.Remove(oldState);
+
+        DumpCache("Update");
+    }
+
+    public static void ClearCache()
+    {
+        counter = 0;
+        cache.Clear();
+    }
+
+    [Conditional("DumpCache")]
+    private static void DumpCache (string method)
+    {
+        Debug.WriteLine("Cache: " + method + "  " + cache.Count.ToString()); 
+        Debug.Indent();
+        foreach (var state in cache.Keys)
+        {
+            Debug.WriteLine("State: " + state);
+            Debug.Indent();
+            foreach (var qubit in cache[state])
+            {
+                Debug.WriteLine("Id: " +qubit.Id);
+            }
+            Debug.Unindent();
+        }
+
+        Debug.Unindent();
+        Debug.WriteLine("-");
     }
 }

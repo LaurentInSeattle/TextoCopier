@@ -2,10 +2,7 @@
 
 public class CXGate : BinaryOperation
 {
-    protected override Complex[,] GetMatrix()
-    {
-        return cx_matrix;
-    }
+    protected override Complex[,] GetMatrix() => this.cx_matrix;
 
     private readonly Complex[,] cx_matrix = new Complex[,]
     {
