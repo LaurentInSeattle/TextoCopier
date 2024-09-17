@@ -2,74 +2,77 @@
 
 public static class AlgebraUtility
 {
-    public static int Log2(int length)
-    {
-        return (int)Math.Round(Math.Log(length, 2));
-    }
+    public static int Log2(int length) => (int)Math.Round(Math.Log(length, 2));
 
     public static Complex[] IntToVector(int bitLen, int value)
     {
-        var v = new Complex[bitLen];
-        v[value] = Complex.One;
-        return v;
+        var resultVector = new Complex[bitLen];
+        resultVector[value] = Complex.One;
+        return resultVector;
     }
 
     public static IEnumerable<int> VectorToInt(Complex[] vector)
     {
         for (int i = 0; i < vector.Length; i++)
+        {
             if (vector[i] != Complex.Zero)
+            {
                 yield return i;
+            }
+        }
     }
 
     public static Dictionary<int, Dictionary<int, Complex>> LookupTable(Complex[,] matrix)
     {
-        var bitLen = matrix.GetLength(0);
+        int bitLen = matrix.GetLength(0);
         var table = new Dictionary<int, Dictionary<int, Complex>>();
         for (int i = 0; i < bitLen; i++)
         {
             var vector = IntToVector(bitLen, i);
-            var result = Multiply(matrix, vector);
-
-            table.Add(i, new Dictionary<int, Complex>());
-            foreach (var j in VectorToInt(result))
+            var result = MultiplyMatrixByVector(matrix, vector);
+            table.Add(i, []);
+            foreach (int j in VectorToInt(result))
             {
                 table[i].Add(j, result[j]);
             }
         }
+
         return table;
     }
 
-    public static Complex[] Multiply(Complex[,] matrix, Complex[] vector)
+    public static Complex[] MultiplyMatrixByVector(Complex[,] matrix, Complex[] vector)
     {
         if (matrix.GetLength(0) != vector.Length)
-            throw new InvalidOperationException();
-
-        var r = new Complex[vector.Length];
-
-        for (int i = 0; i < matrix.GetLength(0); i++)
         {
-            r[i] = 0;
-            for (int j = 0; j < matrix.GetLength(1); j++)
-                r[i] += vector[j] * matrix[i, j];
+            throw new InvalidOperationException();
         }
 
-        return r;
+        var resultVector = new Complex[vector.Length];
+        for (int i = 0; i < matrix.GetLength(0); i++)
+        {
+            resultVector[i] = 0;
+            for (int j = 0; j < matrix.GetLength(1); j++)
+            {
+                resultVector[i] += vector[j] * matrix[i, j];
+            }
+        }
+
+        return resultVector;
     }
 
     public static Complex[] TensorProduct(Complex[] v1, Complex[] v2)
     {
-        var w = v1.Length * v2.Length;
-        var v = new Complex[w];
+        var resultVector = new Complex[v1.Length * v2.Length];
 
         for (int i = 0; i < v1.Length; i++)
         {
             for (int j = 0; j < v2.Length; j++)
             {
-                v[i * v2.Length + j] = v1[i] * v2[j];
+                resultVector[i * v2.Length + j] = v1[i] * v2[j];
             }
         }
 
-        return v;
+        return resultVector;
     }
 
     public static Complex[] TensorProduct(ComplexPoint[] points)
@@ -82,13 +85,18 @@ public static class AlgebraUtility
         if (offset < points.Length)
         {
             foreach (var v in TensorProduct(points, offset + 1))
+            {
                 yield return points[offset].X * v;
+            }
+
             foreach (var v in TensorProduct(points, offset + 1))
+            {
                 yield return points[offset].Y * v;
+            }
         }
         else
         {
-            yield return 1;
+            yield return Complex.One;
         }
     }
 }

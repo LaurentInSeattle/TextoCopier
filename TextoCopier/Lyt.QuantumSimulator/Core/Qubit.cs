@@ -1,4 +1,6 @@
-﻿namespace Lyt.QuantumSimulator.Core;
+﻿//#define DumpCache 
+
+namespace Lyt.QuantumSimulator.Core;
 
 public class Qubit
 {
@@ -24,6 +26,9 @@ public class Qubit
         if (s1 != s2)
         {
             var newState = QuState.Combine(s1, s2);
+            //q1.State = newState;
+            //q2.State = newState.DeepClone();
+
             UpdateCache(s1, newState);
             UpdateCache(s2, newState);
         }

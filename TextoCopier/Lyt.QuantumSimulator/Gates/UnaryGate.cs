@@ -2,7 +2,7 @@
 
 public abstract class UnaryGate
 {
-    public void Apply(Qubit q) => q.State.MultiplyBy(this, q.Id);
+    public void Apply(Qubit q) => q.State.ApplyUnaryGate(this, q.Id);
 
     public Complex[,] GetMatrix(int bitLen, int bitPos)
     {
@@ -16,10 +16,10 @@ public abstract class UnaryGate
 
             for (int i = 0; i < mLen; i++)
             {
-                int x = BinaryUtility.HasBit(i, bitPos) ? 1 : 0;
+                int x = BinaryUtility.IsBitSet(i, bitPos) ? 1 : 0;
                 foreach (var y in table[x])
                 {
-                    int j = BinaryUtility.SetBit(i, bitPos, BinaryUtility.HasBit(y.Key, 0));
+                    int j = BinaryUtility.SetBitValue(i, bitPos, BinaryUtility.IsBitSet(y.Key, 0));
 
                     matrix[i, j] = y.Value;
                     matrix[j, i] = y.Value;

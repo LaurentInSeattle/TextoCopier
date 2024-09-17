@@ -11,11 +11,24 @@ public class QuState
         this.tensor = tensor;
     }
 
-    public QuState(ComplexPoint p, int key)
+    QuState(Complex[] tensor, Dictionary<int, int> map)
+    {
+        this.posMap = map;
+        this.tensor = tensor;
+    }
+
+    public QuState(ComplexPoint p, int qubitId)
     {
         this.posMap = [];
-        this.posMap.Add(key, 0);
+        this.posMap.Add(qubitId, 0);
         this.tensor = [p.X, p.Y];
+    }
+
+    public QuState DeepClone ()
+    {
+        var tensor = this.tensor.ToList().ToArray();
+        var map = this.posMap.ToDictionary();
+        return new QuState(tensor, map);    
     }
 
     public static QuState Combine(QuState s1, QuState s2)
@@ -34,38 +47,38 @@ public class QuState
         return s;
     }
 
-    public void MultiplyBy(UnaryGate gate, int key)
+    public void ApplyUnaryGate(UnaryGate gate, int qubitId)
     {
         int bitLen = AlgebraUtility.Log2(this.tensor.Length);
-        int bitPosition = this.posMap[key];
-        this.tensor = AlgebraUtility.Multiply( gate.GetMatrix(bitLen, bitPosition), this.tensor );
+        int bitPosition = this.posMap[qubitId];
+        this.tensor = AlgebraUtility.MultiplyMatrixByVector( gate.GetMatrix(bitLen, bitPosition), this.tensor );
     }
 
-    public void MultiplyBy(BinaryGate gate, int key1, int key2)
+    public void ApplyBinaryGate(BinaryGate gate, int qubitId1, int qubitId2)
     {
         int bitLen = AlgebraUtility.Log2(this.tensor.Length);
-        int bit1Pos = this.posMap[key1];
-        int bit2Pos = this.posMap[key2];
-        this.tensor = AlgebraUtility.Multiply( gate.GetMatrix(bitLen, bit1Pos, bit2Pos), this.tensor);
+        int bit1Pos = this.posMap[qubitId1];
+        int bit2Pos = this.posMap[qubitId2];
+        this.tensor = AlgebraUtility.MultiplyMatrixByVector( gate.GetMatrix(bitLen, bit1Pos, bit2Pos), this.tensor);
     }
 
-    public ComplexPoint? Peek(int key)
+    public ComplexPoint? Peek(int qubitId)
     {
         var decoder = new VectorDecoder();
         var r = decoder.Solve(this.tensor);
         if (r != null)
         {
-            return r[r.Length - this.posMap[key] - 1]; // big-endian
+            return r[r.Length - this.posMap[qubitId] - 1]; // big-endian
         }
 
         return null;
     }
 
-    public bool Measure(int key)
+    public bool Measure(int qubitId)
     {
-        int pos = this.posMap[key];
+        int pos = this.posMap[qubitId];
         int val = this.Sample();
-        bool m = BinaryUtility.HasBit(val, pos);
+        bool m = BinaryUtility.IsBitSet(val, pos);
         this.Collapse(pos, m);
         return m;
     }
@@ -91,7 +104,7 @@ public class QuState
     {
         for (int i = 0; i < this.tensor.Length; i++)
         {
-            if (BinaryUtility.HasBit(i, pos) != b)
+            if (BinaryUtility.IsBitSet(i, pos) != b)
             {
                 this.tensor[i] = Complex.Zero;
             }
