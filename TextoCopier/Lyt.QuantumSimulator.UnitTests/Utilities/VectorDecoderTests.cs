@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace Lyt.QuantumSimulator.UnitTests.Utilities
+﻿namespace Lyt.QuantumSimulator.UnitTests.Utilities
 {
     [TestClass()]
     public class VectorDecoderTests
@@ -19,6 +17,10 @@ namespace Lyt.QuantumSimulator.UnitTests.Utilities
             );
 
             var r = decoder.Solve(new[] { p.X, p.Y });
+            if ( r is null )
+            {
+                Assert.Fail();
+            }
 
             Assert.AreEqual(p, r[0]);
         }
@@ -40,6 +42,10 @@ namespace Lyt.QuantumSimulator.UnitTests.Utilities
 
             var v = AlgebraUtility.TensorProduct(new[] { p1, p2 });
             var r = decoder.Solve(v);
+            if (r is null)
+            {
+                Assert.Fail();
+            }
 
             Assert.AreEqual(p1, r[0]);
             Assert.AreEqual(p2, r[1]);
@@ -59,7 +65,6 @@ namespace Lyt.QuantumSimulator.UnitTests.Utilities
             };
 
             var r = decoder.Solve(v);
-
             Assert.IsNull(r);
         }
     }

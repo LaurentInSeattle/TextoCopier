@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace Lyt.QuantumSimulator.UnitTests.Gates;
+﻿namespace Lyt.QuantumSimulator.UnitTests.Gates;
 
 [TestClass()]
 public class XGateTest

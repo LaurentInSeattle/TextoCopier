@@ -1,6 +1,6 @@
 ﻿namespace Lyt.QuantumSimulator.Gates;
 
-public abstract class BinaryOperation
+public abstract class BinaryGate
 {
     public void Apply(Qubit q1, Qubit q2)
     {

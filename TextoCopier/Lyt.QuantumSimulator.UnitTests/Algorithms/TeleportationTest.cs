@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace Lyt.QuantumSimulator.UnitTests.Algorithms;
+﻿namespace Lyt.QuantumSimulator.UnitTests.Algorithms;
 
 [TestClass()]
 public class TeleportationTest

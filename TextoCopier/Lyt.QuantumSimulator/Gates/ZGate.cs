@@ -1,6 +1,6 @@
 ﻿namespace Lyt.QuantumSimulator.Gates;
 
-public class ZGate : UnaryOperation
+public class ZGate : UnaryGate
 {
     protected override Complex[,] GetMatrix() => this.z_matrix;
 

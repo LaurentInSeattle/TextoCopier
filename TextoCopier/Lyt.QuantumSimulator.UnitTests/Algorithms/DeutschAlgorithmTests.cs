@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace Lyt.QuantumSimulator.UnitTests.Algorithms;
+﻿namespace Lyt.QuantumSimulator.UnitTests.Algorithms;
 
 [TestClass()]
 public class DeutschAlgorithmTests
@@ -19,7 +17,7 @@ public class DeutschAlgorithmTests
         Assert.IsFalse(DeutschAlgorithm.IsBalanced(new ConstantGate()));
     }
 
-    public class BalancedGate : BinaryOperation
+    public class BalancedGate : BinaryGate
     {
         protected override Complex[,] GetMatrix()
         {
@@ -33,7 +31,7 @@ public class DeutschAlgorithmTests
         }
     }
 
-    public class ConstantGate : BinaryOperation
+    public class ConstantGate : BinaryGate
     {
         protected override Complex[,] GetMatrix()
         {

@@ -1,6 +1,6 @@
 ﻿namespace Lyt.QuantumSimulator.Gates;
 
-public abstract class UnaryOperation
+public abstract class UnaryGate
 {
     public void Apply(Qubit q) => q.State.MultiplyBy(this, q.Id);
 
@@ -16,10 +16,10 @@ public abstract class UnaryOperation
 
             for (int i = 0; i < mLen; i++)
             {
-                int x =BinaryUtility.HasBit(i, bitPos) ? 1 : 0;
+                int x = BinaryUtility.HasBit(i, bitPos) ? 1 : 0;
                 foreach (var y in table[x])
                 {
-                    int j = BinaryUtility.SetBit( i, bitPos, BinaryUtility.HasBit(y.Key, 0));
+                    int j = BinaryUtility.SetBit(i, bitPos, BinaryUtility.HasBit(y.Key, 0));
 
                     matrix[i, j] = y.Value;
                     matrix[j, i] = y.Value;

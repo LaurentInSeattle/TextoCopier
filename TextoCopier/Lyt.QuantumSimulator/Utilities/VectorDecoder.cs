@@ -2,7 +2,7 @@
 
 public class VectorDecoder
 {
-    public ComplexPoint[] Solve(Complex[] vector)
+    public ComplexPoint[]? Solve(Complex[] vector)
     {
         if (vector.Length == 2)
             return SolveSinglePoint(vector);

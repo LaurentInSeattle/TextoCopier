@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace Lyt.QuantumSimulator.UnitTests.Gates;
+﻿namespace Lyt.QuantumSimulator.UnitTests.Gates;
 
 [TestClass()]
 public class HGateTest
@@ -13,6 +11,8 @@ public class HGateTest
 
         for (int i = 0; i < iterations; i++)
         {
+            Qubit.ClearCache();
+
             var q = new Qubit(false);
             new HGate().Apply(q);
             diff += q.Measure() ? 1 : -1;
@@ -29,6 +29,8 @@ public class HGateTest
 
         for (int i = 0; i < iterations; i++)
         {
+            Qubit.ClearCache();
+
             var q1 = new Qubit(false);
             var q2 = new Qubit(true);
 
@@ -49,6 +51,8 @@ public class HGateTest
 
         for (int i = 0; i < iterations; i++)
         {
+            Qubit.ClearCache();
+
             var q1 = new Qubit(false);
             var q2 = new Qubit(true);
             var q3 = new Qubit(true);
@@ -61,5 +65,23 @@ public class HGateTest
         }
 
         Assert.IsTrue(Math.Abs(diff) / iterations < 0.025);
+    }
+
+    [TestMethod()]
+    public void Apply_ThreeQubitSystem_Test_Refac()
+    {
+        static bool OneShot()
+        {
+            var q1 = new Qubit(false);
+            var q2 = new Qubit(true);
+            var q3 = new Qubit(true);
+            Qubit.Combine(q1, q2);
+            Qubit.Combine(q2, q3);
+
+            new HGate().Apply(q2);
+            return q2.Measure();
+        }
+
+        Driver.Run(OneShot);  
     }
 }

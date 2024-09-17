@@ -1,6 +1,6 @@
 ﻿namespace Lyt.QuantumSimulator.Gates;
 
-public class CXGate : BinaryOperation
+public class CXGate : BinaryGate
 {
     protected override Complex[,] GetMatrix() => this.cx_matrix;
 

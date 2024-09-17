@@ -9,7 +9,8 @@ public class Qubit
     public Qubit(bool b)
     {
         this.Id = ++counter;
-        this.SetState(new QuState(new ComplexPoint(b), this.Id));
+        this.State= new QuState(new ComplexPoint(b), this.Id);
+        this.AddToCache(); 
     }
 
     public int Id { get; private set; }
@@ -22,9 +23,9 @@ public class Qubit
         var s2 = q2.State;
         if (s1 != s2)
         {
-            var s = QuState.Combine(s1, s2);
-            UpdateCache(s1, s);
-            UpdateCache(s2, s);
+            var newState = QuState.Combine(s1, s2);
+            UpdateCache(s1, newState);
+            UpdateCache(s2, newState);
         }
     }
 

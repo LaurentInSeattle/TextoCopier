@@ -24,6 +24,8 @@ global using System.Windows.Input;
 
 #endregion System 
 
+global using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 global using Lyt.QuantumSimulator.Algorithms;
 global using Lyt.QuantumSimulator.Core;
 global using Lyt.QuantumSimulator.Gates;

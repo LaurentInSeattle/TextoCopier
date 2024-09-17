@@ -1,6 +1,6 @@
 ﻿namespace Lyt.QuantumSimulator.Gates;
 
-public class CZGate : BinaryOperation
+public class CZGate : BinaryGate
 {
     protected override Complex[,] GetMatrix() => cz_matrix;
 

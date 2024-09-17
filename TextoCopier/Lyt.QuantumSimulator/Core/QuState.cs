@@ -3,21 +3,28 @@
 public class QuState
 {
     private Dictionary<int, int> posMap;
-    private Complex[] v;
+    private Complex[] tensor;
 
-    QuState() => this.posMap = [];
-
-    public QuState(ComplexPoint p, int key) : this()
+    QuState(Complex[] tensor)
     {
-        posMap.Add(key, 0);
-        v = [p.X, p.Y];
+        this.posMap = [];
+        this.tensor = tensor;
+    }
+
+    public QuState(ComplexPoint p, int key)
+    {
+        this.posMap = [];
+        this.posMap.Add(key, 0);
+        this.tensor = [p.X, p.Y];
     }
 
     public static QuState Combine(QuState s1, QuState s2)
     {
-        var s = new QuState();
-        s.v = AlgebraUtility.TensorProduct(s1.v, s2.v);
-        s.posMap = s2.posMap;
+        var s = new QuState(AlgebraUtility.TensorProduct(s1.tensor, s2.tensor))
+        {
+            posMap = s2.posMap
+        };
+
         int offset = s2.posMap.Count;
         foreach (var pair in s1.posMap)
         {
@@ -27,28 +34,28 @@ public class QuState
         return s;
     }
 
-    public void MultiplyBy(UnaryOperation gate, int key)
+    public void MultiplyBy(UnaryGate gate, int key)
     {
-        int bitLen = AlgebraUtility.Log2(v.Length);
-        int bitPosition = posMap[key];
-        v = AlgebraUtility.Multiply( gate.GetMatrix(bitLen, bitPosition), v );
+        int bitLen = AlgebraUtility.Log2(this.tensor.Length);
+        int bitPosition = this.posMap[key];
+        this.tensor = AlgebraUtility.Multiply( gate.GetMatrix(bitLen, bitPosition), this.tensor );
     }
 
-    public void MultiplyBy(BinaryOperation gate, int key1, int key2)
+    public void MultiplyBy(BinaryGate gate, int key1, int key2)
     {
-        int bitLen = AlgebraUtility.Log2(v.Length);
-        int bit1Pos = posMap[key1];
-        int bit2Pos = posMap[key2];
-        v = AlgebraUtility.Multiply( gate.GetMatrix(bitLen, bit1Pos, bit2Pos), v);
+        int bitLen = AlgebraUtility.Log2(this.tensor.Length);
+        int bit1Pos = this.posMap[key1];
+        int bit2Pos = this.posMap[key2];
+        this.tensor = AlgebraUtility.Multiply( gate.GetMatrix(bitLen, bit1Pos, bit2Pos), this.tensor);
     }
 
     public ComplexPoint? Peek(int key)
     {
         var decoder = new VectorDecoder();
-        var r = decoder.Solve(v);
+        var r = decoder.Solve(this.tensor);
         if (r != null)
         {
-            return r[r.Length - posMap[key] - 1]; // big-endian
+            return r[r.Length - this.posMap[key] - 1]; // big-endian
         }
 
         return null;
@@ -56,43 +63,44 @@ public class QuState
 
     public bool Measure(int key)
     {
-        int pos = posMap[key];
-        int val = Sample();
+        int pos = this.posMap[key];
+        int val = this.Sample();
         bool m = BinaryUtility.HasBit(val, pos);
-        Collapse(pos, m);
+        this.Collapse(pos, m);
         return m;
     }
 
     private int Sample()
     {
-        var i = 0;
-        var aux = 0.0d;
-        var x = RandomUtility.NextDouble();
-
-        for (; i < v.Length; i++)
+        double aux = 0.0;
+        double x = RandomUtility.NextDouble();
+        for ( int i = 0; i < this.tensor.Length; i++)
         {
-            aux += v[i].Magnitude * v[i].Magnitude;
+            double magnitude = this.tensor[i].Magnitude; 
+            aux += magnitude * magnitude;
             if (aux > x)
-                break;
+            {
+                return i;
+            }
         }
 
-        return i;
+        return 0;
     }
 
     private void Collapse(int pos, bool b)
     {
-        for (int i = 0; i < v.Length; i++)
+        for (int i = 0; i < this.tensor.Length; i++)
         {
             if (BinaryUtility.HasBit(i, pos) != b)
             {
-                v[i] = Complex.Zero;
+                this.tensor[i] = Complex.Zero;
             }
         }
 
-        double sum = Math.Sqrt( v.Sum(x => x.Magnitude * x.Magnitude) );
-        for (int i = 0; i < v.Length; i++)
+        double sum = Math.Sqrt(this.tensor.Sum(x => x.Magnitude * x.Magnitude) );
+        for (int i = 0; i < this.tensor.Length; i++)
         {
-            v[i] /= sum;
+            this.tensor[i] /= sum;
         }
     }
 }

@@ -20,10 +20,10 @@ public class ComplexPoint : IEquatable<ComplexPoint>
 
     public double Magnitude() => Math.Sqrt(this.X.Magnitude * this.X.Magnitude + this.Y.Magnitude * this.Y.Magnitude );
     
-    public void DivideBy(double v)
+    public void DivideBy(double divisor)
     {
-        this.X /= v;
-        this.Y /= v;
+        this.X /= divisor;
+        this.Y /= divisor;
     }
 
     public override int GetHashCode() => new { this.X, this.Y }.GetHashCode();
