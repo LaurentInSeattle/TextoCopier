@@ -17,9 +17,6 @@ public sealed class IntroViewModel : Bindable<IntroView>
         this.Logger.Debug("IntroViewModel: OnViewLoaded complete");
     }
 
-    private void Play(GameDifficulty difficulty)
-        => this.Messenger.Publish( ActivatedView.Game, null );
-
     #region Methods invoked by the Framework using reflection 
 #pragma warning disable IDE0051 // Remove unused private members
 

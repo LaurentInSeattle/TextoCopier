@@ -2,13 +2,11 @@
 
 public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
 {
-    private readonly IMessenger messenger;
     private readonly LocalizerModel localizer;
     private readonly TemplatesModel templatesModel;
 
-    public NewEditTemplateViewModel(IMessenger messenger, LocalizerModel localizer, TemplatesModel templatesModel)
+    public NewEditTemplateViewModel(LocalizerModel localizer, TemplatesModel templatesModel)
     {
-        this.messenger = messenger;
         this.localizer = localizer;
         this.templatesModel = templatesModel;
 
@@ -83,7 +81,7 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
     }
 
     private void OnClose(object? _)
-        => this.messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.GoBack));
+        => this.Messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.GoBack));
 
     public void OnEditing()
     {
