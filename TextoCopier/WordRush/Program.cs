@@ -1,4 +1,6 @@
-﻿namespace WordRush; 
+﻿#pragma warning disable IDE0130 // Namespace does not match folder structure
+
+namespace WordRush; 
 
 internal class Program
 {
@@ -12,3 +14,5 @@ internal class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>().UsePlatformDetect().WithInterFont().LogToTrace();
 }
+
+#pragma warning restore IDE0130 

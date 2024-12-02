@@ -1,11 +1,11 @@
 <UserControl 
-    x:Class="Lyt.TextoCopier.Workflow.NewEditTemplateView"
+    x:Class="Lyt.TextoCopier.Workflow.Templates.NewEditTemplateView"
 	xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="850"
-    xmlns:vm="clr-namespace:Lyt.TextoCopier.Workflow"
+    xmlns:vm="clr-namespace:Lyt.TextoCopier.Workflow.Templates"
     x:DataType="vm:NewEditTemplateViewModel" 
 	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
 	xmlns:toggle="clr-namespace:Lyt.Avalonia.Controls.Toggle;assembly=Lyt.Avalonia.Controls"

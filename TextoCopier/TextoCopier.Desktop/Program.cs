@@ -1,30 +1,27 @@
 ﻿using System;
+using System.Diagnostics;
 using Avalonia;
-using Avalonia.Media.Fonts;
+using Avalonia.Threading;
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace Lyt.TextoCopier.Desktop;
 
 class Program
 {
     [STAThread]
-    public static void Main(string[] args) => BuildAvaloniaApp() .StartWithClassicDesktopLifetime(args);
+    public static void Main(string[] args) => BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
 
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>().UsePlatformDetect().WithInterVariableFont().LogToTrace();
+    {
+        var builder = AppBuilder.Configure<App>().UsePlatformDetect().WithInterFont().LogToTrace();
+        Dispatcher.UIThread.ShutdownStarted += UIThread_ShutdownStarted;
+        return builder;
+    }
+
+    private static void UIThread_ShutdownStarted(object? sender, EventArgs e)
+    {
+        if (Debugger.IsAttached) { Debugger.Break(); }
+    } 
 }
 
-public static class AppBuilderExtension
-{
-    public static AppBuilder WithInterVariableFont(this AppBuilder appBuilder)
-        => appBuilder.ConfigureFonts(fontManager =>
-        {
-            fontManager.AddFontCollection(new InterVariableFontCollection());
-        });    
-}
-
-public sealed class InterVariableFontCollection : EmbeddedFontCollection
-{
-    public InterVariableFontCollection() : base(
-        new Uri("fonts:Inter-V", UriKind.Absolute),
-        new Uri("avares://TextoCopier/Assets/Fonts/Inter-V.ttf", UriKind.Absolute)) {  }
-}
+#pragma warning restore IDE0130 

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <RootNamespace>Lyt.TextoCopier</RootNamespace>
@@ -11,28 +11,13 @@
     <AvaloniaResource Include="Assets\**" />
     <AvaloniaResource Include="Assets\Languages\**" />
   </ItemGroup>
-  
+        
   <ItemGroup>
-    <AvaloniaResource Remove="Assets\Theme\ListBoxItemStyles.axaml" />
-    <AvaloniaResource Remove="Assets\Theme\ListBoxStyles.axaml" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <AvaloniaXaml Remove="Assets\Theme\AutoCompleteBoxStyles.axaml" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <None Remove="Assets\Languages\About\About_en-US.txt" />
-    <None Remove="Assets\Languages\About\About_fr-FR.txt" />
-    <None Remove="Assets\Languages\About\About_it-IT.txt" />
-  </ItemGroup>
-    
-  <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.1.4" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.1.4" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.1.4" />
+    <PackageReference Include="Avalonia" Version="11.2.2" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.2" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.2" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.1.4" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,20 +30,4 @@
     <ProjectReference Include="..\TextoCopier.Model\TextoCopier.Model.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controls\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AvaloniaXaml Update="Assets\Theme\ListBoxItemStyles.axaml">
-      <SubType>Designer</SubType>
-    </AvaloniaXaml>
-  </ItemGroup>
-
-  <ItemGroup>
-    <AvaloniaXaml Update="Assets\Theme\ListBoxStyles.axaml">
-      <SubType>Designer</SubType>
-    </AvaloniaXaml>
-  </ItemGroup>
-	
 </Project>

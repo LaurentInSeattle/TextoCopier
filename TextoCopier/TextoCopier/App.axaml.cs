@@ -41,7 +41,7 @@ public partial class App : ApplicationBase
             new Tuple<Type, Type>(typeof(IProfiler), typeof(Profiler)),
             new Tuple<Type, Type>(typeof(IToaster), typeof(Toaster)),
         ],
-        singleInstanceRequested: true)
+        singleInstanceRequested: false)
     {
         // This should be empty, use the OnStartup override
     }

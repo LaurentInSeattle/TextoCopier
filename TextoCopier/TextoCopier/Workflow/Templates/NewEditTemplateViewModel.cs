@@ -1,19 +1,12 @@
-﻿namespace Lyt.TextoCopier.Workflow;
+﻿namespace Lyt.TextoCopier.Workflow.Templates;
 
-public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
+public sealed class NewEditTemplateViewModel(
+    LocalizerModel localizer, TemplatesModel templatesModel) : Bindable<NewEditTemplateView>
 {
-    private readonly LocalizerModel localizer;
-    private readonly TemplatesModel templatesModel;
+    private readonly LocalizerModel localizer = localizer;
+    private readonly TemplatesModel templatesModel = templatesModel;
 
-    public NewEditTemplateViewModel(LocalizerModel localizer, TemplatesModel templatesModel)
-    {
-        this.localizer = localizer;
-        this.templatesModel = templatesModel;
-
-        this.SelectedGroup = new();
-    }
-
-    public Group SelectedGroup { get; private set; }
+    public Group SelectedGroup { get; private set; } = new();
 
     public Template? EditedTemplate { get; private set; }
 
@@ -67,7 +60,9 @@ public sealed class NewEditTemplateViewModel : Bindable<NewEditTemplateView>
         this.EditedTemplate = null;
     }
 
+#pragma warning disable IDE0051 // Remove unused private members
     private void OnSave(object? _)
+#pragma warning restore IDE0051 
     {
         if (this.Save(out string message))
         {

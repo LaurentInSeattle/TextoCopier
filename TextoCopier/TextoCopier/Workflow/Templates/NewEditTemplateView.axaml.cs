@@ -1,4 +1,4 @@
-namespace Lyt.TextoCopier.Workflow;
+namespace Lyt.TextoCopier.Workflow.Templates;
 
 public partial class NewEditTemplateView : UserControl
 {

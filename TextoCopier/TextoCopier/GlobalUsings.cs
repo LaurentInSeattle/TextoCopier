@@ -76,3 +76,4 @@ global using Lyt.TextoCopier.Model;
 global using Lyt.TextoCopier.Shell;
 global using Lyt.TextoCopier.Utilities;
 global using Lyt.TextoCopier.Workflow;
+global using Lyt.TextoCopier.Workflow.Templates;
