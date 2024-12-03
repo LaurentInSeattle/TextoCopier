@@ -82,15 +82,15 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
     private void SetupAvailableIcons()
     {
-        _ = Task.Run(async () => 
-        {
+        //_ = Task.Run(async () => 
+        // {
             // Detect Available Icons in asset file and pass that to the model 
             List<string> icons = ShellViewModel.DetectAvailableIcons();
             this.Logger.Debug(icons.Count + " icons available.");
             this.templatesModel.AvailableIcons = icons;
-            await Task.Delay(250); 
-            this.profiler.MemorySnapshot("Shell View Loaded", withGCCollect: true);
-        }); 
+            // await Task.Delay(250); 
+            // this.profiler.MemorySnapshot("Shell View Loaded", withGCCollect: true);
+        //}); 
     }
 
     private static List<string> DetectAvailableIcons()
@@ -172,6 +172,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         }
     }
 
+#pragma warning disable IDE0051 // Remove unused private members
     private void OnSettings(object? _) => this.OnViewActivation(ActivatedView.Settings);
 
     private void OnAbout(object? _) => this.OnViewActivation(ActivatedView.Help);
@@ -180,9 +181,12 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
     private void OnEditGroup(object? _) => this.OnViewActivation(ActivatedView.EditGroup);
 
+#pragma warning disable CA1822 // Mark members as static
     private void OnExit(object? _) { }
+#pragma warning restore CA1822 
 
     private void OnDeleteGroup(object? _)
+#pragma warning restore IDE0051 
     {
         var group = this.templatesModel.SelectedGroup;
         if (group is null)

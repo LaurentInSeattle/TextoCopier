@@ -51,7 +51,7 @@ public partial class App : ApplicationBase
     protected override async Task OnStartupBegin()
     {
         var logger = App.GetRequiredService<ILogger>();
-        logger.Debug("OnStartupBegin begins" ); 
+        logger.Debug("OnStartupBegin begins");
 
         // This needs to complete before all models are initialized.
         var fileManager = App.GetRequiredService<FileManagerModel>();
