@@ -84,7 +84,6 @@
 				GlyphSource="arrow_up"
 				ButtonBackground="BorderlessRectangle"
 				GlyphStrokeThickness="0"
-				GlyphAngle="5"
 				Text="{DynamicResource Shell.About}"
 				Command="{Binding AboutCommand}"
     		/>
