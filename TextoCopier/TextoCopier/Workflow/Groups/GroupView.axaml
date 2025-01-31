@@ -8,6 +8,7 @@
     xmlns:vm="clr-namespace:Lyt.TextoCopier.Workflow"
 	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
 	xmlns:panels="clr-namespace:Lyt.Avalonia.Controls.Panels;assembly=Lyt.Avalonia.Controls"
+    xmlns:templates="clr-namespace:Lyt.TextoCopier.Workflow.Templates"
     x:DataType="vm:GroupViewModel" 
     Background="Transparent"
     >
@@ -84,7 +85,7 @@
 					</ItemsControl.ItemsPanel>
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<vm:TemplateView />
+							<templates:TemplateView />
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>

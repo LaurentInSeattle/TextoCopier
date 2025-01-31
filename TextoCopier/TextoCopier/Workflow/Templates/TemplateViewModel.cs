@@ -1,4 +1,4 @@
-﻿namespace Lyt.TextoCopier.Workflow;
+﻿namespace Lyt.TextoCopier.Workflow.Templates;
 
 public sealed class TemplateViewModel : Bindable<TemplateView>
 {
@@ -26,6 +26,7 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
     public bool ShowView
         => (this.parentPanel is not null) && (this.template.ShouldHide || this.template.Value.Length > 28);
 
+#pragma warning disable IDE0051 // Remove unused private members
     private async void OnCopy(object? _)
     {
         this.Logger.Info("Clicked on Copy!");
@@ -90,6 +91,7 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
                 return;
 
             case ButtonTag.CountinuousBegin:
+                //Debugger.Break();
                 this.ShowExtendedTemplate();
                 break;
             case ButtonTag.CountinuousEnd:
@@ -97,6 +99,8 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
                 break;
         }
     }
+
+#pragma warning restore IDE0051 // Remove unused private members
 
     private void ShowExtendedTemplate()
     {
@@ -107,9 +111,8 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
 
         this.Logger.Info("Clicked on View Begin!");
 
-        var view = new ExtendedTemplateView();
         var vm = new ExtendedTemplateViewModel();
-        view.DataContext = vm;
+        var view  = vm.CreateViewAndBind();
         vm.DuplicateFrom(this);
 
         this.dialogService.Show<ExtendedTemplateView>(this.parentPanel, view);
