@@ -3,6 +3,7 @@
 	xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     RequestedThemeVariant="Dark"
+	xmlns:semi="https://irihi.tech/semi"
 	xmlns:convertLib="clr-namespace:Lyt.Avalonia.Mvvm.Converters;assembly=Lyt.Avalonia.Mvvm"
 	xmlns:convertLocal="clr-namespace:Lyt.Invasion.Converters"
 	>
@@ -12,6 +13,6 @@
 		<convertLocal:EnumBrushConverter x:Key="enumBrushConverter" />
 	</Application.Resources>
 	<Application.Styles>
-		<StyleInclude Source="avares://Semi.Avalonia/Themes/Index.axaml" />
+		<semi:SemiTheme />
 	</Application.Styles>
 </Application>
