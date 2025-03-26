@@ -319,7 +319,7 @@ public sealed class GameViewModel : Bindable<GameView>
         for (int i = 0; i < this.gameOptions.Players.Count; i++)
         {
             Color playerColor = PlayerToColor(game.Players[i]);
-            this.playerBrushes[i] = new SolidColorBrush(playerColor);
+            this.playerBrushes.Add(new SolidColorBrush(playerColor));
         }
     }
 
