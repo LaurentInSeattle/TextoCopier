@@ -46,6 +46,7 @@ global using Avalonia.Threading;
 #region Framework 
 
 global using Lyt.Avalonia.Interfaces;
+global using Lyt.Avalonia.Interfaces.Localization;
 global using Lyt.Avalonia.Interfaces.Logger;
 global using Lyt.Avalonia.Interfaces.Messenger;
 global using Lyt.Avalonia.Interfaces.Model;
