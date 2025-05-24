@@ -61,7 +61,6 @@ global using Lyt.Avalonia.Controls.Glyphs;
 global using Lyt.Avalonia.Mvvm;
 global using Lyt.Avalonia.Mvvm.Core;
 global using Lyt.Avalonia.Mvvm.Dialogs;
-global using Lyt.Avalonia.Mvvm.Extensions;
 global using Lyt.Avalonia.Mvvm.Logging;
 global using Lyt.Avalonia.Mvvm.Toasting;
 global using Lyt.Avalonia.Mvvm.Utilities;
@@ -72,6 +71,7 @@ global using Lyt.Avalonia.Persistence;
 
 global using Lyt.Messaging;
 global using Lyt.Utilities.Profiling;
+global using Lyt.Utilities.Extensions;
 
 #endregion Framework 
 
