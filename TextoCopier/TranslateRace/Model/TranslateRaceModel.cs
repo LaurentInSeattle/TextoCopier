@@ -67,7 +67,7 @@ public sealed partial class TranslateRaceModel : ModelBase
 
     public Phrase PickPhrase(PhraseDifficulty phraseDifficulty)
     {
-        // TODO: Randomize
+        // TODO: Randomize + FIX potential null return 
         var x = (from phrase in this.Phrases where phrase.Difficulty == phraseDifficulty select phrase).FirstOrDefault();
         return x; 
     }

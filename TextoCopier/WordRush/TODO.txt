@@ -1,4 +1,8 @@
-﻿Must Haves 
+﻿Bug 
+        throw new Exception("Missing resource for InformationLevel");
+
+
+Must Haves 
 - History 
 - Game report 
 - Statistics 

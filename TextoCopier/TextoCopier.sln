@@ -41,6 +41,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lyt.Avalonia.Mvvm", "..\..\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lyt.Avalonia.Persistence", "..\..\Lyt.Avalonia.Framework\Lyt.Avalonia.Persistence\Lyt.Avalonia.Persistence.csproj", "{2F492B2F-A518-415F-A98B-439533265738}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Messenger", "..\..\Lyt.Avalonia.Framework\Lyt.Messenger\Lyt.Messenger.csproj", "{75AD3828-182E-5FCF-144C-C7FDDE400E83}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Utilities", "..\..\Lyt.Avalonia.Framework\Lyt.Utilities\Lyt.Utilities.csproj", "{BFA8DE86-089B-0337-41E3-D3A4D413D0BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +107,14 @@ Global
 		{2F492B2F-A518-415F-A98B-439533265738}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F492B2F-A518-415F-A98B-439533265738}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F492B2F-A518-415F-A98B-439533265738}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75AD3828-182E-5FCF-144C-C7FDDE400E83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75AD3828-182E-5FCF-144C-C7FDDE400E83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75AD3828-182E-5FCF-144C-C7FDDE400E83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75AD3828-182E-5FCF-144C-C7FDDE400E83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFA8DE86-089B-0337-41E3-D3A4D413D0BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFA8DE86-089B-0337-41E3-D3A4D413D0BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFA8DE86-089B-0337-41E3-D3A4D413D0BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFA8DE86-089B-0337-41E3-D3A4D413D0BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -122,6 +134,8 @@ Global
 		{D166BFD7-FB2A-43E1-BFAB-71289A2532D2} = {03DDAA86-2863-49CB-AF2F-EC39224F1647}
 		{3FE633CC-D121-4B3A-A059-4C6A5A634519} = {03DDAA86-2863-49CB-AF2F-EC39224F1647}
 		{2F492B2F-A518-415F-A98B-439533265738} = {03DDAA86-2863-49CB-AF2F-EC39224F1647}
+		{75AD3828-182E-5FCF-144C-C7FDDE400E83} = {03DDAA86-2863-49CB-AF2F-EC39224F1647}
+		{BFA8DE86-089B-0337-41E3-D3A4D413D0BE} = {03DDAA86-2863-49CB-AF2F-EC39224F1647}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F35EAB48-64F7-41A9-80EB-B6C81D7948DC}
