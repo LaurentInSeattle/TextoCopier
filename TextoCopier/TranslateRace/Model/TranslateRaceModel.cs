@@ -1,7 +1,6 @@
 ﻿namespace Lyt.TranslateRace.Model;
 
 using static Lyt.Avalonia.Persistence.FileManagerModel;
-using Mod = Lyt.TranslateRace.Model;
 
 public sealed partial class TranslateRaceModel : ModelBase
 {
@@ -67,9 +66,17 @@ public sealed partial class TranslateRaceModel : ModelBase
 
     public Phrase PickPhrase(PhraseDifficulty phraseDifficulty)
     {
-        // TODO: Randomize + FIX potential null return 
-        var x = (from phrase in this.Phrases where phrase.Difficulty == phraseDifficulty select phrase).FirstOrDefault();
-        return x; 
+        // TODO: Randomize 
+        var first = (from phrase in this.Phrases 
+                 where phrase.Difficulty == phraseDifficulty 
+                 select phrase)
+                 .FirstOrDefault();
+        if ( first is not null)
+        {
+            return first; 
+        }
+
+        return this.Phrases[0]! ; 
     }
 
     public void Add(GameResult gameResult) => this.GameHistory.Add(gameResult);
@@ -79,7 +86,7 @@ public sealed partial class TranslateRaceModel : ModelBase
     public List<string> RandomPicks(int needed)
     {
         HashSet<string> exclude = this.GameHistory.PlayedWords();
-        string[] source = this.italian.ToArray();
+        string[] source = [.. this.italian];
         List<string> picks = new(needed);
         HashSet<string> alreadyFound = new(needed);
         while (needed > 0)
@@ -323,10 +330,7 @@ public sealed partial class TranslateRaceModel : ModelBase
             // Null check is needed !
             // If the File Manager is null we are currently loading the model and activating properties on a second instance 
             // causing dirtyness, and in such case we must avoid the null crash and anyway there is no need to save anything.
-            if (this.fileManager is not null)
-            {
-                this.fileManager.Save(Area.User, Kind.Json, Phrase.PhrasesFilename, this.Phrases);
-            }
+            this.fileManager?.Save(Area.User, Kind.Json, Phrase.PhrasesFilename, this.Phrases);
         }
         catch (Exception ex)
         {
@@ -394,10 +398,7 @@ public sealed partial class TranslateRaceModel : ModelBase
             // Null check is needed !
             // If the File Manager is null we are currently loading the model and activating properties on a second instance 
             // causing dirtyness, and in such case we must avoid the null crash and anyway there is no need to save anything.
-            if (this.fileManager is not null)
-            {
-                this.fileManager.Save(Area.User, Kind.Json, Participant.ParticipantsFilename, this.Participants);
-            }
+            this.fileManager?.Save(Area.User, Kind.Json, Participant.ParticipantsFilename, this.Participants);
         }
         catch (Exception ex)
         {
@@ -410,7 +411,7 @@ public sealed partial class TranslateRaceModel : ModelBase
     {
         Participant? toDelete =
             (from p in this.Participants
-             where p.Name.Trim().ToLower() == participant.Name.ToLower()
+             where p.Name.Trim().Equals(participant.Name, StringComparison.CurrentCultureIgnoreCase)
              select p).FirstOrDefault();
         if (toDelete is not null)
         {
