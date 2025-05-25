@@ -1,6 +1,6 @@
 ﻿namespace Lyt.WordRush.Model;
 
-using static Lyt.Avalonia.Persistence.FileManagerModel;
+using static Lyt.Persistence.FileManagerModel;
 using Mod = Lyt.WordRush.Model;
 
 public sealed partial class WordsModel : ModelBase
@@ -60,7 +60,7 @@ public sealed partial class WordsModel : ModelBase
     public List<string> RandomPicks(int needed)
     {
         HashSet<string> exclude = this.GameHistory.PlayedWords();
-        string[] source = this.italian.ToArray();
+        string[] source = [.. this.italian];
         List<string> picks = new(needed);
         HashSet<string> alreadyFound = new(needed);
         while (needed > 0)
@@ -171,7 +171,7 @@ public sealed partial class WordsModel : ModelBase
             WordTranslator udd = UddlParser.Load(this.fileManager, Mod.Language.Italian, "english-italian");
             WordTranslator dcc = DictCcParser.Load(this.fileManager, Mod.Language.Italian, "dictcc-en-it");
 
-            bool DictionaryLookup(string italianWord, WordTranslator translator, out string translated)
+            static bool DictionaryLookup(string italianWord, WordTranslator translator, out string translated)
             {
                 translated = string.Empty;
                 foreach (string englishWord in translator.Keys)
@@ -181,7 +181,7 @@ public sealed partial class WordsModel : ModelBase
                         if (word is not null && !string.IsNullOrWhiteSpace(word.Text))
                         {
                             string translation = word.Text;
-                            if (translation.Trim().ToLower() == italianWord.Trim().ToLower())
+                            if (translation.Trim().Equals(italianWord.Trim(), StringComparison.CurrentCultureIgnoreCase))
                             {
                                 translated = englishWord;
                                 if (IsPossibleItalianVerb(italianWord) &&

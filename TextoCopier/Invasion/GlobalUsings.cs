@@ -47,15 +47,15 @@ global using Avalonia.Threading;
 
 #region Framework 
 
-global using Lyt.Avalonia.Interfaces;
-global using Lyt.Avalonia.Interfaces.Dispatch;
-global using Lyt.Avalonia.Interfaces.Logger;
-global using Lyt.Avalonia.Interfaces.Localization;
-global using Lyt.Avalonia.Interfaces.Messenger;
-global using Lyt.Avalonia.Interfaces.Model;
-global using Lyt.Avalonia.Interfaces.Profiler;
-global using Lyt.Avalonia.Interfaces.Random;
 global using Lyt.Avalonia.Interfaces.UserInterface;
+
+global using Lyt.Framework.Interfaces.Dispatching;
+global using Lyt.Framework.Interfaces.Localizing;
+global using Lyt.Framework.Interfaces.Logging;
+global using Lyt.Framework.Interfaces.Messaging;
+global using Lyt.Framework.Interfaces.Modeling;
+global using Lyt.Framework.Interfaces.Profiling;
+global using Lyt.Framework.Interfaces.Randomizing;
 
 global using Lyt.Avalonia.Controls;
 global using Lyt.Avalonia.Controls.Glyphs;
@@ -69,9 +69,9 @@ global using Lyt.Avalonia.Mvvm.Toasting;
 global using Lyt.Avalonia.Mvvm.Utilities;
 
 global using Lyt.Avalonia.Localizer;
-global using Lyt.Avalonia.Model;
-global using Lyt.Avalonia.Persistence;
 
+global using Lyt.Model;
+global using Lyt.Persistence;
 global using Lyt.Messaging;
 global using Lyt.Utilities.Extensions;
 global using Lyt.Utilities.Profiling;

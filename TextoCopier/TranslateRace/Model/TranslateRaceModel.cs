@@ -1,6 +1,6 @@
 ﻿namespace Lyt.TranslateRace.Model;
 
-using static Lyt.Avalonia.Persistence.FileManagerModel;
+using static Lyt.Persistence.FileManagerModel;
 
 public sealed partial class TranslateRaceModel : ModelBase
 {

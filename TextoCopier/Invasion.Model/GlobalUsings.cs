@@ -14,13 +14,13 @@ global using System.Runtime.Versioning;
 global using System.Text.Json.Serialization;
 global using System.Threading.Tasks;
 
-global using Lyt.Avalonia.Interfaces.Logger;
-global using Lyt.Avalonia.Interfaces.Model;
-global using Lyt.Avalonia.Interfaces.Messenger;
-global using Lyt.Avalonia.Interfaces.Random;
+global using Lyt.Framework.Interfaces.Logging;
+global using Lyt.Framework.Interfaces.Modeling;
+global using Lyt.Framework.Interfaces.Messaging;
+global using Lyt.Framework.Interfaces.Randomizing;
 
-global using Lyt.Avalonia.Model;
-global using Lyt.Avalonia.Persistence;
+global using Lyt.Model;
+global using Lyt.Persistence;
 
 global using Lyt.Invasion.Model.GameControl;
 global using Lyt.Invasion.Model.MapData;

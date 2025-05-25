@@ -1,5 +1,6 @@
 ﻿namespace Lyt.Invasion.Workflow.Setup;
 
+using Lyt.Framework.Interfaces.Modeling;
 using static ViewActivationMessage;
 
 public enum PlayersSetup : int

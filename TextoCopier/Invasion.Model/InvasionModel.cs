@@ -1,6 +1,5 @@
-﻿using static Lyt.Avalonia.Persistence.FileManagerModel;
-
-namespace Lyt.Invasion.Model;
+﻿namespace Lyt.Invasion.Model;
+using static Lyt.Persistence.FileManagerModel;
 
 public sealed class InvasionModel : ModelBase
 {
@@ -73,7 +72,5 @@ public sealed class InvasionModel : ModelBase
     }
 
     public void NewGame(GameOptions gameOptions)
-    {
-        this.Game = new Game(gameOptions, this.Messenger, this.Logger, this.randomizer);
-    }
+        => this.Game = new Game(gameOptions, this.Messenger, this.Logger, this.randomizer);
 }

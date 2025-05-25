@@ -12,10 +12,10 @@ global using System.Runtime.Versioning;
 global using System.Text.Json.Serialization;
 global using System.Threading.Tasks;
 
-global using Lyt.Avalonia.Interfaces.Logger;
-global using Lyt.Avalonia.Interfaces.Model;
-global using Lyt.Avalonia.Interfaces.Messenger;
+global using Lyt.Framework.Interfaces.Logging;
+global using Lyt.Framework.Interfaces.Modeling;
+global using Lyt.Framework.Interfaces.Messaging;
 
-global using Lyt.Avalonia.Model;
-global using Lyt.Avalonia.Persistence;
+global using Lyt.Model;
+global using Lyt.Persistence;
 

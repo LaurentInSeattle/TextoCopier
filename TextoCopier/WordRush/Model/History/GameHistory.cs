@@ -1,6 +1,6 @@
 ﻿namespace Lyt.WordRush.Model.History;
 
-using static Lyt.Avalonia.Persistence.FileManagerModel;
+using static Lyt.Persistence.FileManagerModel;
 
 public sealed class GameHistory : ModelBase
 {

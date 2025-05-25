@@ -1,6 +1,6 @@
 ﻿namespace Lyt.TranslateRace.Model.History;
 
-using static Lyt.Avalonia.Persistence.FileManagerModel;
+using static Lyt.Persistence.FileManagerModel;
 
 public sealed class GameHistory : ModelBase
 {
@@ -100,13 +100,13 @@ public sealed class GameHistory : ModelBase
     public HashSet<string> PlayedWords()
     {
         var hashSet = new HashSet<string>(this.GameResults.Count);
-        foreach (var gameEntry in this.GameResults)
-        {
-            //foreach (string word in gameEntry.Words)
-            //{
-            //    _ = hashSet.Add(word);
-            //}
-        }
+        //foreach (var gameEntry in this.GameResults)
+        //{
+        //    //foreach (string word in gameEntry.Words)
+        //    //{
+        //    //    _ = hashSet.Add(word);
+        //    //}
+        //}
 
         return hashSet;
     }

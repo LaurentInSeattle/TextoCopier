@@ -31,14 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Lyt.Avalonia.Framework\Lyt.Avalonia.Controls\Lyt.Avalonia.Controls.csproj" />
-    <ProjectReference Include="..\..\..\Lyt.Avalonia.Framework\Lyt.Avalonia.Interfaces\Lyt.Avalonia.Interfaces.csproj" />
-    <ProjectReference Include="..\..\..\Lyt.Avalonia.Framework\Lyt.Avalonia.Localizer\Lyt.Avalonia.Localizer.csproj" />
-    <ProjectReference Include="..\..\..\Lyt.Avalonia.Framework\Lyt.Avalonia.Model\Lyt.Avalonia.Model.csproj" />
-    <ProjectReference Include="..\..\..\Lyt.Avalonia.Framework\Lyt.Avalonia.Mvvm\Lyt.Avalonia.Mvvm.csproj" />
-    <ProjectReference Include="..\..\..\Lyt.Avalonia.Framework\Lyt.Avalonia.Persistence\Lyt.Avalonia.Persistence.csproj" />
-    <ProjectReference Include="..\..\..\Lyt.Avalonia.Framework\Lyt.Messenger\Lyt.Messenger.csproj" />
-    <ProjectReference Include="..\..\..\Lyt.Avalonia.Framework\Lyt.Utilities\Lyt.Utilities.csproj" />
+    <ProjectReference Include="..\..\..\Lyt.Avalonia\Lyt.Avalonia.Controls\Lyt.Avalonia.Controls.csproj" />
+    <ProjectReference Include="..\..\..\Lyt.Avalonia\Lyt.Avalonia.Localizer\Lyt.Avalonia.Localizer.csproj" />
+    <ProjectReference Include="..\..\..\Lyt.Avalonia\Lyt.Avalonia.Mvvm\Lyt.Avalonia.Mvvm.csproj" />
     <ProjectReference Include="..\Invasion.Model\Invasion.Model.csproj" />
   </ItemGroup>
 </Project>
