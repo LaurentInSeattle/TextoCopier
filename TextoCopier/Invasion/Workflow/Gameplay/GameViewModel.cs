@@ -2,19 +2,19 @@
 
 using static ViewActivationMessage;
 
-public sealed class GameViewModel : Bindable<GameView>
+public sealed partial class GameViewModel : ViewModel<GameView>
 {
     // Border paths color components
     private const byte red = 0x10;
     private const byte blu = 0x20;
     private const byte gre = 0x10;
 
-    private readonly IDialogService dialogService;
-    private readonly IToaster toaster;
-    private readonly LocalizerModel localizer;
     private readonly InvasionModel invasionModel;
     private readonly List<SolidColorBrush> playerBrushes;
     private readonly Dictionary<Region, List<Polyline>> regionsBorders;
+
+    [ObservableProperty]
+    private double zoomFactor;
 
     private Image? mapImage;
     private Region? hoveredRegion;
@@ -23,22 +23,16 @@ public sealed class GameViewModel : Bindable<GameView>
 #pragma warning disable CS8618
     // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     // Some non-nullable fields and properties get assigned when the view model is activated 
-    public GameViewModel(
+    public GameViewModel(InvasionModel invasionModel)
 #pragma warning restore CS8618 
-        LocalizerModel localizer, InvasionModel invasionModel,
-        IDialogService dialogService, IToaster toaster)
     {
-        this.localizer = localizer;
         this.invasionModel = invasionModel;
-        this.dialogService = dialogService;
-        this.toaster = toaster;
-
         this.playerBrushes = new (4);
         this.regionsBorders = new(512); 
         this.Messenger.Subscribe<ZoomRequestMessage>(this.OnZoomRequest); 
     }
 
-    protected override void OnViewLoaded()
+    public override void OnViewLoaded()
     {
         base.OnViewLoaded();
 
@@ -101,24 +95,8 @@ public sealed class GameViewModel : Bindable<GameView>
         }
     }
 
-    private void OnModelUpdated(ModelUpdateMessage message)
-    {
-        string msgProp = string.IsNullOrWhiteSpace(message.PropertyName) ? "<unknown>" : message.PropertyName;
-        string msgMethod = string.IsNullOrWhiteSpace(message.MethodName) ? "<unknown>" : message.MethodName;
-        this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
-    }
-
-    #region Methods invoked by the Framework using reflection 
-#pragma warning disable IDE0051 // Remove unused private members
-
-    private void OnExit(object? _) => this.Messenger.Publish(ActivatedView.Exit);
-
-#pragma warning restore IDE0051
-    #endregion Methods invoked by the Framework using reflection 
-
-    public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public double ZoomFactor { get => this.Get<double>(); set => this.Set(value); }
+    [RelayCommand]
+    public void OnExit() => this.Messenger.Publish(ActivatedView.Exit);
 
     private void UpdateUi()
     {

@@ -1,32 +1,23 @@
 ﻿namespace Lyt.Invasion.Shell;
 
+using Lyt.Mvvm;
 using static ViewActivationMessage;
 
-public sealed class ShellViewModel : Bindable<ShellView>
+public sealed partial class ShellViewModel : ViewModel<ShellView>
 {
     private readonly IDialogService dialogService;
-    private readonly IToaster toaster;
-    private readonly IMessenger messenger;
-    private readonly IProfiler profiler;
-    private readonly LocalizerModel localizer;
     private readonly InvasionModel invasionModel;
 
-    public ShellViewModel(
-        LocalizerModel localizer, InvasionModel invasionModel,
-        IDialogService dialogService, IToaster toaster, IMessenger messenger, IProfiler profiler)
+    public ShellViewModel(InvasionModel invasionModel, IDialogService dialogService)
     {
-        this.localizer = localizer;
         this.invasionModel = invasionModel;
         this.dialogService = dialogService;
-        this.toaster = toaster;
-        this.messenger = messenger;
-        this.profiler = profiler;
 
         this.invasionModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
-        this.messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
+        this.Messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
     }
 
-    protected override void OnViewLoaded()
+    public override void OnViewLoaded()
     {
         this.Logger.Debug("OnViewLoaded begins");
 
@@ -61,7 +52,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
     }
 
-    private async void OnExit()
+    private static async void OnExit()
     {
         static void Deactivate(Type type)
         {
@@ -84,16 +75,12 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
     private static void SetupWorkflow()
     {
-        static void CreateAndBind<TViewModel, TControl>()
-             where TViewModel : Bindable<TControl>
-             where TControl : Control, new()
-            => App.GetRequiredService<TViewModel>().CreateViewAndBind();
-
-        CreateAndBind<WelcomeViewModel, WelcomeView>();
-        CreateAndBind<SetupViewModel, SetupView>();
-        CreateAndBind<PlayerSetupViewModel, PlayerSetupView>();
-        CreateAndBind<GameViewModel, GameView>();
-        CreateAndBind<GameOverViewModel, GameOverView>();
+        App.GetRequiredService<WelcomeViewModel>().CreateViewAndBind();
+        App.GetRequiredService<PlayerSetupViewModel>().CreateViewAndBind();
+        App.GetRequiredService<SetupViewModel>().CreateViewAndBind();
+        App.GetRequiredService<PlayerViewModel>().CreateViewAndBind();
+        App.GetRequiredService<GameViewModel>().CreateViewAndBind();
+        App.GetRequiredService<GameOverViewModel>().CreateViewAndBind();
     }
 
     private void OnViewActivation(ViewActivationMessage message)
@@ -103,7 +90,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
     {
         if (activatedView == ActivatedView.Exit)
         {
-            this.OnExit();
+            OnExit();
             return;
         }
 
@@ -140,8 +127,8 @@ public sealed class ShellViewModel : Bindable<ShellView>
     }
 
     private void Activate<TViewModel, TControl>(bool isFirstActivation, object? activationParameters)
-        where TViewModel : Bindable<TControl>
-        where TControl : Control, new()
+        where TViewModel : ViewModel<TControl>
+        where TControl : Control, IView, new()
     {
         if (this.View is null)
         {
@@ -154,7 +141,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         }
 
         object? currentView = this.View.ShellViewContent.Content;
-        if (currentView is Control control && control.DataContext is Bindable currentViewModel)
+        if (currentView is Control control && control.DataContext is ViewModel currentViewModel)
         {
             currentViewModel.Deactivate();
         }
@@ -165,7 +152,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         if (!isFirstActivation)
         {
-            this.profiler.MemorySnapshot(newViewModel.View.GetType().Name + ":  Activated");
+            this.Profiler.MemorySnapshot(newViewModel.View.GetType().Name + ":  Activated");
         }
     }
 }

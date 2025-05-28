@@ -34,6 +34,7 @@
     <ProjectReference Include="..\..\..\Lyt.Avalonia\Lyt.Avalonia.Controls\Lyt.Avalonia.Controls.csproj" />
     <ProjectReference Include="..\..\..\Lyt.Avalonia\Lyt.Avalonia.Localizer\Lyt.Avalonia.Localizer.csproj" />
     <ProjectReference Include="..\..\..\Lyt.Avalonia\Lyt.Avalonia.Mvvm\Lyt.Avalonia.Mvvm.csproj" />
+    <ProjectReference Include="..\..\..\Lyt.Framework\Lyt.Mvvm\Lyt.Mvvm.csproj" />
     <ProjectReference Include="..\Invasion.Model\Invasion.Model.csproj" />
   </ItemGroup>
 </Project>

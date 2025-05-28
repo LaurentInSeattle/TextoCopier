@@ -1,6 +1,5 @@
 ﻿namespace Lyt.Invasion.Workflow.Setup;
 
-using Lyt.Framework.Interfaces.Modeling;
 using static ViewActivationMessage;
 
 public enum PlayersSetup : int
@@ -18,23 +17,42 @@ public enum AiPlayersSetup : int
     Three = 3,
 }
 
-public sealed class SetupViewModel : Bindable<SetupView>
+public sealed partial class SetupViewModel : ViewModel<SetupView>
 {
-    private readonly IDialogService dialogService;
-    private readonly IToaster toaster;
-    private readonly LocalizerModel localizer;
     private readonly InvasionModel invasionModel;
 
     private readonly GameOptions gameOptions;
 
-    public SetupViewModel(
-        LocalizerModel localizer, InvasionModel invasionModel,
-        IDialogService dialogService, IToaster toaster)
+    [ObservableProperty]
+    private bool debugVisible;
+
+    [ObservableProperty]
+    private PlayersSetup playerCount;
+
+    [ObservableProperty]
+    private AiPlayersSetup aiPlayerCount;
+
+    [ObservableProperty]
+    private bool aiPlayerZero;
+
+    [ObservableProperty]
+    private bool aiPlayerOne;
+
+    [ObservableProperty]
+    private bool aiPlayerTwo;
+
+    [ObservableProperty]
+    private bool aiPlayerThree;
+
+    [ObservableProperty]
+    private MapSize size;
+
+    [ObservableProperty]
+    private GameDifficulty difficulty;
+
+    public SetupViewModel(InvasionModel invasionModel)
     {
-        this.localizer = localizer;
         this.invasionModel = invasionModel;
-        this.dialogService = dialogService;
-        this.toaster = toaster;
 
         this.PlayerCount = PlayersSetup.Duel;
         this.AiPlayerCount = AiPlayersSetup.One;
@@ -44,28 +62,20 @@ public sealed class SetupViewModel : Bindable<SetupView>
         this.gameOptions = new GameOptions();
     }
 
-    private void OnModelUpdated(ModelUpdateMessage message)
+    partial void OnPlayerCountChanged(PlayersSetup value)
     {
-        string msgProp = string.IsNullOrWhiteSpace(message.PropertyName) ? "<unknown>" : message.PropertyName;
-        string msgMethod = string.IsNullOrWhiteSpace(message.MethodName) ? "<unknown>" : message.MethodName;
-        this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
-    }
-
-    #region Methods invoked by the Framework using reflection 
-#pragma warning disable IDE0051 // Remove unused private members
-
-    private void OnPlayerCountChanged(PlayersSetup _, PlayersSetup newPlayersSetup)
-    {
-        int maxAiPlayers = (int)newPlayersSetup - 1;
+        int maxAiPlayers = (int)value - 1;
         this.AiPlayerThree = maxAiPlayers == 3;
         this.AiPlayerTwo = maxAiPlayers == 3 || maxAiPlayers == 2;
         this.AiPlayerOne = maxAiPlayers == 3 || maxAiPlayers == 2 || maxAiPlayers == 1;
         this.AiPlayerCount = AiPlayersSetup.None;
     }
 
-    private void OnExit(object? _) => this.Messenger.Publish(ActivatedView.Exit);
+    [RelayCommand]
+    public void OnExit() => this.Messenger.Publish(ActivatedView.Exit);
 
-    private void OnNext(object? _)
+    [RelayCommand]
+    public void OnNext()
     {
         this.gameOptions.MapSize = this.Size;
         this.gameOptions.Difficulty = this.Difficulty;
@@ -87,29 +97,4 @@ public sealed class SetupViewModel : Bindable<SetupView>
 
         this.Messenger.Publish(ActivatedView.PlayerSetup, this.gameOptions);
     }
-
-#pragma warning restore IDE0051
-    #endregion Methods invoked by the Framework using reflection 
-
-    public bool DebugVisible { get => this.Get<bool>(); set => this.Set(value); }
-
-    public PlayersSetup PlayerCount { get => this.Get<PlayersSetup>(); set => this.Set(value); }
-
-    public AiPlayersSetup AiPlayerCount { get => this.Get<AiPlayersSetup>(); set => this.Set(value); }
-
-    public bool AiPlayerZero { get => this.Get<bool>(); set => this.Set(value); }
-
-    public bool AiPlayerOne { get => this.Get<bool>(); set => this.Set(value); }
-
-    public bool AiPlayerTwo { get => this.Get<bool>(); set => this.Set(value); }
-
-    public bool AiPlayerThree { get => this.Get<bool>(); set => this.Set(value); }
-
-    public MapSize Size { get => this.Get<MapSize>(); set => this.Set(value); }
-
-    public GameDifficulty Difficulty { get => this.Get<GameDifficulty>(); set => this.Set(value); }
-
-    public ICommand NextCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 }

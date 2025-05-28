@@ -51,6 +51,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Utilities", "..\..\Lyt.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Validation", "..\..\Lyt.Framework\Lyt.Validation\Lyt.Validation.csproj", "{367DEA44-8F40-B826-2280-E3EE47F5F970}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Mvvm", "..\..\Lyt.Framework\Lyt.Mvvm\Lyt.Mvvm.csproj", "{960A29FA-DABB-77E4-B174-6A7CF73E95A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +131,10 @@ Global
 		{367DEA44-8F40-B826-2280-E3EE47F5F970}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{367DEA44-8F40-B826-2280-E3EE47F5F970}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{367DEA44-8F40-B826-2280-E3EE47F5F970}.Release|Any CPU.Build.0 = Release|Any CPU
+		{960A29FA-DABB-77E4-B174-6A7CF73E95A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{960A29FA-DABB-77E4-B174-6A7CF73E95A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{960A29FA-DABB-77E4-B174-6A7CF73E95A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{960A29FA-DABB-77E4-B174-6A7CF73E95A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -152,6 +158,7 @@ Global
 		{76F51548-35E9-2FD3-66C8-8734D4CB403A} = {03DDAA86-2863-49CB-AF2F-EC39224F1647}
 		{C007E736-55C3-891A-C72D-584AD8184EE3} = {03DDAA86-2863-49CB-AF2F-EC39224F1647}
 		{367DEA44-8F40-B826-2280-E3EE47F5F970} = {03DDAA86-2863-49CB-AF2F-EC39224F1647}
+		{960A29FA-DABB-77E4-B174-6A7CF73E95A0} = {03DDAA86-2863-49CB-AF2F-EC39224F1647}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F35EAB48-64F7-41A9-80EB-B6C81D7948DC}

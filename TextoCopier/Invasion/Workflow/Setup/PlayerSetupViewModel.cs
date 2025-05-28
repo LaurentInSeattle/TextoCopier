@@ -1,6 +1,5 @@
 ﻿namespace Lyt.Invasion.Workflow.Setup;
 
-using System.Collections.Generic;
 using static ViewActivationMessage;
 
 public enum PlayerColor : int
@@ -11,12 +10,38 @@ public enum PlayerColor : int
     HotPink = 3,
 }
 
-public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
+public sealed partial class PlayerSetupViewModel : ViewModel<PlayerSetupView>
 {
     private readonly IDialogService dialogService;
     private readonly IToaster toaster;
-    private readonly LocalizerModel localizer;
     private readonly InvasionModel invasionModel;
+
+    [ObservableProperty]
+    private string? nextButtonText;
+
+    [ObservableProperty]
+    private PlayerColor playerColor;
+
+    [ObservableProperty]
+    private bool isHotPinkEnabled;
+
+    [ObservableProperty]
+    private bool isCrimsonEnabled;
+
+    [ObservableProperty]
+    private bool isDarkTurquoiseEnabled;
+
+    [ObservableProperty]
+    private bool isDarkOrangeEnabled;
+
+    [ObservableProperty]
+    private string? playerName;
+
+    [ObservableProperty]
+    private string? playerNameValidationMessage;
+
+    [ObservableProperty]
+    private bool isValid;
 
     private GameOptions gameOptions;
     private List<PlayerInfo> humanPlayers;
@@ -32,11 +57,9 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
     // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     // Some non-nullable fields (ex: gameOptions) and properties get assigned when the view model is activated 
     public PlayerSetupViewModel(
-        LocalizerModel localizer, InvasionModel invasionModel,
-        IDialogService dialogService, IToaster toaster)
+        InvasionModel invasionModel, IDialogService dialogService, IToaster toaster)
 #pragma warning restore CS8618
     {
-        this.localizer = localizer;
         this.invasionModel = invasionModel;
         this.dialogService = dialogService;
         this.toaster = toaster;
@@ -52,7 +75,7 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
         }
 
         this.gameOptions = gameOptions;
-        this.humanPlayers = (from player in this.gameOptions.Players where player.IsHuman select player).ToList();
+        this.humanPlayers = [.. (from player in this.gameOptions.Players where player.IsHuman select player)];
         this.currentPlayerIndex = 0;
         this.currentPlayer = this.humanPlayers[this.currentPlayerIndex];
 
@@ -179,26 +202,23 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
         }
     }
 
-    #region Methods invoked by the Framework using reflection 
-#pragma warning disable IDE0051 // Remove unused private members
-
-    private void OnPlayerNameChanged(string? _, string playerName)
+    partial void OnPlayerNameChanged(string? value)
     {
-        if (this.ValidatePlayerName(playerName, out string validationMessage))
+        if (this.ValidatePlayerName(value, out string validationMessage))
         {
-            this.currentPlayer.Name = playerName.Trim();
+            if (value is null) { throw new Exception("Unexpected"); }
+            this.currentPlayer.Name = value.Trim();
         }
 
         this.PlayerNameValidationMessage = validationMessage;
         this.UpdateUi();
     }
 
-    private void OnPlayerColorChanged(PlayerColor _, PlayerColor playerColor)
-    {
-        this.currentPlayer.Color = playerColor.ToString();
-    }
+    partial void OnPlayerColorChanged(PlayerColor value)
+        => this.currentPlayer.Color = value.ToString();
 
-    private void OnBack(object? _)
+    [RelayCommand]
+    public void OnBack()
     {
         if (this.currentPlayerIndex == 0)
         {
@@ -215,7 +235,8 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
         }
     }
 
-    private void OnPlay(object? _)
+    [RelayCommand]
+    public void OnPlay()
     {
         if (this.currentPlayerIndex == this.humanPlayers.Count - 1)
         {
@@ -241,28 +262,4 @@ public sealed class PlayerSetupViewModel : Bindable<PlayerSetupView>
             this.InitializeUi();
         }
     }
-#pragma warning restore IDE0051
-    #endregion Methods invoked by the Framework using reflection 
-
-    public ICommand PlayCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand BackCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public string? NextButtonText { get => this.Get<string?>(); set => this.Set(value); }
-
-    public PlayerColor PlayerColor { get => this.Get<PlayerColor>(); set => this.Set(value); }
-
-    public bool IsHotPinkEnabled { get => this.Get<bool>(); set => this.Set(value); }
-
-    public bool IsCrimsonEnabled { get => this.Get<bool>(); set => this.Set(value); }
-
-    public bool IsDarkTurquoiseEnabled { get => this.Get<bool>(); set => this.Set(value); }
-
-    public bool IsDarkOrangeEnabled { get => this.Get<bool>(); set => this.Set(value); }
-
-    public string? PlayerName { get => this.Get<string?>(); set => this.Set(value); }
-
-    public string? PlayerNameValidationMessage { get => this.Get<string?>(); set => this.Set(value); }
-
-    public bool IsValid { get => this.Get<bool>(); set => this.Set(value); }
 }
