@@ -1,6 +1,6 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Game;
 
-public sealed class GameViewModel : Bindable<GameView>
+public sealed partial class GameViewModel : ViewModel<GameView>
 {
     public enum GameState
     {
@@ -29,7 +29,6 @@ public sealed class GameViewModel : Bindable<GameView>
     }
 
     private readonly IRandomizer randomizer;
-    private readonly IAnimationService animationService;
     private readonly TranslateRaceModel translateRaceModel;
 
     private DateTime gameStart;
@@ -50,13 +49,10 @@ public sealed class GameViewModel : Bindable<GameView>
     private GameResult? gameResults;
     private Parameters? parameters;
 
-    public GameViewModel(
-        TranslateRaceModel translateRaceModel,
-        IRandomizer randomizer, IAnimationService animationService)
+    public GameViewModel(TranslateRaceModel translateRaceModel, IRandomizer randomizer)
     {
         this.translateRaceModel = translateRaceModel;
         this.randomizer = randomizer;
-        this.animationService = animationService;
         this.State = GameState.Idle;
 
         this.LeftTeamName = Team.LeftName;
@@ -116,7 +112,7 @@ public sealed class GameViewModel : Bindable<GameView>
                 throw new Exception("Null Teams ???");
             }
 
-            return this.isLeftTurn ? this.rightTeam : this.leftTeam ;
+            return this.isLeftTurn ? this.rightTeam : this.leftTeam;
         }
     }
 
@@ -147,7 +143,7 @@ public sealed class GameViewModel : Bindable<GameView>
 
             return
                 this.isLeftTurn ?
-                    this.rightTeam.At(this.rightPlayerIndex):
+                    this.rightTeam.At(this.rightPlayerIndex) :
                     this.leftTeam.At(this.leftPlayerIndex);
         }
     }
@@ -159,7 +155,7 @@ public sealed class GameViewModel : Bindable<GameView>
 
     #region Loading and Activation 
 
-    protected override void OnViewLoaded()
+    public override void OnViewLoaded()
     {
         this.Logger.Debug("GameViewModel: OnViewLoaded begins");
 
@@ -293,12 +289,12 @@ public sealed class GameViewModel : Bindable<GameView>
             nextPlayer = (from p in orderedPlayers where p.Index > teamFirstPlayerIndex select p).FirstOrDefault();
             if (nextPlayer is null)
             {
-                throw new Exception("No Players ???"); 
+                throw new Exception("No Players ???");
             }
         }
 
-        return nextPlayer.Index; 
-    } 
+        return nextPlayer.Index;
+    }
 
     private void UpdateUiComponents()
     {
@@ -475,7 +471,7 @@ public sealed class GameViewModel : Bindable<GameView>
         else
         {
             // Save player performance 
-            ++ this.CurrentPlayer.Traductions;
+            ++this.CurrentPlayer.Traductions;
             this.CurrentPlayer.Points = message.ScoreUpdate;
 
             // Next Turn !!!
@@ -519,27 +515,33 @@ public sealed class GameViewModel : Bindable<GameView>
         this.translateRaceModel.Save();
     }
 
-    #region Bound properties 
+    [ObservableProperty]
+    private string? leftTeamName;
 
-    public string LeftTeamName { get => this.Get<string>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private string? rightTeamName;
 
-    public string RightTeamName { get => this.Get<string>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private TeamProgressViewModel leftTeamScore;
 
-    public TeamProgressViewModel LeftTeamScore { get => this.Get<TeamProgressViewModel>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private TeamProgressViewModel rightTeamScore;
 
-    public TeamProgressViewModel RightTeamScore { get => this.Get<TeamProgressViewModel>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private TurnViewModel? turn;
 
-    public TurnViewModel Turn { get => this.Get<TurnViewModel>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private OptionsViewModel? options;
 
-    public OptionsViewModel Options { get => this.Get<OptionsViewModel>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private PhraseViewModel? phrase;
 
-    public PhraseViewModel Phrase { get => this.Get<PhraseViewModel>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private EvaluationViewModel? evaluation;
 
-    public EvaluationViewModel Evaluation { get => this.Get<EvaluationViewModel>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private CountdownViewModel? countdown;
 
-    public CountdownViewModel Countdown { get => this.Get<CountdownViewModel>()!; set => this.Set(value); }
-
-    public ScoreViewModel Score { get => this.Get<ScoreViewModel>()!; set => this.Set(value); }
-
-    #endregion Bound properties 
+    [ObservableProperty]
+    private ScoreViewModel? score;
 }

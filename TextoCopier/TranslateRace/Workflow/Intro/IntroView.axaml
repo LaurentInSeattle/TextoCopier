@@ -73,7 +73,7 @@
 			Width="340"
 			HorizontalAlignment="Left"
 			GlyphAngle="0"
-			Command="{Binding ExitCommand}"
+			Command="{Binding OnExit}"
     		/>
 		<glyphs:GlyphButton
 			x:Name="nextButton"
@@ -85,7 +85,7 @@
 			Width="340"
 			HorizontalAlignment="Right"
 			GlyphAngle="0"
-			Command="{Binding NextCommand}"
+			Command="{Binding OnNext}"
     		/>
 	</Grid>
 </UserControl>

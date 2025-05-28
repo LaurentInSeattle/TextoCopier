@@ -177,7 +177,7 @@
 			Grid.Column="2" Grid.Row="3"
 			GlyphSource="arrow_repeat_all"
 			Text="Gioca di Nuovo"
-			Command="{Binding PlayAgainCommand}"
+			Command="{Binding OnPlayAgain}"
 			Width="360"
     		/>
 		<glyphs:GlyphButton
@@ -189,7 +189,7 @@
 			Text="Fine e Chiudi"
 			Width="360"
 			HorizontalAlignment="Left"
-			Command="{Binding ExitCommand}"
+			Command="{Binding OnExit}"
     		/>
 	</Grid>
 </UserControl>

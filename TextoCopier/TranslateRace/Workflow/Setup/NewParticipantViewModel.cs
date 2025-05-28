@@ -1,9 +1,8 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Setup;
 
-public sealed class NewParticipantViewModel(IMessenger messenger, TranslateRaceModel translateRaceModel) 
-    : Bindable<NewParticipantView>
+public sealed partial class NewParticipantViewModel(TranslateRaceModel translateRaceModel) 
+    : ViewModel<NewParticipantView>
 {
-    private readonly IMessenger messenger = messenger;
     private readonly TranslateRaceModel translateRaceModel = translateRaceModel;
 
     public override void Activate(object? activationParameters)
@@ -15,11 +14,12 @@ public sealed class NewParticipantViewModel(IMessenger messenger, TranslateRaceM
         this.OnEditing();
     }
 
-    private void OnSave(object? _)
+    [RelayCommand]
+    public void OnSave()
     {
-        if (this.Save(out string message))
+        if (this.Save(out string _))
         {
-            this.OnClose(_);
+            this.OnClose();
         }
         else
         {
@@ -28,8 +28,9 @@ public sealed class NewParticipantViewModel(IMessenger messenger, TranslateRaceM
         }
     }
 
-    private void OnClose(object? _)
-        => this.messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.Setup));
+    [RelayCommand]
+    public void OnClose()
+        => this.Messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.Setup));
 
     public void OnEditing()
     {
@@ -39,7 +40,7 @@ public sealed class NewParticipantViewModel(IMessenger messenger, TranslateRaceM
     }
 
     private bool Validate(out string message) 
-        => this.translateRaceModel.ValidateNewParticipantForAdd(this.Name, out message);
+        => this.translateRaceModel.ValidateNewParticipantForAdd(this.Name!, out message);
 
     private bool Save(out string message)
     {
@@ -59,23 +60,15 @@ public sealed class NewParticipantViewModel(IMessenger messenger, TranslateRaceM
         return false;
     }
 
-    public string Title { get => this.Get<string>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private string? title;
 
-    public string Name { get => this.Get<string>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private string? name;
 
-    public string ValidationMessage { get => this.Get<string>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private string? validationMessage;
 
-    public bool SaveButtonIsDisabled
-    {
-        get => this.Get<bool>();
-        set
-        {
-            this.Set(value);
-            this.View.SaveButton.IsDisabled = value;
-        }
-    }
-
-    public ICommand CloseCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand SaveCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private bool saveButtonIsDisabled; 
 }

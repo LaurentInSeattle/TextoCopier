@@ -2,23 +2,17 @@
 
 using static Lyt.TranslateRace.Messaging.ViewActivationMessage;
 
-public sealed class ShellViewModel : Bindable<ShellView>
+public sealed partial class ShellViewModel : ViewModel<ShellView>
 {
     private readonly IToaster toaster;
-    private readonly IMessenger messenger;
-    private readonly IProfiler profiler;
 
-    public ShellViewModel(
-        IToaster toaster, IMessenger messenger, IProfiler profiler)
+    public ShellViewModel( IToaster toaster)
     {
         this.toaster = toaster;
-        this.messenger = messenger;
-        this.profiler = profiler;
-
-        this.messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
+        this.Messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
     }
 
-    protected override void OnViewLoaded()
+    public override void OnViewLoaded()
     {
         this.Logger.Debug("OnViewLoaded begins");
 
@@ -67,7 +61,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
     {
         if (activatedView == ActivatedView.Exit)
         {
-            this.OnExit(null);
+            OnExit(null);
         }
 
         if (activatedView == ActivatedView.GoBack)
@@ -115,15 +109,15 @@ public sealed class ShellViewModel : Bindable<ShellView>
         }
     }
 
-    private async void OnExit(object? _)
+    private static async void OnExit(object? _)
     {
         var application = App.GetRequiredService<IApplicationBase>();
         await application.Shutdown();
     }
 
     private void Activate<TViewModel, TControl>(bool isFirstActivation, object? activationParameters)
-        where TViewModel : Bindable<TControl>
-        where TControl : Control, new()
+        where TViewModel : ViewModel<TControl>
+        where TControl : Control, IView, new()
     {
         if (this.View is null)
         {
@@ -131,7 +125,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         }
 
         object? currentView = this.View.ShellViewContent.Content;
-        if (currentView is Control control && control.DataContext is Bindable currentViewModel)
+        if (currentView is Control control && control.DataContext is ViewModel currentViewModel)
         {
             currentViewModel.Deactivate();
         }
@@ -142,24 +136,16 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         if (!isFirstActivation)
         {
-            this.profiler.MemorySnapshot(newViewModel.View.GetType().Name + ":  Activated");
+            this.Profiler.MemorySnapshot(newViewModel.View.GetType().Name + ":  Activated");
         }
     }
 
     private static void SetupWorkflow()
     {
-        static void CreateAndBind<TViewModel, TControl>()
-             where TViewModel : Bindable<TControl>
-             where TControl : Control, new()
-        {
-            var vm = App.GetRequiredService<TViewModel>();
-            vm.CreateViewAndBind();
-        }
-
-        CreateAndBind<IntroViewModel, IntroView>();
-        CreateAndBind<SetupViewModel, SetupView>();
-        CreateAndBind<NewParticipantViewModel, NewParticipantView>();
-        CreateAndBind<GameViewModel, GameView>();
-        CreateAndBind<GameOverViewModel, GameOverView>();
+        App.GetRequiredService<IntroViewModel>().CreateViewAndBind();
+        App.GetRequiredService<SetupViewModel>().CreateViewAndBind();
+        App.GetRequiredService<NewParticipantViewModel>().CreateViewAndBind();
+        App.GetRequiredService<GameViewModel>().CreateViewAndBind();
+        App.GetRequiredService<GameOverViewModel>().CreateViewAndBind();
     }
 }

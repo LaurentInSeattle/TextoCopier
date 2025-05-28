@@ -41,7 +41,7 @@
 			GlyphStrokeThickness="0"
 			GlyphAngle="0"
 			Text="Chiudi"
-			Command="{Binding CloseCommand}"
+			Command="{Binding OnClose}"
 	    	/>
 		<Grid
 			x:Name="InnerGrid"
@@ -111,7 +111,7 @@
 				GlyphStrokeThickness="0"
 				GlyphAngle="0"
 				Text="Salva"
-				Command="{Binding SaveCommand}"
+				Command="{Binding OnSave}"
 				IsDisabled="{Binding SaveButtonIsDisabled}"
 	    		/>
 		</Grid>

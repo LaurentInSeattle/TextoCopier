@@ -1,6 +1,6 @@
 namespace Lyt.TranslateRace.Workflow.Setup;
 
-public partial class NewParticipantView : UserControl
+public partial class NewParticipantView : UserControl, IView
 {
     public NewParticipantView()
     {

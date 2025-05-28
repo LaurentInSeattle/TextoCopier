@@ -9,39 +9,26 @@ public enum PlayerTeam
     Right,
 }
 
-public sealed class SetupViewModel : Bindable<SetupView>
+public sealed partial class SetupViewModel : ViewModel<SetupView>
 {
-    private readonly IMessenger messenger;
     private readonly IToaster toaster;
-    private readonly IDialogService dialogService;
     private readonly TranslateRaceModel translateRaceModel;
 
     public SetupViewModel(
-        IMessenger messenger, IDialogService dialogService, IToaster toaster, TranslateRaceModel translateRaceModel)
+        IToaster toaster, TranslateRaceModel translateRaceModel)
     {
-        this.messenger = messenger;
         this.toaster = toaster;
-        this.dialogService = dialogService;
         this.translateRaceModel = translateRaceModel;
-        this.messenger.Subscribe<PlayerAssignmentMessage>(this.OnPlayerAssignmentMessage);
-    }
-
-    protected override void OnViewLoaded()
-    {
-        this.Logger.Debug("SetupViewModel: OnViewLoaded begins");
-
-        base.OnViewLoaded();
-        if (this.View is null)
-        {
-            throw new Exception("Failed to startup...");
-        }
-
+        this.Messenger.Subscribe<PlayerAssignmentMessage>(this.OnPlayerAssignmentMessage);
         this.LeftTeamName = Team.LeftName;
-        this.RightTeamName = Team.LeftName;
-
-        this.LoadParticipants();
-        this.Logger.Debug("SetupViewModel: OnViewLoaded complete");
+        this.RightTeamName = Team.RightName;
+        this.LeftTeam = [];
+        this.RightTeam = [];
+        this.BottomTeam = [];
+        this.MiddleTeam = [];
     }
+
+    public override void Activate(object? _) => this.LoadParticipants();
 
     private void OnPlayerAssignmentMessage(PlayerAssignmentMessage message)
     {
@@ -95,9 +82,6 @@ public sealed class SetupViewModel : Bindable<SetupView>
             participants.Add(vm);
         }
 
-        this.LeftTeam = [];
-        this.RightTeam = [];
-        this.BottomTeam = [];
         this.MiddleTeam = new ObservableCollection<PlayerViewModel>(participants);
         this.ReorderAndUpdateTeamCounts();
     }
@@ -115,10 +99,8 @@ public sealed class SetupViewModel : Bindable<SetupView>
         this.RightTeamPlayerCount = string.Format("({0})", this.RightTeam.Count);
     }
 
-    #region Methods invoked by the Framework using reflection 
-#pragma warning disable IDE0051 // Remove unused private members
-
-    private void OnSplit(object? _)
+    [RelayCommand]
+    public void OnSplit()
     {
         if (this.MiddleTeam.Count == 0)
         {
@@ -144,9 +126,11 @@ public sealed class SetupViewModel : Bindable<SetupView>
         this.ReorderAndUpdateTeamCounts();
     }
 
-    private void OnAdd(object? _) => this.Messenger.Publish(ActivatedView.NewParticipant);
+    [RelayCommand]
+    public void OnAdd(object? _) => this.Messenger.Publish(ActivatedView.NewParticipant);
 
-    private void OnNext(object? _)
+    [RelayCommand]
+    public void OnNext(object? _)
     {
         if ((this.LeftTeam.Count == 0) || (this.RightTeam.Count == 0))
         {
@@ -193,32 +177,27 @@ public sealed class SetupViewModel : Bindable<SetupView>
         this.Messenger.Publish(ActivatedView.Game, parameters);
     }
 
-#pragma warning restore IDE0051
-    #endregion Methods invoked by the Framework using reflection 
+    [ObservableProperty]
+    private string? leftTeamName ;
 
-    #region Bound properties 
+    [ObservableProperty]
+    private string? rightTeamName ;
 
-    public ICommand SplitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private string? leftTeamPlayerCount;
 
-    public ICommand NextCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private string? rightTeamPlayerCount;
 
-    public ICommand AddCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private ObservableCollection<PlayerViewModel> leftTeam;
 
-    public string LeftTeamName { get => this.Get<string>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private ObservableCollection<PlayerViewModel> middleTeam;
 
-    public string RightTeamName { get => this.Get<string>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private ObservableCollection<PlayerViewModel> bottomTeam ;
 
-    public string LeftTeamPlayerCount { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string RightTeamPlayerCount { get => this.Get<string>()!; set => this.Set(value); }
-
-    public ObservableCollection<PlayerViewModel> LeftTeam { get => this.Get<ObservableCollection<PlayerViewModel>>()!; set => this.Set(value); }
-
-    public ObservableCollection<PlayerViewModel> MiddleTeam { get => this.Get<ObservableCollection<PlayerViewModel>>()!; set => this.Set(value); }
-
-    public ObservableCollection<PlayerViewModel> BottomTeam { get => this.Get<ObservableCollection<PlayerViewModel>>()!; set => this.Set(value); }
-
-    public ObservableCollection<PlayerViewModel> RightTeam { get => this.Get<ObservableCollection<PlayerViewModel>>()!; set => this.Set(value); }
-
-    #endregion Bound properties 
+    [ObservableProperty]
+    private ObservableCollection<PlayerViewModel> rightTeam; 
 }
