@@ -1,10 +1,7 @@
 ﻿namespace Lyt.Invasion.Workflow.Gameplay.Players;
 
-public sealed class PlayerViewModel : Bindable<PlayerView>
+public sealed partial class PlayerViewModel : ViewModel<PlayerView>
 {
-    private readonly IDialogService dialogService;
-    private readonly IToaster toaster;
-    private readonly LocalizerModel localizer;
     private readonly InvasionModel invasionModel;
 
     private Player player;
@@ -13,15 +10,7 @@ public sealed class PlayerViewModel : Bindable<PlayerView>
     // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     // Some non-nullable fields and properties get assigned when the view model is activated 
     public PlayerViewModel(
-#pragma warning restore CS8618 
-        LocalizerModel localizer, InvasionModel invasionModel,
-        IDialogService dialogService, IToaster toaster)
-    {
-        this.localizer = localizer;
-        this.invasionModel = invasionModel;
-        this.dialogService = dialogService;
-        this.toaster = toaster;
-    }
+        LocalizerModel localizer, InvasionModel invasionModel) => this.invasionModel = invasionModel;
 
     public override void Activate(object? activationParameters)
     {

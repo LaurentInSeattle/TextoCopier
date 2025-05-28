@@ -1,10 +1,7 @@
 ﻿namespace Lyt.Invasion.Workflow.Gameplay.Regions;
 
-public sealed class RegionViewModel : Bindable<RegionView>
+public sealed partial class RegionViewModel : ViewModel<RegionView>
 {
-    private readonly IDialogService dialogService;
-    private readonly IToaster toaster;
-    private readonly LocalizerModel localizer;
     private readonly InvasionModel invasionModel;
 
     private Region region; 
@@ -13,14 +10,11 @@ public sealed class RegionViewModel : Bindable<RegionView>
     // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     // Some non-nullable fields and properties get assigned when the view model is activated 
     public RegionViewModel(
-#pragma warning restore CS8618 
         LocalizerModel localizer, InvasionModel invasionModel,
         IDialogService dialogService, IToaster toaster)
     {
-        this.localizer = localizer;
+#pragma warning restore CS8618 
         this.invasionModel = invasionModel;
-        this.dialogService = dialogService;
-        this.toaster = toaster;
         this.Messenger.Subscribe<RegionSelectMessage>(this.OnRegionSelect); 
     }
 

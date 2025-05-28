@@ -57,9 +57,9 @@ public sealed partial class ShellViewModel : ViewModel<ShellView>
         static void Deactivate(Type type)
         {
             object? vm = App.GetRequiredService(type);
-            if (vm is Bindable bindable)
+            if (vm is ViewModel viewModel)
             {
-                bindable.Deactivate();
+                viewModel.Deactivate();
             }
         }
 
