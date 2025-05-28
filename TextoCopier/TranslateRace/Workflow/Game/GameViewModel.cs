@@ -49,6 +49,36 @@ public sealed partial class GameViewModel : ViewModel<GameView>
     private GameResult? gameResults;
     private Parameters? parameters;
 
+    [ObservableProperty]
+    private string? leftTeamName;
+
+    [ObservableProperty]
+    private string? rightTeamName;
+
+    [ObservableProperty]
+    private TeamProgressViewModel leftTeamScore;
+
+    [ObservableProperty]
+    private TeamProgressViewModel rightTeamScore;
+
+    [ObservableProperty]
+    private TurnViewModel? turn;
+
+    [ObservableProperty]
+    private OptionsViewModel? options;
+
+    [ObservableProperty]
+    private PhraseViewModel? phrase;
+
+    [ObservableProperty]
+    private EvaluationViewModel? evaluation;
+
+    [ObservableProperty]
+    private CountdownViewModel? countdown;
+
+    [ObservableProperty]
+    private ScoreViewModel? score;
+
     public GameViewModel(TranslateRaceModel translateRaceModel, IRandomizer randomizer)
     {
         this.translateRaceModel = translateRaceModel;
@@ -265,7 +295,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
 
     private void NextTurn()
     {
-        int nextPlayerIndex = this.FindNextPlayerIndex(this.CurrentTeam, this.CurrentPlayer);
+        int nextPlayerIndex = FindNextPlayerIndex(this.CurrentTeam, this.CurrentPlayer);
         if (this.isLeftTurn)
         {
             this.leftPlayerIndex = nextPlayerIndex;
@@ -278,7 +308,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         this.isLeftTurn = !this.isLeftTurn;
     }
 
-    private int FindNextPlayerIndex(Team team, Player player)
+    private static int FindNextPlayerIndex(Team team, Player player)
     {
         var orderedPlayers = (from p in team.Players orderby p.Index ascending select p).ToList();
         var nextPlayer = (from p in orderedPlayers where p.Index > player.Index select p).FirstOrDefault();
@@ -289,7 +319,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
             nextPlayer = (from p in orderedPlayers where p.Index > teamFirstPlayerIndex select p).FirstOrDefault();
             if (nextPlayer is null)
             {
-                throw new Exception("No Players ???");
+                throw new Exception("Unexpected: No Players ???");
             }
         }
 
@@ -298,6 +328,16 @@ public sealed partial class GameViewModel : ViewModel<GameView>
 
     private void UpdateUiComponents()
     {
+        if ((this.Phrase is null) ||
+            (this.Options is null) ||
+            (this.Evaluation is null) ||
+            (this.Countdown is null) ||
+            (this.Score is null) ||
+            (this.Turn is null))
+        {
+            throw new Exception("Unexpected: Missing View Models");
+        }
+
         switch (this.TurnStep)
         {
             default:
@@ -359,7 +399,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         }
 
         // Must use current player before we removed it 
-        int nextPlayerIndex = this.FindNextPlayerIndex(this.CurrentTeam, this.CurrentPlayer);
+        int nextPlayerIndex = FindNextPlayerIndex(this.CurrentTeam, this.CurrentPlayer);
         if (!this.CurrentTeam.Drop(this.CurrentPlayer))
         {
             throw new Exception("Cant drop ??? ");
@@ -389,7 +429,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         this.hasCalledFriend = true;
 
         // For now , we choose the next player
-        int nextPlayerIndex = this.FindNextPlayerIndex(this.CurrentTeam, this.CurrentPlayer);
+        int nextPlayerIndex = FindNextPlayerIndex(this.CurrentTeam, this.CurrentPlayer);
 
         // Dont remove current player, just make current the one we just picked 
         if (this.isLeftTurn)
@@ -407,6 +447,16 @@ public sealed partial class GameViewModel : ViewModel<GameView>
 
     private void OnDifficultyChoice(DifficultyChoiceMessage message)
     {
+        if ((this.Phrase is null) ||
+            (this.Options is null) ||
+            (this.Evaluation is null) ||
+            (this.Countdown is null) ||
+            (this.Score is null) ||
+            (this.Turn is null))
+        {
+            throw new Exception("Unexpected: Missing View Models");
+        }
+
         if ((this.State != GameState.Running) || (this.TurnStep != GameStep.DifficultySelection))
         {
             return;
@@ -426,6 +476,16 @@ public sealed partial class GameViewModel : ViewModel<GameView>
 
     private void OnTranslateRevealed(TranslateRevealedMessage message)
     {
+        if ((this.Phrase is null) ||
+            (this.Options is null) ||
+            (this.Evaluation is null) ||
+            (this.Countdown is null) ||
+            (this.Score is null) ||
+            (this.Turn is null))
+        {
+            throw new Exception("Unexpected: Missing View Models");
+        }
+
         if ((this.State != GameState.Running) || (this.TurnStep != GameStep.Translate))
         {
             return;
@@ -514,34 +574,4 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         this.translateRaceModel.Add(this.gameResults);
         this.translateRaceModel.Save();
     }
-
-    [ObservableProperty]
-    private string? leftTeamName;
-
-    [ObservableProperty]
-    private string? rightTeamName;
-
-    [ObservableProperty]
-    private TeamProgressViewModel leftTeamScore;
-
-    [ObservableProperty]
-    private TeamProgressViewModel rightTeamScore;
-
-    [ObservableProperty]
-    private TurnViewModel? turn;
-
-    [ObservableProperty]
-    private OptionsViewModel? options;
-
-    [ObservableProperty]
-    private PhraseViewModel? phrase;
-
-    [ObservableProperty]
-    private EvaluationViewModel? evaluation;
-
-    [ObservableProperty]
-    private CountdownViewModel? countdown;
-
-    [ObservableProperty]
-    private ScoreViewModel? score;
 }

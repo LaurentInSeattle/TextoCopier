@@ -1,8 +1,20 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Game;
 
-public sealed class OptionsViewModel : Bindable<OptionsView>
+public sealed partial class OptionsViewModel : ViewModel<OptionsView>
 {
     private PhraseDifficulty difficulty;
+
+    [ObservableProperty]
+    private bool nextVisible;
+
+    [ObservableProperty]
+    private bool visible;
+
+    [ObservableProperty]
+    private SelectionGroup? selectionGroup;
+
+    [ObservableProperty]
+    private IBrush teamColor;
 
     public OptionsViewModel()
     {
@@ -18,10 +30,8 @@ public sealed class OptionsViewModel : Bindable<OptionsView>
         this.NextVisible = false;
     }
 
-    #region Methods invoked by the Framework using reflection 
-#pragma warning disable IDE0051 // Remove unused private members
-
-    private void OnClick(object? parameter)
+    [RelayCommand]
+    public void OnClick(object? parameter)
     {
         if (parameter is string enumAsString)
         {
@@ -34,23 +44,7 @@ public sealed class OptionsViewModel : Bindable<OptionsView>
         }
     }
 
-    private void OnNext(object? _)
-    {
-        this.Messenger.Publish(new DifficultyChoiceMessage(this.difficulty));
-    }
-
-    #endregion Methods invoked by the Framework using reflection 
-#pragma warning restore IDE0051 // Remove unused private members
-
-    public bool NextVisible { get => this.Get<bool>(); set => this.Set(value); }
-
-    public bool Visible { get => this.Get<bool>(); set => this.Set(value); }
-
-    public ICommand ClickCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand NextCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public SelectionGroup SelectionGroup { get => this.Get<SelectionGroup>()!; set => this.Set(value); }
-
-    public IBrush TeamColor { get => this.Get<IBrush>()!; set => this.Set(value); }
+    [RelayCommand]
+    public void OnNext()
+        => this.Messenger.Publish(new DifficultyChoiceMessage(this.difficulty));
 }

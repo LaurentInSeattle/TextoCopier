@@ -1,11 +1,22 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Game;
 
-public sealed class CountdownViewModel : Bindable<CountdownView> 
+public sealed partial class CountdownViewModel : ViewModel<CountdownView> 
 {
     private const int DurationMilliseconds = 120_000;
 
-    private DispatcherTimer? dispatcherTimer;
+    [ObservableProperty]
+    private bool visible;
 
+    [ObservableProperty]
+    private float countDownTotal;
+
+    [ObservableProperty]
+    private float countDownValue;
+
+    [ObservableProperty]
+    private string? timeLeftText;
+
+    private DispatcherTimer? dispatcherTimer;
     private DateTime countdownStart;
 
     public CountdownViewModel()
@@ -79,12 +90,4 @@ public sealed class CountdownViewModel : Bindable<CountdownView>
             this.dispatcherTimer.IsEnabled = false;
         }
     }
-
-    public bool Visible { get => this.Get<bool>(); set => this.Set(value); }
-
-    public float CountDownTotal { get => this.Get<float>(); set => this.Set(value); }
-
-    public float CountDownValue { get => this.Get<float>(); [DoNotLog] set => this.Set(value); }
-
-    public string TimeLeftText { get => this.Get<string>()!; [DoNotLog] set => this.Set(value); }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Game;
 
-public sealed class ScoreViewModel : Bindable<ScoreView>
+public sealed partial class ScoreViewModel : ViewModel<ScoreView>
 {
     private const int delay = 2_600;
     private const int shortenedDelay = delay - 100;
@@ -28,6 +28,21 @@ public sealed class ScoreViewModel : Bindable<ScoreView>
     private readonly IRandomizer randomizer;
     private readonly Chooser<string> beNice;
     private readonly Chooser<string> beMean;
+
+    [ObservableProperty]
+    private bool nextVisible;
+
+    [ObservableProperty]
+    private bool visible;
+
+    [ObservableProperty]
+    private string? comment;
+
+    [ObservableProperty]
+    private Brush? commentColor;
+
+    [ObservableProperty]
+    private IBrush teamColor;
 
     private int scoreUpdate;
 
@@ -114,13 +129,13 @@ public sealed class ScoreViewModel : Bindable<ScoreView>
             () =>
             {
                 string message = "Punteggio non è cambiato.";
-                if (scoreUpdate > 0)
+                if (this.scoreUpdate > 0)
                 {
-                    message = string.Format("Punteggio aumentato di: {0}" , scoreUpdate);
+                    message = string.Format("Punteggio aumentato di: {0}" , this.scoreUpdate);
                 }
                 this.PopMessage(message, ColorTheme.Text, hide:false);
 
-                team.Score = teamScore + scoreUpdate;
+                team.Score = teamScore + this.scoreUpdate;
                 this.NextVisible = true;
                 this.Messenger.Publish(new ScoreUpdateMessage(teamScore + score - malus - lifeline + timeBonus));
             }, DispatcherPriority.Background);
@@ -222,23 +237,6 @@ public sealed class ScoreViewModel : Bindable<ScoreView>
         return "Così Lento...";
     }
 
-    #region Methods invoked by the Framework using reflection 
-#pragma warning disable IDE0051 // Remove unused private members
-
-    private void OnNext(object? _) => this.Messenger.Publish(new ScoringCompleteMessage(this.scoreUpdate));
-
-    #endregion Methods invoked by the Framework using reflection 
-#pragma warning restore IDE0051 // Remove unused private members
-
-    public ICommand NextCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public bool NextVisible { get => this.Get<bool>(); set => this.Set(value); }
-
-    public bool Visible { get => this.Get<bool>(); set => this.Set(value); }
-
-    public string Comment { get => this.Get<string>()!; set => this.Set(value); }
-
-    public Brush CommentColor { get => this.Get<Brush>()!; set => this.Set(value); }
-
-    public IBrush TeamColor { get => this.Get<IBrush>()!; set => this.Set(value); }
+    [RelayCommand]
+    public void OnNext() => this.Messenger.Publish(new ScoringCompleteMessage(this.scoreUpdate));
 }

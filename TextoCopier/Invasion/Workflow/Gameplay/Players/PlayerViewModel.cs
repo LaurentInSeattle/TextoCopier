@@ -9,8 +9,7 @@ public sealed partial class PlayerViewModel : ViewModel<PlayerView>
 #pragma warning disable CS8618
     // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     // Some non-nullable fields and properties get assigned when the view model is activated 
-    public PlayerViewModel(
-        LocalizerModel localizer, InvasionModel invasionModel) => this.invasionModel = invasionModel;
+    public PlayerViewModel(InvasionModel invasionModel) => this.invasionModel = invasionModel;
 
     public override void Activate(object? activationParameters)
     {

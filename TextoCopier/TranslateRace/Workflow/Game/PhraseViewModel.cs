@@ -1,7 +1,25 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Game;
 
-public sealed class PhraseViewModel : Bindable<PhraseView>
+public sealed partial class PhraseViewModel : ViewModel<PhraseView>
 {
+    [ObservableProperty]
+    private bool visible;
+
+    [ObservableProperty]
+    private bool callVisible;
+
+    [ObservableProperty]
+    private bool nextVisible;
+
+    [ObservableProperty]
+    private string? italian;
+
+    [ObservableProperty]
+    private string? english;
+
+    [ObservableProperty]
+    private IBrush teamColor;
+
     private Team? team;
     private Phrase? phrase;
     private bool isRevealed;
@@ -38,17 +56,16 @@ public sealed class PhraseViewModel : Bindable<PhraseView>
         } 
     }
 
-    #region Methods invoked by the Framework using reflection 
-#pragma warning disable IDE0051 // Remove unused private members
-
-    private void OnCall(object? _)
+    [RelayCommand]
+    public void OnCall()
     {
         // Can call only once 
         this.CallVisible = false;
         this.Messenger.Publish(new PlayerLifelineMessage());
     }
 
-    private void OnNext(object? _)
+    [RelayCommand]
+    public void OnNext()
     {
         if (this.isRevealed)
         {
@@ -68,23 +85,4 @@ public sealed class PhraseViewModel : Bindable<PhraseView>
             this.CallVisible = false;
         }
     }
-
-    #endregion Methods invoked by the Framework using reflection 
-#pragma warning restore IDE0051 // Remove unused private members
-
-    public bool Visible { get => this.Get<bool>(); set => this.Set(value); }
-
-    public bool CallVisible { get => this.Get<bool>(); set => this.Set(value); }
-
-    public bool NextVisible { get => this.Get<bool>(); set => this.Set(value); }
-
-    public string Italian { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string English { get => this.Get<string>()!; set => this.Set(value); }
-
-    public ICommand CallCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand NextCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public IBrush TeamColor { get => this.Get<IBrush>()!; set => this.Set(value); }
 }

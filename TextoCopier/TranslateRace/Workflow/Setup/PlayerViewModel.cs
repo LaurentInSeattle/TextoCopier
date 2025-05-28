@@ -1,11 +1,22 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Setup;
 
-public sealed class PlayerViewModel : Bindable<PlayerView>
+public sealed partial class PlayerViewModel : ViewModel<PlayerView>
 {
     private readonly Assignment assignment;
 
+    [ObservableProperty]
+    private string? name;
+
+    [ObservableProperty]
+    private string? leftGlyphSource;
+
+    [ObservableProperty]
+    private string? centerGlyphSource;
+
+    [ObservableProperty]
+    private string? rightGlyphSource;
+
     public PlayerViewModel(Participant participant, Assignment assignment)
-        : base(disablePropertyChangedLogging: true, disableAutomaticBindingsLogging: true)
     {
         this.Participant = participant;
         this.assignment = assignment;
@@ -58,10 +69,8 @@ public sealed class PlayerViewModel : Bindable<PlayerView>
 
     public Participant Participant { get; private set; }
 
-    #region Methods invoked by the Framework using reflection 
-#pragma warning disable IDE0051 // Remove unused private members
-
-    private void OnLeft(object? _)
+    [RelayCommand]
+    public void OnLeft()
     {
         Assignment newAssignment;
         switch (this.assignment)
@@ -87,7 +96,8 @@ public sealed class PlayerViewModel : Bindable<PlayerView>
         messenger.Publish(new PlayerAssignmentMessage(this, this.assignment, newAssignment));
     }
 
-    private void OnRight(object? _)
+    [RelayCommand]
+    public void OnRight()
     {
         Assignment newAssignment;
         switch (this.assignment)
@@ -114,7 +124,8 @@ public sealed class PlayerViewModel : Bindable<PlayerView>
         messenger.Publish(new PlayerAssignmentMessage(this, this.assignment, newAssignment));
     }
 
-    private void OnCenter(object? _)
+    [RelayCommand]
+    public void OnCenter(object? _)
     {
         Assignment newAssignment;
         switch (this.assignment)
@@ -136,25 +147,4 @@ public sealed class PlayerViewModel : Bindable<PlayerView>
         IMessenger messenger = ApplicationBase.GetRequiredService<IMessenger>();
         messenger.Publish(new PlayerAssignmentMessage(this, this.assignment, newAssignment));
     }
-
-#pragma warning restore IDE0051
-    #endregion Methods invoked by the Framework using reflection 
-
-    #region Bound properties 
-
-    public string Name { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string LeftGlyphSource { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string CenterGlyphSource { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string RightGlyphSource { get => this.Get<string>()!; set => this.Set(value); }
-
-    public ICommand LeftCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand RightCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand CenterCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-    
-    #endregion  Bound properties 
 }

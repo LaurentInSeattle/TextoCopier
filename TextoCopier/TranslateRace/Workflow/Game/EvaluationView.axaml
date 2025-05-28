@@ -1,101 +1,101 @@
 <UserControl 
     x:Class="Lyt.TranslateRace.Workflow.Game.EvaluationView"
-	xmlns="https://github.com/avaloniaui"
+    xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="96"
-	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
+    xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
     xmlns:theme="clr-namespace:Lyt.TranslateRace"
     xmlns:vm="clr-namespace:Lyt.TranslateRace.Workflow.Game"
     x:DataType="vm:EvaluationViewModel" 
-	IsVisible="{Binding Visible}"
-	>
-	<Grid>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="90" />
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="260" />
-		</Grid.ColumnDefinitions>
-		<TextBlock
-			Grid.Column="0"
-			Text="Parere:"
-			HorizontalAlignment="Center" VerticalAlignment="Center"
-			Margin="0 0 0 0"
-			FontSize="22" FontWeight="Normal"
-			TextWrapping="Wrap"
-			Foreground="{Binding TeamColor}"
-			/>
-		<StackPanel
-			Orientation="Horizontal"
-			Grid.Column="1"
-			Margin="0"
-			VerticalAlignment="Top"
-			>
-			<glyphs:SvgIcon
-				Source="{Binding GlyphSource}"
-				Foreground="{StaticResource FreshGreen_2_100}"
-				Width="44" Height="44"
-				Margin="4"
-				HorizontalAlignment="Left" VerticalAlignment="Center"
-				StrokeThickness="0.2"
-				>				
-			</glyphs:SvgIcon>
-			<glyphs:SelectionGroup x:Name="SelectionGroup" />
-			<glyphs:GlyphButton
-				Style="{StaticResource ToolbarIconButton}"
-				Group="{Binding SelectionGroup}"
-				Command="{Binding ClickCommand}"
-				CommandParameter="Fail"
-				Behaviour="Tap"
-				HorizontalAlignment="Left" VerticalAlignment="Center"
-				Width="160" Height="88"
-				Margin="10 4 10 4"
-				FontSize="22"
-				GlyphSource="thumb_dislike"
-				GlyphAngle="00"
-				GlyphStrokeThickness="0.1"
-				Text="Fallimento"
-    			/>
-			<glyphs:GlyphButton
-				Style="{StaticResource ToolbarIconButton}"
-				Group="{Binding SelectionGroup}"
-				Command="{Binding ClickCommand}"
-				CommandParameter="Close"
-				Behaviour="Tap"
-				HorizontalAlignment="Left" VerticalAlignment="Center"
-				Width="160" Height="88" Margin="10 4 10 4" FontSize="22"
-				GlyphSource="thumb_like_dislike"
-				GlyphAngle="00"
-				GlyphStrokeThickness="0.1"
-				Text="Abbozzato  -2"
-    			/>
-			<glyphs:GlyphButton
-				Style="{StaticResource ToolbarIconButton}"
-				Group="{Binding SelectionGroup}"
-				Command="{Binding ClickCommand}"
-				CommandParameter="Perfect"
-				Behaviour="Tap"
-				HorizontalAlignment="Left" VerticalAlignment="Center"
-				Width="160" Height="88" Margin="10 4 10 4" FontSize="22"
-				GlyphSource="thumb_like"
-				GlyphAngle="00"
-				GlyphStrokeThickness="0.1"
-				Text="Perfetto"
-    			/>
-		</StackPanel>
-		<glyphs:GlyphButton
-			Grid.Column="2"
-			Style="{StaticResource ToolbarIconButton}"
-			Command="{Binding NextCommand}"
-			IsVisible="{Binding NextVisible}"
-			Behaviour="Tap"
-			HorizontalAlignment="Right" VerticalAlignment="Center"
-			Width="240" Height="88" Margin="4" FontSize="22"
-			GlyphSource="next"
-			GlyphAngle="00"
-			GlyphStrokeThickness="0.1"
-			Text="Avanti"
-    		/>
-	</Grid>
+    IsVisible="{Binding Visible}"
+    >
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="90" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="260" />
+        </Grid.ColumnDefinitions>
+        <TextBlock
+            Grid.Column="0"
+            Text="Parere:"
+            HorizontalAlignment="Center" VerticalAlignment="Center"
+            Margin="0 0 0 0"
+            FontSize="22" FontWeight="Normal"
+            TextWrapping="Wrap"
+            Foreground="{Binding TeamColor}"
+            />
+        <StackPanel
+            Orientation="Horizontal"
+            Grid.Column="1"
+            Margin="0"
+            VerticalAlignment="Top"
+            >
+            <glyphs:SvgIcon
+                Source="{Binding GlyphSource}"
+                Foreground="{StaticResource FreshGreen_2_100}"
+                Width="44" Height="44"
+                Margin="4"
+                HorizontalAlignment="Left" VerticalAlignment="Center"
+                StrokeThickness="0.2"
+                >				
+            </glyphs:SvgIcon>
+            <glyphs:SelectionGroup x:Name="SelectionGroup" />
+            <glyphs:GlyphButton
+                Style="{StaticResource ToolbarIconButton}"
+                Group="{Binding SelectionGroup}"
+                Command="{Binding OnClick}"
+                CommandParameter="Fail"
+                Behaviour="Tap"
+                HorizontalAlignment="Left" VerticalAlignment="Center"
+                Width="160" Height="88"
+                Margin="10 4 10 4"
+                FontSize="22"
+                GlyphSource="thumb_dislike"
+                GlyphAngle="00"
+                GlyphStrokeThickness="0.1"
+                Text="Fallimento"
+                />
+            <glyphs:GlyphButton
+                Style="{StaticResource ToolbarIconButton}"
+                Group="{Binding SelectionGroup}"
+                Command="{Binding OnClick}"
+                CommandParameter="Close"
+                Behaviour="Tap"
+                HorizontalAlignment="Left" VerticalAlignment="Center"
+                Width="160" Height="88" Margin="10 4 10 4" FontSize="22"
+                GlyphSource="thumb_like_dislike"
+                GlyphAngle="00"
+                GlyphStrokeThickness="0.1"
+                Text="Abbozzato  -2"
+                />
+            <glyphs:GlyphButton
+                Style="{StaticResource ToolbarIconButton}"
+                Group="{Binding SelectionGroup}"
+                Command="{Binding OnClick}"
+                CommandParameter="Perfect"
+                Behaviour="Tap"
+                HorizontalAlignment="Left" VerticalAlignment="Center"
+                Width="160" Height="88" Margin="10 4 10 4" FontSize="22"
+                GlyphSource="thumb_like"
+                GlyphAngle="00"
+                GlyphStrokeThickness="0.1"
+                Text="Perfetto"
+                />
+        </StackPanel>
+        <glyphs:GlyphButton
+            Grid.Column="2"
+            Style="{StaticResource ToolbarIconButton}"
+            Command="{Binding OnNext}"
+            IsVisible="{Binding NextVisible}"
+            Behaviour="Tap"
+            HorizontalAlignment="Right" VerticalAlignment="Center"
+            Width="240" Height="88" Margin="4" FontSize="22"
+            GlyphSource="next"
+            GlyphAngle="00"
+            GlyphStrokeThickness="0.1"
+            Text="Avanti"
+            />
+    </Grid>
 </UserControl>

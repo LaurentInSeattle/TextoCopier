@@ -1,11 +1,12 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Game;
 
-public sealed class EvaluationViewModel : Bindable<EvaluationView>
+public sealed partial class EvaluationViewModel : ViewModel<EvaluationView>
 {
     private EvaluationResult result;
 
     public EvaluationViewModel()
     {
+        this.GlyphSource = GlyphSourceFromPhraseDifficulty(PhraseDifficulty.Easy); 
         this.TeamColor = ColorTheme.LeftForeground;
         this.NextVisible = true; // So that we'll have a property changed 
     }
@@ -13,13 +14,13 @@ public sealed class EvaluationViewModel : Bindable<EvaluationView>
     public void Update(Team team, PhraseDifficulty phraseDifficulty)
     {
         this.TeamColor = team.IsLeft ? ColorTheme.LeftForeground : ColorTheme.RightForeground;
-        this.GlyphSource = this.GlyphSourceFromPhraseDifficulty(phraseDifficulty);
+        this.GlyphSource = GlyphSourceFromPhraseDifficulty(phraseDifficulty);
         this.SelectionGroup = this.View.SelectionGroup;
         this.SelectionGroup.Clear();
         this.NextVisible = false;
     }
 
-    private string GlyphSourceFromPhraseDifficulty(PhraseDifficulty phraseDifficulty)
+    private static string GlyphSourceFromPhraseDifficulty(PhraseDifficulty phraseDifficulty)
         => phraseDifficulty switch
         {
             PhraseDifficulty.Medium => "emoji_smile_slight",
@@ -28,10 +29,8 @@ public sealed class EvaluationViewModel : Bindable<EvaluationView>
             _ => "emoji_laugh",
         };
 
-    #region Methods invoked by the Framework using reflection 
-#pragma warning disable IDE0051 // Remove unused private members
-
-    private void OnClick(object? parameter)
+    [RelayCommand]
+    public void OnClick(object? parameter)
     {
         if (parameter is string enumAsString)
         {
@@ -44,22 +43,21 @@ public sealed class EvaluationViewModel : Bindable<EvaluationView>
         }
     }
 
-    private void OnNext(object? _) => this.Messenger.Publish(new EvaluationResultMessage(this.result));
+    [RelayCommand]
+    public void OnNext() => this.Messenger.Publish(new EvaluationResultMessage(this.result));
 
-    #endregion Methods invoked by the Framework using reflection 
-#pragma warning restore IDE0051 // Remove unused private members
+    [ObservableProperty]
+    private string glyphSource ;
 
-    public string GlyphSource { get => this.Get<string>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private bool nextVisible;
 
-    public ICommand ClickCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private bool visible;
 
-    public ICommand NextCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private SelectionGroup? selectionGroup;
 
-    public bool NextVisible { get => this.Get<bool>(); set => this.Set(value); }
-
-    public bool Visible { get => this.Get<bool>(); set => this.Set(value); }
-
-    public SelectionGroup SelectionGroup { get => this.Get<SelectionGroup>()!; set => this.Set(value); }
-
-    public IBrush TeamColor { get => this.Get<IBrush>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private IBrush teamColor;    
 }

@@ -1,9 +1,30 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Game;
 
-public sealed class TurnViewModel : Bindable<TurnView>
+public sealed partial class TurnViewModel : ViewModel<TurnView>
 {
     private readonly Player player;
     private readonly Team team;
+
+    [ObservableProperty]
+    private string teamName;
+
+    [ObservableProperty]
+    private string playerName;
+
+    [ObservableProperty]
+    private IBrush teamColor;
+
+    [ObservableProperty]
+    private string nextTeamName;
+
+    [ObservableProperty]
+    private string nextPlayerName;
+
+    [ObservableProperty]
+    private IBrush nextTeamColor;
+
+    [ObservableProperty]
+    private bool hasDroppedVisible;
 
     public TurnViewModel(Team team, Player player, Team nextTeam, Player nextPlayer)
     {
@@ -24,10 +45,8 @@ public sealed class TurnViewModel : Bindable<TurnView>
         }
     }
 
-    #region Methods invoked by the Framework using reflection 
-#pragma warning disable IDE0051 // Remove unused private members
-
-    private void OnHasDropped(object? _)
+    [RelayCommand]
+    public void OnHasDropped()
     {
         if (this.team.Players.Count < 2)
         {
@@ -36,28 +55,4 @@ public sealed class TurnViewModel : Bindable<TurnView>
 
         this.Messenger.Publish<PlayerDropMessage>(new PlayerDropMessage(this.player));
     }
-
-    #endregion Methods invoked by the Framework using reflection 
-#pragma warning restore IDE0051 // Remove unused private members
-
-
-    #region Bound properties 
-
-    public string TeamName { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string PlayerName { get => this.Get<string>()!; set => this.Set(value); }
-
-    public IBrush TeamColor { get => this.Get<IBrush>()!; set => this.Set(value); }
-
-    public string NextTeamName { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string NextPlayerName { get => this.Get<string>()!; set => this.Set(value); }
-
-    public IBrush NextTeamColor { get => this.Get<IBrush>()!; set => this.Set(value); }
-
-    public bool HasDroppedVisible { get => this.Get<bool>(); set => this.Set(value); }
-
-    public ICommand HasDroppedCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    #endregion  Bound properties 
 }

@@ -37,7 +37,7 @@
 		<glyphs:GlyphButton
 			Grid.Column="2"
 			Style="{StaticResource ToolbarIconButton}"
-			Command="{Binding NextCommand}"
+			Command="{Binding OnNext}"
 			IsVisible="{Binding NextVisible}"
 			Behaviour="Tap"
 			HorizontalAlignment="Right" VerticalAlignment="Center"

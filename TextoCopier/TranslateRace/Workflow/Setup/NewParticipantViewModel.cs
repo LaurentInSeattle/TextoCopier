@@ -51,7 +51,7 @@ public sealed partial class NewParticipantViewModel(TranslateRaceModel translate
 
 
         // Save to model 
-        string name = this.Name.Trim();
+        string name = this.Name!.Trim();
         if (this.translateRaceModel.AddParticipant(name, out message))
         {
             return true;

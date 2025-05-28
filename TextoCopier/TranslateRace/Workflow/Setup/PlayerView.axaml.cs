@@ -1,6 +1,6 @@
 namespace Lyt.TranslateRace.Workflow.Setup;
 
-public partial class PlayerView : UserControl
+public partial class PlayerView : UserControl, IView
 {
     public PlayerView()
     {
