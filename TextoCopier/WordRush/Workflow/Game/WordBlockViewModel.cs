@@ -1,22 +1,36 @@
 ﻿namespace Lyt.WordRush.Workflow.Game;
 
-public sealed class WordBlockViewModel : Bindable<WordBlockView>
+public sealed partial class WordBlockViewModel : ViewModel<WordBlockView>
 {
     private readonly IAnimationService animationService;
     private readonly IRandomizer randomizer;
+
+    [ObservableProperty]
+    private string word;
+
+    [ObservableProperty]
+    private Brush foregroundBrush;
+
+    [ObservableProperty]
+    private Brush borderBrush;
+
+    [ObservableProperty]
+    private Brush backgroundBrush;
 
     public WordBlockViewModel(IAnimationService animationService, IRandomizer randomizer)
     {
         this.animationService = animationService;
         this.randomizer = randomizer;
-        this.DisablePropertyChangedLogging = true;
         this.OriginalWord = string.Empty;
-        this.Word = string.Empty;
         this.MatchWord = string.Empty;
         this.IsAvailable = true;
+        this.Word = string.Empty;
+        this.ForegroundBrush = ColorTheme.Text;
+        this.BackgroundBrush = ColorTheme.BoxAbsent;
+        this.BorderBrush = ColorTheme.BoxBorder;
     }
 
-    protected override void OnViewLoaded()
+    public override void OnViewLoaded()
     {
         this.Logger.Debug("WordBlockViewModel: OnViewLoaded begins");
 
@@ -27,10 +41,6 @@ public sealed class WordBlockViewModel : Bindable<WordBlockView>
         }
 
         this.View.Opacity = 0.0;
-        this.ForegroundBrush = ColorTheme.Text;
-        this.BackgroundBrush = ColorTheme.BoxAbsent;
-        this.BorderBrush = ColorTheme.BoxBorder;
-
         this.Logger.Debug("WordBlockViewModel: OnViewLoaded complete");
     }
 
@@ -103,12 +113,4 @@ public sealed class WordBlockViewModel : Bindable<WordBlockView>
                 this.IsAvailable = true; 
             }, DispatcherPriority.Normal);
     }
-
-    public string Word { get => this.Get<string>()!; set => this.Set(value); }
-
-    public Brush ForegroundBrush { get => this.Get<Brush>()!; set => this.Set(value); }
-
-    public Brush BorderBrush { get => this.Get<Brush>()!; set => this.Set(value); }
-
-    public Brush BackgroundBrush { get => this.Get<Brush>()!; set => this.Set(value); }
 }

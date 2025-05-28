@@ -2,21 +2,20 @@
 
 namespace Lyt.WordRush.Workflow.Countdown;
 
-public sealed class CountdownViewModel : Bindable<CountdownView>
+public sealed partial class CountdownViewModel : ViewModel<CountdownView>
 {
     private Parameters? parameters;
 
-    protected override void OnViewLoaded()
+    [ObservableProperty]
+    private string comment;
+
+    [ObservableProperty]
+    private Brush commentColor;
+
+    public CountdownViewModel()
     {
-        this.Logger.Debug("SetupViewModel: OnViewLoaded begins");
-
-        base.OnViewLoaded();
-        if (this.View is null)
-        {
-            throw new Exception("Failed to startup...");
-        }
-
-        this.Logger.Debug("SetupViewModel: OnViewLoaded complete");
+        this.Comment = string.Empty;
+        this.CommentColor = ColorTheme.ValidUiText;
     }
 
     public override void Activate(object? activationParameters)
@@ -63,9 +62,4 @@ public sealed class CountdownViewModel : Bindable<CountdownView>
                 this.Messenger.Publish( ViewActivationMessage.ActivatedView.Game, this.parameters );
             }, DispatcherPriority.Normal);
     }
-
-    public string Comment { get => this.Get<string>()!; set => this.Set(value); }
-
-    public Brush CommentColor { get => this.Get<Brush>()!; set => this.Set(value); }
-
 }

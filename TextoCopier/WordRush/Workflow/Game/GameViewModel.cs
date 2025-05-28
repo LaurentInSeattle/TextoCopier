@@ -1,6 +1,6 @@
 ﻿namespace Lyt.WordRush.Workflow.Game;
 
-public sealed class GameViewModel : Bindable<GameView>
+public sealed partial class GameViewModel : ViewModel<GameView>
 {
     public enum GameState
     {
@@ -39,6 +39,30 @@ public sealed class GameViewModel : Bindable<GameView>
     private readonly Chooser<string> beMean;
     private readonly DispatcherTimer dispatcherTimer;
 
+    [ObservableProperty]
+    private string? timeLeft;
+
+    [ObservableProperty]
+    private string? wordsDiscovered;
+
+    [ObservableProperty]
+    private string? bonus;
+
+    [ObservableProperty]
+    private Brush? bonusColor;
+
+    [ObservableProperty]
+    private string? comment;
+
+    [ObservableProperty]
+    private Brush? commentColor;
+
+    [ObservableProperty]
+    private float countDownTotal;
+
+    [ObservableProperty]
+    private float countDownValue;
+
     private DateTime gameStart;
     private DateTime gameEnd;
     private int bonusMilliseconds;
@@ -48,7 +72,6 @@ public sealed class GameViewModel : Bindable<GameView>
     private int clicksCount;
 
     private GameResult? gameResults;
-    private Parameters? parameters;
     private Grid? selectedGrid;
     private Queue<Tuple<string, string>>? wordQueue;
     private List<WordBlockViewModel>? leftColumn;
@@ -78,7 +101,7 @@ public sealed class GameViewModel : Bindable<GameView>
 
     #region Loading and Activation 
 
-    protected override void OnViewLoaded()
+    public override void OnViewLoaded()
     {
         this.Logger.Debug("GameViewModel: OnViewLoaded begins");
 
@@ -102,7 +125,6 @@ public sealed class GameViewModel : Bindable<GameView>
             throw new ArgumentException("Invalid activation parameters.");
         }
 
-        this.parameters = parameters;
         this.Start(parameters);
     }
 
@@ -298,7 +320,7 @@ public sealed class GameViewModel : Bindable<GameView>
     {
         if (!this.HasSelection || (this.gameResults is null)|| (this.selectedWord is null))
         {
-            throw new ArgumentNullException("no selection, null items");
+            throw new Exception("no selection, null items");            
         }
 
         this.Logger.Debug("Score: " + (isGood ? "Match " : " Fail"));
@@ -514,24 +536,4 @@ public sealed class GameViewModel : Bindable<GameView>
         };
 
     #endregion Properties calculated from game parameters 
-
-    #region Bound properties 
-
-    public string TimeLeft { get => this.Get<string>()!; [DoNotLog] set => this.Set(value); }
-
-    public string WordsDiscovered { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string Bonus { get => this.Get<string>()!; set => this.Set(value); }
-
-    public Brush BonusColor { get => this.Get<Brush>()!; set => this.Set(value); }
-
-    public string Comment { get => this.Get<string>()!; set => this.Set(value); }
-
-    public Brush CommentColor { get => this.Get<Brush>()!; set => this.Set(value); }
-
-    public float CountDownTotal { get => this.Get<float>(); set => this.Set(value); }
-
-    public float CountDownValue { get => this.Get<float>(); [DoNotLog] set => this.Set(value); }
-
-    #endregion Bound properties 
 }

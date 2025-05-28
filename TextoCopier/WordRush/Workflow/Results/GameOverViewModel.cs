@@ -2,27 +2,12 @@
 
 using static Lyt.WordRush.Messaging.ViewActivationMessage;
 
-public sealed class GameOverViewModel : Bindable<GameOverView>
+public sealed partial class GameOverViewModel(WordsModel wordsModel) : ViewModel<GameOverView>
 {
-    private readonly WordsModel wordsModel;
+    private readonly WordsModel wordsModel = wordsModel;
 
     private GameResult? results;
     private Statistics? statistics;
-
-    public GameOverViewModel(WordsModel wordsModel) => this.wordsModel = wordsModel;
-
-    protected override void OnViewLoaded()
-    {
-        this.Logger.Debug("SetupViewModel: OnViewLoaded begins");
-
-        base.OnViewLoaded();
-        if (this.View is null)
-        {
-            throw new Exception("Failed to startup...");
-        }
-
-        this.Logger.Debug("SetupViewModel: OnViewLoaded complete");
-    }
 
     public override void Activate(object? activationParameters)
     {
@@ -81,49 +66,54 @@ public sealed class GameOverViewModel : Bindable<GameOverView>
         this.TotalClicks = string.Format("Tutti i Clic del Mouse: {0}", this.statistics.ClicksCount);
     }
 
-    #region Methods invoked by the Framework using reflection 
-#pragma warning disable IDE0051 // Remove unused private members
+    [RelayCommand]
+    public void OnExit() => this.Messenger.Publish(ActivatedView.Exit);
 
-    private void OnExit(object? _) => this.Messenger.Publish(ActivatedView.Exit);
+    [RelayCommand]
+    public void OnPlayAgain() => this.Messenger.Publish(ActivatedView.Setup);
 
-    private void OnPlayAgain(object? _) => this.Messenger.Publish(ActivatedView.Setup);
+    [ObservableProperty]
+    private string? gameOver;
 
-#pragma warning restore IDE0051
-    #endregion Methods invoked by the Framework using reflection 
+    [ObservableProperty]
+    private Brush? gameOverColor;
 
-    public string GameOver { get => this.Get<string>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private string? plays;
 
-    public Brush GameOverColor { get => this.Get<Brush>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private string? winsLosses;
 
-    public ICommand PlayAgainCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private string? percent;
 
-    public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private string? streaks;
 
+    [ObservableProperty]
+    private string? isWon;
 
-    public string Plays { get => this.Get<string>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private Brush? isWonColor;
 
-    public string WinsLosses { get => this.Get<string>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private string? duration;
 
-    public string Percent { get => this.Get<string>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private string? matches;
 
-    public string Streaks { get => this.Get<string>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private string? missed;
 
+    [ObservableProperty]
+    private string? clicks;
 
-    public string IsWon { get => this.Get<string>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private string? totalMatches;
 
-    public Brush IsWonColor { get => this.Get<Brush>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private string? totalMissed;
 
-    public string Duration { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string Matches { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string Missed { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string Clicks { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string TotalMatches { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string TotalMissed { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string TotalClicks { get => this.Get<string>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private string? totalClicks;
 }

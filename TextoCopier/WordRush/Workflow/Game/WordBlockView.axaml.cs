@@ -1,6 +1,6 @@
 namespace Lyt.WordRush.Workflow.Game;
 
-public partial class WordBlockView : UserControl
+public partial class WordBlockView : UserControl, IView
 {
     public WordBlockView()
     {
@@ -8,6 +8,13 @@ public partial class WordBlockView : UserControl
         this.PointerPressed += this.OnPointerPressed;
         this.PointerEntered += this.OnPointerEnter;
         this.PointerExited += this.OnPointerLeave;
+        this.Loaded += (s, e) =>
+        {
+            if (this.DataContext is ViewModel viewModel)
+            {
+                viewModel.OnViewLoaded();
+            }
+        };
     }
 
     ~WordBlockView()
