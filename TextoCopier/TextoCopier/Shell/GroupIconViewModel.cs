@@ -1,6 +1,6 @@
 ﻿namespace Lyt.TextoCopier.Shell;
 
-public class GroupIconViewModel : Bindable<GroupIconView>
+public sealed partial class GroupIconViewModel : ViewModel<GroupIconView>
 {
     private readonly string groupName;
 
@@ -8,15 +8,14 @@ public class GroupIconViewModel : Bindable<GroupIconView>
     {
         this.groupName = group.Name;
 
-        base.DisablePropertyChangedLogging = true;
-
         this.IconGlyphSource = group.Icon;
         this.IconText = group.Name;
         this.SelectionGroup = selectionGroup;
         this.IsSelected = selected;
     }
 
-    private void OnGroup(object? _)
+    [RelayCommand]
+    public void OnGroup()
     {
         var model = ApplicationBase.GetRequiredService<TemplatesModel>();
         if (! model.SelectGroup(this.groupName, out string message))
@@ -27,13 +26,15 @@ public class GroupIconViewModel : Bindable<GroupIconView>
         this.Messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.Group)); 
     }
 
-    public string IconGlyphSource { get => this.Get<string>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private string iconGlyphSource;
 
-    public string IconText { get => this.Get<string>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private string iconText;
 
-    public SelectionGroup SelectionGroup { get => this.Get<SelectionGroup>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private SelectionGroup selectionGroup;
 
-    public bool IsSelected { get => this.Get<bool>(); set => this.Set(value); }
-
-    public ICommand GroupCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+    [ObservableProperty]
+    private bool isSelected;
 }

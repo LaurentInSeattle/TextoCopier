@@ -1,6 +1,6 @@
 namespace Lyt.TextoCopier.Shell;
 
-public partial class GroupIconView : UserControl
+public partial class GroupIconView : UserControl, IView
 {
     public GroupIconView()
     {
