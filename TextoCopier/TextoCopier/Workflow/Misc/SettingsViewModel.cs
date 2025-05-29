@@ -1,42 +1,43 @@
 ﻿namespace Lyt.TextoCopier.Workflow;
 
-public sealed class SettingsViewModel : Bindable<SettingsView>
+public sealed partial class SettingsViewModel : ViewModel<SettingsView>
 {
-    private readonly IMessenger messenger;
     private readonly IToaster toaster;
     private readonly IDialogService dialogService;
-    private readonly LocalizerModel localizer;
     private readonly TemplatesModel templatesModel;
 
     // Must match the order of the ComboBox items listed in the view
     private readonly string[] Languages = ["en-US", "fr-FR", "it-IT"];
 
+    [ObservableProperty]
+    private int selectedLanguage;
+
     public SettingsViewModel(
-        IMessenger messenger, IDialogService dialogService, IToaster toaster, 
-        LocalizerModel localizer, TemplatesModel templatesModel)
+        IDialogService dialogService, IToaster toaster, 
+        TemplatesModel templatesModel)
     {
-        this.messenger = messenger;
         this.toaster = toaster; 
         this.dialogService = dialogService;
-        this.localizer = localizer;
         this.templatesModel = templatesModel;
 
         this.SelectedLanguage = this.LanguageToIndex(this.templatesModel.Language);
     }
 
-    private void OnClose(object? _)
-        => this.messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.GoBack));
+    [RelayCommand]
+    public void OnClose()
+        => this.Messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.GoBack));
 
-    private void OnSave(object? _)
+    [RelayCommand]
+    public void OnSave()
     {
         string language = this.IndexToLanguage(this.SelectedLanguage);
         if (this.templatesModel.Language != language)
         {
             var confirmActionParameters = new ConfirmActionParameters
             {
-                Title = this.localizer.Lookup("Settings.RestartRequired.Title"),
-                Message = this.localizer.Lookup("Settings.RestartRequired.Hint"),
-                ActionVerb = this.localizer.Lookup("Settings.RestartRequired.Verb"),
+                Title = this.Localizer.Lookup("Settings.RestartRequired.Title"),
+                Message = this.Localizer.Lookup("Settings.RestartRequired.Hint"),
+                ActionVerb = this.Localizer.Lookup("Settings.RestartRequired.Verb"),
                 OnConfirm = this.OnRestartConfirmed,
             };
 
@@ -47,7 +48,7 @@ public sealed class SettingsViewModel : Bindable<SettingsView>
         }
         else
         {
-            this.OnClose(null);
+            this.OnClose();
         }
     }
 
@@ -60,7 +61,7 @@ public sealed class SettingsViewModel : Bindable<SettingsView>
 
         string language = this.IndexToLanguage(this.SelectedLanguage);
         this.templatesModel.Language = language;
-        this.localizer.SelectLanguage(language);
+        this.Localizer.SelectLanguage(language);
         this.templatesModel.Save();
         this.Logger.Debug("Selected language changed to: " + language);
 
@@ -70,12 +71,6 @@ public sealed class SettingsViewModel : Bindable<SettingsView>
             _ = application.Shutdown() ;
         } 
     }
-
-    public int SelectedLanguage { get => this.Get<int>(); set => this.Set(value); }
-
-    public ICommand CloseCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand SaveCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 
     private int LanguageToIndex(string language)
     {

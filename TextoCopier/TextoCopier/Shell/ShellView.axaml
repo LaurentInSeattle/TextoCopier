@@ -11,12 +11,6 @@
 	x:DataType="vm:ShellViewModel" 
 	Background="Transparent"
 	>
-	<Design.DataContext>
-		<!-- This only sets the DataContext for the previewer in an IDE,
-		 to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-		<vm:ShellViewModel />
-	</Design.DataContext>
-
 	<Grid
 		x:Name="InnerGrid"
 		Background="Transparent"
@@ -73,7 +67,7 @@
 				GlyphStrokeThickness="0"
 				GlyphAngle="20"
 				Text="{DynamicResource Shell.Settings}"
-				Command="{Binding SettingsCommand}"
+				Command="{Binding OnSettings}"
 				/>
 			<glyphs:GlyphButton
 				Style="{StaticResource ToolbarIconButton}"
@@ -85,7 +79,7 @@
 				ButtonBackground="BorderlessRectangle"
 				GlyphStrokeThickness="0"
 				Text="{DynamicResource Shell.About}"
-				Command="{Binding AboutCommand}"
+				Command="{Binding OnAbout}"
 			/>
 		</StackPanel>
 			
@@ -146,7 +140,7 @@
 				GlyphStrokeThickness="0"
 				GlyphAngle="00"
 				Text="{DynamicResource Shell.NewGroup}"
-				Command="{Binding NewGroupCommand}"
+				Command="{Binding OnNewGroup}"
 				/>
 			<glyphs:GlyphButton
 				Style="{StaticResource ToolbarIconButton}"
@@ -160,7 +154,7 @@
 				GlyphStrokeThickness="0"
 				GlyphAngle="00"
 				Text="{DynamicResource Shell.EditGroup}"
-				Command="{Binding EditGroupCommand}"
+				Command="{Binding OnEditGroup}"
 				/>
 			<glyphs:GlyphButton
 				Style="{StaticResource ToolbarIconButton}"
@@ -174,7 +168,7 @@
 				GlyphStrokeThickness="0"
 				GlyphAngle="00"
 				Text="{DynamicResource Shell.DeleteGroup}"
-				Command="{Binding DeleteGroupCommand}"
+				Command="{Binding OnDeleteGroup}"
 				/>
 		</StackPanel>
 		<!-- Do not add rows and/or columns to the toaster host-->

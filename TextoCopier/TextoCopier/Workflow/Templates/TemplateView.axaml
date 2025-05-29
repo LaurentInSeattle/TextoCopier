@@ -1,22 +1,18 @@
 <UserControl 
     x:Class="Lyt.TextoCopier.Workflow.Templates.TemplateView"
+    xmlns:vm="clr-namespace:Lyt.TextoCopier.Workflow.Templates"
+    x:DataType="vm:TemplateViewModel" 
+
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="66"
     xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
-    xmlns:vm="clr-namespace:Lyt.TextoCopier.Workflow.Templates"
-    x:DataType="vm:TemplateViewModel" 
 
     Background="Transparent"
     Margin="8 4 4 0"
     >
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:TemplateViewModel />
-    </Design.DataContext>
     <Border
         x:Name="outerBorder"
         Height="66" MaxHeight="66"
@@ -77,7 +73,7 @@
                 Margin="12 0 0 0"
                 IsHitTestVisible="False"
                 TextWrapping="WrapWithOverflow"
-				TextTrimming="WordEllipsis"
+                TextTrimming="WordEllipsis"
                 />
             <glyphs:GlyphButton
                 x:Name="copyButton"
@@ -93,7 +89,7 @@
                 ButtonBackground="BorderlessRectangle"
                 GlyphStrokeThickness="0"
                 GlyphAngle="0"
-                Command="{Binding CopyCommand}"
+                Command="{Binding OnCopy}"
                 />
             <glyphs:GlyphButton
                 x:Name="linkButton"
@@ -108,7 +104,7 @@
                 ButtonBackground="BorderlessRectangle"
                 GlyphStrokeThickness="0"
                 GlyphAngle="0"
-                Command="{Binding LinkCommand}"
+                Command="{Binding OnLink}"
                 />
             <glyphs:GlyphButton
                 x:Name="viewButton"
@@ -123,7 +119,7 @@
                 ButtonBackground="BorderlessRectangle"
                 GlyphStrokeThickness="0"
                 GlyphAngle="0"
-                Command="{Binding ViewCommand}"
+                Command="{Binding OnView}"
                 />
             <glyphs:GlyphButton
                 x:Name="editButton"
@@ -138,7 +134,7 @@
                 ButtonBackground="BorderlessRectangle"
                 GlyphStrokeThickness="0"
                 GlyphAngle="0"
-                Command="{Binding EditCommand}"
+                Command="{Binding OnEdit}"
                 />
             <glyphs:GlyphButton
                 x:Name="deleteButton"
@@ -153,7 +149,7 @@
                 ButtonBackground="BorderlessRectangle"
                 GlyphStrokeThickness="0"
                 GlyphAngle="0"
-                Command="{Binding DeleteCommand}"
+                Command="{Binding OnDelete}"
                 />
         </Grid>
     </Border>

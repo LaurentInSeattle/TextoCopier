@@ -2,33 +2,38 @@
 
 using static ViewActivationMessage;
 
-public sealed class ShellViewModel : Bindable<ShellView>
+public sealed partial class ShellViewModel : ViewModel<ShellView>
 {
     private readonly TemplatesModel templatesModel;
     private readonly IDialogService dialogService;
     private readonly IToaster toaster;
-    private readonly IMessenger messenger;
-    private readonly IProfiler profiler;
-    private readonly LocalizerModel localizer;
+
+    [ObservableProperty]
+    private List<GroupIconViewModel> groups;
+
+    [ObservableProperty]
+    private bool groupsIsVisible;
+
+    [ObservableProperty]
+    private bool deleteGroupIsVisible;
+
+    [ObservableProperty]
+    private bool newGroupIsVisible;
 
     public ShellViewModel(
-        TemplatesModel templatesModel, LocalizerModel localizer, 
-        IDialogService dialogService, IToaster toaster, IMessenger messenger, IProfiler profiler)
+        TemplatesModel templatesModel, IDialogService dialogService, IToaster toaster)
     {
         this.templatesModel = templatesModel;
-        this.localizer = localizer;
         this.dialogService = dialogService;
         this.toaster = toaster;
-        this.messenger = messenger;
-        this.profiler = profiler;
 
         this.templatesModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
-        this.messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
+        this.Messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
 
         this.Groups = [];
     }
 
-    protected override void OnViewLoaded()
+    public override void OnViewLoaded()
     {
         this.Logger.Debug("OnViewLoaded begins");
 
@@ -39,10 +44,10 @@ public sealed class ShellViewModel : Bindable<ShellView>
         }
 
         // Select default language 
-        this.localizer.DetectAvailableLanguages();
+        // this.Localizer.DetectAvailableLanguages();
         string preferredLanguage = this.templatesModel.Language;
         this.Logger.Debug("Language: " + preferredLanguage);
-        this.localizer.SelectLanguage(preferredLanguage);
+        this.Localizer.SelectLanguage(preferredLanguage);
 
         this.Logger.Debug("OnViewLoaded language loaded");
 
@@ -62,13 +67,13 @@ public sealed class ShellViewModel : Bindable<ShellView>
         if (this.templatesModel.Groups.Count > 0)
         {
             this.toaster.Show(
-                this.localizer.Lookup("Shell.Ready"), this.localizer.Lookup("Shell.Greetings"), 
+                this.Localizer.Lookup("Shell.Ready"), this.Localizer.Lookup("Shell.Greetings"), 
                 5_000, InformationLevel.Info);
         }
         else
         {
             this.toaster.Show(
-                this.localizer.Lookup("Shell.NoGroups.Title"), this.localizer.Lookup("Shell.NoGroups.Hint"), 
+                this.Localizer.Lookup("Shell.NoGroups.Title"), this.Localizer.Lookup("Shell.NoGroups.Hint"), 
                 10_000, InformationLevel.Warning);
         }
 
@@ -172,21 +177,22 @@ public sealed class ShellViewModel : Bindable<ShellView>
         }
     }
 
-#pragma warning disable IDE0051 // Remove unused private members
-    private void OnSettings(object? _) => this.OnViewActivation(ActivatedView.Settings);
+    [RelayCommand]
+    public void OnSettings() => this.OnViewActivation(ActivatedView.Settings);
 
-    private void OnAbout(object? _) => this.OnViewActivation(ActivatedView.Help);
+    [RelayCommand]
+    public void OnAbout() => this.OnViewActivation(ActivatedView.Help);
 
-    private void OnNewGroup(object? _) => this.OnViewActivation(ActivatedView.NewGroup);
+    [RelayCommand]
+    public void OnNewGroup() => this.OnViewActivation(ActivatedView.NewGroup);
 
-    private void OnEditGroup(object? _) => this.OnViewActivation(ActivatedView.EditGroup);
+    [RelayCommand]
+    public void OnEditGroup() => this.OnViewActivation(ActivatedView.EditGroup);
 
-#pragma warning disable CA1822 // Mark members as static
-    private void OnExit(object? _) { }
-#pragma warning restore CA1822 
+    [RelayCommand]
+    public void OnExit() { }
 
-    private void OnDeleteGroup(object? _)
-#pragma warning restore IDE0051 
+    private void OnDeleteGroup()
     {
         var group = this.templatesModel.SelectedGroup;
         if (group is null)
@@ -198,9 +204,9 @@ public sealed class ShellViewModel : Bindable<ShellView>
         {
             var confirmActionParameters = new ConfirmActionParameters
             {
-                Title = this.localizer.Lookup("Shell.GroupDelete.Question"),
-                Message = this.localizer.Lookup("Shell.GroupDelete.Hint"),
-                ActionVerb = this.localizer.Lookup("Shell.Delete"),
+                Title = this.Localizer.Lookup("Shell.GroupDelete.Question"),
+                Message = this.Localizer.Lookup("Shell.GroupDelete.Hint"),
+                ActionVerb = this.Localizer.Lookup("Shell.Delete"),
                 OnConfirm = this.OnDeleteGroupConfirmed,
             };
 
@@ -234,13 +240,13 @@ public sealed class ShellViewModel : Bindable<ShellView>
         if (string.IsNullOrEmpty(message))
         {
             this.toaster.Show(
-                this.localizer.Lookup("Shell.Deleted"),  this.localizer.Lookup("Shell.GroupDeleted"), 
+                this.Localizer.Lookup("Shell.Deleted"),  this.Localizer.Lookup("Shell.GroupDeleted"), 
                 5_000, InformationLevel.Info);
         }
         else
         {
             this.toaster.Show(
-                this.localizer.Lookup("Shell.Error"), this.localizer.Lookup("Shell.FailGroupDelete"), 
+                this.Localizer.Lookup("Shell.Error"), this.Localizer.Lookup("Shell.FailGroupDelete"), 
                 12_000, InformationLevel.Error);
         }
 
@@ -248,8 +254,8 @@ public sealed class ShellViewModel : Bindable<ShellView>
     }
 
     private void Activate<TViewModel, TControl>(bool isFirstActivation, object? activationParameters)
-        where TViewModel : Bindable<TControl>
-        where TControl : Control, new()
+        where TViewModel : ViewModel<TControl>
+        where TControl : Control, IView, new()
     {
         if (this.View is null)
         {
@@ -262,7 +268,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
         } 
 
         object? currentView = this.View.ShellViewContent.Content;
-        if (currentView is Control control && control.DataContext is Bindable currentViewModel)
+        if (currentView is Control control && control.DataContext is ViewModel currentViewModel)
         {
             currentViewModel.Deactivate();
         }
@@ -273,7 +279,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
         if( ! isFirstActivation)
         {
-            this.profiler.MemorySnapshot(newViewModel.View.GetType().Name + ":  Activated");
+            this.Profiler.MemorySnapshot(newViewModel.View.GetType().Name + ":  Activated");
         }
     }
 
@@ -309,54 +315,17 @@ public sealed class ShellViewModel : Bindable<ShellView>
 
     private static void SetupWorkflow()
     {
-       static void CreateAndBind<TViewModel, TControl>()
-            where TViewModel : Bindable<TControl>
-            where TControl : Control, new()
-        {
-            var vm = App.GetRequiredService<TViewModel>();
-            vm.CreateViewAndBind();
-        }
-
-        CreateAndBind<GroupViewModel, GroupView>();
-        CreateAndBind<NewEditGroupViewModel, NewEditGroupView>();
-        CreateAndBind<HelpViewModel, HelpView>();
-        CreateAndBind<SettingsViewModel, SettingsView>();
-        CreateAndBind<NewEditTemplateViewModel, NewEditTemplateView>();
+        App.GetRequiredService<GroupViewModel>().CreateViewAndBind();
+        App.GetRequiredService<NewEditGroupViewModel>().CreateViewAndBind();
+        App.GetRequiredService<HelpViewModel>().CreateViewAndBind();
+        App.GetRequiredService<SettingsViewModel>().CreateViewAndBind();
+        App.GetRequiredService<NewEditTemplateViewModel>().CreateViewAndBind();
     }
 
-    public bool GroupsIsVisible { get => this.Get<bool>(); set => this.Set(value); }
+    partial void OnDeleteGroupIsVisibleChanged(bool value)
+        => this.GroupsIsVisible = this.DeleteGroupIsVisible || this.NewGroupIsVisible;
 
-    public bool DeleteGroupIsVisible 
-    { 
-        get => this.Get<bool>();
-        set
-        {
-            this.Set(value);
-            this.GroupsIsVisible = this.DeleteGroupIsVisible || this.NewGroupIsVisible; 
-        }
-    }
+    partial void OnNewGroupIsVisibleChanged(bool value)
+        => this.GroupsIsVisible = this.DeleteGroupIsVisible || this.NewGroupIsVisible;
 
-    public bool NewGroupIsVisible 
-    {
-        get => this.Get<bool>();
-        set
-        {
-            this.Set(value);
-            this.GroupsIsVisible = this.DeleteGroupIsVisible || this.NewGroupIsVisible;
-        }
-    }
-
-    public List<GroupIconViewModel> Groups { get => this.Get<List<GroupIconViewModel>>()!; set => this.Set(value); }
-
-    public ICommand SettingsCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand AboutCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand ExitCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand NewGroupCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand EditGroupCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand DeleteGroupCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 }

@@ -1,65 +1,65 @@
 <UserControl 
     x:Class="Lyt.TextoCopier.Workflow.HelpView"
-	xmlns="https://github.com/avaloniaui"
+    xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
+    xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
     xmlns:vm="clr-namespace:Lyt.TextoCopier.Workflow"
     x:DataType="vm:HelpViewModel" 
     Background="Transparent"
-	>
-	<Grid
-		x:Name="MainGrid"
-		>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="64" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<Rectangle
-			Fill="#70000020"
+    >
+    <Grid
+        x:Name="MainGrid"
+        >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="64" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Rectangle
+            Fill="#70000020"
             Grid.Row="0"
-			/>
-		<TextBlock
-			Grid.Row="0"
-			Text="{DynamicResource Shell.About}"
-			HorizontalAlignment="Left" VerticalAlignment="Center"
-			Margin="12 0 0 0"
-			FontSize="18"
-			FontStyle="Italic"
-			Foreground="{StaticResource PastelOrchid_0_080}"
-			TextWrapping="Wrap"
-			/>
-		<glyphs:GlyphButton
-			Style="{StaticResource ToolbarIconButton}"
-			Behaviour="Tap"
-			HorizontalAlignment="Right" VerticalAlignment="Center"
-			Width="72" Height="48"
-			Margin="4 4 12 4"
-			GlyphSource="dismiss"
-			ButtonBackground="BorderlessRectangle"
-			GlyphStrokeThickness="0"
-			GlyphAngle="0"
-			Text="{DynamicResource Shell.Close}"
-			Command="{Binding CloseCommand}"
-	    	/>
-		<Grid
-			x:Name="InnerGrid"
-			Grid.Row="1"
-			>
-			<ScrollViewer>				
-				<TextBlock
-					Grid.Row="0"
-					Text="{Binding About}"
-					HorizontalAlignment="Left" VerticalAlignment="Top"
-					Margin="12 4 24 4"
-					FontSize="16"
-					FontStyle="Normal"
-					Foreground="{StaticResource LightAqua_0_080}"
-					TextWrapping="Wrap"
-					/>
-			</ScrollViewer>
-		</Grid>
-	</Grid>
+            />
+        <TextBlock
+            Grid.Row="0"
+            Text="{DynamicResource Shell.About}"
+            HorizontalAlignment="Left" VerticalAlignment="Center"
+            Margin="12 0 0 0"
+            FontSize="18"
+            FontStyle="Italic"
+            Foreground="{StaticResource PastelOrchid_0_080}"
+            TextWrapping="Wrap"
+            />
+        <glyphs:GlyphButton
+            Style="{StaticResource ToolbarIconButton}"
+            Behaviour="Tap"
+            HorizontalAlignment="Right" VerticalAlignment="Center"
+            Width="72" Height="48"
+            Margin="4 4 12 4"
+            GlyphSource="dismiss"
+            ButtonBackground="BorderlessRectangle"
+            GlyphStrokeThickness="0"
+            GlyphAngle="0"
+            Text="{DynamicResource Shell.Close}"
+            Command="{Binding OnClose}"
+            />
+        <Grid
+            x:Name="InnerGrid"
+            Grid.Row="1"
+            >
+            <ScrollViewer>				
+                <TextBlock
+                    Grid.Row="0"
+                    Text="{Binding About}"
+                    HorizontalAlignment="Left" VerticalAlignment="Top"
+                    Margin="12 4 24 4"
+                    FontSize="16"
+                    FontStyle="Normal"
+                    Foreground="{StaticResource LightAqua_0_080}"
+                    TextWrapping="Wrap"
+                    />
+            </ScrollViewer>
+        </Grid>
+    </Grid>
 </UserControl>

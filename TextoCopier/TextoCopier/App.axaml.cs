@@ -16,7 +16,6 @@ public partial class App : ApplicationBase
         typeof(ApplicationModelBase), // Top level model 
         [
             // Models 
-            typeof(LocalizerModel),
             typeof(FileManagerModel),
             typeof(TemplatesModel),
         ],
@@ -36,6 +35,7 @@ public partial class App : ApplicationBase
 #else
             new Tuple<Type, Type>(typeof(ILogger), typeof(Logger)),
 #endif
+            new Tuple<Type, Type>(typeof(ILocalizer), typeof(LocalizerModel)),
             new Tuple<Type, Type>(typeof(IDialogService), typeof(DialogService)),
             new Tuple<Type, Type>(typeof(IDispatch), typeof(Dispatch)),
             new Tuple<Type, Type>(typeof(IMessenger), typeof(Messenger)),
@@ -51,6 +51,8 @@ public partial class App : ApplicationBase
 
     protected override async Task OnStartupBegin()
     {
+        ViewModel.TypeInitialize(ApplicationBase.AppHost); 
+
         var logger = App.GetRequiredService<ILogger>();
         logger.Debug("OnStartupBegin begins");
 
@@ -61,7 +63,7 @@ public partial class App : ApplicationBase
                 App.Organization, App.Application, App.RootNamespace, App.AssemblyName, App.AssetsFolder));
 
         // The localizer needs the File Manager, do not change the order.
-        var localizer = App.GetRequiredService<LocalizerModel>();
+        var localizer = App.GetRequiredService<ILocalizer>();
         await localizer.Configure(
             new LocalizerConfiguration
             {

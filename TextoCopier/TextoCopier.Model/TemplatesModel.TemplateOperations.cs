@@ -104,11 +104,16 @@ public sealed partial class TemplatesModel
     }
 
     public bool ValidateTemplateForAdd(
-        string groupName, string newTemplateName, string value, out string message)
+        string groupName, string? newTemplateName, string? value, out string message)
     {
         if (!this.ValidateTemplateCommon(newTemplateName, value, out message))
         {
             return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(newTemplateName))
+        {
+            throw new InvalidOperationException("Should never happen");
         }
 
         bool fail = this.CheckTemplate(groupName, newTemplateName, out _);
@@ -121,11 +126,16 @@ public sealed partial class TemplatesModel
     }
 
     public bool ValidateTemplateForEdit(
-        string groupName, string newTemplateName, string oldTemplateName, string value, out string message)
+        string groupName, string? newTemplateName, string oldTemplateName, string? value, out string message)
     {
         if (!this.ValidateTemplateCommon(newTemplateName, value, out message))
         {
             return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(newTemplateName))
+        {
+            throw new InvalidOperationException("Should never happen");
         }
 
         if (newTemplateName != oldTemplateName)
@@ -140,11 +150,9 @@ public sealed partial class TemplatesModel
         return true;
     }
 
-    private bool ValidateTemplateCommon(string templateName, string value, out string message)
+    private bool ValidateTemplateCommon(string? templateName, string? value, out string message)
     {
         message = string.Empty;
-        templateName = templateName.Trim();
-        value = value.Trim();
 
         if (string.IsNullOrWhiteSpace(templateName))
         {
@@ -158,6 +166,8 @@ public sealed partial class TemplatesModel
             return false;
         }
 
+        templateName = templateName.Trim();
+        value = value.Trim();
         if (templateName.Length > StringMaxLength)
         {
             message = TemplateNameIsTooLong;

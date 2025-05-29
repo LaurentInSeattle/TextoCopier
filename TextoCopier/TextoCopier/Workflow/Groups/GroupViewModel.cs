@@ -1,23 +1,28 @@
 ﻿namespace Lyt.TextoCopier.Workflow;
 
-public sealed class GroupViewModel : Bindable<GroupView>
+public sealed partial class GroupViewModel : ViewModel<GroupView>
 {
-    private readonly IMessenger messenger;
-    private readonly LocalizerModel localizer;
     private readonly TemplatesModel templatesModel;
 
-    public GroupViewModel(IMessenger messenger, LocalizerModel localizer, TemplatesModel templatesModel)
-    {
-        this.messenger = messenger;
-        this.localizer = localizer;
-        this.templatesModel = templatesModel;
+    [ObservableProperty]
+    private List<TemplateViewModel> templates;
 
+    [ObservableProperty]
+    private string? groupName;
+
+    [ObservableProperty]
+    private string? groupDescription;
+
+    public GroupViewModel(TemplatesModel templatesModel)
+    {
+        this.templatesModel = templatesModel;
         this.templatesModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
         this.Templates = [];
     }
 
-    private void OnNewTemplate(object? _)
-        => this.messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.NewTemplate));
+    [RelayCommand]
+    public void OnNewTemplate(object? _)
+        => this.Messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.NewTemplate));
 
     private void Bind(string groupName)
     {
@@ -48,17 +53,8 @@ public sealed class GroupViewModel : Bindable<GroupView>
         }
         else
         {
-            this.GroupName = this.localizer.Lookup("Group.NoSelection"); 
+            this.GroupName = this.Localizer.Lookup("Group.NoSelection"); 
             this.GroupDescription = string.Empty;
         }
     }
-
-    public List<TemplateViewModel> Templates { get => this.Get<List<TemplateViewModel>>()!; set => this.Set(value); }
-
-    public string GroupName { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string GroupDescription { get => this.Get<string>()!; set => this.Set(value); }
-
-    public ICommand NewTemplateCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
 }

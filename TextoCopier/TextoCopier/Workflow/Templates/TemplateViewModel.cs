@@ -1,11 +1,20 @@
 ﻿namespace Lyt.TextoCopier.Workflow.Templates;
 
-public sealed class TemplateViewModel : Bindable<TemplateView>
+public sealed partial class TemplateViewModel : ViewModel<TemplateView>
 {
     private readonly string groupName;
     private readonly Template template;
     private readonly Panel? parentPanel;
     private readonly IDialogService dialogService;
+
+    [ObservableProperty]
+    private string maskedValue;
+
+    [ObservableProperty]
+    private string name;
+
+    [ObservableProperty]
+    private string value;
 
     public TemplateViewModel(string groupName, Template template, Panel? parentPanel)
     {
@@ -13,8 +22,6 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
         this.template = template;
         this.parentPanel = parentPanel;
         this.dialogService = ApplicationBase.GetRequiredService<IDialogService>();
-
-        base.DisablePropertyChangedLogging = true;
 
         this.Name = template.Name;
         this.Value = template.Value;
@@ -26,8 +33,8 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
     public bool ShowView
         => (this.parentPanel is not null) && (this.template.ShouldHide || this.template.Value.Length > 28);
 
-#pragma warning disable IDE0051 // Remove unused private members
-    private async void OnCopy(object? _)
+    [RelayCommand]
+    public async Task OnCopy()
     {
         this.Logger.Info("Clicked on Copy!");
         var startupWindow = ApplicationBase.GetRequiredService<Window>();
@@ -38,13 +45,15 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
         }
     }
 
-    private void OnEdit(object? _)
+    [RelayCommand]
+    public void OnEdit()
     {
         this.Logger.Info("Clicked on Edit!");
         this.Messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.EditTemplate, this.template));
     }
 
-    private void OnDelete(object? _)
+    [RelayCommand]
+    public void OnDelete()
     {
         this.Logger.Info("Clicked on Delete!");
         var templatesModel = ApplicationBase.GetRequiredService<TemplatesModel>();
@@ -55,7 +64,8 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
         }
     }
 
-    private void OnLink(object? _)
+    [RelayCommand]
+    public void OnLink()
     {
         this.Logger.Info("Clicked on Link!");
         string webUrl = this.Value;
@@ -73,13 +83,9 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
         }
     }
 
-    private void OnView(object? parameter)
+    [RelayCommand]
+    public void OnView(ButtonTag buttonTag)
     {
-        if (parameter is not ButtonTag buttonTag)
-        {
-            return;
-        }
-
         switch (buttonTag)
         {
             default:
@@ -99,8 +105,6 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
                 break;
         }
     }
-
-#pragma warning restore IDE0051 // Remove unused private members
 
     private void ShowExtendedTemplate()
     {
@@ -125,20 +129,4 @@ public sealed class TemplateViewModel : Bindable<TemplateView>
             this.dialogService.Dismiss();
         }
     }
-
-    public string MaskedValue { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string Name { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string Value { get => this.Get<string>()!; set => this.Set(value); }
-
-    public ICommand CopyCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand EditCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand DeleteCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand LinkCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand ViewCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
 }

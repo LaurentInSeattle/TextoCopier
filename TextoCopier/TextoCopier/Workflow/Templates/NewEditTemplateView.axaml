@@ -1,176 +1,176 @@
 <UserControl 
     x:Class="Lyt.TextoCopier.Workflow.Templates.NewEditTemplateView"
-	xmlns="https://github.com/avaloniaui"
+    xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="850"
     xmlns:vm="clr-namespace:Lyt.TextoCopier.Workflow.Templates"
     x:DataType="vm:NewEditTemplateViewModel" 
-	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
-	xmlns:toggle="clr-namespace:Lyt.Avalonia.Controls.Toggle;assembly=Lyt.Avalonia.Controls"
-	>
-	<Grid
-		x:Name="MainGrid"
-		>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="64" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<Rectangle
-			Fill="#70000020"
+    xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
+    xmlns:toggle="clr-namespace:Lyt.Avalonia.Controls.Toggle;assembly=Lyt.Avalonia.Controls"
+    >
+    <Grid
+        x:Name="MainGrid"
+        >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="64" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Rectangle
+            Fill="#70000020"
             Grid.Row="0"
-			/>
-		<StackPanel
-			Orientation="Vertical"
-			>
-			<TextBlock
-				Grid.Row="0"
-				Text="{Binding TemplateTitle}"
-				HorizontalAlignment="Left" VerticalAlignment="Center"
-				Margin="12 0 0 0"
-				FontSize="18"
-				FontStyle="Italic"
-				Foreground="{StaticResource PastelOrchid_0_080}"
-				TextWrapping="Wrap"
-			/>
-			<TextBlock
-				Text="{Binding GroupDescription}"
-				HorizontalAlignment="Left" VerticalAlignment="Center"
-				Margin="12 12 0 0"
-				FontSize="12"
-				FontStyle="Italic"
-				Foreground="{StaticResource PastelOrchid_0_080}"
-				TextWrapping="Wrap"
-				/>
-		</StackPanel>
-		<glyphs:GlyphButton
-			Style="{StaticResource ToolbarIconButton}"
-			Behaviour="Tap"
-			HorizontalAlignment="Right" VerticalAlignment="Center"
-			Width="72" Height="48"
-			Margin="4 4 12 4"
-			GlyphSource="dismiss"
-			ButtonBackground="BorderlessRectangle"
-			GlyphStrokeThickness="0"
-			GlyphAngle="0"
-			Text="{DynamicResource Shell.Close}"
-			Command="{Binding CloseCommand}"
-	    	/>
-		<Grid
-			x:Name="InnerGrid"
-			Grid.Row="1"
-			>
-			<Grid.RowDefinitions>
-				<!-- Fields -->
-				<RowDefinition Height="32" />
-				<RowDefinition Height="44" />
-				<RowDefinition Height="32" />
-				<RowDefinition Height="280" />
-				<!-- Toggles -->
-				<RowDefinition Height="48" />
-				<RowDefinition Height="48" />
-				<!-- Message -->
-				<RowDefinition Height="64" />
-				<!-- Button -->
-				<RowDefinition Height="64" />
-
-				<RowDefinition Height="*" />
-			</Grid.RowDefinitions>
-			<TextBlock
-				Grid.Row="0"
-				VerticalAlignment="Center" HorizontalAlignment="Stretch"
-				TextAlignment="Left"
-				Foreground="{StaticResource LightAqua_0_080}"
-				Text="{DynamicResource NewEditTemplateView.TemplateName}"
-				FontStyle="Italic"
-				FontSize="14"
-				Margin="6 0 0 0"
-				IsHitTestVisible="False"
+            />
+        <StackPanel
+            Orientation="Vertical"
+            >
+            <TextBlock
+                Grid.Row="0"
+                Text="{Binding TemplateTitle}"
+                HorizontalAlignment="Left" VerticalAlignment="Center"
+                Margin="12 0 0 0"
+                FontSize="18"
+                FontStyle="Italic"
+                Foreground="{StaticResource PastelOrchid_0_080}"
+                TextWrapping="Wrap"
+            />
+            <TextBlock
+                Text="{Binding GroupDescription}"
+                HorizontalAlignment="Left" VerticalAlignment="Center"
+                Margin="12 12 0 0"
+                FontSize="12"
+                FontStyle="Italic"
+                Foreground="{StaticResource PastelOrchid_0_080}"
+                TextWrapping="Wrap"
                 />
-			<TextBox
+        </StackPanel>
+        <glyphs:GlyphButton
+            Style="{StaticResource ToolbarIconButton}"
+            Behaviour="Tap"
+            HorizontalAlignment="Right" VerticalAlignment="Center"
+            Width="72" Height="48"
+            Margin="4 4 12 4"
+            GlyphSource="dismiss"
+            ButtonBackground="BorderlessRectangle"
+            GlyphStrokeThickness="0"
+            GlyphAngle="0"
+            Text="{DynamicResource Shell.Close}"
+            Command="{Binding OnClose}"
+            />
+        <Grid
+            x:Name="InnerGrid"
+            Grid.Row="1"
+            >
+            <Grid.RowDefinitions>
+                <!-- Fields -->
+                <RowDefinition Height="32" />
+                <RowDefinition Height="44" />
+                <RowDefinition Height="32" />
+                <RowDefinition Height="280" />
+                <!-- Toggles -->
+                <RowDefinition Height="48" />
+                <RowDefinition Height="48" />
+                <!-- Message -->
+                <RowDefinition Height="64" />
+                <!-- Button -->
+                <RowDefinition Height="64" />
+
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock
+                Grid.Row="0"
+                VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                TextAlignment="Left"
+                Foreground="{StaticResource LightAqua_0_080}"
+                Text="{DynamicResource NewEditTemplateView.TemplateName}"
+                FontStyle="Italic"
+                FontSize="14"
+                Margin="6 0 0 0"
+                IsHitTestVisible="False"
+                />
+            <TextBox
                 x:Name="NameTextBox"
                 Grid.Row="1"
                 VerticalAlignment="Center" HorizontalAlignment="Stretch"
-				Watermark="{DynamicResource NewEditView.Max64}"
-				MaxLength="64"
+                Watermark="{DynamicResource NewEditView.Max64}"
+                MaxLength="64"
                 Text="{Binding Name}"
                 Margin="12 0 8 0"
                 />
-			<TextBlock
-				Grid.Row="2"
-				VerticalAlignment="Center" HorizontalAlignment="Stretch"
-				TextAlignment="Left"
-				Foreground="{StaticResource LightAqua_0_080}"
-				Text="{DynamicResource NewEditTemplateView.TemplateValue}"
-				FontStyle="Italic"
-				FontSize="14"
-				Margin="6 0 0 0"
-				IsHitTestVisible="False"
+            <TextBlock
+                Grid.Row="2"
+                VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                TextAlignment="Left"
+                Foreground="{StaticResource LightAqua_0_080}"
+                Text="{DynamicResource NewEditTemplateView.TemplateValue}"
+                FontStyle="Italic"
+                FontSize="14"
+                Margin="6 0 0 0"
+                IsHitTestVisible="False"
                 />
-			<TextBox
+            <TextBox
                 x:Name="ValueTextBox"
                 Grid.Row="3"
                 VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-				Watermark="{DynamicResource NewEditView.Max2048}"
-				MaxLength="2048"
+                Watermark="{DynamicResource NewEditView.Max2048}"
+                MaxLength="2048"
                 Text="{Binding Value}"
                 Margin="12 0 8 0"
                 />
-			<TextBlock
-				Grid.Row="6"
-				VerticalAlignment="Center" HorizontalAlignment="Stretch"
-				TextAlignment="Left"
-				Foreground="{StaticResource OrangePeel_0_100}"
-				Text="{Binding ValidationMessage}"
-				FontStyle="Italic"
-				FontSize="16"
-				Margin="12 0 8 0"
-				IsHitTestVisible="False"
-				TextWrapping="Wrap"
+            <TextBlock
+                Grid.Row="6"
+                VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                TextAlignment="Left"
+                Foreground="{StaticResource OrangePeel_0_100}"
+                Text="{Binding ValidationMessage}"
+                FontStyle="Italic"
+                FontSize="16"
+                Margin="12 0 8 0"
+                IsHitTestVisible="False"
+                TextWrapping="Wrap"
                 />
-			<toggle:ToggleSwitch
-				x:Name="IsHiddenSwitch"
+            <toggle:ToggleSwitch
+                x:Name="IsHiddenSwitch"
                 Grid.Row="4"
-				Margin="8 4 4 4"
-				Style="{StaticResource StandardToggleSwitch}"
-				TrueText="{DynamicResource NewEditTemplateView.HideText.TrueText}"
-				FalseText="{DynamicResource NewEditTemplateView.HideText.FalseText}"
-				Height="30" Width="300"
-				HorizontalAlignment="Left" VerticalAlignment="Center"
-				Value="{Binding IsHidden}"
-				/>
-			<toggle:ToggleSwitch
-				x:Name="IsLinkSwitch"
+                Margin="8 4 4 4"
+                Style="{StaticResource StandardToggleSwitch}"
+                TrueText="{DynamicResource NewEditTemplateView.HideText.TrueText}"
+                FalseText="{DynamicResource NewEditTemplateView.HideText.FalseText}"
+                Height="30" Width="300"
+                HorizontalAlignment="Left" VerticalAlignment="Center"
+                Value="{Binding IsHidden}"
+                />
+            <toggle:ToggleSwitch
+                x:Name="IsLinkSwitch"
                 Grid.Row="5"
-				Margin="8 4 4 4"
-				Style="{StaticResource StandardToggleSwitch}"
-				TrueText="{DynamicResource NewEditTemplateView.IsWebLink.TrueText}"
-				FalseText="{DynamicResource NewEditTemplateView.IsWebLink.FalseText}"
-				Height="30" Width="300"
-				HorizontalAlignment="Left" VerticalAlignment="Center"
-				Value="{Binding IsWebLink}"
-				/>
-			<Rectangle
-				Fill="#70000020"
+                Margin="8 4 4 4"
+                Style="{StaticResource StandardToggleSwitch}"
+                TrueText="{DynamicResource NewEditTemplateView.IsWebLink.TrueText}"
+                FalseText="{DynamicResource NewEditTemplateView.IsWebLink.FalseText}"
+                Height="30" Width="300"
+                HorizontalAlignment="Left" VerticalAlignment="Center"
+                Value="{Binding IsWebLink}"
+                />
+            <Rectangle
+                Fill="#70000020"
                 Grid.Row="7"
-				/>
-			<glyphs:GlyphButton
-				x:Name="SaveButton"
+                />
+            <glyphs:GlyphButton
+                x:Name="SaveButton"
                 Grid.Row="7"
-				Style="{StaticResource ToolbarIconButton}"
-				Behaviour="Tap"
-				HorizontalAlignment="Right" VerticalAlignment="Center"
-				Width="72" Height="48"
-				Margin="4 4 12 4"
-				GlyphSource="save"
-				ButtonBackground="BorderlessRectangle"
-				GlyphStrokeThickness="0"
-				GlyphAngle="0"
-				Text="{DynamicResource Shell.Save}"
-				Command="{Binding SaveCommand}"
-				IsDisabled="{Binding SaveButtonIsDisabled}"
-	    		/>
-		</Grid>
-	</Grid>
+                Style="{StaticResource ToolbarIconButton}"
+                Behaviour="Tap"
+                HorizontalAlignment="Right" VerticalAlignment="Center"
+                Width="72" Height="48"
+                Margin="4 4 12 4"
+                GlyphSource="save"
+                ButtonBackground="BorderlessRectangle"
+                GlyphStrokeThickness="0"
+                GlyphAngle="0"
+                Text="{DynamicResource Shell.Save}"
+                Command="{Binding OnSave}"
+                IsDisabled="{Binding SaveButtonIsDisabled}"
+                />
+        </Grid>
+    </Grid>
 </UserControl>

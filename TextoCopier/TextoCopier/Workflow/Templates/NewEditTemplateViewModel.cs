@@ -1,10 +1,33 @@
 ﻿namespace Lyt.TextoCopier.Workflow.Templates;
 
-public sealed class NewEditTemplateViewModel(
-    LocalizerModel localizer, TemplatesModel templatesModel) : Bindable<NewEditTemplateView>
+public sealed partial class NewEditTemplateViewModel(
+    TemplatesModel templatesModel) : ViewModel<NewEditTemplateView>
 {
-    private readonly LocalizerModel localizer = localizer;
     private readonly TemplatesModel templatesModel = templatesModel;
+
+    [ObservableProperty]
+    private string? templateTitle;
+
+    [ObservableProperty]
+    private string? groupDescription;
+
+    [ObservableProperty]
+    private string? name;
+
+    [ObservableProperty]
+    private string? value;
+
+    [ObservableProperty]
+    private bool isWebLink;
+
+    [ObservableProperty]
+    private bool isHidden;
+
+    [ObservableProperty]
+    private string? validationMessage;
+
+    [ObservableProperty]
+    private bool saveButtonIsDisabled;
 
     public Group SelectedGroup { get; private set; } = new();
 
@@ -36,7 +59,7 @@ public sealed class NewEditTemplateViewModel(
             this.IsHidden = template.ShouldHide;
             this.IsWebLink = template.IsLink;
             this.TemplateTitle = this.Name;
-            string format = this.localizer.Lookup("NewEditTemplateView.Changed.Format");
+            string format = this.Localizer.Lookup("NewEditTemplateView.Changed.Format");
             this.GroupDescription = string.Format(format, groupName);
         }
         else
@@ -46,8 +69,8 @@ public sealed class NewEditTemplateViewModel(
             this.Value = string.Empty;
             this.IsHidden = false;
             this.IsWebLink = false;
-            this.TemplateTitle = this.localizer.Lookup("Group.NewTemplateLong"); ;
-            string format = this.localizer.Lookup("NewEditTemplateView.Added.Format");
+            this.TemplateTitle = this.Localizer.Lookup("Group.NewTemplateLong"); ;
+            string format = this.Localizer.Lookup("NewEditTemplateView.Added.Format");
             this.GroupDescription = string.Format(format, groupName);
         }
 
@@ -60,28 +83,28 @@ public sealed class NewEditTemplateViewModel(
         this.EditedTemplate = null;
     }
 
-#pragma warning disable IDE0051 // Remove unused private members
-    private void OnSave(object? _)
-#pragma warning restore IDE0051 
+    [RelayCommand]
+    public void OnSave()
     {
         if (this.Save(out string message))
         {
-            this.OnClose(_);
+            this.OnClose();
         }
         else
         {
-            this.ValidationMessage = this.localizer.Lookup(message);
+            this.ValidationMessage = this.Localizer.Lookup(message);
             this.SaveButtonIsDisabled = true;
         }
     }
 
-    private void OnClose(object? _)
+    [RelayCommand]
+    public void OnClose()
         => this.Messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.GoBack));
 
     public void OnEditing()
     {
         bool validated = this.Validate(out string message);
-        this.ValidationMessage = validated ? string.Empty : this.localizer.Lookup(message);
+        this.ValidationMessage = validated ? string.Empty : this.Localizer.Lookup(message);
         this.SaveButtonIsDisabled = !validated;
     }
 
@@ -90,7 +113,12 @@ public sealed class NewEditTemplateViewModel(
         string groupName = this.SelectedGroup.Name;
         if (this.IsEditing)
         {
-            // if IsEditing, then this.EditedGroup is not null
+            // if IsEditing, then this.EditedTemplate is not null
+            if (this.EditedTemplate is null || string.IsNullOrWhiteSpace(this.EditedTemplate.Name))
+            {
+                throw new InvalidOperationException("Should never happen");
+            }
+
             return this.templatesModel.ValidateTemplateForEdit(groupName, this.Name, this.EditedTemplate!.Name, this.Value, out message);
         }
         else
@@ -108,11 +136,23 @@ public sealed class NewEditTemplateViewModel(
 
         // Save to model 
         string groupName = this.SelectedGroup.Name;
+
+        if (string.IsNullOrWhiteSpace(this.Name) ||
+            string.IsNullOrWhiteSpace(this.Value))
+        {
+            throw new InvalidOperationException("Should never happen");
+        }
+
         string newName = this.Name.Trim();
         string value = this.Value.Trim();
         if (this.IsEditing)
         {
             // if IsEditing, then this.EditedTemplate is not null
+            if (this.EditedTemplate is null || string.IsNullOrWhiteSpace(this.EditedTemplate.Name))
+            {
+                throw new InvalidOperationException("Should never happen");
+            }
+
             string oldName = this.EditedTemplate!.Name.Trim();
             if (this.templatesModel.EditTemplate(groupName, newName, oldName, value, this.IsWebLink, this.IsHidden, out message))
             {
@@ -130,31 +170,15 @@ public sealed class NewEditTemplateViewModel(
         return false;
     }
 
-    public string TemplateTitle { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string GroupDescription { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string Name { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string Value { get => this.Get<string>()!; set => this.Set(value); }
-
-    public bool IsWebLink { get => this.Get<bool>()!; set => this.Set(value); }
-
-    public bool IsHidden { get => this.Get<bool>()!; set => this.Set(value); }
-
-    public string ValidationMessage { get => this.Get<string>()!; set => this.Set(value); }
-
-    public bool SaveButtonIsDisabled
-    {
-        get => this.Get<bool>();
-        set
-        {
-            this.Set(value);
-            this.View.SaveButton.IsDisabled = value;
-        }
-    }
-
-    public ICommand CloseCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand SaveCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+    // STill Needed ? 
+    //
+    //public bool SaveButtonIsDisabled;
+    //{
+    //    get => this.Get<bool>();
+    //    set
+    //    {
+    //        this.Set(value);
+    //        this.View.SaveButton.IsDisabled = value;
+    //    }
+    //}
 }

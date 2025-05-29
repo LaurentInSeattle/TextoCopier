@@ -1,6 +1,6 @@
 namespace Lyt.TextoCopier.Workflow.Templates;
 
-public partial class TemplateView : UserControl
+public partial class TemplateView : UserControl, IView
 {
     public TemplateView()
     {

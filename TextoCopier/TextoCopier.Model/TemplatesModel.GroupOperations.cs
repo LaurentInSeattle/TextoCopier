@@ -24,13 +24,18 @@ public sealed partial class TemplatesModel
         return group is null ? throw new InvalidOperationException(NoSuchGroup) : group;
     }
 
-    public bool ValidateGroupForAdd(string groupName, string groupDescription, string iconName, out string message)
+    public bool ValidateGroupForAdd(string? groupName, string? groupDescription, string? iconName, out string message)
     {
         if ( ! this.ValidateGroupCommon(groupName, groupDescription, iconName, out message))
         {
             return false; 
         }
-    
+
+        if (string.IsNullOrWhiteSpace(groupName))
+        {
+            throw new InvalidOperationException("Should never happen"); 
+        } 
+
         bool fail = this.CheckGroup(groupName, out _);
         if (fail)
         {
@@ -40,11 +45,16 @@ public sealed partial class TemplatesModel
         return !fail;
     }
 
-    public bool ValidateGroupForEdit(string newGroupName, string oldGroupName, string groupDescription, string iconName, out string message)
+    public bool ValidateGroupForEdit(string? newGroupName, string oldGroupName, string? groupDescription, string? iconName, out string message)
     {
         if (!this.ValidateGroupCommon(newGroupName, groupDescription, iconName, out message))
         {
             return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(newGroupName))
+        {
+            throw new InvalidOperationException("Should never happen");
         }
 
         if (newGroupName != oldGroupName)
@@ -59,13 +69,9 @@ public sealed partial class TemplatesModel
         return true;
     }
 
-    private bool ValidateGroupCommon(string groupName, string groupDescription, string iconName, out string message)
+    private bool ValidateGroupCommon(string? groupName, string? groupDescription, string? iconName, out string message)
     {
         message = string.Empty;
-        groupName = groupName.Trim();
-        groupDescription = groupDescription.Trim();
-        iconName = iconName.Trim();
-
         if (string.IsNullOrWhiteSpace(groupName))
         {
             message = GroupNameIsBlank;
@@ -78,6 +84,8 @@ public sealed partial class TemplatesModel
             return false;
         }
 
+        groupName = groupName.Trim();
+        groupDescription = groupDescription.Trim();
         if (groupName.Length > StringMaxLength)
         {
             message = GroupNameIsTooLong;
@@ -97,6 +105,7 @@ public sealed partial class TemplatesModel
             return false;
         }
 
+        iconName = iconName.Trim();
         if (!this.AvailableIcons.Contains(iconName))
         {
             message = IconNotAvailable;

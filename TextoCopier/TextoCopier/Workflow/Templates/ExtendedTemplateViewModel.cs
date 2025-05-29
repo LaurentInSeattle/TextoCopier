@@ -1,14 +1,16 @@
 ﻿namespace Lyt.TextoCopier.Workflow;
 
-public sealed class ExtendedTemplateViewModel : Bindable<ExtendedTemplateView> 
+public sealed partial class ExtendedTemplateViewModel : ViewModel<ExtendedTemplateView> 
 {
-    public void DuplicateFrom (TemplateViewModel templateViewModel)
+    [ObservableProperty]
+    private string? name;
+
+    [ObservableProperty]
+    private string? stringValue;
+
+    public void DuplicateFrom(TemplateViewModel templateViewModel)
     {
         this.Name = templateViewModel.Name;
-        this.Value = templateViewModel.Value;
+        this.StringValue = templateViewModel.Value;
     }
-
-    public string Name { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string Value { get => this.Get<string>()!; set => this.Set(value); }
 }

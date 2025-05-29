@@ -1,17 +1,30 @@
 ﻿namespace Lyt.TextoCopier.Workflow;
 
-public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
+public sealed partial class NewEditGroupViewModel(TemplatesModel templatesModel) 
+    : ViewModel<NewEditGroupView>
 {
-    private readonly IMessenger messenger;
-    private readonly LocalizerModel localizer;
-    private readonly TemplatesModel templatesModel; 
+    private readonly TemplatesModel templatesModel = templatesModel;
 
-    public NewEditGroupViewModel(IMessenger messenger, LocalizerModel localizer, TemplatesModel templatesModel)
-    {
-        this.messenger = messenger;
-        this.localizer = localizer;
-        this.templatesModel = templatesModel;
-    }
+    [ObservableProperty]
+    private string? title;
+
+    [ObservableProperty]
+    private string? name;
+
+    [ObservableProperty]
+    private string? description;
+
+    [ObservableProperty]
+    private string? icon;
+
+    [ObservableProperty]
+    private List<string>? iconNames;
+
+    [ObservableProperty]
+    private string? validationMessage;
+
+    [ObservableProperty]
+    private bool saveButtonIsDisabled;
 
     public Group? EditedGroup { get; private set; }
 
@@ -35,7 +48,7 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
             this.Name = string.Empty;
             this.Description = string.Empty;
             this.Icon = string.Empty;
-            this.Title = this.localizer.Lookup("Shell.NewGroupLong"); 
+            this.Title = this.Localizer.Lookup("Shell.NewGroupLong"); 
 
         }
 
@@ -47,37 +60,50 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
     {
         base.Deactivate();
         this.EditedGroup = null;
-    } 
+    }
 
-    private void OnSave(object? _)
+    [RelayCommand]
+    public void OnSave()
     {
         if (this.Save(out string message))
         {
-            this.OnClose(_);
+            this.OnClose();
         }
         else
         {
-            this.ValidationMessage = this.localizer.Lookup(message);
+            this.ValidationMessage = this.Localizer.Lookup(message);
             this.SaveButtonIsDisabled = true;
         }
     }
 
-    private void OnClose(object? _)
-        => this.messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.GoBack));
+    [RelayCommand]
+    public void OnClose()
+        => this.Messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.GoBack));
 
     public void OnEditing()
     {
         bool validated = this.Validate(out string message);
-        this.ValidationMessage = validated ? string.Empty : this.localizer.Lookup(message);
+        this.ValidationMessage = validated ? string.Empty : this.Localizer.Lookup(message);
         this.SaveButtonIsDisabled = !validated;
     }
 
     private bool Validate(out string message)
     {
+        if ( string.IsNullOrWhiteSpace(this.Name))
+        {
+            message = string.Empty;
+            return false;
+        }
+
         if (this.IsEditing)
         {
             // if IsEditing, then this.EditedGroup is not null
-            return this.templatesModel.ValidateGroupForEdit(this.Name, this.EditedGroup!.Name, this.Description, this.Icon, out message);
+            if (this.EditedGroup is null || string.IsNullOrWhiteSpace(this.EditedGroup.Name))
+            {
+                throw new InvalidOperationException("Should never happen");
+            }
+
+            return this.templatesModel.ValidateGroupForEdit(this.Name, this.EditedGroup.Name, this.Description, this.Icon, out message);
         }
         else
         {
@@ -92,6 +118,13 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
             return false;
         }
 
+        if (string.IsNullOrWhiteSpace(this.Name) ||
+            string.IsNullOrWhiteSpace(this.Description) ||
+            string.IsNullOrWhiteSpace(this.Icon) )
+        {
+            throw new InvalidOperationException("Should never happen");
+        }
+
         string groupName = this.Name.Trim();
         string groupDescription = this.Description.Trim();
         string iconName = this.Icon.Trim();
@@ -100,7 +133,12 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
         if (this.IsEditing)
         {
             // if IsEditing, then this.EditedGroup is not null
-            if (this.templatesModel.EditGroup(groupName, this.EditedGroup!.Name, groupDescription, iconName, out message))
+            if (this.EditedGroup is null || string.IsNullOrWhiteSpace(this.EditedGroup.Name))
+            {
+                throw new InvalidOperationException("Should never happen");
+            }
+
+            if (this.templatesModel.EditGroup(groupName, this.EditedGroup.Name, groupDescription, iconName, out message))
             {
                 return true;
             }
@@ -116,29 +154,14 @@ public sealed class NewEditGroupViewModel : Bindable<NewEditGroupView>
         return false;
     }
 
-    public string Title { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string Name { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string Description { get => this.Get<string>()!; set => this.Set(value); }
-
-    public string Icon { get => this.Get<string>()!; set => this.Set(value); }
-
-    public List<string> IconNames { get => this.Get<List<string>>()!; set => this.Set(value); }
-
-    public string ValidationMessage { get => this.Get<string>()!; set => this.Set(value); }
-
-    public bool SaveButtonIsDisabled
-    {
-        get => this.Get<bool>();
-        set
-        {
-            this.Set(value);
-            this.View.SaveButton.IsDisabled = value;
-        }
-    }
-
-    public ICommand CloseCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public ICommand SaveCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
+    // Still needed ? 
+    // private bool saveButtonIsDisabled;
+    //{
+    //    get => this.Get<bool>();
+    //    set
+    //    {
+    //        this.Set(value);
+    //        this.View.SaveButton.IsDisabled = value;
+    //    }
+    //}
 }

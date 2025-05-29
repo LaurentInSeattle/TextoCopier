@@ -1,31 +1,31 @@
 <UserControl 
     x:Class="Lyt.TextoCopier.Workflow.ExtendedTemplateView"
-	xmlns="https://github.com/avaloniaui"
+    xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-	
+    
     xmlns:vm="clr-namespace:Lyt.TextoCopier.Workflow"
     x:DataType="vm:ExtendedTemplateViewModel" 
     >
     <Border
         x:Name="outerBorder"
-		Margin="8"
+        Margin="8"
         Height="380" MaxHeight="380"
-		MinWidth="260"
+        MinWidth="260"
         HorizontalAlignment="Stretch"
-		Background="Transparent"
+        Background="Transparent"
         BorderBrush="{StaticResource LightAqua_1_040}"
         BorderThickness="1"
         CornerRadius="4"
-		Opacity="0.2"
-		>
-		<Border.Transitions>
-			<Transitions>
-				<DoubleTransition Property="Opacity" Duration="0:0:0.4"/>
-			</Transitions>
-		</Border.Transitions>
+        Opacity="0.2"
+        >
+        <Border.Transitions>
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.4"/>
+            </Transitions>
+        </Border.Transitions>
         <Grid
             Background="Transparent"
             VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
@@ -61,7 +61,7 @@
                 VerticalAlignment="Top" HorizontalAlignment="Stretch"
                 TextAlignment="Left"
                 Foreground="{StaticResource LightAqua_0_120}"
-                Text="{Binding Value}"
+                Text="{Binding StringValue}"
                 FontSize="16"
                 Margin="12 0 12 0"
                 IsHitTestVisible="False"

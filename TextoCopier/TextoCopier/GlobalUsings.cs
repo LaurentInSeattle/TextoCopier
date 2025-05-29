@@ -18,6 +18,8 @@ global using System.Windows.Input;
 
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
+global using CommunityToolkit.Mvvm.ComponentModel;
+global using CommunityToolkit.Mvvm.Input;
 
 #endregion System 
 
@@ -45,6 +47,7 @@ global using Avalonia.Threading;
 
 #region Framework 
 
+global using Lyt.Framework.Interfaces.Binding;
 global using Lyt.Framework.Interfaces.Dispatching;
 global using Lyt.Framework.Interfaces.Localizing;
 global using Lyt.Framework.Interfaces.Logging;
@@ -68,6 +71,7 @@ global using Lyt.Avalonia.Localizer;
 global using Lyt.Model;
 global using Lyt.Persistence;
 
+global using Lyt.Mvvm;
 global using Lyt.Messaging;
 global using Lyt.Utilities.Profiling;
 global using Lyt.Utilities.Extensions;

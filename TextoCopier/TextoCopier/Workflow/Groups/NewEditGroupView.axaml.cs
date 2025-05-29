@@ -1,6 +1,6 @@
 namespace Lyt.TextoCopier.Workflow;
 
-public partial class NewEditGroupView : UserControl
+public partial class NewEditGroupView : UserControl, IView
 {
     public NewEditGroupView()
     {

@@ -41,7 +41,7 @@
 			GlyphStrokeThickness="0"
 			GlyphAngle="0"
 			Text="{DynamicResource Shell.Close}"
-			Command="{Binding CloseCommand}"
+			Command="{Binding OnClose}"
 	    	/>
 		<Grid
 			x:Name="InnerGrid"
@@ -93,7 +93,7 @@
 				GlyphStrokeThickness="0"
 				GlyphAngle="0"
 				Text="{DynamicResource Shell.Save}"
-				Command="{Binding SaveCommand}"
+				Command="{Binding OnSave}"
 	    		/>
 		</Grid>
 	</Grid>

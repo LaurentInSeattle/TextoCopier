@@ -1,95 +1,90 @@
 <UserControl 
     x:Class="Lyt.TextoCopier.Workflow.GroupView"
-	xmlns="https://github.com/avaloniaui"
+    xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
     xmlns:vm="clr-namespace:Lyt.TextoCopier.Workflow"
-	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
-	xmlns:panels="clr-namespace:Lyt.Avalonia.Controls.Panels;assembly=Lyt.Avalonia.Controls"
+    xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
+    xmlns:panels="clr-namespace:Lyt.Avalonia.Controls.Panels;assembly=Lyt.Avalonia.Controls"
     xmlns:templates="clr-namespace:Lyt.TextoCopier.Workflow.Templates"
     x:DataType="vm:GroupViewModel" 
     Background="Transparent"
     >
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:GroupViewModel />
-    </Design.DataContext>
-	<Grid		
-		x:Name="MainGrid"
-		>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="64" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<Rectangle
-			Fill="#70000020"
+    <Grid		
+        x:Name="MainGrid"
+        >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="64" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Rectangle
+            Fill="#70000020"
             Grid.Row="0"
-			/>
-		<StackPanel
-			Orientation="Vertical"
-			>
-			<TextBlock
-				Text="{Binding GroupName}"
-				HorizontalAlignment="Left" VerticalAlignment="Center"
-				Margin="12 8 0 0"
-				FontSize="18"
-				FontStyle="Italic"
-				Foreground="{StaticResource PastelOrchid_0_080}"
-				TextWrapping="Wrap"
-				/>
-			<TextBlock
-				Text="{Binding GroupDescription}"
-				HorizontalAlignment="Left" VerticalAlignment="Center"
-				Margin="12 12 0 0"
-				FontSize="12"
-				FontStyle="Italic"
-				Foreground="{StaticResource PastelOrchid_0_080}"
-				TextWrapping="Wrap"
-				/>
-		</StackPanel>
-		<glyphs:GlyphButton
-			Style="{StaticResource ToolbarIconButton}"
-			Behaviour="Tap"
-			HorizontalAlignment="Right" VerticalAlignment="Center"
-			Width="72" Height="48"
-			Margin="4 4 12 4"
-			GlyphSource="add"
-			ButtonBackground="BorderlessRectangle"
-			GlyphStrokeThickness="0"
-			GlyphAngle="0"
-			Text="{DynamicResource Group.NewTemplate}"
-			Command="{Binding NewTemplateCommand}"
-	    	/>
-		<Grid
-			x:Name="InnerGrid"
-			Grid.Row="1"
-			>
-			<ScrollViewer	
-				Background="Transparent"
-				VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-				ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-				ScrollViewer.VerticalScrollBarVisibility="Auto"
-				>
-				<ItemsControl
-					x:Name="TemplatesItemControl"
-					ItemsSource="{Binding Templates}"
-					Margin="0 0 24 0"
-					>
-					<ItemsControl.ItemsPanel>
-						<ItemsPanelTemplate>
-							<panels:MultiColumnStackPanel ColumnMaxWidth="360"/>
-						</ItemsPanelTemplate>
-					</ItemsControl.ItemsPanel>
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<templates:TemplateView />
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ItemsControl>
-			</ScrollViewer>
-		</Grid>
-	</Grid>
+            />
+        <StackPanel
+            Orientation="Vertical"
+            >
+            <TextBlock
+                Text="{Binding GroupName}"
+                HorizontalAlignment="Left" VerticalAlignment="Center"
+                Margin="12 8 0 0"
+                FontSize="18"
+                FontStyle="Italic"
+                Foreground="{StaticResource PastelOrchid_0_080}"
+                TextWrapping="Wrap"
+                />
+            <TextBlock
+                Text="{Binding GroupDescription}"
+                HorizontalAlignment="Left" VerticalAlignment="Center"
+                Margin="12 12 0 0"
+                FontSize="12"
+                FontStyle="Italic"
+                Foreground="{StaticResource PastelOrchid_0_080}"
+                TextWrapping="Wrap"
+                />
+        </StackPanel>
+        <glyphs:GlyphButton
+            Style="{StaticResource ToolbarIconButton}"
+            Behaviour="Tap"
+            HorizontalAlignment="Right" VerticalAlignment="Center"
+            Width="72" Height="48"
+            Margin="4 4 12 4"
+            GlyphSource="add"
+            ButtonBackground="BorderlessRectangle"
+            GlyphStrokeThickness="0"
+            GlyphAngle="0"
+            Text="{DynamicResource Group.NewTemplate}"
+            Command="{Binding OnNewTemplate}"
+            />
+        <Grid
+            x:Name="InnerGrid"
+            Grid.Row="1"
+            >
+            <ScrollViewer	
+                Background="Transparent"
+                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                >
+                <ItemsControl
+                    x:Name="TemplatesItemControl"
+                    ItemsSource="{Binding Templates}"
+                    Margin="0 0 24 0"
+                    >
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <panels:MultiColumnStackPanel ColumnMaxWidth="360"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <templates:TemplateView />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
 </UserControl>

@@ -1,23 +1,14 @@
 ﻿namespace Lyt.TextoCopier.Workflow;
 
-public sealed class HelpViewModel : Bindable<HelpView>
+public sealed partial class HelpViewModel : ViewModel<HelpView>
 {
-    private readonly IMessenger messenger;
-    private readonly LocalizerModel localizerModel;
+    [ObservableProperty]
+    private string about;
 
-    public HelpViewModel(IMessenger messenger, LocalizerModel localizerModel)
-    {
-        this.DisablePropertyChangedLogging = true; 
-        this.messenger = messenger;
-        this.localizerModel = localizerModel;
-    }
+    public HelpViewModel()
+        => this.About = this.Localizer.LookupResource("About");
 
-    protected override void OnViewLoaded()  => this.About = this.localizerModel.LookupResource("About");
-    
-    private void OnClose(object? _)
-        => this.messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.GoBack));
-
-    public ICommand CloseCommand { get => this.Get<ICommand>()!; set => this.Set(value); }
-
-    public string About { get => this.Get<string>()!; set => this.Set(value); }
+    [RelayCommand]
+    public void OnClose()
+        => this.Messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.GoBack));
 }
