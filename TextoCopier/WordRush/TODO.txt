@@ -1,11 +1,6 @@
 ﻿Bug 
-        throw new Exception("Missing resource for InformationLevel");
-
 
 Must Haves 
-- History 
-- Game report 
-- Statistics 
 
 Nice to Have 
 - Lookup the web for the missed words 
