@@ -97,14 +97,7 @@ public sealed partial class ShellViewModel : ViewModel<ShellView>
                 break;
 
             case ActivatedView.GameOver:
-                if (parameter is GameResult gameResults)
-                {
-                    this.Activate<GameOverViewModel, GameOverView>(isFirstActivation, gameResults);
-                }
-                else
-                {
-                    throw new Exception("No game results");
-                }
+                this.Activate<GameOverViewModel, GameOverView>(isFirstActivation, null);
                 break;
         }
     }

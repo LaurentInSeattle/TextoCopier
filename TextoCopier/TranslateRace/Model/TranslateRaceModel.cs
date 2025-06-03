@@ -4,7 +4,8 @@ using static Lyt.Persistence.FileManagerModel;
 
 public sealed partial class TranslateRaceModel : ModelBase
 {
-    public const int WinScore = 42; 
+    public const int WinScore = 9;
+    // public const int WinScore = 42;
     private static readonly char[] separator = ['\t', '\r', '\n'];
 
     private readonly FileManagerModel fileManager;
@@ -13,22 +14,17 @@ public sealed partial class TranslateRaceModel : ModelBase
     private readonly IRandomizer randomizer;
 
     public TranslateRaceModel(
-        FileManagerModel fileManager, IMessenger messenger, ILogger logger, IRandomizer randomizer) : base(messenger, logger)
+        FileManagerModel fileManager, 
+        IMessenger messenger, ILogger logger, IRandomizer randomizer) : base(messenger, logger)
     {
         this.fileManager = fileManager;
         this.ShouldAutoSave = true;
         this.italian = new(2048, StringComparer.InvariantCultureIgnoreCase);
         this.italianToEnglish = new(2048);
         this.randomizer = randomizer;
-        this.GameHistory = new GameHistory();
     }
 
     public bool IsReady { get; private set; }
-
-    [JsonIgnore]
-    // Not serialized - No model changed event
-    // This is EXPLICITLY saved and loaded 
-    public GameHistory GameHistory { get; private set; }
 
     [JsonIgnore]
     // Not serialized - No model changed event
@@ -40,6 +36,14 @@ public sealed partial class TranslateRaceModel : ModelBase
     // This is EXPLICITLY saved and loaded 
     public List<Phrase> Phrases { get; private set; } = [];
 
+    [JsonIgnore]
+    // Not serialized - No model changed event, transient 
+    public Team? WinningTeam { get; set; }
+
+    [JsonIgnore]
+    // Not serialized - No model changed event, transient 
+    public Team? LosingTeam { get; set; }
+
     public override Task Initialize()
     {
         _ = Task.Factory.StartNew(this.LoadGameModel, TaskCreationOptions.LongRunning);
@@ -48,11 +52,6 @@ public sealed partial class TranslateRaceModel : ModelBase
 
     public override Task Save()
     {
-        if (this.GameHistory.IsDirty)
-        {
-            this.GameHistory.Save();
-        }
-
         this.SaveParticipants();
         this.SavePhrases();
         return Task.CompletedTask;
@@ -77,45 +76,6 @@ public sealed partial class TranslateRaceModel : ModelBase
         }
 
         return this.Phrases[0]! ; 
-    }
-
-    public void Add(GameResult gameResult) => this.GameHistory.Add(gameResult);
-
-    public Statistics Statistics() => this.GameHistory.EvaluateStatistics();
-
-    public List<string> RandomPicks(int needed)
-    {
-        HashSet<string> exclude = this.GameHistory.PlayedWords();
-        string[] source = [.. this.italian];
-        List<string> picks = new(needed);
-        HashSet<string> alreadyFound = new(needed);
-        while (needed > 0)
-        {
-            string word = this.RandomPick(source, exclude, alreadyFound);
-            if (string.IsNullOrWhiteSpace(word))
-            {
-                break;
-            }
-
-            --needed;
-            alreadyFound.Add(word);
-            picks.Add(word);
-        }
-
-        while (needed > 0)
-        {
-            string word = this.RandomPick(source, [], alreadyFound);
-            if (string.IsNullOrWhiteSpace(word))
-            {
-                break;
-            }
-
-            --needed;
-            alreadyFound.Add(word);
-            picks.Add(word);
-        }
-
-        return picks;
     }
 
     public string TranslateToEnglish(string italianWord)
@@ -162,17 +122,6 @@ public sealed partial class TranslateRaceModel : ModelBase
             Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
             await Task.Delay(200);
 
-            // Load game history, if any 
-            this.GameHistory = new GameHistory(this.fileManager, this.Messenger, this.Logger);
-            if (this.fileManager.Exists(Area.User, Kind.Json, GameHistory.GameHistoryFilename))
-            {
-                var gameHistory = this.fileManager.Load<GameHistory>(Area.User, Kind.Json, GameHistory.GameHistoryFilename);
-                if (gameHistory is not null)
-                {
-                    this.GameHistory.GameResults = gameHistory.GameResults;
-                }
-            }
-
             // Load participants, if any 
             this.LoadParticipants();
 
@@ -216,83 +165,6 @@ public sealed partial class TranslateRaceModel : ModelBase
     }
 
     #region Phrases
-
-    //private bool LoadLoadPhrases()
-    //{
-    //    try
-    //    {
-    //        WordTranslator idp = IdpParser.Load(this.fileManager, Mod.Language.Italian, "ITALIAN");
-    //        WordTranslator udd = UddlParser.Load(this.fileManager, Mod.Language.Italian, "english-italian");
-    //        WordTranslator dcc = DictCcParser.Load(this.fileManager, Mod.Language.Italian, "dictcc-en-it");
-
-    //        bool DictionaryLookup(string italianWord, WordTranslator translator, out string translated)
-    //        {
-    //            translated = string.Empty;
-    //            foreach (string englishWord in translator.Keys)
-    //            {
-    //                foreach (Word word in translator[englishWord])
-    //                {
-    //                    if (word is not null && !string.IsNullOrWhiteSpace(word.Text))
-    //                    {
-    //                        string translation = word.Text;
-    //                        if (translation.Trim().ToLower() == italianWord.Trim().ToLower())
-    //                        {
-    //                            translated = englishWord;
-    //                            if (IsPossibleItalianVerb(italianWord) &&
-    //                                (word.Grammar == Grammar.Verb) &&
-    //                                (!translated.StartsWith("to", StringComparison.InvariantCultureIgnoreCase)) &&
-    //                                (!translated.EndsWith("ing", StringComparison.InvariantCultureIgnoreCase)))
-    //                            {
-    //                                // this.Logger.Warning("Verb: " + englishWord );
-    //                                translated = string.Concat("to ", translated);
-    //                            }
-
-    //                            return true;
-    //                        }
-    //                    }
-    //                }
-    //            }
-
-    //            return false;
-    //        }
-
-    //        foreach (string italianWord in this.italian)
-    //        {
-    //            bool found = false;
-    //            string translated = string.Empty;
-    //            if (DictionaryLookup(italianWord, idp, out translated))
-    //            {
-    //                found = true;
-    //            }
-    //            else if (DictionaryLookup(italianWord, udd, out translated))
-    //            {
-    //                found = true;
-    //            }
-    //            else if (DictionaryLookup(italianWord, dcc, out translated))
-    //            {
-    //                found = true;
-    //            }
-
-    //            if (found)
-    //            {
-    //                this.italianToEnglish.Add(italianWord.Trim().ToLower(), translated.Trim().ToLower());
-    //                // Debug.WriteLine(italianWord + " : " + translated);
-    //            }
-    //            else
-    //            {
-    //                // Debug.WriteLine("*** Not found: " + italianWord);
-    //            }
-    //        }
-
-    //        return true;
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Debugger.Break();
-    //        this.Logger.Warning(ex.ToString());
-    //        return false;
-    //    }
-    //}
 
     private void LoadPhrases()
     {

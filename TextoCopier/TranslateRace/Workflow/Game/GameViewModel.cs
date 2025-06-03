@@ -24,15 +24,11 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         public Team LeftTeam { get; private set; } = leftTeam;
 
         public Team RightTeam { get; private set; } = rightTeam;
-
-        public GameDifficulty Difficulty { get; set; }
     }
 
     private readonly IRandomizer randomizer;
     private readonly TranslateRaceModel translateRaceModel;
 
-    private DateTime gameStart;
-    private DateTime gameEnd;
     private bool isViewLoaded;
 
     private Team? leftTeam;
@@ -46,7 +42,6 @@ public sealed partial class GameViewModel : ViewModel<GameView>
     private TimeSpan translateTime;
     private bool hasCalledFriend;
 
-    private GameResult? gameResults;
     private Parameters? parameters;
 
     [ObservableProperty]
@@ -181,8 +176,6 @@ public sealed partial class GameViewModel : ViewModel<GameView>
 
     public GameState State { get; private set; }
 
-    public GameDifficulty Difficulty { get; private set; }
-
     #region Loading and Activation 
 
     public override void OnViewLoaded()
@@ -268,7 +261,6 @@ public sealed partial class GameViewModel : ViewModel<GameView>
             throw new ArgumentException("No parameters ???");
         }
 
-        this.Difficulty = this.parameters.Difficulty;
         this.leftTeam = this.parameters.LeftTeam;
         this.rightTeam = this.parameters.RightTeam;
         this.isLeftTurn = true;
@@ -280,9 +272,6 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         this.rightTeam.Score = 0;
 
         this.BeginTurn();
-
-        this.gameResults = new() { Difficulty = this.Difficulty };
-        this.gameStart = DateTime.Now;
 
         this.State = GameState.Running;
     }
@@ -558,20 +547,13 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         this.State = GameState.Over;
 
         // All view models should hide at the end 
-        this.Messenger.Publish(ViewActivationMessage.ActivatedView.GameOver, this.gameResults);
+        this.Messenger.Publish(ViewActivationMessage.ActivatedView.GameOver);
     }
 
     private void SaveGame()
     {
-        if (this.gameResults is null)
-        {
-            throw new ArgumentNullException("no game results");
-        }
-
-        this.gameEnd = DateTime.Now;
-        this.gameResults.GameDuration = this.gameEnd - this.gameStart;
-        this.gameResults.IsWon = true;
-        this.translateRaceModel.Add(this.gameResults);
+        this.translateRaceModel.WinningTeam = this.CurrentTeam;
+        this.translateRaceModel.LosingTeam = this.NextTeam; 
         this.translateRaceModel.Save();
     }
 }

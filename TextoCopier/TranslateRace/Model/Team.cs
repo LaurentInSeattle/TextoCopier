@@ -2,9 +2,13 @@
 
 public sealed class Team(string name, bool isLeft)
 {
+#pragma warning disable CA2211 // Non-constant fields should not be visible
+
     public static string LeftName = "Squadra Azzurra";
 
     public static string RightName = "Scuderia Ferrari";
+
+#pragma warning restore CA2211 // Non-constant fields should not be visible
 
     public string Name { get; private set; } = name;
 
