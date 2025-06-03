@@ -39,11 +39,6 @@ public sealed class Team(string name, bool isLeft)
     public Player At(int index)
     {
         var player = (from p in this.Players where p.Index == index select p).FirstOrDefault();
-        if (player is null)
-        {
-            throw new Exception("Null Player ??? ");
-        }
-
-        return player; 
-    } 
+        return player is null ? throw new Exception("Null Player ??? ") : player;
+    }
 }

@@ -4,8 +4,9 @@ using static Lyt.Persistence.FileManagerModel;
 
 public sealed partial class TranslateRaceModel : ModelBase
 {
-    public const int WinScore = 9;
-    // public const int WinScore = 42;
+    // public const int WinScore = 9;
+    public const int WinScore = 42;
+
     private static readonly char[] separator = ['\t', '\r', '\n'];
 
     private readonly FileManagerModel fileManager;

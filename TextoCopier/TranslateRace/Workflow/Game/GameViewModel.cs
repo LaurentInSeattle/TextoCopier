@@ -218,6 +218,11 @@ public sealed partial class GameViewModel : ViewModel<GameView>
 
     public override void Activate(object? activationParameters)
     {
+        if (Debugger.IsAttached)
+        {
+            Debugger.Break();
+        }
+
         base.Activate(activationParameters);
         if (activationParameters is not Parameters parameters)
         {
@@ -331,7 +336,6 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         {
             default:
             case GameStep.DifficultySelection:
-
                 this.Phrase.Visible = false;
                 this.hasCalledFriend = false;
                 this.Options.Visible = true;
