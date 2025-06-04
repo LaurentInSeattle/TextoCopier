@@ -218,11 +218,6 @@ public sealed partial class GameViewModel : ViewModel<GameView>
 
     public override void Activate(object? activationParameters)
     {
-        if (Debugger.IsAttached)
-        {
-            Debugger.Break();
-        }
-
         base.Activate(activationParameters);
         if (activationParameters is not Parameters parameters)
         {
@@ -235,9 +230,17 @@ public sealed partial class GameViewModel : ViewModel<GameView>
 
     private async void DelayedStart(Parameters parameters)
     {
+        // Important to wait for the view to be visible 
+        // Or else setting visibility for view components will fail 
+        // Two cases:
+        // 1 - First load on first game: Components may not exist yet
+        // 2 - New games:   View is not visible yet and components will stay invisible while still 
+        //                  marked as visible, so no property change for updates.
+        await Task.Delay(120);
         int retries = 10;
-        while (!this.isViewLoaded)
+        while (!this.isViewLoaded || ! this.View.IsVisible)
         {
+            this.Logger.Debug("GameViewModel: Waiting Game View Loaded and Visible");
             await Task.Delay(120);
             --retries;
             if (retries < 0)
@@ -331,6 +334,11 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         {
             throw new Exception("Unexpected: Missing View Models");
         }
+
+        //if (Debugger.IsAttached)
+        //{
+        //    Debugger.Break();
+        //}
 
         switch (this.TurnStep)
         {

@@ -14,6 +14,7 @@ public sealed class Phrase
 
     public string Italian { get; set; } = string.Empty;
 
+#pragma warning disable CA2211 // Non-constant fields should not be visible
     public static List<Phrase> DefaultPhrases =
     [
         new() { 
@@ -33,8 +34,8 @@ public sealed class Phrase
         },
         new() {
             Id= 4 , Difficulty = PhraseDifficulty.Insane, Theme = PhraseTheme.Nature,
-            Italian = "Se non ti fidi della ricerca genomica, penso che tu sia un po' stupido.",
-            English = "If you do not trust genomic research, I think you are a bit stupid." ,
+            Italian = "Se non ti fidi della ricerca genomica, penso che tu sia un po' contro la scienza.",
+            English = "If you do not trust genomic research, I think you are a bit against science." ,
         },
 
         new() {
@@ -79,6 +80,28 @@ public sealed class Phrase
             English = "Quantum mechanics is very hard to understand in depth, even for university graduates." ,
         },
 
+        new() {
+            Id= 31 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Life,
+            Italian = "Vorrei andare in vacanza.",
+            English = "I'd like to take a vacation." ,
+        },
+        new() {
+            Id= 32 , Difficulty = PhraseDifficulty.Medium, Theme = PhraseTheme.Life,
+            Italian = "Ho voglia di andarmene a Ibiza.",
+            English = "I am in the mood to go to Ibiza." ,
+        },
+        new() {
+            Id= 33 , Difficulty = PhraseDifficulty.Hard, Theme = PhraseTheme.Life,
+            Italian = "Questo lavoro è troppo stressante, devo partire per una lunga vacanza.",
+            English = "This job is too stressful, I must leave for a long vacation." ,
+        },
+        new() {
+            Id= 34 , Difficulty = PhraseDifficulty.Insane, Theme = PhraseTheme.Life,
+            Italian = "Questo lavoro stupido è davvero troppo stressante, non ne posso più!",
+            English = "This stupid job is really too stressful, I can't take it anymore!" ,
+        },
+
+
         //new() {
         //    Id= 1 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Nature,
         //    Italian = ".",
@@ -99,5 +122,49 @@ public sealed class Phrase
         //    Italian = ".",
         //    English = "." ,
         //},
+
+        //new() {
+        //    Id= 1 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Nature,
+        //    Italian = ".",
+        //    English = "." ,
+        //},
+        //new() {
+        //    Id= 2 , Difficulty = PhraseDifficulty.Medium, Theme = PhraseTheme.Nature,
+        //    Italian = ".",
+        //    English = "." ,
+        //},
+        //new() {
+        //    Id= 3 , Difficulty = PhraseDifficulty.Hard, Theme = PhraseTheme.Nature,
+        //    Italian = ".",
+        //    English = "." ,
+        //},
+        //new() {
+        //    Id= 4 , Difficulty = PhraseDifficulty.Insane, Theme = PhraseTheme.Nature,
+        //    Italian = ".",
+        //    English = "." ,
+        //},
+
+        //new() {
+        //    Id= 1 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Nature,
+        //    Italian = ".",
+        //    English = "." ,
+        //},
+        //new() {
+        //    Id= 2 , Difficulty = PhraseDifficulty.Medium, Theme = PhraseTheme.Nature,
+        //    Italian = ".",
+        //    English = "." ,
+        //},
+        //new() {
+        //    Id= 3 , Difficulty = PhraseDifficulty.Hard, Theme = PhraseTheme.Nature,
+        //    Italian = ".",
+        //    English = "." ,
+        //},
+        //new() {
+        //    Id= 4 , Difficulty = PhraseDifficulty.Insane, Theme = PhraseTheme.Nature,
+        //    Italian = ".",
+        //    English = "." ,
+        //},
+
     ];
+#pragma warning restore CA2211 // Non-constant fields should not be visible
 }

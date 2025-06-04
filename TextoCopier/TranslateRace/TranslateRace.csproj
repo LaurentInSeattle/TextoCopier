@@ -8,6 +8,12 @@
 		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 		<RootNamespace>Lyt.TranslateRace</RootNamespace>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <NoWarn>IDE0079</NoWarn>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <NoWarn>IDE0079</NoWarn>
+	</PropertyGroup>
 
 	<PropertyGroup Label="Avalonia">
 		<AvaloniaXamlVerboseExceptions>True</AvaloniaXamlVerboseExceptions>

@@ -15,7 +15,7 @@ public sealed partial class TranslateRaceModel : ModelBase
     private readonly IRandomizer randomizer;
 
     public TranslateRaceModel(
-        FileManagerModel fileManager, 
+        FileManagerModel fileManager,
         IMessenger messenger, ILogger logger, IRandomizer randomizer) : base(messenger, logger)
     {
         this.fileManager = fileManager;
@@ -45,6 +45,14 @@ public sealed partial class TranslateRaceModel : ModelBase
     // Not serialized - No model changed event, transient 
     public Team? LosingTeam { get; set; }
 
+    private Chooser<Phrase>? EasyPhrases { get; set; }
+
+    private Chooser<Phrase>? MediumPhrases { get; set; }
+
+    private Chooser<Phrase>? HardPhrases { get; set; }
+
+    private Chooser<Phrase>? InsanePhrases { get; set; }
+
     public override Task Initialize()
     {
         _ = Task.Factory.StartNew(this.LoadGameModel, TaskCreationOptions.LongRunning);
@@ -66,53 +74,20 @@ public sealed partial class TranslateRaceModel : ModelBase
 
     public Phrase PickPhrase(PhraseDifficulty phraseDifficulty)
     {
-        // TODO: Randomize 
-        var first = (from phrase in this.Phrases 
-                 where phrase.Difficulty == phraseDifficulty 
-                 select phrase)
-                 .FirstOrDefault();
-        if ( first is not null)
+        var chooser = phraseDifficulty switch
         {
-            return first; 
+            PhraseDifficulty.Medium => this.MediumPhrases,
+            PhraseDifficulty.Hard => this.HardPhrases,
+            PhraseDifficulty.Insane => this.InsanePhrases,
+            _ => this.EasyPhrases,
+        };
+
+        if (chooser is null || chooser.Count == 0)
+        {
+            throw new Exception("No phrases!");
         }
 
-        return this.Phrases[0]! ; 
-    }
-
-    public string TranslateToEnglish(string italianWord)
-    {
-        if (this.italianToEnglish.TryGetValue(italianWord, out string? translated))
-        {
-            if (!string.IsNullOrWhiteSpace(translated))
-            {
-                return translated;
-            }
-        }
-
-        throw new Exception("Failed to translate");
-    }
-
-    private string RandomPick(string[] source, HashSet<string> exclude, HashSet<string> alreadyFound)
-    {
-        //bool found = false;
-        //int retries = 10 * (5 + exclude.Count);
-        //while (!found)
-        //{
-        //    int choice = this.randomizer.Next(source.Length);
-        //    string word = source[choice];
-        //    if (!exclude.Contains(word) && !alreadyFound.Contains(word))
-        //    {
-        //        return word;
-        //    }
-
-        //    --retries;
-        //    if (retries <= 0)
-        //    {
-        //        break;
-        //    }
-        //}
-
-        return string.Empty;
+        return chooser.Next(); 
     }
 
     private async void LoadGameModel()
@@ -134,7 +109,7 @@ public sealed partial class TranslateRaceModel : ModelBase
             }
 
             // Load phrases, if any 
-            this.LoadPhrases (); 
+            this.LoadPhrases();
             this.Participants = new List<Participant>(64);
             if (this.fileManager.Exists(Area.User, Kind.Json, Participant.ParticipantsFilename))
             {
@@ -150,7 +125,7 @@ public sealed partial class TranslateRaceModel : ModelBase
             {
                 this.LoadDefaultPhrases();
                 this.SavePhrases();
-            } 
+            }
 
             this.IsReady = true;
         }
@@ -176,6 +151,7 @@ public sealed partial class TranslateRaceModel : ModelBase
             if (phrases is not null)
             {
                 this.Phrases = phrases;
+                this.CreateChoosers();
             }
         }
     }
@@ -185,6 +161,7 @@ public sealed partial class TranslateRaceModel : ModelBase
         try
         {
             this.Phrases = Phrase.DefaultPhrases;
+            this.CreateChoosers();
             Debug.WriteLine("Phrases count: " + this.Phrases.Count);
             return true;
         }
@@ -194,6 +171,33 @@ public sealed partial class TranslateRaceModel : ModelBase
             this.Logger.Warning(ex.ToString());
             return false;
         }
+    }
+
+    private void CreateChoosers()
+    {
+        if (this.Phrases is null || this.Phrases.Count == 0)
+        {
+            throw new Exception("No phrases!");
+        }
+
+        Chooser<Phrase> Create(PhraseDifficulty phraseDifficulty)
+        {
+            var filtered = (from phrase in this.Phrases
+                            where phrase.Difficulty == phraseDifficulty
+                            select phrase)
+                     .ToList();
+            if (filtered is null || filtered.Count == 0)
+            {
+                throw new Exception("No phrases for difficulty!");
+            }
+
+            return new Chooser<Phrase>(this.randomizer, filtered); 
+        }
+
+        this.EasyPhrases = Create(PhraseDifficulty.Easy);
+        this.MediumPhrases = Create(PhraseDifficulty.Medium);
+        this.HardPhrases = Create(PhraseDifficulty.Hard);
+        this.InsanePhrases = Create(PhraseDifficulty.Insane);
     }
 
     private void SavePhrases()
@@ -227,7 +231,7 @@ public sealed partial class TranslateRaceModel : ModelBase
                 this.Participants = participants;
             }
         }
-    } 
+    }
 
     private bool LoadDefaultParticipants()
     {

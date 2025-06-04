@@ -32,5 +32,5 @@ public enum PhraseTheme
     News,
     History,
     Love,
-
+    Life,
 }

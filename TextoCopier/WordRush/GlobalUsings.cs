@@ -88,7 +88,6 @@ global using Lyt.WordRush.Model;
 global using Lyt.WordRush.Model.History;
 global using Lyt.WordRush.Model.Parsers;
 global using Lyt.WordRush.Shell;
-global using Lyt.WordRush.Utilities;
 global using Lyt.WordRush.Workflow.Countdown;
 global using Lyt.WordRush.Workflow.Game;
 global using Lyt.WordRush.Workflow.Results;

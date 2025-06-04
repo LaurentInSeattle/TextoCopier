@@ -2,8 +2,13 @@
 
 public sealed partial class ScoreViewModel : ViewModel<ScoreView>
 {
-    private const int delay = 2_600;
+#if DEBUG
+    private const int delay = 600;
     private const int shortenedDelay = delay - 100;
+#else
+    private const int delay = 2_300;
+    private const int shortenedDelay = delay - 100;
+#endif
 
     // TODO: Add more !
     private static readonly string[] beingNice =
