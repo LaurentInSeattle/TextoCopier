@@ -102,27 +102,41 @@ public sealed class Phrase
         },
 
 
-        //new() {
-        //    Id= 1 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Nature,
-        //    Italian = ".",
-        //    English = "." ,
-        //},
-        //new() {
-        //    Id= 2 , Difficulty = PhraseDifficulty.Medium, Theme = PhraseTheme.Nature,
-        //    Italian = ".",
-        //    English = "." ,
-        //},
-        //new() {
-        //    Id= 3 , Difficulty = PhraseDifficulty.Hard, Theme = PhraseTheme.Nature,
-        //    Italian = ".",
-        //    English = "." ,
-        //},
-        //new() {
-        //    Id= 4 , Difficulty = PhraseDifficulty.Insane, Theme = PhraseTheme.Nature,
-        //    Italian = ".",
-        //    English = "." ,
-        //},
+        new() {
+            Id= 41 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Cities,
+            Italian = "La città di Venizia è conosciuta come la Serenissima.",
+            English = "The city of Venice is known as the Serenissima." ,
+        },
+        new() {
+            Id= 42 , Difficulty = PhraseDifficulty.Medium, Theme = PhraseTheme.Cities,
+            Italian = "Venezia è un comune italiano di circa duecentomila abitanti.",
+            English = "Venice is an Italian municipality of about 250 000 habitants." ,
+        },
+        new() {
+            Id= 43 , Difficulty = PhraseDifficulty.Hard, Theme = PhraseTheme.Cities,
+            Italian = "Dal punto di vista geografico, il comune di Venezia è diviso in due parti: la zona insulare e la zona di terraferma.",
+            English = "From a geographical point of view, the municipality of Venice is divided into two parts: the insular area and the mainland area." ,
+        },
+        new() {
+            Id= 44 , Difficulty = PhraseDifficulty.Insane, Theme = PhraseTheme.Cities,
+            Italian = "Con il termine di 'acqua alta' sono indicati nella laguna di Venezia picchi di marea.",
+            English = "The term 'acqua alta' refers to tidal peaks in the Venice lagoon." ,
+        },
 
+        new() {
+            Id= 45 , Difficulty = PhraseDifficulty.Insane, Theme = PhraseTheme.Cities,
+            Italian = "Per la sua conformazione Venezia dispone di 435 ponti tra pubblici e privati che collegano le 118 isolette su cui è edificata, attraversando 176 canali.",
+            English = "Due to its conformation, Venice has 435 bridges, both public and private, that connect the 118 islands on which it is built, crossing 176 canals." ,
+        },
+        new() {
+            Id= 46 , Difficulty = PhraseDifficulty.Hard, Theme = PhraseTheme.Cities,
+            Italian = "Venezia è un'importante sede universitaria italiana, infatti possiede più di un'università. La più celebre è l'Università Ca' Foscari.",
+            English = "Venice is an important Italian university location, in fact it has more than one university. The most famous is the Ca' Foscari University." ,
+        },
+
+        // , 
+
+        // 
         //new() {
         //    Id= 1 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Nature,
         //    Italian = ".",

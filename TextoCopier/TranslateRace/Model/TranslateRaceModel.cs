@@ -87,7 +87,7 @@ public sealed partial class TranslateRaceModel : ModelBase
             throw new Exception("No phrases!");
         }
 
-        return chooser.Next(); 
+        return chooser.Next();
     }
 
     private async void LoadGameModel()
@@ -182,22 +182,25 @@ public sealed partial class TranslateRaceModel : ModelBase
 
         Chooser<Phrase> Create(PhraseDifficulty phraseDifficulty)
         {
-            var filtered = (from phrase in this.Phrases
-                            where phrase.Difficulty == phraseDifficulty
-                            select phrase)
-                     .ToList();
+            var filtered =
+                (from phrase in this.Phrases
+                 where phrase.Difficulty == phraseDifficulty
+                 select phrase)
+                .ToList();
             if (filtered is null || filtered.Count == 0)
             {
-                throw new Exception("No phrases for difficulty!");
+                throw new Exception("No phrases for difficulty: " + phraseDifficulty);
             }
 
-            return new Chooser<Phrase>(this.randomizer, filtered); 
+            this.Logger.Info(phraseDifficulty.ToString() + " : " + filtered.Count.ToString());
+            return new Chooser<Phrase>(this.randomizer, filtered);
         }
 
         this.EasyPhrases = Create(PhraseDifficulty.Easy);
         this.MediumPhrases = Create(PhraseDifficulty.Medium);
         this.HardPhrases = Create(PhraseDifficulty.Hard);
         this.InsanePhrases = Create(PhraseDifficulty.Insane);
+
     }
 
     private void SavePhrases()
