@@ -6,7 +6,7 @@ public sealed partial class ScoreViewModel : ViewModel<ScoreView>
     private const int delay = 600;
     private const int shortenedDelay = delay - 100;
 #else
-    private const int delay = 2_300;
+    private const int delay = 1_300;
     private const int shortenedDelay = delay - 100;
 #endif
 
@@ -24,10 +24,8 @@ public sealed partial class ScoreViewModel : ViewModel<ScoreView>
     [
         // "Deficiente!" , "Stupido!" , "Cretino!" ,  // Maybe too mean...
         "Merda!",  "Cazzo!" , "Cazzata!" , "Accidenti!", "Maledizione" ,
-        "Maledetta!",
-        "Errore" , "Che Sbaglio" , "Mancanza", "Fallo", "Pecca",
-        "Scemo" ,  "Ottuso...",
-        "Terribile"
+        "Maledetta!", "Scemo" ,  "Ottuso...", "Terribile", 
+        "Errore" , "Che Sbaglio" , "Mancanza", "Fallo", "Pecca"        
     ];
 
     private readonly IRandomizer randomizer;

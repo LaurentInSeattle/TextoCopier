@@ -134,50 +134,48 @@ public sealed class Phrase
             English = "Venice is an important Italian university location, in fact it has more than one university. The most famous is the Ca' Foscari University." ,
         },
 
-        // , 
+        new() {
+            Id= 51 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Food,
+            Italian = "Bernie! Ho molta fame! Due pizze per favore!",
+            English = "Bernie! I am very hungry! Two pizzas please!" ,
+        },
+        new() {
+            Id= 54 , Difficulty = PhraseDifficulty.Medium, Theme = PhraseTheme.Food,
+            Italian = "Il cuoco Bernie è in sciopero. Niente pizze. Allora dove si va?",
+            English = "Chef Bernie is on strike. No pizzas. So where do we go?" ,
+        },
+        new() {
+            Id= 52 , Difficulty = PhraseDifficulty.Hard, Theme = PhraseTheme.Food,
+            Italian = "La mia pizzeria preferita in Old Forge è chiusa il martedì. Peccato!",
+            English = "My favorite pizza place in Old Forge is closed on Tuesdays. Too bad!" ,
+        },
+        new() {
+            Id= 53 , Difficulty = PhraseDifficulty.Insane, Theme = PhraseTheme.Food,
+            Italian = "Mettere l'ananas sulla pizza è un reato che dovrebbe essere punito severamente.",
+            English = "Putting pineapple on pizza is a crime that should be severely punished." ,
+        },
 
-        // 
-        //new() {
-        //    Id= 1 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Nature,
-        //    Italian = ".",
-        //    English = "." ,
-        //},
-        //new() {
-        //    Id= 2 , Difficulty = PhraseDifficulty.Medium, Theme = PhraseTheme.Nature,
-        //    Italian = ".",
-        //    English = "." ,
-        //},
-        //new() {
-        //    Id= 3 , Difficulty = PhraseDifficulty.Hard, Theme = PhraseTheme.Nature,
-        //    Italian = ".",
-        //    English = "." ,
-        //},
-        //new() {
-        //    Id= 4 , Difficulty = PhraseDifficulty.Insane, Theme = PhraseTheme.Nature,
-        //    Italian = ".",
-        //    English = "." ,
-        //},
 
-        //new() {
-        //    Id= 1 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Nature,
-        //    Italian = ".",
-        //    English = "." ,
-        //},
-        //new() {
-        //    Id= 2 , Difficulty = PhraseDifficulty.Medium, Theme = PhraseTheme.Nature,
-        //    Italian = ".",
-        //    English = "." ,
-        //},
-        //new() {
-        //    Id= 3 , Difficulty = PhraseDifficulty.Hard, Theme = PhraseTheme.Nature,
-        //    Italian = ".",
-        //    English = "." ,
-        //},
-        //new() {
-        //    Id= 4 , Difficulty = PhraseDifficulty.Insane, Theme = PhraseTheme.Nature,
-        //    Italian = ".",
-        //    English = "." ,
-        //},
+        new() {
+            Id= 61 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Life,
+            Italian = "Ciao! Mi chiamo Enzo. E tu?",
+            English = "Hi! My name is Enzo. And you are?" ,
+        },
+        new() {
+            Id= 62 , Difficulty = PhraseDifficulty.Medium, Theme = PhraseTheme.Life,
+            Italian = "Lavoro e vivo in una piccola città nella periferia di San Francisco.",
+            English = "I work and live in a small town on the outskirts of San Francisco." ,
+        },
+        new() {
+            Id= 63 , Difficulty = PhraseDifficulty.Hard, Theme = PhraseTheme.Life,
+            Italian = "Vivere in una piccola città è piacevole, ma a volte può anche risultare un po' noioso.",
+            English = "Living in a small town is nice, but sometimes it can also be a bit boring." ,
+        },
+        new() {
+            Id= 64 , Difficulty = PhraseDifficulty.Insane, Theme = PhraseTheme.Life,
+            Italian = "Uno dei maggiori problemi di vivere in una piccola città americana è che hai bisogno di guidare molto, e questa è una vera seccatura.",
+            English = "One of the biggest problems with living in a small American town is that you have to drive a lot, and that's a real hassle." ,
+        },
 
     ];
 #pragma warning restore CA2211 // Non-constant fields should not be visible
