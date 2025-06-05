@@ -177,6 +177,49 @@ public sealed class Phrase
             English = "One of the biggest problems with living in a small American town is that you have to drive a lot, and that's a real hassle." ,
         },
 
+        new() {
+            Id= 71 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Culture,
+            Italian = "Ecco una frase facile per te!",
+            English = "Here is an easy phrase for you!" ,
+        },
+        new() {
+            Id= 72 , Difficulty = PhraseDifficulty.Medium, Theme = PhraseTheme.Culture,
+            Italian = "Hai richiesto una frase un po' più difficile, eccola",
+            English = "You asked for a slightly more difficult sentence, here it is." ,
+        },
+        new() {
+            Id= 73 , Difficulty = PhraseDifficulty.Hard, Theme = PhraseTheme.Culture,
+            Italian = "Ora, questa è una frase puittosto difficile da tradurre. Sei d'accordo? Cosa ne pensi?",
+            English = "Now, this is a quite difficult sentence to translate. Do you agree? What do you think?" ,
+        },
+        new() {
+            Id= 74 , Difficulty = PhraseDifficulty.Insane, Theme = PhraseTheme.Culture,
+            Italian = "A questo livello folle del gioco, dovresti riuscire a tradurre in un batter d'occhio. Altrimenti, vergognati.",
+            English = "At this insane level of the game, you should be able to translate in just a blink of an eye. If not, shame on you!" ,
+        },
+
+
+        //new() {
+        //    Id= 1 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Culture,
+        //    Italian = "",
+        //    English = "." ,
+        //},
+        //new() {
+        //    Id= 2 , Difficulty = PhraseDifficulty.Medium, Theme = PhraseTheme.Life,
+        //    Italian = ".",
+        //    English = "." ,
+        //},
+        //new() {
+        //    Id= 3 , Difficulty = PhraseDifficulty.Hard, Theme = PhraseTheme.Life,
+        //    Italian = ".",
+        //    English = "." ,
+        //},
+        //new() {
+        //    Id= 4 , Difficulty = PhraseDifficulty.Insane, Theme = PhraseTheme.Life,
+        //    Italian = ".",
+        //    English = "." ,
+        //},
+
     ];
 #pragma warning restore CA2211 // Non-constant fields should not be visible
 }

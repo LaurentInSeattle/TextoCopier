@@ -28,7 +28,7 @@
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="32" MaxHeight="32" />
+			<RowDefinition Height="0" MaxHeight="32" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 		<Rectangle

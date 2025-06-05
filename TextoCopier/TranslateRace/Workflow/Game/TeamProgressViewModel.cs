@@ -29,6 +29,7 @@ public sealed partial class TeamProgressViewModel(
     {
         this.ScoreValue = (float)score;
         this.ScoreTextLeft = score.ToString();
-        this.ScoreTextRight = (this.Total - score).ToString();
+        int remain = (int) this.Total - score; 
+        this.ScoreTextRight = remain < 0 ? string.Empty : remain.ToString();
     }
 }
