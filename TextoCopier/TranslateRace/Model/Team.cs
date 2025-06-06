@@ -14,6 +14,8 @@ public sealed class Team(string name, bool isLeft)
 
     public bool IsLeft { get; private set; } = isLeft;
 
+    public int CompletedTurns { get; set; } = 0;
+
     public int Score { get; set; } = 0;
 
     public List<Player> Players { get; set; } = new(16);

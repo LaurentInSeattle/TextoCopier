@@ -34,19 +34,26 @@ public sealed partial class GameOverViewModel(TranslateRaceModel model) : ViewMo
         this.Profiler.FullGcCollect();
     }
 
-    private void ShowResults()
-    {
-        var win = this.model.WinningTeam!;
-        var lost = this.model.LosingTeam!;
-        this.GameOver = "Fine del Gioco";
-        this.IsWon = "La " + win.Name +  " Ha Vinto!" ;
-        this.IsWonColor = ColorTheme.ValidUiText;
-        this.FinalScore = string.Format("Punteggio finale: {0} / {1}", win.Score, lost.Score);
-    }
-
     [RelayCommand]
     public void OnExit(object? _) => this.Messenger.Publish(ActivatedView.Exit);
 
     [RelayCommand]
     public void OnPlayAgain(object? _) => this.Messenger.Publish(ActivatedView.Setup);
+
+    private void ShowResults()
+    {
+        var win = this.model.WinningTeam!;
+        var lost = this.model.LosingTeam!;
+        this.GameOver = "Fine del Gioco";
+        this.IsWonColor = ColorTheme.ValidUiText;
+        this.FinalScore = string.Format("Punteggio finale: {0} / {1}", win.Score, lost.Score);
+        if (win.Score > lost.Score)
+        {
+            this.IsWon = "La " + win.Name + " ha vinto!";
+        }
+        else
+        {
+            this.IsWon = "Vincono entrambe le due squadre!"; 
+        } 
+    }
 }

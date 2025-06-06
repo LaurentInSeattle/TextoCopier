@@ -1,5 +1,3 @@
-﻿
-TODO: 
-	- Finish Intro page
+﻿TODO: 
 
-	- Finish Results page
+	- Returning after game complete on Setup page does not reload properly 

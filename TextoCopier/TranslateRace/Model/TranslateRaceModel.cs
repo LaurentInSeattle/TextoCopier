@@ -200,7 +200,6 @@ public sealed partial class TranslateRaceModel : ModelBase
         this.MediumPhrases = Create(PhraseDifficulty.Medium);
         this.HardPhrases = Create(PhraseDifficulty.Hard);
         this.InsanePhrases = Create(PhraseDifficulty.Insane);
-
     }
 
     private void SavePhrases()

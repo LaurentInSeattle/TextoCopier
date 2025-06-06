@@ -238,7 +238,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         //                  marked as visible, so no property change for updates.
         await Task.Delay(120);
         int retries = 10;
-        while (!this.isViewLoaded || ! this.View.IsVisible)
+        while (!this.isViewLoaded || !this.View.IsVisible)
         {
             this.Logger.Debug("GameViewModel: Waiting Game View Loaded and Visible");
             await Task.Delay(120);
@@ -524,8 +524,10 @@ public sealed partial class GameViewModel : ViewModel<GameView>
             return;
         }
 
+        ++this.CurrentTeam.CompletedTurns;
+
         // Check Game Over 
-        if (this.CurrentTeam.Score >= TranslateRaceModel.WinScore)
+        if (this.IsGameOver())
         {
             this.GameOver();
         }
@@ -553,6 +555,20 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         this.CurrentTeamProgressViewModel.Update(message.Score);
     }
 
+    private bool IsGameOver()
+    {
+        if (this.CurrentTeam.CompletedTurns == this.NextTeam.CompletedTurns)
+        {
+            if ((this.CurrentTeam.Score >= TranslateRaceModel.WinScore) ||
+                (this.NextTeam.Score >= TranslateRaceModel.WinScore))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void GameOver()
     {
         this.SaveGame();
@@ -564,8 +580,9 @@ public sealed partial class GameViewModel : ViewModel<GameView>
 
     private void SaveGame()
     {
-        this.translateRaceModel.WinningTeam = this.CurrentTeam;
-        this.translateRaceModel.LosingTeam = this.NextTeam; 
+        bool currentWins = this.CurrentTeam.Score >= this.NextTeam.Score;
+        this.translateRaceModel.WinningTeam = currentWins ? this.CurrentTeam: this.NextTeam;
+        this.translateRaceModel.LosingTeam = !currentWins ? this.CurrentTeam : this.NextTeam;
         this.translateRaceModel.Save();
     }
 }

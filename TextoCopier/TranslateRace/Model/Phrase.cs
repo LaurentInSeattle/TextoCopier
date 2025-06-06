@@ -199,6 +199,27 @@ public sealed class Phrase
         },
 
 
+        new() {
+            Id= 81 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Life,
+            Italian = "Mi piace molto questo gioco.",
+            English = "I really like this game." ,
+        },
+        new() {
+            Id= 82 , Difficulty = PhraseDifficulty.Medium, Theme = PhraseTheme.Life,
+            Italian = "Questo gioco è un po' troppo facile? Che ne pensi?",
+            English = "Is this game a little too easy? What do you think?" ,
+        },
+        new() {
+            Id= 83 , Difficulty = PhraseDifficulty.Hard, Theme = PhraseTheme.Life,
+            Italian = "Rischi di scegliere un livello di difficoltà più alto, questo è positivo!",
+            English = "You risk choosing a higher difficulty level, this is good." ,
+        },
+        new() {
+            Id= 84 , Difficulty = PhraseDifficulty.Insane, Theme = PhraseTheme.Life,
+            Italian = "Dal livello che hai scelto possiamo vedere tutti che non hai paura di niente.",
+            English = "From the level you have chosen we can all see that you are not afraid of anything." ,
+        },
+
         //new() {
         //    Id= 1 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Culture,
         //    Italian = "",
