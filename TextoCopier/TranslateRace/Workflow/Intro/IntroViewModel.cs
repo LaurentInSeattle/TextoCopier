@@ -1,6 +1,6 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Intro;
 
-using static Lyt.TranslateRace.Messaging.ViewActivationMessage;
+using static ViewActivationMessage;
 
 public sealed partial class IntroViewModel : ViewModel<IntroView>
 {

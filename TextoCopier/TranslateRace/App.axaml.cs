@@ -39,9 +39,7 @@ public partial class App : ApplicationBase
             new Tuple<Type, Type>(typeof(IDispatch), typeof(Dispatch)),
             new Tuple<Type, Type>(typeof(IMessenger), typeof(Messenger)),
             new Tuple<Type, Type>(typeof(IProfiler), typeof(Profiler)),
-            new Tuple<Type, Type>(typeof(IToaster), typeof(Toaster)),
             new Tuple<Type, Type>(typeof(IRandomizer), typeof(Randomizer)),
-            new Tuple<Type, Type>(typeof(IAnimationService), typeof(AnimationService)),
         ],
         singleInstanceRequested: true)
     {

@@ -1,6 +1,6 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Setup;
 
-using static Lyt.TranslateRace.Messaging.ViewActivationMessage;
+using static ViewActivationMessage;
 
 public enum PlayerTeam
 {
@@ -11,13 +11,34 @@ public enum PlayerTeam
 
 public sealed partial class SetupViewModel : ViewModel<SetupView>
 {
-    private readonly IToaster toaster;
     private readonly TranslateRaceModel translateRaceModel;
 
-    public SetupViewModel(
-        IToaster toaster, TranslateRaceModel translateRaceModel)
+    [ObservableProperty]
+    private string? leftTeamName;
+
+    [ObservableProperty]
+    private string? rightTeamName;
+
+    [ObservableProperty]
+    private string? leftTeamPlayerCount;
+
+    [ObservableProperty]
+    private string? rightTeamPlayerCount;
+
+    [ObservableProperty]
+    private ObservableCollection<PlayerViewModel> leftTeam;
+
+    [ObservableProperty]
+    private ObservableCollection<PlayerViewModel> middleTeam;
+
+    [ObservableProperty]
+    private ObservableCollection<PlayerViewModel> bottomTeam;
+
+    [ObservableProperty]
+    private ObservableCollection<PlayerViewModel> rightTeam;
+
+    public SetupViewModel(TranslateRaceModel translateRaceModel)
     {
-        this.toaster = toaster;
         this.translateRaceModel = translateRaceModel;
         this.Messenger.Subscribe<PlayerAssignmentMessage>(this.OnPlayerAssignmentMessage);
         this.LeftTeamName = Team.LeftName;
@@ -28,7 +49,14 @@ public sealed partial class SetupViewModel : ViewModel<SetupView>
         this.MiddleTeam = [];
     }
 
-    public override void Activate(object? _) => this.LoadParticipants();
+    public override void Activate(object? _)
+    {
+        this.LeftTeam.Clear();
+        this.RightTeam.Clear();
+        this.BottomTeam.Clear();
+        this.MiddleTeam.Clear();
+        this.LoadParticipants();
+    } 
 
     private void OnPlayerAssignmentMessage(PlayerAssignmentMessage message)
     {
@@ -54,7 +82,7 @@ public sealed partial class SetupViewModel : ViewModel<SetupView>
             if (!this.translateRaceModel.DeleteParticipant(participant))
             {
                 // Toast: Failed to delete 
-                this.toaster.Show("Problema!", "Impossibile eliminare questo elemento dati!", 3_000, InformationLevel.Warning);
+                this.Logger.Warning("Problema! Impossibile eliminare questo elemento dati!");
             }
         }
         else
@@ -134,8 +162,7 @@ public sealed partial class SetupViewModel : ViewModel<SetupView>
     {
         if ((this.LeftTeam.Count == 0) || (this.RightTeam.Count == 0))
         {
-            // Toast: Not enough players
-            this.toaster.Show("Problema!", "Non ci sono abbastanza giocatori!", 3_000, InformationLevel.Warning);
+            this.Logger.Warning("Problema! Not enough players");
             return;
         }
 
@@ -176,28 +203,4 @@ public sealed partial class SetupViewModel : ViewModel<SetupView>
         // And... Rock and roll 
         this.Messenger.Publish(ActivatedView.Game, parameters);
     }
-
-    [ObservableProperty]
-    private string? leftTeamName ;
-
-    [ObservableProperty]
-    private string? rightTeamName ;
-
-    [ObservableProperty]
-    private string? leftTeamPlayerCount;
-
-    [ObservableProperty]
-    private string? rightTeamPlayerCount;
-
-    [ObservableProperty]
-    private ObservableCollection<PlayerViewModel> leftTeam;
-
-    [ObservableProperty]
-    private ObservableCollection<PlayerViewModel> middleTeam;
-
-    [ObservableProperty]
-    private ObservableCollection<PlayerViewModel> bottomTeam ;
-
-    [ObservableProperty]
-    private ObservableCollection<PlayerViewModel> rightTeam; 
 }

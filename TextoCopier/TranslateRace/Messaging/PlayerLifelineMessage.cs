@@ -1,5 +1,3 @@
 ﻿namespace Lyt.TranslateRace.Messaging;
 
-public sealed class PlayerLifelineMessage
-{
-}
+public sealed record class PlayerLifelineMessage();

@@ -1,6 +1,6 @@
 ﻿namespace Lyt.TranslateRace.Model;
 
-using static Lyt.Persistence.FileManagerModel;
+using static FileManagerModel;
 
 public sealed partial class TranslateRaceModel : ModelBase
 {
@@ -10,8 +10,6 @@ public sealed partial class TranslateRaceModel : ModelBase
     private static readonly char[] separator = ['\t', '\r', '\n'];
 
     private readonly FileManagerModel fileManager;
-    private readonly HashSet<string> italian;
-    private readonly Dictionary<string, string> italianToEnglish;
     private readonly IRandomizer randomizer;
 
     public TranslateRaceModel(
@@ -20,8 +18,6 @@ public sealed partial class TranslateRaceModel : ModelBase
     {
         this.fileManager = fileManager;
         this.ShouldAutoSave = true;
-        this.italian = new(2048, StringComparer.InvariantCultureIgnoreCase);
-        this.italianToEnglish = new(2048);
         this.randomizer = randomizer;
     }
 

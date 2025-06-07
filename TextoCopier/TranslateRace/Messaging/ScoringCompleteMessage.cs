@@ -1,11 +1,5 @@
 ﻿namespace Lyt.TranslateRace.Messaging;
 
-public sealed class ScoringCompleteMessage(int scoreUpdate)
-{
-    public int ScoreUpdate { get; private set; } = scoreUpdate;
-}
+public sealed record class ScoringCompleteMessage(int ScoreUpdate);
 
-public sealed class ScoreUpdateMessage(int score)
-{
-    public int Score { get; private set; } = score;
-}
+public sealed record class ScoreUpdateMessage(int Score);

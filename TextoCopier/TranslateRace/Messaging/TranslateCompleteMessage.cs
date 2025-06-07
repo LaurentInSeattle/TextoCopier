@@ -1,9 +1,5 @@
 ﻿namespace Lyt.TranslateRace.Messaging;
 
-public sealed class TranslateCompleteMessage
-{
-}
+public sealed record class TranslateCompleteMessage; 
 
-public sealed class TranslateRevealedMessage
-{
-}
+public sealed record class TranslateRevealedMessage; 

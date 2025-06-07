@@ -1,6 +1,6 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Results;
 
-using static Lyt.TranslateRace.Messaging.ViewActivationMessage;
+using static ViewActivationMessage;
 
 public sealed partial class GameOverViewModel(TranslateRaceModel model) : ViewModel<GameOverView>
 {

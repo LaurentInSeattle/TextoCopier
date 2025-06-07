@@ -1,16 +1,11 @@
 ﻿namespace Lyt.TranslateRace.Shell;
 
-using static Lyt.TranslateRace.Messaging.ViewActivationMessage;
+using static ViewActivationMessage;
 
 public sealed partial class ShellViewModel : ViewModel<ShellView>
 {
-    private readonly IToaster toaster;
-
-    public ShellViewModel( IToaster toaster)
-    {
-        this.toaster = toaster;
-        this.Messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
-    }
+    public ShellViewModel()
+        => this.Messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
 
     public override void OnViewLoaded()
     {
@@ -34,24 +29,7 @@ public sealed partial class ShellViewModel : ViewModel<ShellView>
         this.Logger.Debug("OnViewLoaded OnViewActivation complete");
 
         // Ready 
-        this.toaster.Host = this.View.ToasterHost;
-        this.toaster.Show(
-            "Benvenuto/a!",
-            "Benvenuto/a a 'Corsa per Tradurre'! Sei pronto/a per una sfida?",
-            3_000, InformationLevel.Info);
         this.Logger.Debug("OnViewLoaded complete");
-    }
-
-
-    private void OnModelUpdated(ModelUpdateMessage message)
-    {
-        string msgProp = string.IsNullOrWhiteSpace(message.PropertyName) ? "<unknown>" : message.PropertyName;
-        string msgMethod = string.IsNullOrWhiteSpace(message.MethodName) ? "<unknown>" : message.MethodName;
-        this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
-
-        //if (message.PropertyName != nameof( < some model property > ))
-        //{
-        //}
     }
 
     private void OnViewActivation(ViewActivationMessage message)
