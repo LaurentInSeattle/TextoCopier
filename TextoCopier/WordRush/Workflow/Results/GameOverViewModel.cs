@@ -1,6 +1,6 @@
 ﻿namespace Lyt.WordRush.Workflow.Results;
 
-using static Lyt.WordRush.Messaging.ViewActivationMessage;
+using static ViewActivationMessage;
 
 public sealed partial class GameOverViewModel(WordsModel wordsModel) : ViewModel<GameOverView>
 {

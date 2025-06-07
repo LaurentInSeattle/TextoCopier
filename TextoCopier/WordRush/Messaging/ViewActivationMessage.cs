@@ -1,6 +1,7 @@
 ﻿namespace Lyt.WordRush.Messaging;
 
-public sealed class ViewActivationMessage(ViewActivationMessage.ActivatedView view, object? activationParameter = null)
+public sealed record class ViewActivationMessage(
+    ViewActivationMessage.ActivatedView View, object? ActivationParameter = null)
 {
     public enum ActivatedView
     {
@@ -11,8 +12,4 @@ public sealed class ViewActivationMessage(ViewActivationMessage.ActivatedView vi
         GoBack,
         Exit,
     }
-
-    public ActivatedView View { get; private set; } = view;
-
-    public object? ActivationParameter { get; private set; } = activationParameter;
 }

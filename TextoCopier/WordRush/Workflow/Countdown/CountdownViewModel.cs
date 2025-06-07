@@ -1,6 +1,6 @@
-﻿using static Lyt.WordRush.Workflow.Game.GameViewModel;
+﻿namespace Lyt.WordRush.Workflow.Countdown;
 
-namespace Lyt.WordRush.Workflow.Countdown;
+using static GameViewModel;
 
 public sealed partial class CountdownViewModel : ViewModel<CountdownView>
 {
