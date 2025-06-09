@@ -45,7 +45,7 @@ public sealed partial class GameOverViewModel(TranslateRaceModel model) : ViewMo
         var win = this.model.WinningTeam!;
         var lost = this.model.LosingTeam!;
         this.GameOver = "Fine del Gioco";
-        this.IsWonColor = ColorTheme.ValidUiText;
+        this.IsWonColor = ColorTheme.WinText;
         this.FinalScore = string.Format("Punteggio finale: {0} / {1}", win.Score, lost.Score);
         if (win.Score > lost.Score)
         {

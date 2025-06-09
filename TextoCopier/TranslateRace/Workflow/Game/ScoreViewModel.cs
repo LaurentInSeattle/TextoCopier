@@ -68,11 +68,11 @@ public sealed partial class ScoreViewModel : ViewModel<ScoreView>
         this.Visible = true;
         if (evaluationResult == EvaluationResult.Fail)
         {
-            this.PopMessage(this.beMean.Next(), ColorTheme.UiText);
+            this.PopMessage(this.beMean.Next(), ColorTheme.BeMean);
         }
         else
         {
-            this.PopMessage(this.beNice.Next(), ColorTheme.BoxExact);
+            this.PopMessage(this.beNice.Next(), ColorTheme.BeNice);
         }
 
         int teamScore = team.Score;

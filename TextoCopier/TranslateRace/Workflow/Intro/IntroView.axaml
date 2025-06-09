@@ -20,14 +20,15 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
             <RowDefinition Height="80" />
-			<RowDefinition Height="120" />
-			<RowDefinition Height="120" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="80" />
-			<RowDefinition Height="40" />
+            <RowDefinition Height="120" />
+            <RowDefinition Height="120" />
+            <RowDefinition Height="120" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="80" />
+            <RowDefinition Height="40" />
         </Grid.RowDefinitions>
 
-		<TextBlock
+        <TextBlock
             Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="1" 
             Margin="12 0 20 0"
             Text="Benvenuti alla gara dei traduttori!"
@@ -35,7 +36,7 @@
             FontSize="42"
             Foreground="{x:Static theme:ColorTheme.UiText}"
             />
-		<TextBlock
+        <TextBlock
             Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="1" 
             Margin="12 0 0 0"
             Text="La tua squadra deve essere la prima a raggiungere il punteggio magico di 42."
@@ -43,19 +44,27 @@
             FontSize="32"
             Foreground="{x:Static theme:ColorTheme.UiText}"
             />
-		<TextBlock
+        <TextBlock
             Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="1"
             Margin="12 0 0 0"
-            Text="Pronto? Pronta? Iniziamo con la creazione delle squadre...."
+            Text="Pronto? Pronta?"
             TextWrapping="Wrap"
             FontSize="32"
             Foreground="{x:Static theme:ColorTheme.UiText}"
             />
-		<glyphs:GlyphButton
+        <TextBlock
+            Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="1"
+            Margin="12 0 0 0"
+            Text="Iniziamo con la creazione delle squadre...."
+            TextWrapping="Wrap"
+            FontSize="32"
+            Foreground="{x:Static theme:ColorTheme.UiText}"
+            />
+        <glyphs:GlyphButton
             x:Name="exitButton"
             Margin="0 0 0 0"
             Style="{StaticResource ViewIconButton}"
-            Grid.Column="1" Grid.Row="4"
+            Grid.Column="1" Grid.Row="5"
             GlyphSource="dismiss"
             Text="Fine e Chiudi"
             Width="340"
@@ -67,7 +76,7 @@
             x:Name="nextButton"
             Margin="0 0 0 0"
             Style="{StaticResource ViewIconButton}"
-            Grid.Column="1" Grid.Row="4"
+            Grid.Column="1" Grid.Row="5"
             GlyphSource="next"
             Text="Avanti"
             Width="340"

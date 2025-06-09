@@ -20,12 +20,6 @@ public sealed partial class SetupViewModel : ViewModel<SetupView>
     private string? rightTeamName;
 
     [ObservableProperty]
-    private string? leftTeamPlayerCount;
-
-    [ObservableProperty]
-    private string? rightTeamPlayerCount;
-
-    [ObservableProperty]
     private ObservableCollection<PlayerViewModel> leftTeam;
 
     [ObservableProperty]
@@ -41,12 +35,11 @@ public sealed partial class SetupViewModel : ViewModel<SetupView>
     {
         this.translateRaceModel = translateRaceModel;
         this.Messenger.Subscribe<PlayerAssignmentMessage>(this.OnPlayerAssignmentMessage);
-        this.LeftTeamName = Team.LeftName;
-        this.RightTeamName = Team.RightName;
         this.LeftTeam = [];
         this.RightTeam = [];
         this.BottomTeam = [];
         this.MiddleTeam = [];
+        this.UpdateTeamCounts();
     }
 
     public override void Activate(object? _)
@@ -123,8 +116,14 @@ public sealed partial class SetupViewModel : ViewModel<SetupView>
         this.MiddleTeam = new ObservableCollection<PlayerViewModel>(this.MiddleTeam.OrderBy(vm => vm.Name));
 
         // Update Team Counts
-        this.LeftTeamPlayerCount = string.Format("({0})", this.LeftTeam.Count);
-        this.RightTeamPlayerCount = string.Format("({0})", this.RightTeam.Count);
+        this.UpdateTeamCounts(); 
+    }
+
+    // Update Team Counts
+    private void UpdateTeamCounts()
+    {
+        this.LeftTeamName = string.Format("{0}  ({1})", Team.LeftName, this.LeftTeam.Count);
+        this.RightTeamName = string.Format("{0}  ({1})", Team.RightName, this.RightTeam.Count);
     }
 
     [RelayCommand]

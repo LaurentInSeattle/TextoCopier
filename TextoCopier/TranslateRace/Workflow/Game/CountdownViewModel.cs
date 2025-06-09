@@ -2,7 +2,7 @@
 
 public sealed partial class CountdownViewModel : ViewModel<CountdownView> 
 {
-    private const int DurationMilliseconds = 90_000;
+    private const int DurationMilliseconds = 75_000;
 
     [ObservableProperty]
     private bool visible;
