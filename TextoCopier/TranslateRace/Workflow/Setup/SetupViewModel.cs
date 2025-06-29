@@ -1,6 +1,6 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Setup;
 
-using static ViewActivationMessage;
+using static MessagingExtensions; 
 
 public enum PlayerTeam
 {
@@ -154,7 +154,7 @@ public sealed partial class SetupViewModel : ViewModel<SetupView>
     }
 
     [RelayCommand]
-    public void OnAdd(object? _) => this.Messenger.Publish(ActivatedView.NewParticipant);
+    public void OnAdd(object? _) => Select(ActivatedView.NewParticipant);
 
     [RelayCommand]
     public void OnNext(object? _)
@@ -200,6 +200,6 @@ public sealed partial class SetupViewModel : ViewModel<SetupView>
         GameViewModel.Parameters parameters = new(leftTeam, rightTeam);
 
         // And... Rock and roll 
-        this.Messenger.Publish(ActivatedView.Game, parameters);
+        Select(ActivatedView.Game, parameters);
     }
 }

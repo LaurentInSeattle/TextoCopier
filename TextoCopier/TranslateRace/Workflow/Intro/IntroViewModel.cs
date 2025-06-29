@@ -1,12 +1,12 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Intro;
 
-using static ViewActivationMessage;
+using static MessagingExtensions;
 
 public sealed partial class IntroViewModel : ViewModel<IntroView>
 {
     [RelayCommand]
-    public void OnExit() => this.Messenger.Publish(ActivatedView.Exit);
+    public void OnExit() => MessagingExtensions.Exit();
 
     [RelayCommand]
-    public void OnNext() => this.Messenger.Publish(ActivatedView.Setup);
+    public void OnNext() => Select(ActivatedView.Setup);
 }

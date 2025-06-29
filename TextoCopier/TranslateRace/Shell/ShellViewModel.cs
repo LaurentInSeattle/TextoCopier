@@ -1,11 +1,11 @@
 ﻿namespace Lyt.TranslateRace.Shell;
 
-using static ViewActivationMessage;
+using static MessagingExtensions; 
 
 public sealed partial class ShellViewModel : ViewModel<ShellView>
 {
-    public ShellViewModel()
-        => this.Messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
+    private ViewSelector<ActivatedView>? viewSelector;
+    public bool isFirstActivation;
 
     public override void OnViewLoaded()
     {
@@ -17,106 +17,55 @@ public sealed partial class ShellViewModel : ViewModel<ShellView>
             throw new Exception("Failed to startup...");
         }
 
-        this.Logger.Debug("OnViewLoaded language loaded");
-
         // Create all statics views and bind them 
-        ShellViewModel.SetupWorkflow();
-        this.Logger.Debug("OnViewLoaded SetupWorkflow complete");
-
-        this.Logger.Debug("OnViewLoaded BindGroupIcons complete");
-
-        this.OnViewActivation(ActivatedView.Intro, parameter: null, isFirstActivation: true);
-        this.Logger.Debug("OnViewLoaded OnViewActivation complete");
+        this.SetupWorkflow();
+        Select(ActivatedView.Intro);
 
         // Ready 
         this.Logger.Debug("OnViewLoaded complete");
     }
 
-    private void OnViewActivation(ViewActivationMessage message)
-        => this.OnViewActivation(message.View, message.ActivationParameter, false);
-
-    private void OnViewActivation(ActivatedView activatedView, object? parameter = null, bool isFirstActivation = false)
-    {
-        if (activatedView == ActivatedView.Exit)
-        {
-            OnExit(null);
-        }
-
-        if (activatedView == ActivatedView.GoBack)
-        {
-            // We always go back to the Intro View 
-            activatedView = ActivatedView.Intro;
-        }
-
-        switch (activatedView)
-        {
-            default:
-            case ActivatedView.Intro:
-                this.Activate<IntroViewModel, IntroView>(isFirstActivation, null);
-                break;
-
-            case ActivatedView.Setup:
-                this.Activate<SetupViewModel, SetupView>(isFirstActivation, null);
-                break;
-
-            case ActivatedView.NewParticipant:
-                this.Activate<NewParticipantViewModel, NewParticipantView>(isFirstActivation, null);
-                break;
-
-            case ActivatedView.Game:
-                if (parameter is GameViewModel.Parameters parametersGame)
-                {
-                    this.Activate<GameViewModel, GameView>(isFirstActivation, parametersGame);
-                }
-                else
-                {
-                    throw new Exception("No game parameters");
-                }
-                break;
-
-            case ActivatedView.GameOver:
-                this.Activate<GameOverViewModel, GameOverView>(isFirstActivation, null);
-                break;
-        }
-    }
-
-    private static async void OnExit(object? _)
+    public static async void OnExit(object? _)
     {
         var application = App.GetRequiredService<IApplicationBase>();
         await application.Shutdown();
     }
 
-    private void Activate<TViewModel, TControl>(bool isFirstActivation, object? activationParameters)
-        where TViewModel : ViewModel<TControl>
-        where TControl : Control, IView, new()
+    private void SetupWorkflow()
     {
-        if (this.View is null)
+        if (this.View is not ShellView view)
         {
             throw new Exception("No view: Failed to startup...");
         }
 
-        object? currentView = this.View.ShellViewContent.Content;
-        if (currentView is Control control && control.DataContext is ViewModel currentViewModel)
+        var selectableViews = new List<SelectableView<ActivatedView>>();
+
+        void SetupNoToolbar<TViewModel, TControl>(
+                ActivatedView activatedView, Control? control = null)
+            where TViewModel : ViewModel<TControl>
+            where TControl : Control, IView, new()
         {
-            currentViewModel.Deactivate();
+            var vm = App.GetRequiredService<TViewModel>();
+            vm.CreateViewAndBind();
+            selectableViews.Add(
+                new SelectableView<ActivatedView>(activatedView, vm, control, null));
         }
 
-        var newViewModel = App.GetRequiredService<TViewModel>();
-        newViewModel.Activate(activationParameters);
-        this.View.ShellViewContent.Content = newViewModel.View;
+        SetupNoToolbar<IntroViewModel, IntroView>(ActivatedView.Intro);
+        SetupNoToolbar<SetupViewModel, SetupView>(ActivatedView.Setup);
+        SetupNoToolbar<NewParticipantViewModel, NewParticipantView>(ActivatedView.NewParticipant);
+        SetupNoToolbar<GameViewModel, GameView>(ActivatedView.Game);
+        SetupNoToolbar<GameOverViewModel, GameOverView>(ActivatedView.GameOver);
 
-        if (!isFirstActivation)
-        {
-            this.Profiler.MemorySnapshot(newViewModel.View.GetType().Name + ":  Activated");
-        }
-    }
-
-    private static void SetupWorkflow()
-    {
-        App.GetRequiredService<IntroViewModel>().CreateViewAndBind();
-        App.GetRequiredService<SetupViewModel>().CreateViewAndBind();
-        App.GetRequiredService<NewParticipantViewModel>().CreateViewAndBind();
-        App.GetRequiredService<GameViewModel>().CreateViewAndBind();
-        App.GetRequiredService<GameOverViewModel>().CreateViewAndBind();
+        // Needs to be kept alive as a class member, or else callbacks will die (and wont work) 
+        this.viewSelector =
+            new ViewSelector<ActivatedView>(
+                this.Messenger,
+                this.View.ShellViewContent,
+                null, // no secondary container 
+                null, // no selector to update
+                selectableViews,
+                null // no call back on view change
+                );
     }
 }

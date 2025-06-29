@@ -1,5 +1,7 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Game;
 
+using static MessagingExtensions; 
+
 public sealed partial class GameViewModel : ViewModel<GameView>
 {
     public enum GameState
@@ -575,7 +577,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         this.State = GameState.Over;
 
         // All view models should hide at the end 
-        this.Messenger.Publish(ViewActivationMessage.ActivatedView.GameOver);
+        Select(ActivatedView.GameOver);
     }
 
     private void SaveGame()

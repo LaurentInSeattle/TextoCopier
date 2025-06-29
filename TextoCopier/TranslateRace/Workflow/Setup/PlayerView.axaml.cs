@@ -1,10 +1,9 @@
 namespace Lyt.TranslateRace.Workflow.Setup;
 
-public partial class PlayerView : UserControl, IView
+public partial class PlayerView : View
 {
-    public PlayerView()
+    public PlayerView() : base ()
     {
-        this.InitializeComponent();
         this.SetInitialState(); 
         this.PointerEntered += this.OnPointerEnter;
         this.PointerExited += this.OnPointerLeave;

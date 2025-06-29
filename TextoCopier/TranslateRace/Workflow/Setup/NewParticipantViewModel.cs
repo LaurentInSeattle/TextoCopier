@@ -1,9 +1,23 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Setup;
 
+using static MessagingExtensions; 
+
 public sealed partial class NewParticipantViewModel(TranslateRaceModel translateRaceModel) 
     : ViewModel<NewParticipantView>
 {
     private readonly TranslateRaceModel translateRaceModel = translateRaceModel;
+
+    [ObservableProperty]
+    private string? title;
+
+    [ObservableProperty]
+    private string? name;
+
+    [ObservableProperty]
+    private string? validationMessage;
+
+    [ObservableProperty]
+    private bool saveButtonIsDisabled;
 
     public override void Activate(object? activationParameters)
     {
@@ -29,8 +43,7 @@ public sealed partial class NewParticipantViewModel(TranslateRaceModel translate
     }
 
     [RelayCommand]
-    public void OnClose()
-        => this.Messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.Setup));
+    public void OnClose() => Select(ActivatedView.Setup);
 
     public void OnEditing()
     {
@@ -49,7 +62,6 @@ public sealed partial class NewParticipantViewModel(TranslateRaceModel translate
             return false;
         }
 
-
         // Save to model 
         string name = this.Name!.Trim();
         if (this.translateRaceModel.AddParticipant(name, out message))
@@ -59,16 +71,4 @@ public sealed partial class NewParticipantViewModel(TranslateRaceModel translate
 
         return false;
     }
-
-    [ObservableProperty]
-    private string? title;
-
-    [ObservableProperty]
-    private string? name;
-
-    [ObservableProperty]
-    private string? validationMessage;
-
-    [ObservableProperty]
-    private bool saveButtonIsDisabled; 
 }

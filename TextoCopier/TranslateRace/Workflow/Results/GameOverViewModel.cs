@@ -1,6 +1,6 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Results;
 
-using static ViewActivationMessage;
+using static MessagingExtensions;
 
 public sealed partial class GameOverViewModel(TranslateRaceModel model) : ViewModel<GameOverView>
 {
@@ -35,10 +35,10 @@ public sealed partial class GameOverViewModel(TranslateRaceModel model) : ViewMo
     }
 
     [RelayCommand]
-    public void OnExit(object? _) => this.Messenger.Publish(ActivatedView.Exit);
+    public void OnExit(object? _) => MessagingExtensions.Exit();
 
     [RelayCommand]
-    public void OnPlayAgain(object? _) => this.Messenger.Publish(ActivatedView.Setup);
+    public void OnPlayAgain(object? _) => Select(ActivatedView.Setup);
 
     private void ShowResults()
     {
