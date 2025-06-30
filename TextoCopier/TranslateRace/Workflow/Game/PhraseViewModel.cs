@@ -18,6 +18,9 @@ public sealed partial class PhraseViewModel : ViewModel<PhraseView>
     private string? english;
 
     [ObservableProperty]
+    private string? translated;
+
+    [ObservableProperty]
     private IBrush teamColor;
 
     private Team? team;
@@ -39,6 +42,7 @@ public sealed partial class PhraseViewModel : ViewModel<PhraseView>
         this.TeamColor = ColorTheme.Text;
         this.Italian = phrase.Italian;
         this.English = string.Empty;
+        this.Translated = string.Empty;
         this.CallVisible = team.Players.Count > 1;
         this.NextVisible = true;
     }
@@ -81,6 +85,7 @@ public sealed partial class PhraseViewModel : ViewModel<PhraseView>
 
             this.Messenger.Publish(new TranslateRevealedMessage());
             this.English = this.phrase.English;
+            this.Translated = this.phrase.Translated;
             this.isRevealed = true;
             this.CallVisible = false;
         }

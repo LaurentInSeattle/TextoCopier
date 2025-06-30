@@ -14,6 +14,8 @@ public sealed class Phrase
 
     public string Italian { get; set; } = string.Empty;
 
+    public string Translated { get; set; } = string.Empty;
+
 #pragma warning disable CA2211 // Non-constant fields should not be visible
     public static List<Phrase> DefaultPhrases =
     [

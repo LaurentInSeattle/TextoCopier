@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="800" 
+    mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="840" 
     xmlns:theme="clr-namespace:Lyt.TranslateRace"
     xmlns:vm="clr-namespace:Lyt.TranslateRace.Workflow.Game"
     x:DataType="vm:GameViewModel" 
@@ -18,7 +18,7 @@
 			<RowDefinition Height="104" /> <!-- Score -->
 			<RowDefinition Height="64" /> <!-- Turn -->
 			<RowDefinition Height="Auto" /> <!-- Difficulty -->
-			<RowDefinition Height="256" /> <!-- Phrase -->
+			<RowDefinition Height="330" /> <!-- Phrase -->
 			<RowDefinition Height="Auto" /> <!-- Eval  -->
 			<RowDefinition Height="Auto" /> <!-- Timer -->
 			<RowDefinition Height="4" />

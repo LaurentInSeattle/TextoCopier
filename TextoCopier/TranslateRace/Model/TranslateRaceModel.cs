@@ -10,13 +10,16 @@ public sealed partial class TranslateRaceModel : ModelBase
     private static readonly char[] separator = ['\t', '\r', '\n'];
 
     private readonly FileManagerModel fileManager;
+    private readonly TranslatorService translatorService;
     private readonly IRandomizer randomizer;
 
     public TranslateRaceModel(
         FileManagerModel fileManager,
+        TranslatorService translatorService,
         IMessenger messenger, ILogger logger, IRandomizer randomizer) : base(messenger, logger)
     {
         this.fileManager = fileManager;
+        this.translatorService = translatorService;
         this.ShouldAutoSave = true;
         this.randomizer = randomizer;
     }
@@ -83,7 +86,11 @@ public sealed partial class TranslateRaceModel : ModelBase
             throw new Exception("No phrases!");
         }
 
-        return chooser.Next();
+        var phrase = chooser.Next();
+
+        // Fire and forget translation 
+        _ = this.TranslatePhrase(phrase);
+        return phrase;
     }
 
     private async void LoadGameModel()
@@ -211,6 +218,21 @@ public sealed partial class TranslateRaceModel : ModelBase
         {
             Debug.WriteLine(ex);
             throw;
+        }
+    }
+
+    private async Task TranslatePhrase(Phrase phrase)
+    {
+        (bool success, string translated) =
+            await this.translatorService.Translate(
+                ProviderKey.Google, phrase.English, "en-US", "ja");
+        if (success)
+        {
+            phrase.Translated = translated;
+        }
+        else
+        {
+            phrase.Translated = "Translation not available";
         }
     }
 

@@ -4,12 +4,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="256"
+    mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="330"
     xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
     xmlns:theme="clr-namespace:Lyt.TranslateRace"
     xmlns:vm="clr-namespace:Lyt.TranslateRace.Workflow.Game"
     x:DataType="vm:PhraseViewModel" 
-    Height="256"
+    Height="330"
     IsVisible="{Binding Visible}"
     >
     <Grid>
@@ -21,16 +21,35 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Image
+		<Rectangle
+			Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+			Margin="0 4 0 4"
+			Fill="#80000020"
+			RadiusX="8" RadiusY="8"
+			/>
+		<Rectangle
+			Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+			Margin="0 4 0 4"
+			Fill="#80000020"
+			RadiusX="8" RadiusY="8"
+			/>
+		<Rectangle
+			Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+			Margin="0 4 0 4"
+			Fill="#80000020"
+			RadiusX="8" RadiusY="8"
+			/>
+		<Image
             Grid.Column="0"
             HorizontalAlignment="Center" VerticalAlignment="Top"
-            Margin="4 28 0 0"
+            Margin="4 20 0 0"
             Source="/Assets/Images/Flags/Italy.png"
             />
         <Image
             Grid.Column="0"
-            Margin="4 0 0 28"
+            Margin="4 0 0 20"
             HorizontalAlignment="Center" VerticalAlignment="Bottom"
             Source="/Assets/Images/Flags/San_Marino.png"
             />
@@ -51,7 +70,7 @@
             IsVisible ="{Binding CallVisible}"
             Behaviour="Tap"
             HorizontalAlignment="Right" VerticalAlignment="Center"
-            Width="240" Height="88" Margin="4" FontSize="22"
+            Width="230" Height="88" Margin="4" FontSize="22"
             GlyphSource="person_phone"
             GlyphAngle="00"
             GlyphStrokeThickness="0.1"
@@ -60,12 +79,12 @@
         <Image
             Grid.Column="0" Grid.Row="1"
             HorizontalAlignment="Center" VerticalAlignment="Top"
-            Margin="4 30 0 0"
+            Margin="4 24 0 0"
             Source="/Assets/Images/Flags/UnitedKingdom.png"
             />
         <Image
             Grid.Column="0" Grid.Row="1"
-            Margin="4 0 0 30"
+            Margin="4 0 0 24"
             HorizontalAlignment="Center" VerticalAlignment="Bottom"
             Source="/Assets/Images/Flags/Canada.png"
             />
@@ -79,14 +98,30 @@
             TextWrapping="Wrap"
             Foreground="{Binding TeamColor}"
             />
+        <Image
+            Grid.Column="0" Grid.Row="2"
+            Margin="4 0 0 20"
+            HorizontalAlignment="Center" VerticalAlignment="Center"
+            Source="/Assets/Images/Flags/Japan.png"
+            />
+        <TextBlock
+            Grid.Column="1" Grid.Row="2"
+            Text="{Binding Translated}"
+            HorizontalAlignment="Left" VerticalAlignment="Center"
+            TextAlignment="Left"
+            Margin="12 0 0 0"
+            FontSize="26" FontWeight="Normal"
+            TextWrapping="Wrap"
+            Foreground="{Binding TeamColor}"
+            />
         <glyphs:GlyphButton
-            Grid.Column="2" Grid.Row="1"
+            Grid.Column="2" Grid.Row="2"
             Style="{StaticResource ToolbarIconButton}"
             Command="{Binding OnNext}"
             IsVisible ="{Binding NextVisible}"
             Behaviour="Tap"
             HorizontalAlignment="Right" VerticalAlignment="Center"
-            Width="240" Height="88" Margin="4" FontSize="22"
+            Width="230" Height="88" Margin="4" FontSize="22"
             GlyphSource="next"
             GlyphAngle="00"
             GlyphStrokeThickness="0.1"
