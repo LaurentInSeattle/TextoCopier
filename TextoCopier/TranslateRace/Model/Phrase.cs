@@ -222,9 +222,51 @@ public sealed class Phrase
             English = "From the level you have chosen we can all see that you are not afraid of anything." ,
         },
 
+        new() {
+            Id= 91 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Culture,
+            Italian = "Firenze è il capoluogo della regione italiana della Toscana.",
+            English = "Florence is the capital of the Italian region of Tuscany." ,
+        },
+        new() {
+            Id= 92 , Difficulty = PhraseDifficulty.Medium, Theme = PhraseTheme.Culture,
+            Italian = "Firenze era un centro commerciale e finanziario dell'Europa medievale e una delle città più ricche dell'epoca.",
+            English = "Florence was a commercial and financial center of medieval Europe and one of the richest cities of the time." ,
+        },
+        new() {
+            Id= 93 , Difficulty = PhraseDifficulty.Hard, Theme = PhraseTheme.Culture,
+            Italian = "La città di Firenze è nota per la sua cultura, l'arte rinascimentale, l'architettura e i monumenti. La città ospita anche numerosi musei e gallerie d'arte.",
+            English = "The city of Florence is known for its culture, Renaissance art, architecture and monuments. The city is also home to numerous museums and art galleries." ,
+        },
+        new() {
+            Id= 94 , Difficulty = PhraseDifficulty.Insane, Theme = PhraseTheme.Culture,
+            Italian = "Firenze svolge un ruolo importante nella moda italiana ed è inoltre un importante centro economico nazionale, nonché un polo turistico e industriale.",
+            English = "Florence plays an important role in Italian fashion and is also an important national economic centre, as well as a tourist and industrial hub." ,
+        },
+
+        new() {
+            Id= 101 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Culture,
+            Italian = "Lecce è una città dell'Italia meridionale." ,
+            English = "Lecce is a city in southern Italy.",
+        },
+        new() {
+            Id= 102 , Difficulty = PhraseDifficulty.Medium, Theme = PhraseTheme.Culture,
+            Italian = "Lecce è una città dell'Italia meridionale e capoluogo dell'omonima provincia. ",
+            English = "Lecce is a city in southern Italy and the capital of the province of the same name." ,
+        },
+        new() {
+            Id= 103 , Difficulty = PhraseDifficulty.Hard, Theme = PhraseTheme.Culture,
+            Italian = "Lecce si trova nella penisola salentina, nel tacco della penisola italiana, e ha oltre duemila anni di storia.",
+            English = "Lecce is located in the Salento peninsula, in the heel of the Italian peninsula, and has over two thousand years of history." ,
+        },
+        new() {
+            Id= 104 , Difficulty = PhraseDifficulty.Insane, Theme = PhraseTheme.Culture,
+            Italian = "La pietra leccese, un particolare tipo di pietra calcarea, è uno dei principali prodotti esportati dalla città di Lecce, perché è molto tenera e lavorabile, adatta quindi alla scultura.",
+            English = "Lecce stone, a particular type of limestone, is one of the main products exported from the city of Lecce, because it is very soft and workable, therefore suitable for sculpture." ,
+        },
+
         //new() {
         //    Id= 1 , Difficulty = PhraseDifficulty.Easy, Theme = PhraseTheme.Culture,
-        //    Italian = "",
+        //    Italian = "Firenze è il capoluogo della regione italiana della Toscana.",
         //    English = "." ,
         //},
         //new() {
