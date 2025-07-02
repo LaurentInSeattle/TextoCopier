@@ -33,7 +33,7 @@ public sealed partial class ShellViewModel : ViewModel<ShellView>
 
     private void SetupWorkflow()
     {
-        if (this.View is not ShellView view)
+        if (this.View is null)
         {
             throw new Exception("No view: Failed to startup...");
         }
