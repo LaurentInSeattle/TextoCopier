@@ -97,7 +97,6 @@ public sealed partial class TemplateViewModel : ViewModel<TemplateView>
                 return;
 
             case ButtonTag.CountinuousBegin:
-                //Debugger.Break();
                 this.ShowExtendedTemplate();
                 break;
             case ButtonTag.CountinuousEnd:
