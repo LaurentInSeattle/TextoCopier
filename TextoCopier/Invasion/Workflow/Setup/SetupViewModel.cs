@@ -72,7 +72,7 @@ public sealed partial class SetupViewModel : ViewModel<SetupView>
     }
 
     [RelayCommand]
-    public void OnExit() => this.Messenger.Publish(ActivatedView.Exit);
+    public void OnExit() => AppMessagingExtensions.Publish(ActivatedView.Exit);
 
     [RelayCommand]
     public void OnNext()
@@ -95,6 +95,6 @@ public sealed partial class SetupViewModel : ViewModel<SetupView>
             players.Add(new PlayerInfo() { IsHuman = true });
         }
 
-        this.Messenger.Publish(ActivatedView.PlayerSetup, this.gameOptions);
+        AppMessagingExtensions.Publish(ActivatedView.PlayerSetup, this.gameOptions);
     }
 }

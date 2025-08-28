@@ -224,7 +224,7 @@ public sealed partial class PlayerSetupViewModel : ViewModel<PlayerSetupView>
         {
             // Restore all colours and go back 
             this.availablePlayerColors = [.. Enum.GetValues<PlayerColor>()];
-            this.Messenger.Publish(ActivatedView.GoBack);
+            AppMessagingExtensions.Publish(ActivatedView.GoBack);
         }
         else
         {
@@ -250,8 +250,7 @@ public sealed partial class PlayerSetupViewModel : ViewModel<PlayerSetupView>
             // Finish up creating players, and restore all colours in case we play a second game
             this.CreateAiPlayers();
             this.availablePlayerColors = [.. Enum.GetValues<PlayerColor>()];
-
-            this.Messenger.Publish(ActivatedView.Game, this.gameOptions);
+            AppMessagingExtensions.Publish(ActivatedView.Game, this.gameOptions);
         }
         else
         {

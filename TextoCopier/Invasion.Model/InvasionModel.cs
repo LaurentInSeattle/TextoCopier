@@ -12,7 +12,7 @@ public sealed class InvasionModel : ModelBase
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 #pragma warning disable IDE0021 // Use expression body for constructor 
-    public InvasionModel() : base(null, null)
+    public InvasionModel() : base(null)
     {
         // Do not inject the FileManagerModel instance: a parameter-less ctor is required for Deserialization 
         // Empty CTOR required for deserialization 
@@ -23,7 +23,7 @@ public sealed class InvasionModel : ModelBase
 #pragma warning restore CS8618
 
     public InvasionModel(
-        FileManagerModel fileManager, IMessenger messenger, ILogger logger, IRandomizer randomizer) : base(messenger, logger)
+        FileManagerModel fileManager, ILogger logger, IRandomizer randomizer) : base(logger)
     {
         this.fileManager = fileManager;
         this.ShouldAutoSave = true;
@@ -72,5 +72,5 @@ public sealed class InvasionModel : ModelBase
     }
 
     public void NewGame(GameOptions gameOptions)
-        => this.Game = new Game(gameOptions, this.Messenger, this.Logger, this.randomizer);
+        => this.Game = new Game(gameOptions, this.Logger, this.randomizer);
 }

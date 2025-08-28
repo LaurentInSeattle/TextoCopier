@@ -1,8 +1,7 @@
 ﻿namespace Lyt.Invasion.Messaging; 
 
-public static class MessagingExtensions
+public static class AppMessagingExtensions
 {
-    public static void Publish(
-        this IMessenger messenger, ViewActivationMessage.ActivatedView view, object? activationParameter = null)
-        => messenger.Publish(new ViewActivationMessage(view, activationParameter));
+    public static void Publish(ViewActivationMessage.ActivatedView view, object? activationParameter = null)
+        => new ViewActivationMessage(view, activationParameter).Publish();
 }

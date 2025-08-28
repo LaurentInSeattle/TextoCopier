@@ -1,6 +1,6 @@
 ﻿namespace Lyt.Invasion.Workflow.Gameplay.Regions;
 
-public sealed partial class RegionViewModel : ViewModel<RegionView>
+public sealed partial class RegionViewModel : ViewModel<RegionView>, IRecipient<RegionSelectMessage>
 {
     private readonly InvasionModel invasionModel;
 
@@ -13,7 +13,7 @@ public sealed partial class RegionViewModel : ViewModel<RegionView>
     {
 #pragma warning restore CS8618 
         this.invasionModel = invasionModel;
-        this.Messenger.Subscribe<RegionSelectMessage>(this.OnRegionSelect); 
+        this.Subscribe<RegionSelectMessage>(); 
     }
 
     public override void Activate(object? activationParameters)
@@ -28,13 +28,15 @@ public sealed partial class RegionViewModel : ViewModel<RegionView>
         Dispatch.OnUiThread(() => { this.UpdateUi(); });
     }
 
-    private void OnRegionSelect(RegionSelectMessage message)
+    public void Receive(RegionSelectMessage message)
     {
         this.region = message.Region;
         this.UpdateUi();
     }
 
+#pragma warning disable CA1822 // Mark members as static
     private void UpdateUi()
+#pragma warning restore CA1822 // Mark members as static
     {
         // Things we want to display : 
         //    /// <summary> Resources available in the region. </summary>

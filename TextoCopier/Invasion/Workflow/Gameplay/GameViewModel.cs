@@ -1,8 +1,12 @@
 ﻿namespace Lyt.Invasion.Workflow.Gameplay;
 
 using static ViewActivationMessage;
+using static AppMessagingExtensions;
 
-public sealed partial class GameViewModel : ViewModel<GameView>
+public sealed partial class GameViewModel : 
+    ViewModel<GameView>, 
+    IRecipient<ZoomRequestMessage>,
+    IRecipient<GameSynchronizationRequest>
 {
     // Border paths color components
     private const byte red = 0x10;
@@ -29,7 +33,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         this.invasionModel = invasionModel;
         this.playerBrushes = new (4);
         this.regionsBorders = new(512); 
-        this.Messenger.Subscribe<ZoomRequestMessage>(this.OnZoomRequest); 
+        this.Subscribe<ZoomRequestMessage>(); 
     }
 
     public override void OnViewLoaded()
@@ -68,35 +72,41 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         canvas.Height = this.gameOptions.PixelHeight;
         canvas.InvalidateVisual();
 
-        this.Messenger.Subscribe<GameSynchronizationRequest>(this.OnGameSynchronizationRequest, withUiDispatch: true);
+        this.Subscribe<GameSynchronizationRequest>();
         Dispatch.OnUiThread(() => { this.UpdateUi(); });
     }
 
-    public override void Deactivate()
+    public void Receive(ZoomRequestMessage message)
+        => this.ZoomFactor = message.ZoomFactor;
+
+    public void Receive(GameSynchronizationRequest request)
     {
+        // withUiDispatch: true
+        Dispatch.OnUiThread(() =>
+        {
+            if (request.Message == MessageKind.GameOver)
+            {
+                Publish(ActivatedView.GameOver);
+            }
+            else if (request.Message == MessageKind.Abort)
+            {
+                Publish(ActivatedView.GameOver);
+            }
+            else if (request.Message == MessageKind.Test)
+            {
+                // Not used for now
+            }
+        }); 
     }
 
-    private void OnZoomRequest(ZoomRequestMessage message)
-        => this.ZoomFactor = message.ZoomFactor; 
-
-    private void OnGameSynchronizationRequest(GameSynchronizationRequest request)
-    {
-        if (request.Message == MessageKind.GameOver)
-        {
-            this.Messenger.Publish(ActivatedView.GameOver);
-        }
-        else if (request.Message == MessageKind.Abort)
-        {
-            this.Messenger.Publish(ActivatedView.GameOver);
-        }
-        else if (request.Message == MessageKind.Test)
-        {
-            // Not used for now
-        }
-    }
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+#pragma warning disable CA1822 // Mark members as static
 
     [RelayCommand]
-    public void OnExit() => this.Messenger.Publish(ActivatedView.Exit);
+    public void OnExit() => Publish(ActivatedView.Exit);
+
+#pragma warning restore CA1822 // Mark members as static
+#pragma warning restore IDE0079 // Remove unnecessary suppression
 
     private void UpdateUi()
     {
@@ -345,7 +355,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
 
         int regionIndex = map.PixelMap.RegionAt((int)point.X, (int)point.Y);
         var region = map.Regions[regionIndex];
-        this.Messenger.Publish(new RegionSelectMessage(region, PointerAction.Clicked, keyModifiers));
+        new RegionSelectMessage(region, PointerAction.Clicked, keyModifiers).Publish();
 
         //if (this.sendTestResponseOnMapClick)
         //{
@@ -379,7 +389,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         var region = map.Regions[regionIndex];
         if ((this.hoveredRegion is null) || (this.hoveredRegion != region))
         {
-            this.Messenger.Publish(new RegionSelectMessage(region, PointerAction.Hovered, keyModifiers));
+            new RegionSelectMessage(region, PointerAction.Hovered, keyModifiers).Publish();
             this.hoveredRegion = region;
         }
     }

@@ -1,12 +1,19 @@
 ﻿namespace Lyt.Invasion.Workflow.GameIntro;
 
-using static ViewActivationMessage; 
+using static ViewActivationMessage;
+using static AppMessagingExtensions; 
 
 public sealed partial class WelcomeViewModel : ViewModel<WelcomeView>
 {
-    [RelayCommand]
-    public void OnExit() => this.Messenger.Publish(ActivatedView.Exit);
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+#pragma warning disable CA1822 // Mark members as static
 
     [RelayCommand]
-    public void OnPlay() => this.Messenger.Publish(ActivatedView.Setup);
+    public void OnExit() => Publish(ActivatedView.Exit);
+
+    [RelayCommand]
+    public void OnPlay() => Publish(ActivatedView.Setup);
+
+#pragma warning restore CA1822 // Mark members as static
+#pragma warning restore IDE0079 // Remove unnecessary suppression
 }

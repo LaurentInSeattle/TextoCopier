@@ -20,8 +20,6 @@ public sealed class PixelMap
 
     public readonly ILogger Logger;
 
-    public readonly IMessenger Messenger; 
-
     public readonly IRandomizer Randomizer;
 
     /// <summary> 
@@ -63,11 +61,10 @@ public sealed class PixelMap
     /// <remarks> there are hundred thousands of pixels. It's better to store the Id as short</remarks>
     public short[,] RegionIdsPerPixel { get; private set; }
 
-    public PixelMap(Game game, Map map, IMessenger messenger, ILogger logger, IRandomizer randomizer)
+    public PixelMap(Game game, Map map, ILogger logger, IRandomizer randomizer)
     {
         this.game = game;
         this.gameOptions = game.GameOptions;
-        this.Messenger = messenger;
         this.Logger = logger;
         this.Randomizer = randomizer;
 

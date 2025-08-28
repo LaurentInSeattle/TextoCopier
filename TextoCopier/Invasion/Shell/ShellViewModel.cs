@@ -3,7 +3,10 @@
 using Lyt.Mvvm;
 using static ViewActivationMessage;
 
-public sealed partial class ShellViewModel : ViewModel<ShellView>
+public sealed partial class ShellViewModel : 
+    ViewModel<ShellView>,
+    IRecipient<ViewActivationMessage>,
+    IRecipient<ModelUpdateMessage>
 {
     private readonly IDialogService dialogService;
     private readonly InvasionModel invasionModel;
@@ -13,8 +16,8 @@ public sealed partial class ShellViewModel : ViewModel<ShellView>
         this.invasionModel = invasionModel;
         this.dialogService = dialogService;
 
-        this.invasionModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
-        this.Messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
+        this.Subscribe<ModelUpdateMessage>();
+        this.Subscribe<ViewActivationMessage>();
     }
 
     public override void OnViewLoaded()
@@ -45,12 +48,18 @@ public sealed partial class ShellViewModel : ViewModel<ShellView>
         this.Logger.Debug("OnViewLoaded complete");
     }
 
-    private void OnModelUpdated(ModelUpdateMessage message)
+    public void Receive(ModelUpdateMessage message)
     {
-        string msgProp = string.IsNullOrWhiteSpace(message.PropertyName) ? "<unknown>" : message.PropertyName;
-        string msgMethod = string.IsNullOrWhiteSpace(message.MethodName) ? "<unknown>" : message.MethodName;
-        this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
+        Dispatch.OnUiThread(() =>
+        {
+            string msgProp = string.IsNullOrWhiteSpace(message.PropertyName) ? "<unknown>" : message.PropertyName;
+            string msgMethod = string.IsNullOrWhiteSpace(message.MethodName) ? "<unknown>" : message.MethodName;
+            this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
+        }); 
     }
+
+    public void Receive(ViewActivationMessage message)
+        => this.OnViewActivation(message.View, message.ActivationParameter, false);
 
     private static async void OnExit()
     {
@@ -82,9 +91,6 @@ public sealed partial class ShellViewModel : ViewModel<ShellView>
         App.GetRequiredService<GameViewModel>().CreateViewAndBind();
         App.GetRequiredService<GameOverViewModel>().CreateViewAndBind();
     }
-
-    private void OnViewActivation(ViewActivationMessage message)
-        => this.OnViewActivation(message.View, message.ActivationParameter, false);
 
     private void OnViewActivation(ActivatedView activatedView, object? parameter = null, bool isFirstActivation = false)
     {

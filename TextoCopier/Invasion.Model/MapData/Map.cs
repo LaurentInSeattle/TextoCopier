@@ -4,18 +4,15 @@ public sealed class Map
 {
     public readonly ILogger Logger;
 
-    public readonly IMessenger Messenger;
-
     public readonly IRandomizer Randomizer;
 
-    public Map(Game game, IMessenger messenger, ILogger logger, IRandomizer randomizer)
+    public Map(Game game, ILogger logger, IRandomizer randomizer)
     {
-        this.Messenger = messenger;
         this.Logger = logger;
         this.Randomizer = randomizer;
 
         this.Regions = new Region[game.GameOptions.RegionCount];
-        this.PixelMap = new PixelMap(game, this, messenger, logger, randomizer);
+        this.PixelMap = new PixelMap(game, this, logger, randomizer);
         this.GenerateLandscape();
         foreach (Region region in this.Regions)
         {
@@ -158,7 +155,10 @@ public sealed class Map
         }
     }
 
+#pragma warning disable CA1822 // Mark members as static
     public void Destroy()
     {
+        // Nothing for now 
     }
+#pragma warning restore CA1822 // Mark members as static
 }

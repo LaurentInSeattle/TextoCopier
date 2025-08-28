@@ -36,7 +36,6 @@ public partial class App : ApplicationBase
             App.LoggerService,
             new Tuple<Type, Type>(typeof(IDialogService), typeof(DialogService)),
             new Tuple<Type, Type>(typeof(IDispatch), typeof(Dispatch)),
-            new Tuple<Type, Type>(typeof(IMessenger), typeof(Messenger)),
             new Tuple<Type, Type>(typeof(IProfiler), typeof(Profiler)),
             new Tuple<Type, Type>(typeof(IToaster), typeof(Toaster)),
             new Tuple<Type, Type>(typeof(IRandomizer), typeof(Randomizer)),

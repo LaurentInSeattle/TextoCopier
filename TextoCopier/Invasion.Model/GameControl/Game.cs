@@ -1,6 +1,6 @@
 ﻿namespace Lyt.Invasion.Model.GameControl;
 
-public sealed class Game
+public sealed class Game : IRecipient<GameSynchronizationResponse>
 {
     public const int MinPlayerCount = 2;
     public const int MaxPlayerCount = 4;
@@ -18,10 +18,9 @@ public sealed class Game
 #pragma warning disable CS8618 
     // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     // Map and Players gets created and are normally not null, unless we crash 
-    public Game(GameOptions gameOptions, IMessenger messenger, ILogger logger, IRandomizer randomizer)
+    public Game(GameOptions gameOptions, ILogger logger, IRandomizer randomizer)
 #pragma warning restore CS8618 
     {
-        this.Messenger = messenger;
         this.Logger = logger;
         this.Randomizer = randomizer;
 
@@ -40,7 +39,7 @@ public sealed class Game
         {
             try
             {
-                this.Map = new Map(this, this.Messenger, this.Logger, randomizer);
+                this.Map = new Map(this, this.Logger, randomizer);
                 this.Players = this.CreatePlayers();
                 this.recursionDepth = 0;
                 this.AllocateInitialRegions();
@@ -60,8 +59,6 @@ public sealed class Game
     }
 
     public ILogger Logger { get; private set; }
-
-    public IMessenger Messenger { get; private set; }
 
     public Map Map { get; private set; }
 
@@ -100,7 +97,7 @@ public sealed class Game
             return;
         }
 
-        this.OnGameSynchronizationResponse(new GameSynchronizationResponse(MessageKind.Abort));
+        this.Receive(new GameSynchronizationResponse(MessageKind.Abort));
         this.blockingQueue.CompleteAdding();
         await Task.Delay(200);
         if (this.IsTerminated)
@@ -124,7 +121,7 @@ public sealed class Game
         this.cancellationTokenSource = new CancellationTokenSource();
         this.cancellationToken = this.cancellationTokenSource.Token;
         this.blockingQueue = new BlockingCollection<GameSynchronizationResponse>(16);
-        this.Messenger.Subscribe<GameSynchronizationResponse>(this.OnGameSynchronizationResponse);
+        this.Subscribe<GameSynchronizationResponse>();
 
         // Launch the game thread 
         //     Creates and starts a task for the specified action delegate, state, cancellation
@@ -133,7 +130,7 @@ public sealed class Game
             this.GameThread, new object(), this.cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
     }
 
-    private void OnGameSynchronizationResponse(GameSynchronizationResponse response)
+    public void Receive(GameSynchronizationResponse response)
     {
         if (this.IsGameRunning && !this.IsTerminated &&
             this.blockingQueue is not null && !this.blockingQueue.IsAddingCompleted)
@@ -218,7 +215,7 @@ public sealed class Game
         }
     }
 
-    public void Notify(MessageKind messageKind) => this.Messenger.Publish(new GameSynchronizationRequest(messageKind));
+    public void Notify(MessageKind messageKind) => new GameSynchronizationRequest(messageKind).Publish();
 
     public bool Synchronize(
         MessageKind request, out GameSynchronizationResponse? response, CancellationToken cancellationToken)
@@ -228,7 +225,7 @@ public sealed class Game
         GameSynchronizationRequest request, out GameSynchronizationResponse? response, CancellationToken cancellationToken)
     {
         // 1 - Publish a request message 
-        this.Messenger.Publish(request);
+        request.Publish();
 
         // 2 - Wait for a response or a cancel request
         response = null;
