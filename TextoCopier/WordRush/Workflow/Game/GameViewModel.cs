@@ -1,6 +1,8 @@
 ﻿namespace Lyt.WordRush.Workflow.Game;
 
-public sealed partial class GameViewModel : ViewModel<GameView>
+using CommunityToolkit.Mvvm.Messaging;
+
+public sealed partial class GameViewModel : ViewModel<GameView>, IRecipient<WordClickMessage>
 {
     public enum GameState
     {
@@ -87,7 +89,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         this.animationService = animationService;
         this.beNice = new Chooser<string>(this.randomizer, GameViewModel.beingNice);
         this.beMean = new Chooser<string>(this.randomizer, GameViewModel.beingMean);
-        this.Messenger.Subscribe<WordClickMessage>(this.OnWordClick);
+        this.Subscribe<WordClickMessage>();
         this.State = GameState.Idle;
         this.dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(120), IsEnabled = false };
         this.dispatcherTimer.Tick += this.OnDispatcherTimerTick;
@@ -253,7 +255,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
             vm.Show(show: false);
         }
 
-        this.Messenger.Publish(ViewActivationMessage.ActivatedView.GameOver, this.gameResults);
+        new ViewActivationMessage(ViewActivationMessage.ActivatedView.GameOver, this.gameResults).Publish();
     }
 
     private void SaveGame ()
@@ -274,7 +276,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         this.wordsModel.Save();
     }
 
-    private void OnWordClick(WordClickMessage message)
+    public void Receive(WordClickMessage message)
     {
         if (this.State != GameState.Running)
         {

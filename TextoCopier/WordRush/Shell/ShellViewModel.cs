@@ -1,15 +1,16 @@
 ﻿namespace Lyt.WordRush.Shell;
 
+using CommunityToolkit.Mvvm.Messaging;
 using static Lyt.WordRush.Messaging.ViewActivationMessage;
 
-public sealed partial class ShellViewModel : ViewModel<ShellView>
+public sealed partial class ShellViewModel : ViewModel<ShellView>, IRecipient<ViewActivationMessage>
 {
     private readonly IToaster toaster;
 
     public ShellViewModel(IToaster toaster)
     {
         this.toaster = toaster;
-        this.Messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
+        this.Subscribe<ViewActivationMessage>();
     }
 
     public override void OnViewLoaded()
@@ -42,7 +43,7 @@ public sealed partial class ShellViewModel : ViewModel<ShellView>
         this.Logger.Debug("OnViewLoaded complete");
     }
 
-    private void OnViewActivation(ViewActivationMessage message)
+    public void Receive(ViewActivationMessage message)
         => this.OnViewActivation(message.View, message.ActivationParameter, false);
 
     private void OnViewActivation(ActivatedView activatedView, object? parameter = null, bool isFirstActivation = false)

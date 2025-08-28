@@ -40,7 +40,6 @@
 	  <ProjectReference Include="..\..\..\Lyt.Avalonia\Lyt.Avalonia.Controls\Lyt.Avalonia.Controls.csproj" />
 	  <ProjectReference Include="..\..\..\Lyt.Avalonia\Lyt.Avalonia.Interfaces\Lyt.Avalonia.Interfaces.csproj" />
 	  <ProjectReference Include="..\..\..\Lyt.Avalonia\Lyt.Avalonia.Mvvm\Lyt.Avalonia.Mvvm.csproj" />
-	  <ProjectReference Include="..\..\..\Lyt.Framework\Lyt.Messenger\Lyt.Messenger.csproj" />
 	  <ProjectReference Include="..\..\..\Lyt.Framework\Lyt.Model\Lyt.Model.csproj" />
 	  <ProjectReference Include="..\..\..\Lyt.Framework\Lyt.Mvvm\Lyt.Mvvm.csproj" />
 	  <ProjectReference Include="..\..\..\Lyt.Framework\Lyt.Persistence\Lyt.Persistence.csproj" />

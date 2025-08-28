@@ -13,7 +13,7 @@ public sealed partial class WordsModel : ModelBase
     private readonly IRandomizer randomizer;
 
     public WordsModel(
-        FileManagerModel fileManager, IMessenger messenger, ILogger logger, IRandomizer randomizer) : base(messenger, logger)
+        FileManagerModel fileManager, ILogger logger, IRandomizer randomizer) : base(logger)
     {
         this.fileManager = fileManager;
         this.ShouldAutoSave = true;
@@ -137,7 +137,7 @@ public sealed partial class WordsModel : ModelBase
             await Task.Delay(200);
 
             // Load game history, if any 
-            this.GameHistory = new GameHistory(this.fileManager, this.Messenger, this.Logger);
+            this.GameHistory = new GameHistory(this.fileManager, this.Logger);
             if (this.fileManager.Exists(Area.User, Kind.Json, GameHistory.GameHistoryFilename))
             {
                 var gameHistory = this.fileManager.Load<GameHistory>(Area.User, Kind.Json, GameHistory.GameHistoryFilename);

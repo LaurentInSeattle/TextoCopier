@@ -59,7 +59,7 @@ public sealed partial class CountdownViewModel : ViewModel<CountdownView>
         Schedule.OnUiThread(3_800,
             () =>
             {
-                this.Messenger.Publish( ViewActivationMessage.ActivatedView.Game, this.parameters );
+                new ViewActivationMessage(ViewActivationMessage.ActivatedView.Game, this.parameters).Publish();
             }, DispatcherPriority.Normal);
     }
 }

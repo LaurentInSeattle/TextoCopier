@@ -61,7 +61,7 @@ public sealed partial class WordBlockViewModel : ViewModel<WordBlockView>
     {
         if (this.IsClickable)
         {
-            this.Messenger.Publish(new WordClickMessage(this, this.OriginalWord, this.Language));
+            new WordClickMessage(this, this.OriginalWord, this.Language).Publish();
             this.Logger.Debug("WordBlockViewModel: Click");
         }
     }

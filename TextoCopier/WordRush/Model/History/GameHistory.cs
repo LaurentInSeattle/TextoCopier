@@ -11,14 +11,14 @@ public sealed class GameHistory : ModelBase
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
     // Only for deserialization 
-    public GameHistory() : base(null, null)
+    public GameHistory() : base(null)
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 #pragma warning restore CS8618
     {
         /* ==>  Only for deserialization */
     }
 
-    public GameHistory(FileManagerModel fileManager, IMessenger messenger, ILogger logger) : base(messenger, logger)
+    public GameHistory(FileManagerModel fileManager, ILogger logger) : base(logger)
     {
         this.fileManager = fileManager;
         this.ShouldAutoSave = false;

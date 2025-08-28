@@ -66,11 +66,16 @@ public sealed partial class GameOverViewModel(WordsModel wordsModel) : ViewModel
         this.TotalClicks = string.Format("Tutti i Clic del Mouse: {0}", this.statistics.ClicksCount);
     }
 
+#pragma warning disable IDE0079
+#pragma warning disable CA1822 // Mark members as static
     [RelayCommand]
-    public void OnExit() => this.Messenger.Publish(ActivatedView.Exit);
+    public void OnExit() => new ViewActivationMessage(ActivatedView.Exit).Publish();
 
     [RelayCommand]
-    public void OnPlayAgain() => this.Messenger.Publish(ActivatedView.Setup);
+    public void OnPlayAgain() => new ViewActivationMessage(ActivatedView.Setup).Publish();
+
+#pragma warning restore CA1822 // Mark members as static
+#pragma warning restore IDE0079
 
     [ObservableProperty]
     private string? gameOver;

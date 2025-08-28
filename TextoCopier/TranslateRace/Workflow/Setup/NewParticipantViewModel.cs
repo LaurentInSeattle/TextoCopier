@@ -1,7 +1,5 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Setup;
 
-using static MessagingExtensions; 
-
 public sealed partial class NewParticipantViewModel(TranslateRaceModel translateRaceModel) 
     : ViewModel<NewParticipantView>
 {
