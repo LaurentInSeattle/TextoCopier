@@ -49,7 +49,7 @@ public sealed partial class TemplateViewModel : ViewModel<TemplateView>
     public void OnEdit()
     {
         this.Logger.Info("Clicked on Edit!");
-        this.Messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.EditTemplate, this.template));
+        new ViewActivationMessage(ViewActivationMessage.ActivatedView.EditTemplate, this.template).Publish();
     }
 
     [RelayCommand]

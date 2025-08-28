@@ -2,7 +2,10 @@
 
 using static ViewActivationMessage;
 
-public sealed partial class ShellViewModel : ViewModel<ShellView>
+public sealed partial class ShellViewModel : 
+    ViewModel<ShellView>, 
+    IRecipient<ViewActivationMessage>,
+    IRecipient<ModelUpdateMessage>
 {
     private readonly TemplatesModel templatesModel;
     private readonly IDialogService dialogService;
@@ -27,10 +30,87 @@ public sealed partial class ShellViewModel : ViewModel<ShellView>
         this.dialogService = dialogService;
         this.toaster = toaster;
 
-        this.templatesModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
-        this.Messenger.Subscribe<ViewActivationMessage>(this.OnViewActivation);
+        this.Subscribe<ModelUpdateMessage>();
+        this.Subscribe<ViewActivationMessage>();
 
         this.Groups = [];
+    }
+
+    [RelayCommand]
+    public void OnExit() { }
+
+    [RelayCommand]
+    public void OnSettings() => this.OnViewActivation(ActivatedView.Settings);
+
+    [RelayCommand]
+    public void OnAbout() => this.OnViewActivation(ActivatedView.Help);
+
+    [RelayCommand]
+    public void OnNewGroup() => this.OnViewActivation(ActivatedView.NewGroup);
+
+    [RelayCommand]
+    public void OnEditGroup() => this.OnViewActivation(ActivatedView.EditGroup);
+
+    [RelayCommand]
+    public void OnDeleteGroup()
+    {
+        var group = this.templatesModel.SelectedGroup;
+        if (group is null)
+        {
+            return;
+        }
+
+        if (group.Templates.Count > 0)
+        {
+            var confirmActionParameters = new ConfirmActionParameters
+            {
+                Title = this.Localizer.Lookup("Shell.GroupDelete.Question"),
+                Message = this.Localizer.Lookup("Shell.GroupDelete.Hint"),
+                ActionVerb = this.Localizer.Lookup("Shell.Delete"),
+                OnConfirm = this.OnDeleteGroupConfirmed,
+            };
+
+            this.dialogService.Confirm(this.View.ToasterHost, confirmActionParameters);
+        }
+        else
+        {
+            // No UI confirmation needed if no templates created yet
+            this.OnDeleteGroupConfirmed(confirmed: true);
+        }
+    }
+
+    private void OnDeleteGroupConfirmed(bool confirmed)
+    {
+        if (!confirmed)
+        {
+            return;
+        }
+
+        var group = this.templatesModel.SelectedGroup;
+        if (group is null)
+        {
+            return;
+        }
+
+        if (this.templatesModel.CheckGroup(group.Name, out string message))
+        {
+            this.templatesModel.DeleteGroup(group.Name, out message);
+        }
+
+        if (string.IsNullOrEmpty(message))
+        {
+            this.toaster.Show(
+                this.Localizer.Lookup("Shell.Deleted"), this.Localizer.Lookup("Shell.GroupDeleted"),
+                5_000, InformationLevel.Info);
+        }
+        else
+        {
+            this.toaster.Show(
+                this.Localizer.Lookup("Shell.Error"), this.Localizer.Lookup("Shell.FailGroupDelete"),
+                12_000, InformationLevel.Error);
+        }
+
+        this.BindGroupIcons();
     }
 
     public override void OnViewLoaded()
@@ -85,55 +165,22 @@ public sealed partial class ShellViewModel : ViewModel<ShellView>
         this.Logger.Debug("OnViewLoaded complete");
     }
 
-    private void SetupAvailableIcons()
+    public void Receive (ModelUpdateMessage message)
     {
-        //_ = Task.Run(async () => 
-        // {
-            // Detect Available Icons in asset file and pass that to the model 
-            List<string> icons = ShellViewModel.DetectAvailableIcons();
-            this.Logger.Debug(icons.Count + " icons available.");
-            this.templatesModel.AvailableIcons = icons;
-            // await Task.Delay(250); 
-            // this.profiler.MemorySnapshot("Shell View Loaded", withGCCollect: true);
-        //}); 
-    }
-
-    private static List<string> DetectAvailableIcons()
-    {
-        var icons = new List<string>(2200);
-        const string uriString = "avares://TextoCopier/Assets/Icons/FluentSVGResourceDictionary.axaml";
-        var uri = new Uri(uriString);
-        var resourceInclude = new ResourceInclude(uri) { Source = uri };
-        foreach (object? keyObject in resourceInclude.Loaded.Keys)
+        Dispatch.OnUiThread(() =>
         {
-            if (keyObject is string keyString)
+            string msgProp = string.IsNullOrWhiteSpace(message.PropertyName) ? "<unknown>" : message.PropertyName;
+            string msgMethod = string.IsNullOrWhiteSpace(message.MethodName) ? "<unknown>" : message.MethodName;
+            this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
+
+            if (message.PropertyName != nameof(this.templatesModel.SelectedGroup))
             {
-                if (keyString.Contains("DrawingGroup") || keyString.Contains("ic_"))
-                {
-                    continue;
-                }
-
-                icons.Add(keyString);
+                this.BindGroupIcons();
             }
-        }
-
-        icons.Sort();
-        return icons;
+        });
     }
 
-    private void OnModelUpdated(ModelUpdateMessage message)
-    {
-        string msgProp = string.IsNullOrWhiteSpace(message.PropertyName) ? "<unknown>" : message.PropertyName;
-        string msgMethod = string.IsNullOrWhiteSpace(message.MethodName) ? "<unknown>" : message.MethodName;
-        this.Logger.Debug("Model update, property: " + msgProp + " method: " + msgMethod);
-
-        if (message.PropertyName != nameof(this.templatesModel.SelectedGroup))
-        {
-            this.BindGroupIcons();
-        }
-    }
-
-    private void OnViewActivation(ViewActivationMessage message)
+    public void Receive(ViewActivationMessage message)
         => this.OnViewActivation(message.View, message.ActivationParameter, false);
 
     private void OnViewActivation(ActivatedView activatedView, object? parameter = null, bool isFirstActivation = false)
@@ -177,80 +224,49 @@ public sealed partial class ShellViewModel : ViewModel<ShellView>
         }
     }
 
-    [RelayCommand]
-    public void OnSettings() => this.OnViewActivation(ActivatedView.Settings);
-
-    [RelayCommand]
-    public void OnAbout() => this.OnViewActivation(ActivatedView.Help);
-
-    [RelayCommand]
-    public void OnNewGroup() => this.OnViewActivation(ActivatedView.NewGroup);
-
-    [RelayCommand]
-    public void OnEditGroup() => this.OnViewActivation(ActivatedView.EditGroup);
-
-    [RelayCommand]
-    public void OnExit() { }
-
-    private void OnDeleteGroup()
+    private static void SetupWorkflow()
     {
-        var group = this.templatesModel.SelectedGroup;
-        if (group is null)
-        {
-            return;
-        }
-
-        if (group.Templates.Count > 0)
-        {
-            var confirmActionParameters = new ConfirmActionParameters
-            {
-                Title = this.Localizer.Lookup("Shell.GroupDelete.Question"),
-                Message = this.Localizer.Lookup("Shell.GroupDelete.Hint"),
-                ActionVerb = this.Localizer.Lookup("Shell.Delete"),
-                OnConfirm = this.OnDeleteGroupConfirmed,
-            };
-
-            this.dialogService.Confirm(this.View.ToasterHost, confirmActionParameters);
-        } 
-        else
-        {
-            // No UI confirmation needed if no templates created yet
-            this.OnDeleteGroupConfirmed(confirmed: true);
-        }
+        App.GetRequiredService<GroupViewModel>().CreateViewAndBind();
+        App.GetRequiredService<NewEditGroupViewModel>().CreateViewAndBind();
+        App.GetRequiredService<HelpViewModel>().CreateViewAndBind();
+        App.GetRequiredService<SettingsViewModel>().CreateViewAndBind();
+        App.GetRequiredService<NewEditTemplateViewModel>().CreateViewAndBind();
     }
 
-    private void OnDeleteGroupConfirmed(bool confirmed)
+    private static List<string> DetectAvailableIcons()
     {
-        if ( ! confirmed)
+        var icons = new List<string>(2200);
+        const string uriString = "avares://TextoCopier/Assets/Icons/FluentSVGResourceDictionary.axaml";
+        var uri = new Uri(uriString);
+        var resourceInclude = new ResourceInclude(uri) { Source = uri };
+        foreach (object? keyObject in resourceInclude.Loaded.Keys)
         {
-            return;
+            if (keyObject is string keyString)
+            {
+                if (keyString.Contains("DrawingGroup") || keyString.Contains("ic_"))
+                {
+                    continue;
+                }
+
+                icons.Add(keyString);
+            }
         }
 
-        var group = this.templatesModel.SelectedGroup;
-        if (group is null)
-        {
-            return;
-        }
+        icons.Sort();
+        return icons;
+    }
 
-        if (this.templatesModel.CheckGroup(group.Name, out string message))
-        {
-            this.templatesModel.DeleteGroup(group.Name, out message);
-        }
-
-        if (string.IsNullOrEmpty(message))
-        {
-            this.toaster.Show(
-                this.Localizer.Lookup("Shell.Deleted"),  this.Localizer.Lookup("Shell.GroupDeleted"), 
-                5_000, InformationLevel.Info);
-        }
-        else
-        {
-            this.toaster.Show(
-                this.Localizer.Lookup("Shell.Error"), this.Localizer.Lookup("Shell.FailGroupDelete"), 
-                12_000, InformationLevel.Error);
-        }
-
-        this.BindGroupIcons(); 
+    private void SetupAvailableIcons()
+    {
+        //_ = Task.Run(async () => 
+        // {
+        // Detect Available Icons in asset file and pass that to the model 
+        List<string> icons = ShellViewModel.DetectAvailableIcons();
+        this.Logger.Debug(icons.Count + " icons available.");
+        this.templatesModel.AvailableIcons = icons;
+        // await Task.Delay(250); 
+        // this.profiler.MemorySnapshot("Shell View Loaded", withGCCollect: true);
+        //}); 
     }
 
     private void Activate<TViewModel, TControl>(bool isFirstActivation, object? activationParameters)
@@ -311,15 +327,6 @@ public sealed partial class ShellViewModel : ViewModel<ShellView>
         {
             // Notify: Done elsewhere
         }
-    }
-
-    private static void SetupWorkflow()
-    {
-        App.GetRequiredService<GroupViewModel>().CreateViewAndBind();
-        App.GetRequiredService<NewEditGroupViewModel>().CreateViewAndBind();
-        App.GetRequiredService<HelpViewModel>().CreateViewAndBind();
-        App.GetRequiredService<SettingsViewModel>().CreateViewAndBind();
-        App.GetRequiredService<NewEditTemplateViewModel>().CreateViewAndBind();
     }
 
     partial void OnDeleteGroupIsVisibleChanged(bool value)

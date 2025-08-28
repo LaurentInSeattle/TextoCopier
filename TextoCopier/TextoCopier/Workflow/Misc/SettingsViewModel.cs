@@ -25,7 +25,7 @@ public sealed partial class SettingsViewModel : ViewModel<SettingsView>
 
     [RelayCommand]
     public void OnClose()
-        => this.Messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.GoBack));
+        => new ViewActivationMessage(ViewActivationMessage.ActivatedView.GoBack).Publish();
 
     [RelayCommand]
     public void OnSave()

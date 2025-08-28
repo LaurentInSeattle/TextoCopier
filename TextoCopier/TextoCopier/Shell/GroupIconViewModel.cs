@@ -4,6 +4,18 @@ public sealed partial class GroupIconViewModel : ViewModel<GroupIconView>
 {
     private readonly string groupName;
 
+    [ObservableProperty]
+    private string iconGlyphSource;
+
+    [ObservableProperty]
+    private string iconText;
+
+    [ObservableProperty]
+    private SelectionGroup selectionGroup;
+
+    [ObservableProperty]
+    private bool isSelected;
+
     public GroupIconViewModel(Group group, SelectionGroup selectionGroup, bool selected)
     {
         this.groupName = group.Name;
@@ -23,18 +35,6 @@ public sealed partial class GroupIconViewModel : ViewModel<GroupIconView>
             this.Logger.Warning("Failed to select group: " + message);
         }
 
-        this.Messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.Group)); 
+        new ViewActivationMessage(ViewActivationMessage.ActivatedView.Group).Publish(); 
     }
-
-    [ObservableProperty]
-    private string iconGlyphSource;
-
-    [ObservableProperty]
-    private string iconText;
-
-    [ObservableProperty]
-    private SelectionGroup selectionGroup;
-
-    [ObservableProperty]
-    private bool isSelected;
 }

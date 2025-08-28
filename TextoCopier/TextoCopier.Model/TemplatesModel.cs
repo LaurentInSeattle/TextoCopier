@@ -11,7 +11,7 @@ public sealed partial class TemplatesModel : ModelBase
     private static readonly TemplatesModel DefaultTemplate =
         new()
         {
-            Language = DefaultLanguage ,
+            Language = DefaultLanguage,
             Groups =
             [
                 new Group
@@ -33,9 +33,9 @@ public sealed partial class TemplatesModel : ModelBase
                     Icon = "link",
                     Templates =
                     [
-                        new Template 
-                        { 
-                            Name = "Thanks + Yes" , 
+                        new Template
+                        {
+                            Name = "Thanks + Yes" ,
                             Value = "Hi <name>, thank you for reaching out. Yes, this sounds like a very good opportunity and I would like to learn more about it."
                         },
                         new Template
@@ -106,7 +106,7 @@ public sealed partial class TemplatesModel : ModelBase
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 #pragma warning disable IDE0021 // Use expression body for constructor 
-    public TemplatesModel() : base ( null, null)
+    public TemplatesModel() : base(null)
     {
         // Do not inject the FileManagerModel instance: a parameter-less ctor is required for Deserialization 
         // Empty CTOR required for deserialization 
@@ -116,7 +116,7 @@ public sealed partial class TemplatesModel : ModelBase
 #pragma warning restore CS8625 
 #pragma warning restore CS8618
 
-    public TemplatesModel(FileManagerModel fileManager, IMessenger messenger, ILogger logger) : base(messenger, logger)
+    public TemplatesModel(FileManagerModel fileManager, ILogger logger) : base(logger)
     {
         this.fileManager = fileManager;
         this.ShouldAutoSave = true;
@@ -205,8 +205,8 @@ public sealed partial class TemplatesModel : ModelBase
     private delegate bool ModelOperationDelegate(Group group, string parameter1, string parameter2, out string message);
 
     private bool ModelOperation(
-        ModelOperationDelegate modelOperation, string groupName, 
-        string parameter1, string parameter2, 
+        ModelOperationDelegate modelOperation, string groupName,
+        string parameter1, string parameter2,
         out string message,
         [CallerMemberName] string callerMemberName = "")
     {
@@ -218,7 +218,7 @@ public sealed partial class TemplatesModel : ModelBase
             if (status)
             {
                 this.IsDirty = true;
-                this.NotifyUpdate(propertyName:string.Empty, methodName: callerMemberName);
+                this.NotifyUpdate(propertyName: string.Empty, methodName: callerMemberName);
             }
         }
 

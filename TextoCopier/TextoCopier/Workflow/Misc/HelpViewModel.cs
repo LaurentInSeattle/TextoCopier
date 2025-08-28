@@ -10,5 +10,5 @@ public sealed partial class HelpViewModel : ViewModel<HelpView>
 
     [RelayCommand]
     public void OnClose()
-        => this.Messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.GoBack));
+        => new ViewActivationMessage(ViewActivationMessage.ActivatedView.GoBack).Publish();
 }

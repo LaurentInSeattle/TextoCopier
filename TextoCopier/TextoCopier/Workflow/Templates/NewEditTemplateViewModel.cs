@@ -99,7 +99,7 @@ public sealed partial class NewEditTemplateViewModel(
 
     [RelayCommand]
     public void OnClose()
-        => this.Messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.GoBack));
+        => new ViewActivationMessage(ViewActivationMessage.ActivatedView.GoBack).Publish();
 
     public void OnEditing()
     {

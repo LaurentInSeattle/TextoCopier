@@ -1,6 +1,6 @@
 ﻿namespace Lyt.TextoCopier.Workflow;
 
-public sealed partial class GroupViewModel : ViewModel<GroupView>
+public sealed partial class GroupViewModel : ViewModel<GroupView>, IRecipient<ModelUpdateMessage>
 {
     private readonly TemplatesModel templatesModel;
 
@@ -16,13 +16,27 @@ public sealed partial class GroupViewModel : ViewModel<GroupView>
     public GroupViewModel(TemplatesModel templatesModel)
     {
         this.templatesModel = templatesModel;
-        this.templatesModel.SubscribeToUpdates(this.OnModelUpdated, withUiDispatch: true);
         this.Templates = [];
+        this.Subscribe<ModelUpdateMessage>();
     }
 
     [RelayCommand]
     public void OnNewTemplate(object? _)
-        => this.Messenger.Publish(new ViewActivationMessage(ViewActivationMessage.ActivatedView.NewTemplate));
+        => new ViewActivationMessage(ViewActivationMessage.ActivatedView.NewTemplate).Publish();
+
+    public void Receive(ModelUpdateMessage message)
+    {
+        var group = this.templatesModel.SelectedGroup;
+        if (group is not null)
+        {
+            this.Bind(group.Name);
+        }
+        else
+        {
+            this.GroupName = this.Localizer.Lookup("Group.NoSelection");
+            this.GroupDescription = string.Empty;
+        }
+    }
 
     private void Bind(string groupName)
     {
@@ -42,19 +56,5 @@ public sealed partial class GroupViewModel : ViewModel<GroupView>
         }
 
         this.Logger.Info(message);
-    }
-
-    private void OnModelUpdated(ModelUpdateMessage message)
-    {
-        var group = this.templatesModel.SelectedGroup; 
-        if ( group is not null)
-        {
-            this.Bind(group.Name);
-        }
-        else
-        {
-            this.GroupName = this.Localizer.Lookup("Group.NoSelection"); 
-            this.GroupDescription = string.Empty;
-        }
     }
 }
