@@ -44,7 +44,7 @@ public sealed partial class EvaluationViewModel : ViewModel<EvaluationView>
     }
 
     [RelayCommand]
-    public void OnNext() => this.Messenger.Publish(new EvaluationResultMessage(this.result));
+    public void OnNext() => new EvaluationResultMessage(this.result).Publish();
 
     [ObservableProperty]
     private string glyphSource ;

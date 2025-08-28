@@ -93,7 +93,7 @@ public sealed partial class ScoreViewModel : ViewModel<ScoreView>
             {
                 string message = ScoreViewModel.DifficultyToScoreText(phraseDifficulty);
                 this.PopMessage(message, ColorTheme.Text);
-                this.Messenger.Publish(new ScoreUpdateMessage(teamScore + score));
+                new ScoreUpdateMessage(teamScore + score).Publish();
             }, DispatcherPriority.Background);
 
         // Malus 
@@ -103,7 +103,7 @@ public sealed partial class ScoreViewModel : ViewModel<ScoreView>
             {
                 string message = ScoreViewModel.MalusText(evaluationResult, malus);
                 this.PopMessage(message, ColorTheme.Text);
-                this.Messenger.Publish(new ScoreUpdateMessage(teamScore + score - malus));
+                new ScoreUpdateMessage(teamScore + score - malus).Publish();
             }, DispatcherPriority.Background);
 
         // Called a Friend 
@@ -113,7 +113,7 @@ public sealed partial class ScoreViewModel : ViewModel<ScoreView>
             {
                 string message = ScoreViewModel.LifelineText(hasCalledFriend);
                 this.PopMessage(message, ColorTheme.Text);
-                this.Messenger.Publish(new ScoreUpdateMessage(teamScore + score - malus - lifeline));
+                new ScoreUpdateMessage(teamScore + score - malus - lifeline).Publish();
             }, DispatcherPriority.Background);
 
         // Time Bonus
@@ -123,7 +123,7 @@ public sealed partial class ScoreViewModel : ViewModel<ScoreView>
             {
                 string message = ScoreViewModel.TimeBonusText(translateTime);
                 this.PopMessage(message, ColorTheme.Text);
-                this.Messenger.Publish(new ScoreUpdateMessage(teamScore + score - malus - lifeline + timeBonus));
+                new ScoreUpdateMessage(teamScore + score - malus - lifeline + timeBonus).Publish();
             }, DispatcherPriority.Background);
 
         // Final 
@@ -140,7 +140,7 @@ public sealed partial class ScoreViewModel : ViewModel<ScoreView>
 
                 team.Score = teamScore + this.scoreUpdate;
                 this.NextVisible = true;
-                this.Messenger.Publish(new ScoreUpdateMessage(teamScore + score - malus - lifeline + timeBonus));
+                new ScoreUpdateMessage(teamScore + score - malus - lifeline + timeBonus).Publish();
             }, DispatcherPriority.Background);
     }
 
@@ -241,5 +241,5 @@ public sealed partial class ScoreViewModel : ViewModel<ScoreView>
     }
 
     [RelayCommand]
-    public void OnNext() => this.Messenger.Publish(new ScoringCompleteMessage(this.scoreUpdate));
+    public void OnNext() => new ScoringCompleteMessage(this.scoreUpdate).Publish();
 }

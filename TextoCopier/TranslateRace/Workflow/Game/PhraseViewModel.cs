@@ -1,6 +1,8 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Game;
 
-public sealed partial class PhraseViewModel : ViewModel<PhraseView>
+using CommunityToolkit.Mvvm.Messaging;
+
+public sealed partial class PhraseViewModel : ViewModel<PhraseView>, IRecipient<PlayerDropMessage>
 {
     [ObservableProperty]
     private bool visible;
@@ -31,7 +33,7 @@ public sealed partial class PhraseViewModel : ViewModel<PhraseView>
     {
         this.TeamColor = ColorTheme.Text;
         this.Visible = true;
-        this.Messenger.Subscribe<PlayerDropMessage>(this.OnPlayerDrop);
+        this.Subscribe<PlayerDropMessage>();
     }
 
     public void Update(Team team, Phrase phrase)
@@ -47,7 +49,7 @@ public sealed partial class PhraseViewModel : ViewModel<PhraseView>
         this.NextVisible = true;
     }
 
-    private void OnPlayerDrop(PlayerDropMessage message)
+    public void Receive(PlayerDropMessage _)
     {
         if (this.team is null)
         {
@@ -65,7 +67,7 @@ public sealed partial class PhraseViewModel : ViewModel<PhraseView>
     {
         // Can call only once 
         this.CallVisible = false;
-        this.Messenger.Publish(new PlayerLifelineMessage());
+        new PlayerLifelineMessage().Publish();
     }
 
     [RelayCommand]
@@ -73,7 +75,7 @@ public sealed partial class PhraseViewModel : ViewModel<PhraseView>
     {
         if (this.isRevealed)
         {
-            this.Messenger.Publish(new TranslateCompleteMessage());
+            new TranslateCompleteMessage().Publish();
             this.NextVisible = false;
         }
         else
@@ -83,7 +85,7 @@ public sealed partial class PhraseViewModel : ViewModel<PhraseView>
                 throw new Exception("No phrase!");
             }
 
-            this.Messenger.Publish(new TranslateRevealedMessage());
+            new TranslateRevealedMessage().Publish();
             this.English = this.phrase.English;
             this.Translated = this.phrase.Translated;
             this.isRevealed = true;

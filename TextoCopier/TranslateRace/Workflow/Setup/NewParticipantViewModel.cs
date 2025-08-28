@@ -40,8 +40,12 @@ public sealed partial class NewParticipantViewModel(TranslateRaceModel translate
         }
     }
 
+#pragma warning disable CA1822 // Mark members as static
+
     [RelayCommand]
-    public void OnClose() => Select(ActivatedView.Setup);
+    public void OnClose() => AppMessagingExtensions.Select(ActivatedView.Setup);
+
+#pragma warning restore CA1822 // Mark members as static
 
     public void OnEditing()
     {

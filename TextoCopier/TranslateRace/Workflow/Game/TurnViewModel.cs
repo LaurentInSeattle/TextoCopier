@@ -53,6 +53,6 @@ public sealed partial class TurnViewModel : ViewModel<TurnView>
             return;
         }
 
-        this.Messenger.Publish<PlayerDropMessage>(new PlayerDropMessage(this.player));
+        new PlayerDropMessage(this.player).Publish<PlayerDropMessage>();
     }
 }

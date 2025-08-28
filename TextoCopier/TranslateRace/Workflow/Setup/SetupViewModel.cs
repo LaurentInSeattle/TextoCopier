@@ -1,6 +1,7 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Setup;
 
-using static MessagingExtensions; 
+using CommunityToolkit.Mvvm.Messaging;
+using static AppMessagingExtensions; 
 
 public enum PlayerTeam
 {
@@ -9,7 +10,7 @@ public enum PlayerTeam
     Right,
 }
 
-public sealed partial class SetupViewModel : ViewModel<SetupView>
+public sealed partial class SetupViewModel : ViewModel<SetupView>, IRecipient<PlayerAssignmentMessage>
 {
     private readonly TranslateRaceModel translateRaceModel;
 
@@ -34,7 +35,7 @@ public sealed partial class SetupViewModel : ViewModel<SetupView>
     public SetupViewModel(TranslateRaceModel translateRaceModel)
     {
         this.translateRaceModel = translateRaceModel;
-        this.Messenger.Subscribe<PlayerAssignmentMessage>(this.OnPlayerAssignmentMessage);
+        this.Subscribe<PlayerAssignmentMessage>();
         this.LeftTeam = [];
         this.RightTeam = [];
         this.BottomTeam = [];
@@ -51,7 +52,7 @@ public sealed partial class SetupViewModel : ViewModel<SetupView>
         this.LoadParticipants();
     } 
 
-    private void OnPlayerAssignmentMessage(PlayerAssignmentMessage message)
+    public void Receive(PlayerAssignmentMessage message)
     {
         if ((message.PlayerViewModel is not PlayerViewModel playerViewModel) ||
             (playerViewModel.Participant is not Participant participant))
@@ -153,8 +154,12 @@ public sealed partial class SetupViewModel : ViewModel<SetupView>
         this.ReorderAndUpdateTeamCounts();
     }
 
+#pragma warning disable CA1822 // Mark members as static
+
     [RelayCommand]
     public void OnAdd(object? _) => Select(ActivatedView.NewParticipant);
+
+#pragma warning restore CA1822 // Mark members as static
 
     [RelayCommand]
     public void OnNext(object? _)

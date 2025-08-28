@@ -1,6 +1,6 @@
 ﻿namespace Lyt.TranslateRace.Shell;
 
-using static MessagingExtensions; 
+using static AppMessagingExtensions; 
 
 public sealed partial class ShellViewModel : ViewModel<ShellView>
 {
@@ -60,7 +60,6 @@ public sealed partial class ShellViewModel : ViewModel<ShellView>
         // Needs to be kept alive as a class member, or else callbacks will die (and wont work) 
         this.viewSelector =
             new ViewSelector<ActivatedView>(
-                this.Messenger,
                 this.View.ShellViewContent,
                 null, // no secondary container 
                 null, // no selector to update

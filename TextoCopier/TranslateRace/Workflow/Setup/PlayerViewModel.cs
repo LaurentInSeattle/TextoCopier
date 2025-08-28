@@ -92,36 +92,21 @@ public sealed partial class PlayerViewModel : ViewModel<PlayerView>
                 return;
         }
 
-        IMessenger messenger = ApplicationBase.GetRequiredService<IMessenger>();
-        messenger.Publish(new PlayerAssignmentMessage(this, this.assignment, newAssignment));
+        new PlayerAssignmentMessage(this, this.assignment, newAssignment).Publish();
     }
 
     [RelayCommand]
     public void OnRight()
     {
-        Assignment newAssignment;
-        switch (this.assignment)
+        var newAssignment = this.assignment switch
         {
-            default:
-            case Assignment.Participant:
-                newAssignment = Assignment.Right;
-                break;
+            Assignment.Left => Assignment.Participant,
+            Assignment.Right => Assignment.Absent,
+            Assignment.Absent => Assignment.Delete,
+            _ => Assignment.Right,
+        };
 
-            case Assignment.Left:
-                newAssignment = Assignment.Participant;
-                break;
-
-            case Assignment.Right:
-                newAssignment = Assignment.Absent;
-                break;
-
-            case Assignment.Absent:
-                newAssignment = Assignment.Delete;
-                break;
-        }
-
-        IMessenger messenger = ApplicationBase.GetRequiredService<IMessenger>();
-        messenger.Publish(new PlayerAssignmentMessage(this, this.assignment, newAssignment));
+        new PlayerAssignmentMessage(this, this.assignment, newAssignment).Publish();
     }
 
     [RelayCommand]
@@ -144,7 +129,6 @@ public sealed partial class PlayerViewModel : ViewModel<PlayerView>
                 break;
         }
 
-        IMessenger messenger = ApplicationBase.GetRequiredService<IMessenger>();
-        messenger.Publish(new PlayerAssignmentMessage(this, this.assignment, newAssignment));
+        new PlayerAssignmentMessage(this, this.assignment, newAssignment).Publish();
     }
 }

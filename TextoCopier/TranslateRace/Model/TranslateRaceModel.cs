@@ -16,7 +16,7 @@ public sealed partial class TranslateRaceModel : ModelBase
     public TranslateRaceModel(
         FileManagerModel fileManager,
         TranslatorService translatorService,
-        IMessenger messenger, ILogger logger, IRandomizer randomizer) : base(messenger, logger)
+        ILogger logger, IRandomizer randomizer) : base(logger)
     {
         this.fileManager = fileManager;
         this.translatorService = translatorService;

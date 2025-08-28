@@ -1,8 +1,18 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Game;
 
-using static MessagingExtensions; 
+using CommunityToolkit.Mvvm.Messaging;
+using static AppMessagingExtensions; 
 
-public sealed partial class GameViewModel : ViewModel<GameView>
+public sealed partial class GameViewModel : 
+    ViewModel<GameView>,
+    IRecipient<DifficultyChoiceMessage>, 
+    IRecipient<PlayerDropMessage>,
+    IRecipient<PlayerLifelineMessage>,
+    IRecipient<TranslateCompleteMessage>,
+    IRecipient<TranslateRevealedMessage>,
+    IRecipient<EvaluationResultMessage>,
+    IRecipient<ScoringCompleteMessage>,
+    IRecipient<ScoreUpdateMessage>
 {
     public enum GameState
     {
@@ -93,14 +103,14 @@ public sealed partial class GameViewModel : ViewModel<GameView>
                 this.RightTeamName, TranslateRaceModel.WinScore, ColorTheme.RightBackground, ColorTheme.RightForeground);
         this.RightTeamScore.Update(0);
 
-        this.Messenger.Subscribe<DifficultyChoiceMessage>(this.OnDifficultyChoice);
-        this.Messenger.Subscribe<PlayerDropMessage>(this.OnPlayerDrop);
-        this.Messenger.Subscribe<PlayerLifelineMessage>(this.OnPlayerLifeline);
-        this.Messenger.Subscribe<TranslateCompleteMessage>(this.OnTranslateComplete);
-        this.Messenger.Subscribe<TranslateRevealedMessage>(this.OnTranslateRevealed);
-        this.Messenger.Subscribe<EvaluationResultMessage>(this.OnEvaluationResult);
-        this.Messenger.Subscribe<ScoringCompleteMessage>(this.OnScoringComplete);
-        this.Messenger.Subscribe<ScoreUpdateMessage>(this.OnScoreUpdate);
+        this.Subscribe<DifficultyChoiceMessage>();
+        this.Subscribe<PlayerDropMessage>();
+        this.Subscribe<PlayerLifelineMessage>();
+        this.Subscribe<TranslateCompleteMessage>();
+        this.Subscribe<TranslateRevealedMessage>();
+        this.Subscribe<EvaluationResultMessage>();
+        this.Subscribe<ScoringCompleteMessage>();
+        this.Subscribe<ScoreUpdateMessage>();
     }
 
     public GameStep TurnStep
@@ -394,7 +404,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         }
     }
 
-    private void OnPlayerDrop(PlayerDropMessage message)
+    public void Receive(PlayerDropMessage message)
     {
         if (this.State != GameState.Running)
         {
@@ -421,7 +431,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         this.Turn = new TurnViewModel(this.CurrentTeam, this.CurrentPlayer, this.NextTeam, this.NextPlayer);
     }
 
-    private void OnPlayerLifeline(PlayerLifelineMessage message)
+    public void Receive(PlayerLifelineMessage message)
     {
         if ((this.State != GameState.Running) || (this.TurnStep != GameStep.Translate))
         {
@@ -448,7 +458,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         this.Turn = new TurnViewModel(this.CurrentTeam, this.CurrentPlayer, this.NextTeam, this.NextPlayer);
     }
 
-    private void OnDifficultyChoice(DifficultyChoiceMessage message)
+    public void Receive(DifficultyChoiceMessage message)
     {
         if ((this.Phrase is null) ||
             (this.Options is null) ||
@@ -477,7 +487,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         this.TurnStep = GameStep.Translate;
     }
 
-    private void OnTranslateRevealed(TranslateRevealedMessage message)
+    public void Receive(TranslateRevealedMessage message)
     {
         if ((this.Phrase is null) ||
             (this.Options is null) ||
@@ -498,7 +508,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         this.Countdown.Stop();
     }
 
-    private void OnTranslateComplete(TranslateCompleteMessage message)
+    public void Receive(TranslateCompleteMessage message)
     {
         if ((this.State != GameState.Running) || (this.TurnStep != GameStep.Translate))
         {
@@ -508,7 +518,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         this.TurnStep = GameStep.Evaluate;
     }
 
-    private void OnEvaluationResult(EvaluationResultMessage message)
+    public void Receive(EvaluationResultMessage message)
     {
         if ((this.State != GameState.Running) || (this.TurnStep != GameStep.Evaluate))
         {
@@ -519,7 +529,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         this.TurnStep = GameStep.Score;
     }
 
-    private void OnScoringComplete(ScoringCompleteMessage message)
+    public void Receive(ScoringCompleteMessage message)
     {
         if ((this.State != GameState.Running) || (this.TurnStep != GameStep.Score))
         {
@@ -545,7 +555,7 @@ public sealed partial class GameViewModel : ViewModel<GameView>
         }
     }
 
-    private void OnScoreUpdate(ScoreUpdateMessage message)
+    public void Receive(ScoreUpdateMessage message)
     {
         if ((this.State != GameState.Running) ||
             (this.TurnStep != GameStep.Score) ||

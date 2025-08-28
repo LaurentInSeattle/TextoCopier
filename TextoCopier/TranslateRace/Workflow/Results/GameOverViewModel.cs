@@ -1,6 +1,6 @@
 ﻿namespace Lyt.TranslateRace.Workflow.Results;
 
-using static MessagingExtensions;
+using static AppMessagingExtensions;
 
 public sealed partial class GameOverViewModel(TranslateRaceModel model) : ViewModel<GameOverView>
 {
@@ -34,11 +34,14 @@ public sealed partial class GameOverViewModel(TranslateRaceModel model) : ViewMo
         this.Profiler.FullGcCollect();
     }
 
+#pragma warning disable CA1822 // Mark members as static
     [RelayCommand]
-    public void OnExit(object? _) => MessagingExtensions.Exit();
+    public void OnExit(object? _) => Exit();
 
     [RelayCommand]
     public void OnPlayAgain(object? _) => Select(ActivatedView.Setup);
+
+#pragma warning restore CA1822 // Mark members as static
 
     private void ShowResults()
     {

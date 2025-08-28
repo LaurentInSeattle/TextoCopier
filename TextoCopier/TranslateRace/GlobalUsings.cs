@@ -78,7 +78,6 @@ global using Lyt.Framework.Interfaces.Randomizing;
 global using Lyt.Model;
 global using Lyt.Mvvm;
 global using Lyt.Persistence;
-global using Lyt.Messaging;
 global using Lyt.Utilities.Extensions;
 global using Lyt.Utilities.Profiling;
 global using Lyt.Utilities.Randomizing;

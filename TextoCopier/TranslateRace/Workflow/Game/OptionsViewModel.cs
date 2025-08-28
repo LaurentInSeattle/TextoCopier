@@ -46,5 +46,5 @@ public sealed partial class OptionsViewModel : ViewModel<OptionsView>
 
     [RelayCommand]
     public void OnNext()
-        => this.Messenger.Publish(new DifficultyChoiceMessage(this.difficulty));
+        => new DifficultyChoiceMessage(this.difficulty).Publish();
 }
