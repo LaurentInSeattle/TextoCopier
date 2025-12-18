@@ -1,41 +1,41 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-    <RootNamespace>Lyt.WordRush</RootNamespace>
-  </PropertyGroup>
-  <PropertyGroup Label="Avalonia">
-    <AvaloniaXamlVerboseExceptions>True</AvaloniaXamlVerboseExceptions>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFrameworks>net10.0</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+		<RootNamespace>Lyt.WordRush</RootNamespace>
+	</PropertyGroup>
+	<PropertyGroup Label="Avalonia">
+		<AvaloniaXamlVerboseExceptions>True</AvaloniaXamlVerboseExceptions>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<AvaloniaResource Include="Assets\**" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <AvaloniaXaml Remove="Assets\Icons\PathResourceDictionary.axaml" />
+		<AvaloniaXaml Remove="Assets\Icons\PathResourceDictionary.axaml" />
 	</ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.3.9" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.3.9" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.9" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.9" />
-    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-  </ItemGroup>
+		<PackageReference Include="Avalonia" Version="11.3.10" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.3.10" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.10" />
+		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.10" />
+		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\Lyt.Avalonia\Lyt.Avalonia.Controls\Lyt.Avalonia.Controls.csproj" />
-	  <ProjectReference Include="..\..\..\Lyt.Avalonia\Lyt.Avalonia.Interfaces\Lyt.Avalonia.Interfaces.csproj" />
-	  <ProjectReference Include="..\..\..\Lyt.Avalonia\Lyt.Avalonia.Mvvm\Lyt.Avalonia.Mvvm.csproj" />
-	  <ProjectReference Include="..\..\..\Lyt.Framework\Lyt.Framework.Interfaces\Lyt.Framework.Interfaces.csproj" />
-	  <ProjectReference Include="..\..\..\Lyt.Framework\Lyt.Model\Lyt.Model.csproj" />
-	  <ProjectReference Include="..\..\..\Lyt.Framework\Lyt.Mvvm\Lyt.Mvvm.csproj" />
-	  <ProjectReference Include="..\..\..\Lyt.Framework\Lyt.Persistence\Lyt.Persistence.csproj" />
-	  <ProjectReference Include="..\..\..\Lyt.Framework\Lyt.Utilities\Lyt.Utilities.csproj" />
+		<ProjectReference Include="..\..\..\Lyt.Avalonia\Lyt.Avalonia.Controls\Lyt.Avalonia.Controls.csproj" />
+		<ProjectReference Include="..\..\..\Lyt.Avalonia\Lyt.Avalonia.Interfaces\Lyt.Avalonia.Interfaces.csproj" />
+		<ProjectReference Include="..\..\..\Lyt.Avalonia\Lyt.Avalonia.Mvvm\Lyt.Avalonia.Mvvm.csproj" />
+		<ProjectReference Include="..\..\..\Lyt.Framework\Lyt.Framework.Interfaces\Lyt.Framework.Interfaces.csproj" />
+		<ProjectReference Include="..\..\..\Lyt.Framework\Lyt.Model\Lyt.Model.csproj" />
+		<ProjectReference Include="..\..\..\Lyt.Framework\Lyt.Mvvm\Lyt.Mvvm.csproj" />
+		<ProjectReference Include="..\..\..\Lyt.Framework\Lyt.Persistence\Lyt.Persistence.csproj" />
+		<ProjectReference Include="..\..\..\Lyt.Framework\Lyt.Utilities\Lyt.Utilities.csproj" />
 	</ItemGroup>
 </Project>
