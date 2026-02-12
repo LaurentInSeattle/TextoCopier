@@ -2,8 +2,8 @@
 
 using static ViewActivationMessage;
 
-public sealed partial class ShellViewModel : 
-    ViewModel<ShellView>, 
+public sealed partial class ShellViewModel :
+    ViewModel<ShellView>,
     IRecipient<ViewActivationMessage>,
     IRecipient<ModelUpdateMessage>
 {
@@ -36,8 +36,12 @@ public sealed partial class ShellViewModel :
         this.Groups = [];
     }
 
+#pragma warning disable CA1822 
+    // Mark members as static
+    // Relay commands canot be static.
     [RelayCommand]
     public void OnExit() { }
+#pragma warning restore CA1822 // Mark members as static
 
     [RelayCommand]
     public void OnSettings() => this.OnViewActivation(ActivatedView.Settings);
@@ -147,13 +151,13 @@ public sealed partial class ShellViewModel :
         if (this.templatesModel.Groups.Count > 0)
         {
             this.toaster.Show(
-                this.Localizer.Lookup("Shell.Ready"), this.Localizer.Lookup("Shell.Greetings"), 
+                this.Localizer.Lookup("Shell.Ready"), this.Localizer.Lookup("Shell.Greetings"),
                 5_000, InformationLevel.Info);
         }
         else
         {
             this.toaster.Show(
-                this.Localizer.Lookup("Shell.NoGroups.Title"), this.Localizer.Lookup("Shell.NoGroups.Hint"), 
+                this.Localizer.Lookup("Shell.NoGroups.Title"), this.Localizer.Lookup("Shell.NoGroups.Hint"),
                 10_000, InformationLevel.Warning);
         }
 
@@ -165,7 +169,7 @@ public sealed partial class ShellViewModel :
         this.Logger.Debug("OnViewLoaded complete");
     }
 
-    public void Receive (ModelUpdateMessage message)
+    public void Receive(ModelUpdateMessage message)
     {
         Dispatch.OnUiThread(() =>
         {
@@ -281,7 +285,7 @@ public sealed partial class ShellViewModel :
         if (this.dialogService.IsModal)
         {
             this.dialogService.Dismiss();
-        } 
+        }
 
         object? currentView = this.View.ShellViewContent.Content;
         if (currentView is Control control && control.DataContext is ViewModel currentViewModel)
@@ -293,17 +297,21 @@ public sealed partial class ShellViewModel :
         newViewModel.Activate(activationParameters);
         this.View.ShellViewContent.Content = newViewModel.View;
 
-        if( ! isFirstActivation)
+        if (!isFirstActivation)
         {
-            this.Profiler.MemorySnapshot(newViewModel.View.GetType().Name + ":  Activated");
+            if (Debugger.IsAttached)
+            {
+                this.Logger.Debug("Activated view: " + newViewModel.View.GetType().Name);
+                this.Profiler.MemorySnapshot(newViewModel.View.GetType().Name + ":  Activated");
+            }
         }
     }
 
     private void BindGroupIcons()
     {
         this.Logger.Info("Binding groups");
-        var selectedGroup = this.templatesModel.SelectedGroup; 
-        if ( selectedGroup is null )
+        var selectedGroup = this.templatesModel.SelectedGroup;
+        if (selectedGroup is null)
         {
             selectedGroup = this.templatesModel.Groups[0];
             this.templatesModel.SelectGroup(selectedGroup.Name, out string _);
