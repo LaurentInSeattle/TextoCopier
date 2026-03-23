@@ -1,13 +1,13 @@
 <UserControl 
-    x:Class="Lyt.TextoCopier.Workflow.NewEditGroupView"
+	x:Class="Lyt.TextoCopier.Workflow.NewEditGroupView"
 	xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:glyphs="clr-namespace:Lyt.Avalonia.Controls.Glyphs;assembly=Lyt.Avalonia.Controls"
-    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-    xmlns:vm="clr-namespace:Lyt.TextoCopier.Workflow"
-    x:DataType="vm:NewEditGroupViewModel" 
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	xmlns:vm="clr-namespace:Lyt.TextoCopier.Workflow"
+	x:DataType="vm:NewEditGroupViewModel" 
 	>
 	<Grid
 		x:Name="MainGrid"
@@ -18,7 +18,7 @@
 		</Grid.RowDefinitions>
 		<Rectangle
 			Fill="#70000020"
-            Grid.Row="0"
+			Grid.Row="0"
 			/>
 		<TextBlock
 			Grid.Row="0"
@@ -42,7 +42,7 @@
 			GlyphAngle="0"
 			Text="{DynamicResource Shell.Close}"
 			Command="{Binding CloseCommand}"
-	    	/>
+			/>
 		<Grid
 			x:Name="InnerGrid"
 			Grid.Row="1"
@@ -74,16 +74,16 @@
 				FontSize="14"
 				Margin="6 0 0 0"
 				IsHitTestVisible="False"
-                />
+				/>
 			<TextBox
-                x:Name="NameTextBox"
-                Grid.Row="1"
-                VerticalAlignment="Center" HorizontalAlignment="Stretch"
-				Watermark="{DynamicResource NewEditView.Max64}"
+				x:Name="NameTextBox"
+				Grid.Row="1"
+				VerticalAlignment="Center" HorizontalAlignment="Stretch"
+				PlaceholderText="{DynamicResource NewEditView.Max64}"
 				MaxLength="64"
-                Text="{Binding Name}"
-                Margin="12 0 8 0"
-                />
+				Text="{Binding Name}"
+				Margin="12 0 8 0"
+				/>
 			<TextBlock
 				Grid.Row="2"
 				VerticalAlignment="Center" HorizontalAlignment="Stretch"
@@ -94,16 +94,16 @@
 				FontSize="14"
 				Margin="6 0 0 0"
 				IsHitTestVisible="False"
-                />
+				/>
 			<TextBox
-                x:Name="DescriptionTextBox"
-                Grid.Row="3"
-                VerticalAlignment="Center" HorizontalAlignment="Stretch"
-				Watermark="{DynamicResource NewEditView.Max64}"
+				x:Name="DescriptionTextBox"
+				Grid.Row="3"
+				VerticalAlignment="Center" HorizontalAlignment="Stretch"
+				PlaceholderText="{DynamicResource NewEditView.Max64}"
 				MaxLength="64"
-                Text="{Binding Description}"
-                Margin="12 0 8 0"
-                />
+				Text="{Binding Description}"
+				Margin="12 0 8 0"
+				/>
 			<TextBlock
 				Grid.Row="4"
 				VerticalAlignment="Center" HorizontalAlignment="Stretch"
@@ -114,17 +114,17 @@
 				FontSize="14"
 				Margin="6 0 0 0"
 				IsHitTestVisible="False"
-                />
+				/>
 			<AutoCompleteBox
-                x:Name="IconNameTextBox"
-                Grid.Row="5"
-                VerticalAlignment="Center" HorizontalAlignment="Stretch"
-				Watermark="{DynamicResource NewEditGroupView.StartTyping}"
+				x:Name="IconNameTextBox"
+				Grid.Row="5"
+				VerticalAlignment="Center" HorizontalAlignment="Stretch"
+				PlaceholderText="{DynamicResource NewEditGroupView.StartTyping}"
 				IsTextCompletionEnabled="True"
-                Text="{Binding Icon}"
+				Text="{Binding Icon}"
 				ItemsSource="{Binding IconNames}"
-                Margin="12 0 8 0"
-                />
+				Margin="12 0 8 0"
+				/>
 			<TextBlock
 				Grid.Row="6"
 				VerticalAlignment="Center" HorizontalAlignment="Stretch"
@@ -136,14 +136,14 @@
 				Margin="12 0 8 0"
 				IsHitTestVisible="False"
 				TextWrapping="Wrap"
-                />
+				/>
 			<Rectangle
 				Fill="#70000020"
-                Grid.Row="7"
+				Grid.Row="7"
 				/>
 			<glyphs:GlyphButton
 				x:Name="SaveButton"
-                Grid.Row="7"
+				Grid.Row="7"
 				Style="{StaticResource ToolbarIconButton}"
 				Behaviour="Tap"
 				HorizontalAlignment="Right" VerticalAlignment="Center"
@@ -156,7 +156,7 @@
 				Text="{DynamicResource Shell.Save}"
 				Command="{Binding SaveCommand}"
 				IsDisabled="{Binding SaveButtonIsDisabled}"
-	    		/>
+				/>
 		</Grid>
 	</Grid>
 </UserControl>
